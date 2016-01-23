@@ -28,16 +28,18 @@ typedef union vec2
     {
         float x, y;
     };
+    
     struct
     {
         float u, v;
     };
+    
     struct
     {
         float left, right;
-    }
+    };
 
-    float E[2];
+    float Elements[2];
 } vec2;
 
 typedef union vec3
@@ -46,36 +48,42 @@ typedef union vec3
     {
         float x, y, z;
     };
+    
     struct
     {
         float u, v, w;
     };
+    
     struct
     {
         float r, g, b;
     };
+    
     struct
     {
         vec2 xy;
         float Ignored0_;
     };
+    
     struct
     {
         float Ignored1_;
         vec2 yz;
     };
+    
     struct
     {
         vec2 uv;
         float Ignored2_;
     };
+    
     struct
     {
         float Ignored3_;
         vec2 vw;
     };
 
-    float E[3];
+    float Elements[3];
 } vec3;
 
 typedef union vec4
@@ -106,18 +114,21 @@ typedef union vec4
         
         float a;        
     };
+    
     struct
     {
         vec2 xy;
         float Ignored0_;
         float Ignored1_;
     };
+    
     struct
     {
         float Ignored2_;
         vec2 yz;
         float Ignored3_;
     };
+    
     struct
     {
         float Ignored4_;
