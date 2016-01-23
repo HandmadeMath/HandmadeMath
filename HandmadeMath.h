@@ -218,6 +218,139 @@ HINLINE vec4 V4(float X, float Y, float Z, float W)
     return(Result);
 }
 
+HINLINE vec2 AddV2(vec2 Left, vec2 Right)
+{
+    vec2 Result;
+
+    Result.x = Left.x + Right.x;
+    Result.y = Left.y + Right.y;
+
+    return(Result);
+}
+
+HINLINE vec3 AddV3(vec3 Left, vec3 Right)
+{
+    vec3 Result;
+
+    Result.x = Left.x + Right.x;
+    Result.y = Left.y + Right.y;
+    Result.z = Left.z + Right.z;
+
+    return(Result);    
+}
+
+HINLINE vec4 AddV4(vec4 Left, vec4 Right)
+{
+    vec4 Result;
+
+    Result.x = Left.x + Right.x;
+    Result.y = Left.y + Right.y;
+    Result.z = Left.z + Right.z;
+    Result.w = Left.w + Right.w;
+
+    return(Result);    
+}
+
+HINLINE vec2 SubtractV2(vec2 Left, vec2 Right)
+{
+    vec2 Result;
+
+    Result.x = Left.x - Right.x;
+    Result.y = Left.y - Right.y;
+
+    return(Result);
+}
+
+HINLINE vec3 SubtractV3(vec3 Left, vec3 Right)
+{
+    vec3 Result;
+
+    Result.x = Left.x - Right.x;
+    Result.y = Left.y - Right.y;
+    Result.z = Left.z - Right.z;
+
+    return(Result);    
+}
+
+HINLINE vec4 SubtractV4(vec4 Left, vec4 Right)
+{
+    vec4 Result;
+
+    Result.x = Left.x - Right.x;
+    Result.y = Left.y - Right.y;
+    Result.z = Left.z - Right.z;
+    Result.w = Left.w - Right.w;
+
+    return(Result);    
+}
+
+HINLINE vec2 MultiplyV2(vec2 Left, vec2 Right)
+{
+    vec2 Result;
+
+    Result.x = Left.x * Right.x;
+    Result.y = Left.y * Right.y;
+
+    return(Result);
+}
+
+HINLINE vec3 MultiplyV3(vec3 Left, vec3 Right)
+{
+    vec3 Result;
+
+    Result.x = Left.x * Right.x;
+    Result.y = Left.y * Right.y;
+    Result.z = Left.z * Right.z;
+
+    return(Result);    
+}
+
+HINLINE vec4 MultiplyV4(vec4 Left, vec4 Right)
+{
+    vec4 Result;
+
+    Result.x = Left.x * Right.x;
+    Result.y = Left.y * Right.y;
+    Result.z = Left.z * Right.z;
+    Result.w = Left.w * Right.w;
+
+    return(Result);    
+}
+
+HINLINE vec2 DivideV2(vec2 Left, vec2 Right)
+{
+    vec2 Result;
+
+    Result.x = Left.x / Right.x;
+    Result.y = Left.y / Right.y;
+
+    return(Result);
+}
+
+HINLINE vec3 DivideV3(vec3 Left, vec3 Right)
+{
+    vec3 Result;
+
+    Result.x = Left.x / Right.x;
+    Result.y = Left.y / Right.y;
+    Result.z = Left.z / Right.z;
+
+    return(Result);    
+}
+
+HINLINE vec4 DivideV4(vec4 Left, vec4 Right)
+{
+    vec4 Result;
+
+    Result.x = Left.x / Right.x;
+    Result.y = Left.y / Right.y;
+    Result.z = Left.z / Right.z;
+    Result.w = Left.w / Right.w;
+
+    return(Result);    
+}
+ 
+
 #endif
 
 
