@@ -1,15 +1,6 @@
-/*
-  HANDMADE_MATH_IMPLEMENTATION:
-    This is for the implementation you want this.
-
-  HANDMADE_MATH_CPP_MODE: 
-    This will give the function overloaded and operator overloaded version of the functions
-*/
-
 #include <conio.h>
 
 #define HANDMADE_MATH_IMPLEMENTATION
-#define HANDMADE_MATH_CPP_MODE
 
 #include "HandmadeMath.h"
 

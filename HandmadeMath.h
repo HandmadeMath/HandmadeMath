@@ -1,6 +1,49 @@
 /*
-  Author: Zak Strange
+  HandmadeMath.h v0.1
+
+  This is a single header file with a bunch of useful functions for 
+  basic game math operations.
+  ==========================================================================
+  You MUST
+
+     #define HANDMADE_MATH_IMPLEMENTATION
   
+  in EXACTLY one C or C++ file that includes this header, BEFORE the
+  include, like this:
+     
+     #define HANDMADE_MATH_IMPLEMENTATION
+     #include "HandmadeMade.h"
+
+  All other files should just #include "HandmadeMath.h" without the #define.
+  ==========================================================================
+  
+  For overloaded, and operator overloaded versions of the base C functions.
+  You MUST
+
+  #define HANDMADE_MATH_CPP_MODE
+
+  in EXACTLY one C or C++ file that includes this header, BEFORE the
+  include, like this:
+    
+     #define HANDMADE_MATH_IMPLEMENTATION
+     #define HANDMADE_MATH_CPP_MODE
+     #include "HandmadeMade.h"
+
+  All other files should just #include "HandmadeMath.h" without the #define.
+  ==========================================================================
+  
+  LICENSE
+
+  This software is in the public domain. Where that dedication is not
+  recognized, you are granted a perpetual, irrevocable license to copy,
+  distribute, and modify this file as you see fit.
+
+  CREDITS
+
+  Written by Zakary Strange (zak@strangedev.net)
+
+  Fixes:
+   Jeroen van Rijn (@J_vanRijn)
 */
 
 #ifndef HANDMADE_MATH_H
@@ -19,7 +62,7 @@ extern "C" {
 #if _MSC_VER && !__INTEL_COMPILER
 #define HINLINE __inline 
 #else
-#define HINLLINE inline
+#define HINLINE inline
 #endif
     
 typedef union vec2
