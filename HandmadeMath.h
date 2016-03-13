@@ -232,7 +232,23 @@ HMMDEF HINLINE vec4 Multiply(int X, int Y, int Z, int W);
 HMMDEF HINLINE vec2 Divide(int X, int Y);
 HMMDEF HINLINE vec3 Divide(int X, int Y, int Z);
 HMMDEF HINLINE vec4 Divide(int X, int Y, int Z, int W);    
-    
+
+vec2 operator+(vec2 Left, vec2 Right);
+vec3 operator+(vec3 Left, vec3 Right);
+vec4 operator+(vec4 Left, vec4 Right);
+
+vec2 operator-(vec2 Left, vec2 Right);
+vec3 operator-(vec3 Left, vec3 Right);
+vec4 operator-(vec4 Left, vec4 Right);
+
+vec2 operator*(vec2 Left, vec2 Right);
+vec3 operator*(vec3 Left, vec3 Right);
+vec4 operator*(vec4 Left, vec4 Right);
+
+vec2 operator/(vec2 Left, vec2 Right);
+vec3 operator/(vec3 Left, vec3 Right);
+vec4 operator/(vec4 Left, vec4 Right);
+
 #endif /* HANDMADE_MATH_CPP */
 
 #endif /* HANDMADE_MATH_H */
@@ -658,7 +674,6 @@ vec4 operator/(vec4 Left, vec4 Right)
 
     return(Result);
 }
-
 
 #endif /* HANDMADE_MATH_CPP_MODE */
 
