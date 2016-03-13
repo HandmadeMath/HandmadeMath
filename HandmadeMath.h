@@ -531,6 +531,8 @@ HINLINE vec2
 Multiply(vec2 Left, vec2 Right)
 {
     vec2 Result = MultiplyV2(Left, Right);
+
+    return(Result);
 }
 
 HINLINE vec3
@@ -553,7 +555,7 @@ HINLINE vec2
 Divide(vec2 Left, vec2 Right)
 {
     vec2 Result = DivideV2(Left, Right);
-
+    
     return(Result);
 }
 
@@ -572,6 +574,91 @@ Divide(vec4 Left, vec4 Right)
 
     return(Result);
 }
+
+vec2 operator+(vec2 Left, vec2 Right)
+{
+    vec2 Result = Add(Left, Right);
+
+    return(Result);
+}
+
+vec3 operator+(vec3 Left, vec3 Right)
+{
+    vec3 Result = Add(Left, Right);
+
+    return(Result);
+}
+
+vec4 operator+(vec4 Left, vec4 Right)
+{
+    vec4 Result = Add(Left, Right);
+
+    return(Result);
+}
+
+vec2 operator-(vec2 Left, vec2 Right)
+{
+    vec2 Result = Subtract(Left, Right);
+
+    return(Result);
+}
+
+vec3 operator-(vec3 Left, vec3 Right)
+{
+    vec3 Result = Subtract(Left, Right);
+
+    return(Result);
+}
+
+vec4 operator-(vec4 Left, vec4 Right)
+{
+    vec4 Result = Subtract(Left, Right);
+
+    return(Result);
+}
+
+vec2 operator*(vec2 Left, vec2 Right)
+{
+    vec2 Result = Multiply(Left, Right);
+
+    return(Result);
+}
+
+vec3 operator*(vec3 Left, vec3 Right)
+{
+    vec3 Result = Multiply(Left, Right);
+
+    return(Result);
+}
+
+vec4 operator*(vec4 Left, vec4 Right)
+{
+    vec4 Result = Multiply(Left, Right);
+
+    return(Result);
+}
+
+vec2 operator/(vec2 Left, vec2 Right)
+{
+    vec2 Result = Divide(Left, Right);
+
+    return(Result);
+}
+
+vec3 operator/(vec3 Left, vec3 Right)
+{
+    vec3 Result = Divide(Left, Right);
+
+    return(Result);
+}
+
+vec4 operator/(vec4 Left, vec4 Right)
+{
+    vec4 Result = Divide(Left, Right);
+
+    return(Result);
+}
+
 
 #endif /* HANDMADE_MATH_CPP_MODE */
 
