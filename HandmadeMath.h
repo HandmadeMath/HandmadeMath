@@ -53,6 +53,9 @@
 #ifndef HANDMADE_MATH_H
 #define HANDMADE_MATH_H
 
+// TODO(zak): Make some sort of documentation for this and a way to remove it
+#include <math.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -73,17 +76,17 @@ typedef union vec2
 {
     struct
     {
-        float x, y;
+        float X, Y;
     };
     
     struct
     {
-        float u, v;
+        float U, V;
     };
     
     struct
     {
-        float left, right;
+        float Left, Right;
     };
 
     float Elements[2];
@@ -93,41 +96,41 @@ typedef union vec3
 {
     struct
     {
-        float x, y, z;
+        float X, Y, Z;
     };
     
     struct
     {
-        float u, v, w;
+        float U, V, W;
     };
     
     struct
     {
-        float r, g, b;
+        float R, G, B;
     };
     
     struct
     {
-        vec2 xy;
+        vec2 XY;
         float Ignored0_;
     };
     
     struct
     {
         float Ignored1_;
-        vec2 yz;
+        vec2 YZ;
     };
     
     struct
     {
-        vec2 uv;
+        vec2 UV;
         float Ignored2_;
     };
     
     struct
     {
         float Ignored3_;
-        vec2 vw;
+        vec2 VW;
     };
 
     float Elements[3];
@@ -139,32 +142,32 @@ typedef union vec4
     {
         union
         {
-            vec3 xyz;
+            vec3 XYZ;
             struct
             {
-                float x, y, z;
+                float X, Y, Z;
             };
         };
         
-        float w;        
+        float W;        
     };
     struct
     {
         union
         {
-            vec3 rgb;
+            vec3 RGB;
             struct
             {
-                float r, g, b;
+                float R, G, B;
             };
         };
         
-        float a;        
+        float A;        
     };
     
     struct
     {
-        vec2 xy;
+        vec2 XY;
         float Ignored0_;
         float Ignored1_;
     };
@@ -172,7 +175,7 @@ typedef union vec4
     struct
     {
         float Ignored2_;
-        vec2 yz;
+        vec2 YZ;
         float Ignored3_;
     };
     
@@ -180,12 +183,17 @@ typedef union vec4
     {
         float Ignored4_;
         float Ignored5_;
-        vec2 zw;
+        vec2 ZW;
     };
     
-    float E[4];
+    float Elements[4];
 } vec4;
 
+typedef struct mat4
+{
+    float Elements[4][4];
+};
+    
 HMMDEF HINLINE vec2 V2i(int X, int Y);
 HMMDEF HINLINE vec2 V2(float X, float Y);
 HMMDEF HINLINE vec3 V3(float X, float Y, float Z);
@@ -209,6 +217,10 @@ HMMDEF HINLINE vec2 DivideV2(vec2 Left, vec2 Right);
 HMMDEF HINLINE vec3 DivideV3(vec3 Left, vec3 Right);
 HMMDEF HINLINE vec4 DivideV4(vec4 Left, vec4 Right);
 
+HMMDEF mat4 Mat4(void);
+HMMDEF mat4 Mat4d(float Diagonal);
+HMMDEF mat4 MultiplyMat4(mat4 Left, mat4 Right);
+    
 HMMDEF HINLINE float Power(float Base, int Exponent);
     
 #ifdef __cplusplus
@@ -260,8 +272,8 @@ V2(float X, float Y)
 {
     vec2 Result = {0};
 
-    Result.x = X;
-    Result.y = Y;
+    Result.X = X;
+    Result.Y = Y;
 
     return(Result);
 }
@@ -272,8 +284,8 @@ V2i(int X, int Y)
 {
     vec2 Result = {0};
 
-    Result.x = (float)X;
-    Result.y = (float)Y;
+    Result.X = (float)X;
+    Result.Y = (float)Y;
 
     return(Result);
 }
@@ -283,9 +295,9 @@ V3(float X, float Y, float Z)
 {
     vec3 Result = {0};
 
-    Result.x = X;
-    Result.y = Y;
-    Result.z = Z;
+    Result.X = X;
+    Result.Y = Y;
+    Result.Z = Z;
 
     return(Result);
 }
@@ -295,9 +307,9 @@ V3i(int X, int Y, int Z)
 {
     vec3 Result = {0};
 
-    Result.x = (float)X;
-    Result.y = (float)Y;
-    Result.z = (float)Z;
+    Result.X = (float)X;
+    Result.Y = (float)Y;
+    Result.Z = (float)Z;
     
     return(Result);
 }
@@ -307,10 +319,10 @@ V4(float X, float Y, float Z, float W)
 {
     vec4 Result = {0};
 
-    Result.x = X;
-    Result.y = Y;
-    Result.z = Z;
-    Result.w = W;
+    Result.X = X;
+    Result.Y = Y;
+    Result.Z = Z;
+    Result.W = W;
 
     return(Result);
 }
@@ -320,10 +332,10 @@ V4i(int X, int Y, int Z, int W)
 {
     vec4 Result = {0};
 
-    Result.x = (float)X;
-    Result.y = (float)Y;
-    Result.z = (float)Z;
-    Result.w = (float)W;
+    Result.X = (float)X;
+    Result.Y = (float)Y;
+    Result.Z = (float)Z;
+    Result.W = (float)W;
     
     return(Result);
 }    
@@ -333,8 +345,8 @@ AddV2(vec2 Left, vec2 Right)
 {
     vec2 Result;
 
-    Result.x = Left.x + Right.x;
-    Result.y = Left.y + Right.y;
+    Result.X = Left.X + Right.X;
+    Result.Y = Left.Y + Right.Y;
 
     return(Result);
 }
@@ -344,9 +356,9 @@ AddV3(vec3 Left, vec3 Right)
 {
     vec3 Result;
 
-    Result.x = Left.x + Right.x;
-    Result.y = Left.y + Right.y;
-    Result.z = Left.z + Right.z;
+    Result.X = Left.X + Right.X;
+    Result.Y = Left.Y + Right.Y;
+    Result.Z = Left.Z + Right.Z;
 
     return(Result);    
 }
@@ -356,10 +368,10 @@ AddV4(vec4 Left, vec4 Right)
 {
     vec4 Result;
 
-    Result.x = Left.x + Right.x;
-    Result.y = Left.y + Right.y;
-    Result.z = Left.z + Right.z;
-    Result.w = Left.w + Right.w;
+    Result.X = Left.X + Right.X;
+    Result.Y = Left.Y + Right.Y;
+    Result.Z = Left.Z + Right.Z;
+    Result.W = Left.W + Right.W;
 
     return(Result);    
 }
@@ -369,8 +381,8 @@ SubtractV2(vec2 Left, vec2 Right)
 {
     vec2 Result;
 
-    Result.x = Left.x - Right.x;
-    Result.y = Left.y - Right.y;
+    Result.X = Left.X - Right.X;
+    Result.Y = Left.Y - Right.Y;
 
     return(Result);
 }
@@ -380,9 +392,9 @@ SubtractV3(vec3 Left, vec3 Right)
 {
     vec3 Result;
 
-    Result.x = Left.x - Right.x;
-    Result.y = Left.y - Right.y;
-    Result.z = Left.z - Right.z;
+    Result.X = Left.X - Right.X;
+    Result.Y = Left.Y - Right.Y;
+    Result.Z = Left.Z - Right.Z;
 
     return(Result);    
 }
@@ -392,10 +404,10 @@ SubtractV4(vec4 Left, vec4 Right)
 {
     vec4 Result;
 
-    Result.x = Left.x - Right.x;
-    Result.y = Left.y - Right.y;
-    Result.z = Left.z - Right.z;
-    Result.w = Left.w - Right.w;
+    Result.X = Left.X - Right.X;
+    Result.Y = Left.Y - Right.Y;
+    Result.Z = Left.Z - Right.Z;
+    Result.W = Left.W - Right.W;
 
     return(Result);    
 }
@@ -405,8 +417,8 @@ MultiplyV2(vec2 Left, vec2 Right)
 {
     vec2 Result;
 
-    Result.x = Left.x * Right.x;
-    Result.y = Left.y * Right.y;
+    Result.X = Left.X * Right.X;
+    Result.Y = Left.Y * Right.Y;
 
     return(Result);
 }
@@ -416,9 +428,9 @@ MultiplyV3(vec3 Left, vec3 Right)
 {
     vec3 Result;
 
-    Result.x = Left.x * Right.x;
-    Result.y = Left.y * Right.y;
-    Result.z = Left.z * Right.z;
+    Result.X = Left.Z * Right.X;
+    Result.Y = Left.Y * Right.Y;
+    Result.Z = Left.Z * Right.Z;
 
     return(Result);    
 }
@@ -428,10 +440,10 @@ MultiplyV4(vec4 Left, vec4 Right)
 {
     vec4 Result;
 
-    Result.x = Left.x * Right.x;
-    Result.y = Left.y * Right.y;
-    Result.z = Left.z * Right.z;
-    Result.w = Left.w * Right.w;
+    Result.X = Left.X * Right.X;
+    Result.Y = Left.Y * Right.Y;
+    Result.Z = Left.Z * Right.Z;
+    Result.W = Left.W * Right.W;
 
     return(Result);    
 }
@@ -441,8 +453,8 @@ DivideV2(vec2 Left, vec2 Right)
 {
     vec2 Result;
 
-    Result.x = Left.x / Right.x;
-    Result.y = Left.y / Right.y;
+    Result.X = Left.X / Right.X;
+    Result.Y = Left.Y / Right.Y;
 
     return(Result);
 }
@@ -452,9 +464,9 @@ DivideV3(vec3 Left, vec3 Right)
 {
     vec3 Result;
 
-    Result.x = Left.x / Right.x;
-    Result.y = Left.y / Right.y;
-    Result.z = Left.z / Right.z;
+    Result.X = Left.X / Right.X;
+    Result.Y = Left.Y / Right.Y;
+    Result.Z = Left.Z / Right.Z;
 
     return(Result);    
 }
@@ -464,12 +476,22 @@ DivideV4(vec4 Left, vec4 Right)
 {
     vec4 Result;
 
-    Result.x = Left.x / Right.x;
-    Result.y = Left.y / Right.y;
-    Result.z = Left.z / Right.z;
-    Result.w = Left.w / Right.w;
+    Result.X = Left.X / Right.X;
+    Result.Y = Left.Y / Right.Y;
+    Result.Z = Left.Z / Right.Z;
+    Result.W = Left.W / Right.W;
 
     return(Result);    
+}
+
+#define Pi32 3.14159265359f
+
+HINLINE float
+ToRadians(float Degrees)
+{
+    float Result = Degrees * (Pi32 / 180.0f);
+
+    return(Result);
 }
 
 HINLINE float
@@ -492,6 +514,146 @@ Power(float Base, int Exponent)
     }
     return (Result);
 }
+
+HMMDEF mat4 Mat4()
+{
+    mat4 Result;
+    
+    for(int Rows = 0;
+        Rows < 4;
+        ++Rows)
+    {
+        for(int Columns = 0;
+            Columns < 4;
+            ++Columns)
+        {
+            Result.Elements[Rows][Columns] = 0.0f;
+        }
+    }
+
+    return(Result);
+}
+
+mat4
+Mat4d(float Diagonal)
+{
+    mat4 Result;
+    
+    for(int Rows = 0;
+        Rows < 4;
+        ++Rows)
+    {
+        for(int Columns = 0;
+            Columns < 4;
+            ++Columns)
+        {
+            Result.Elements[Rows][Columns] = 0.0f;
+        }
+    }
+
+    Result.Elements[0][0] = Diagonal;
+    Result.Elements[1][1] = Diagonal;
+    Result.Elements[2][2] = Diagonal;
+    Result.Elements[3][3] = Diagonal;
+
+    return(Result);
+}
+
+mat4
+MultiplyMat4(mat4 Left, mat4 Right)
+{
+    mat4 Result = Mat4();
+    
+    for(int Rows = 0;
+        Rows < 4;
+        ++Rows)
+    {
+        for(int Columns = 0;
+            Columns < 4;
+            ++Columns)
+        {
+            Result.Elements[Rows][Columns] = Left.Elements[Rows][Columns] * Right.Elements[Rows][Columns];
+        }
+    }
+
+    return(Result);
+}
+
+mat4
+Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far)
+{
+    mat4 Result = Mat4d(1.0f);
+
+    Result.Elements[0][0] = 2.0f / (Right - Left);
+    Result.Elements[1][1] = 2.0f / (Top - Bottom);
+    Result.Elements[2][2] = 2.0f / (Near - Far);
+
+    Result.Elements[0][3] = (Left + Right) / (Left - Right);
+    Result.Elements[1][3] = (Bottom + Top) / (Bottom - Top);
+    Result.Elements[2][3] = (Far + Near) / (Far - Near);
+
+    return(Result);
+}
+
+mat4
+Pespective(float FOV, float AspectRatio, float Near, float Far)
+{
+    mat4 Result = Mat4d(1.0f);
+
+    Result.Elements[0][0] = 1.0f / tan(ToRadians(0.5f * FOV));
+    Result.Elements[1][1] = (1.0f / tan(ToRadians(0.5f * FOV))) / AspectRatio;
+    Result.Elements[2][2] = (Near + Far) / (Near - Far);
+    Result.Elements[3][2] = -1.0f;
+    Result.Elements[2][3] = (2.0f * Near * Far) / (Near - Far);
+
+    return(Result);
+}
+
+mat4
+Translate(vec3 Translation)
+{
+    mat4 Result = Mat4d(1.0f);
+
+    Result.Elements[0][3] = Translation.X;
+    Result.Elements[1][3] = Translation.Y;
+    Result.Elements[2][3] = Translation.Z;
+    
+    return(Result);
+}
+
+mat4
+Rotate(float Angle, vec3 Axis)
+{
+    mat4 Result = Mat4d(1.0f);
+
+    Result.Elements[0][0] = Axis.Z * (1.0f - cos(ToRadians(Angle))) + cos(ToRadians(Angle));
+    Result.Elements[1][0] = Axis.Y * Axis.X * (1.0f - cos(ToRadians(Angle))) + Axis.Z * (sin(ToRadians(Angle)));
+    Result.Elements[2][0] = Axis.X * Axis.Z * (1.0f - cos(ToRadians(Angle))) - Axis.Y * (sin(ToRadians(Angle)));
+
+    Result.Elements[0][1] = Axis.X * Axis.Y * (1.0f - cos(ToRadians(Angle))) - Axis.Z * (sin(ToRadians(Angle)));
+    Result.Elements[1][1] = Axis.Y * (1.0f - cos(ToRadians(Angle))) + (cos(ToRadians(Angle)));
+    Result.Elements[2][1] = Axis.Y * Axis.Z * (1.0f - cos(ToRadians(Angle))) + Axis.X * (sin(ToRadians(Angle)));
+
+    Result.Elements[0][2] = Axis.X * Axis.Z * (1.0f - cos(ToRadians(Angle))) + Axis.Y * (sin(ToRadians(Angle)));
+    Result.Elements[1][2] = Axis.Y * Axis.Z * (1.0f - cos(ToRadians(Angle))) - Axis.X * (sin(ToRadians(Angle)));
+    Result.Elements[2][2] = Axis.Z * (1.0f - cos(ToRadians(Angle))) * (cos(ToRadians(Angle)));
+
+    return(Result);
+}
+
+mat4
+Scale(vec3 Scale)
+{
+    mat4 Result = Mat4d(1.0f);
+
+    Result.Elements[0][0] = Scale.X;
+    Result.Elements[1][1] = Scale.Y;
+    Result.Elements[2][2] = Scale.Z;
+    
+    return(Result);
+}
+
+
 
 #ifdef HANDMADE_MATH_CPP_MODE
 
