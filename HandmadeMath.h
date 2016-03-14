@@ -266,10 +266,12 @@ HMMDEF vec2 operator*(vec2 Left, vec2 Right);
 HMMDEF vec3 operator*(vec3 Left, vec3 Right);
 HMMDEF vec4 operator*(vec4 Left, vec4 Right);
 HMMDEF mat4 operator*(mat4 Left, mat4 Right);
+HMMDEF vec3 operator*(vec3 Left, float Right);
 
 HMMDEF vec2 operator/(vec2 Left, vec2 Right);
 HMMDEF vec3 operator/(vec3 Left, vec3 Right);
 HMMDEF vec4 operator/(vec4 Left, vec4 Right);
+
 
 #endif /* HANDMADE_MATH_CPP */
 
@@ -282,6 +284,37 @@ ToRadians(float Degrees)
 {
     float Result = Degrees * (Pi32 / 180.0f);
 
+    return(Result);
+}
+
+HMMDEF HINLINE float
+Inner(vec3 A, vec3 B)
+{
+    float Result = A.X*B.X + A.Y*B.Y + A.Z*B.Z;
+
+    return(Result);
+}
+
+HMMDEF HINLINE float
+SquareRoot(float Float)
+{
+    float Result = sqrtf(Float);
+
+    return(Result);
+}
+
+HMMDEF HINLINE float
+LengthSq(vec3 A)
+{
+    float Result = Inner(A, A);
+
+    return(Result);
+}
+
+HMMDEF HINLINE float
+Length(vec3 A)
+{
+    float Result = SquareRoot(LengthSq(A));
     return(Result);
 }
 
@@ -330,7 +363,15 @@ Clamp(float Min, float Value, float Max)
 
     return(Result);
 }
-    
+
+HMMDEF HINLINE vec3
+Normalize(vec3 A)
+{
+    vec3 Result = A * (1.0f / Length(A));
+
+    return(Result);
+}
+
 HMMDEF HINLINE vec2
 V2(float X, float Y)
 {
@@ -341,7 +382,6 @@ V2(float X, float Y)
 
     return(Result);
 }
-
 
 HMMDEF HINLINE vec2
 V2i(int X, int Y)
@@ -792,7 +832,7 @@ Divide(vec4 Left, vec4 Right)
     return(Result);
 }
 
-HMMDEF vec2
+HMMDEF HINLINE vec2
 operator+(vec2 Left, vec2 Right)
 {
     vec2 Result = Add(Left, Right);
@@ -800,7 +840,7 @@ operator+(vec2 Left, vec2 Right)
     return(Result);
 }
 
-HMMDEF vec3
+HMMDEF HINLINE vec3
 operator+(vec3 Left, vec3 Right)
 {
     vec3 Result = Add(Left, Right);
@@ -808,7 +848,7 @@ operator+(vec3 Left, vec3 Right)
     return(Result);
 }
 
-HMMDEF vec4
+HMMDEF HINLINE vec4
 operator+(vec4 Left, vec4 Right)
 {
     vec4 Result = Add(Left, Right);
@@ -816,7 +856,7 @@ operator+(vec4 Left, vec4 Right)
     return(Result);
 }
 
-HMMDEF vec2
+HMMDEF HINLINE vec2
 operator-(vec2 Left, vec2 Right)
 {
     vec2 Result = Subtract(Left, Right);
@@ -824,7 +864,7 @@ operator-(vec2 Left, vec2 Right)
     return(Result);
 }
 
-HMMDEF vec3
+HMMDEF HINLINE vec3
 operator-(vec3 Left, vec3 Right)
 {
     vec3 Result = Subtract(Left, Right);
@@ -832,7 +872,7 @@ operator-(vec3 Left, vec3 Right)
     return(Result);
 }
 
-HMMDEF vec4
+HMMDEF HINLINE vec4
 operator-(vec4 Left, vec4 Right)
 {
     vec4 Result = Subtract(Left, Right);
@@ -840,7 +880,7 @@ operator-(vec4 Left, vec4 Right)
     return(Result);
 }
 
-HMMDEF vec2
+HMMDEF HINLINE vec2
 operator*(vec2 Left, vec2 Right)
 {
     vec2 Result = Multiply(Left, Right);
@@ -848,7 +888,7 @@ operator*(vec2 Left, vec2 Right)
     return(Result);
 }
 
-HMMDEF vec3
+HMMDEF HINLINE vec3
 operator*(vec3 Left, vec3 Right)
 {
     vec3 Result = Multiply(Left, Right);
@@ -856,7 +896,19 @@ operator*(vec3 Left, vec3 Right)
     return(Result);
 }
 
-HMMDEF vec4
+HMMDEF HINLINE vec3
+operator*(vec3 Left, float Right)
+{
+    vec3 Result;
+
+    Result.X = Right * Left.X;
+    Result.Y = Right * Left.Y;
+    Result.Z = Right * Left.Z;
+
+    return(Result);
+}
+
+HMMDEF HINLINE vec4
 operator*(vec4 Left, vec4 Right)
 {
     vec4 Result = Multiply(Left, Right);
@@ -864,7 +916,7 @@ operator*(vec4 Left, vec4 Right)
     return(Result);
 }
 
-HMMDEF mat4
+HMMDEF HINLINE mat4
 operator*(mat4 Left, mat4 Right)
 {
     mat4 Result = Multiply(Left, Right);
@@ -872,7 +924,7 @@ operator*(mat4 Left, mat4 Right)
     return(Result);
 }
 
-HMMDEF vec2
+HMMDEF HINLINE vec2
 operator/(vec2 Left, vec2 Right)
 {
     vec2 Result = Divide(Left, Right);
@@ -880,7 +932,7 @@ operator/(vec2 Left, vec2 Right)
     return(Result);
 }
 
-HMMDEF vec3
+HMMDEF HINLINE vec3
 operator/(vec3 Left, vec3 Right)
 {
     vec3 Result = Divide(Left, Right);
@@ -888,7 +940,7 @@ operator/(vec3 Left, vec3 Right)
     return(Result);
 }
 
-HMMDEF vec4
+HMMDEF HINLINE vec4
 operator/(vec4 Left, vec4 Right)
 {
     vec4 Result = Divide(Left, Right);
