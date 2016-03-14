@@ -71,6 +71,8 @@ extern "C" {
 #else
 #define HINLINE inline
 #endif
+
+#define Pi32 3.14159265359f
     
 typedef union vec2
 {
@@ -189,10 +191,12 @@ typedef union vec4
     float Elements[4];
 } vec4;
 
-typedef struct mat4
+typedef union mat4
 {
     float Elements[4][4];
-};
+} mat4;
+
+HMMDEF HINLINE float Power(float Base, int Exponent);
     
 HMMDEF HINLINE vec2 V2i(int X, int Y);
 HMMDEF HINLINE vec2 V2(float X, float Y);
@@ -220,9 +224,13 @@ HMMDEF HINLINE vec4 DivideV4(vec4 Left, vec4 Right);
 HMMDEF mat4 Mat4(void);
 HMMDEF mat4 Mat4d(float Diagonal);
 HMMDEF mat4 MultiplyMat4(mat4 Left, mat4 Right);
-    
-HMMDEF HINLINE float Power(float Base, int Exponent);
-    
+
+HMMDEF mat4 Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
+HMMDEF mat4 Pespective(float FOV, float AspectRatio, float Near, float Far);
+HMMDEF mat4 Translate(vec3 Translation);
+HMMDEF mat4 Rotate(float Angle, vec3 Axis);
+HMMDEF mat4 Scale(vec3 Scale);
+
 #ifdef __cplusplus
 }
 #endif
@@ -240,26 +248,28 @@ HMMDEF HINLINE vec4 Subtract(int X, int Y, int Z, int W);
 HMMDEF HINLINE vec2 Multiply(int X, int Y);
 HMMDEF HINLINE vec3 Multiply(int X, int Y, int Z);
 HMMDEF HINLINE vec4 Multiply(int X, int Y, int Z, int W);
+HMMDEF HINLINE mat4 Multiply(mat4 Left, mat4 Right);
     
 HMMDEF HINLINE vec2 Divide(int X, int Y);
 HMMDEF HINLINE vec3 Divide(int X, int Y, int Z);
 HMMDEF HINLINE vec4 Divide(int X, int Y, int Z, int W);    
 
-vec2 operator+(vec2 Left, vec2 Right);
-vec3 operator+(vec3 Left, vec3 Right);
-vec4 operator+(vec4 Left, vec4 Right);
+HMMDEF vec2 operator+(vec2 Left, vec2 Right);
+HMMDEF vec3 operator+(vec3 Left, vec3 Right);
+HMMDEF vec4 operator+(vec4 Left, vec4 Right);
 
-vec2 operator-(vec2 Left, vec2 Right);
-vec3 operator-(vec3 Left, vec3 Right);
-vec4 operator-(vec4 Left, vec4 Right);
+HMMDEF vec2 operator-(vec2 Left, vec2 Right);
+HMMDEF vec3 operator-(vec3 Left, vec3 Right);
+HMMDEF vec4 operator-(vec4 Left, vec4 Right);
 
-vec2 operator*(vec2 Left, vec2 Right);
-vec3 operator*(vec3 Left, vec3 Right);
-vec4 operator*(vec4 Left, vec4 Right);
+HMMDEF vec2 operator*(vec2 Left, vec2 Right);
+HMMDEF vec3 operator*(vec3 Left, vec3 Right);
+HMMDEF vec4 operator*(vec4 Left, vec4 Right);
+HMMDEF mat4 operator*(mat4 Left, mat4 Right);
 
-vec2 operator/(vec2 Left, vec2 Right);
-vec3 operator/(vec3 Left, vec3 Right);
-vec4 operator/(vec4 Left, vec4 Right);
+HMMDEF vec2 operator/(vec2 Left, vec2 Right);
+HMMDEF vec3 operator/(vec3 Left, vec3 Right);
+HMMDEF vec4 operator/(vec4 Left, vec4 Right);
 
 #endif /* HANDMADE_MATH_CPP */
 
@@ -267,226 +277,7 @@ vec4 operator/(vec4 Left, vec4 Right);
 
 #ifdef HANDMADE_MATH_IMPLEMENTATION
 
-HINLINE vec2
-V2(float X, float Y)
-{
-    vec2 Result = {0};
-
-    Result.X = X;
-    Result.Y = Y;
-
-    return(Result);
-}
-
-
-HINLINE vec2
-V2i(int X, int Y)
-{
-    vec2 Result = {0};
-
-    Result.X = (float)X;
-    Result.Y = (float)Y;
-
-    return(Result);
-}
-    
-HINLINE vec3
-V3(float X, float Y, float Z)
-{
-    vec3 Result = {0};
-
-    Result.X = X;
-    Result.Y = Y;
-    Result.Z = Z;
-
-    return(Result);
-}
-
-HINLINE vec3
-V3i(int X, int Y, int Z)
-{
-    vec3 Result = {0};
-
-    Result.X = (float)X;
-    Result.Y = (float)Y;
-    Result.Z = (float)Z;
-    
-    return(Result);
-}
-    
-HINLINE vec4
-V4(float X, float Y, float Z, float W)
-{
-    vec4 Result = {0};
-
-    Result.X = X;
-    Result.Y = Y;
-    Result.Z = Z;
-    Result.W = W;
-
-    return(Result);
-}
-
-HINLINE vec4
-V4i(int X, int Y, int Z, int W)
-{
-    vec4 Result = {0};
-
-    Result.X = (float)X;
-    Result.Y = (float)Y;
-    Result.Z = (float)Z;
-    Result.W = (float)W;
-    
-    return(Result);
-}    
-
-HINLINE vec2
-AddV2(vec2 Left, vec2 Right)
-{
-    vec2 Result;
-
-    Result.X = Left.X + Right.X;
-    Result.Y = Left.Y + Right.Y;
-
-    return(Result);
-}
-
-HINLINE vec3
-AddV3(vec3 Left, vec3 Right)
-{
-    vec3 Result;
-
-    Result.X = Left.X + Right.X;
-    Result.Y = Left.Y + Right.Y;
-    Result.Z = Left.Z + Right.Z;
-
-    return(Result);    
-}
-
-HINLINE vec4
-AddV4(vec4 Left, vec4 Right)
-{
-    vec4 Result;
-
-    Result.X = Left.X + Right.X;
-    Result.Y = Left.Y + Right.Y;
-    Result.Z = Left.Z + Right.Z;
-    Result.W = Left.W + Right.W;
-
-    return(Result);    
-}
-
-HINLINE vec2
-SubtractV2(vec2 Left, vec2 Right)
-{
-    vec2 Result;
-
-    Result.X = Left.X - Right.X;
-    Result.Y = Left.Y - Right.Y;
-
-    return(Result);
-}
-
-HINLINE vec3
-SubtractV3(vec3 Left, vec3 Right)
-{
-    vec3 Result;
-
-    Result.X = Left.X - Right.X;
-    Result.Y = Left.Y - Right.Y;
-    Result.Z = Left.Z - Right.Z;
-
-    return(Result);    
-}
-
-HINLINE vec4
-SubtractV4(vec4 Left, vec4 Right)
-{
-    vec4 Result;
-
-    Result.X = Left.X - Right.X;
-    Result.Y = Left.Y - Right.Y;
-    Result.Z = Left.Z - Right.Z;
-    Result.W = Left.W - Right.W;
-
-    return(Result);    
-}
-
-HINLINE vec2
-MultiplyV2(vec2 Left, vec2 Right)
-{
-    vec2 Result;
-
-    Result.X = Left.X * Right.X;
-    Result.Y = Left.Y * Right.Y;
-
-    return(Result);
-}
-
-HINLINE vec3
-MultiplyV3(vec3 Left, vec3 Right)
-{
-    vec3 Result;
-
-    Result.X = Left.Z * Right.X;
-    Result.Y = Left.Y * Right.Y;
-    Result.Z = Left.Z * Right.Z;
-
-    return(Result);    
-}
-
-HINLINE vec4
-MultiplyV4(vec4 Left, vec4 Right)
-{
-    vec4 Result;
-
-    Result.X = Left.X * Right.X;
-    Result.Y = Left.Y * Right.Y;
-    Result.Z = Left.Z * Right.Z;
-    Result.W = Left.W * Right.W;
-
-    return(Result);    
-}
-
-HINLINE vec2
-DivideV2(vec2 Left, vec2 Right)
-{
-    vec2 Result;
-
-    Result.X = Left.X / Right.X;
-    Result.Y = Left.Y / Right.Y;
-
-    return(Result);
-}
-
-HINLINE vec3
-DivideV3(vec3 Left, vec3 Right)
-{
-    vec3 Result;
-
-    Result.X = Left.X / Right.X;
-    Result.Y = Left.Y / Right.Y;
-    Result.Z = Left.Z / Right.Z;
-
-    return(Result);    
-}
-
-HINLINE vec4
-DivideV4(vec4 Left, vec4 Right)
-{
-    vec4 Result;
-
-    Result.X = Left.X / Right.X;
-    Result.Y = Left.Y / Right.Y;
-    Result.Z = Left.Z / Right.Z;
-    Result.W = Left.W / Right.W;
-
-    return(Result);    
-}
-
-#define Pi32 3.14159265359f
-
-HINLINE float
+HMMDEF HINLINE float
 ToRadians(float Degrees)
 {
     float Result = Degrees * (Pi32 / 180.0f);
@@ -494,7 +285,7 @@ ToRadians(float Degrees)
     return(Result);
 }
 
-HINLINE float
+HMMDEF HINLINE float
 Power(float Base, int Exponent)
 {
     float Result = 1;
@@ -515,6 +306,223 @@ Power(float Base, int Exponent)
     return (Result);
 }
 
+HMMDEF HINLINE vec2
+V2(float X, float Y)
+{
+    vec2 Result;
+
+    Result.X = X;
+    Result.Y = Y;
+
+    return(Result);
+}
+
+
+HMMDEF HINLINE vec2
+V2i(int X, int Y)
+{
+    vec2 Result;
+
+    Result.X = (float)X;
+    Result.Y = (float)Y;
+
+    return(Result);
+}
+    
+HMMDEF HINLINE vec3
+V3(float X, float Y, float Z)
+{
+    vec3 Result;
+
+    Result.X = X;
+    Result.Y = Y;
+    Result.Z = Z;
+
+    return(Result);
+}
+
+HMMDEF HINLINE vec3
+V3i(int X, int Y, int Z)
+{
+    vec3 Result;
+
+    Result.X = (float)X;
+    Result.Y = (float)Y;
+    Result.Z = (float)Z;
+    
+    return(Result);
+}
+    
+HMMDEF HINLINE vec4
+V4(float X, float Y, float Z, float W)
+{
+    vec4 Result;
+
+    Result.X = X;
+    Result.Y = Y;
+    Result.Z = Z;
+    Result.W = W;
+
+    return(Result);
+}
+
+HMMDEF HINLINE vec4
+V4i(int X, int Y, int Z, int W)
+{
+    vec4 Result;
+
+    Result.X = (float)X;
+    Result.Y = (float)Y;
+    Result.Z = (float)Z;
+    Result.W = (float)W;
+    
+    return(Result);
+}    
+
+HMMDEF HINLINE vec2
+AddV2(vec2 Left, vec2 Right)
+{
+    vec2 Result;
+
+    Result.X = Left.X + Right.X;
+    Result.Y = Left.Y + Right.Y;
+
+    return(Result);
+}
+
+HMMDEF HINLINE vec3
+AddV3(vec3 Left, vec3 Right)
+{
+    vec3 Result;
+
+    Result.X = Left.X + Right.X;
+    Result.Y = Left.Y + Right.Y;
+    Result.Z = Left.Z + Right.Z;
+
+    return(Result);    
+}
+
+HMMDEF HINLINE vec4
+AddV4(vec4 Left, vec4 Right)
+{
+    vec4 Result;
+
+    Result.X = Left.X + Right.X;
+    Result.Y = Left.Y + Right.Y;
+    Result.Z = Left.Z + Right.Z;
+    Result.W = Left.W + Right.W;
+
+    return(Result);    
+}
+
+HMMDEF HINLINE vec2
+SubtractV2(vec2 Left, vec2 Right)
+{
+    vec2 Result;
+
+    Result.X = Left.X - Right.X;
+    Result.Y = Left.Y - Right.Y;
+
+    return(Result);
+}
+
+HMMDEF HINLINE vec3
+SubtractV3(vec3 Left, vec3 Right)
+{
+    vec3 Result;
+
+    Result.X = Left.X - Right.X;
+    Result.Y = Left.Y - Right.Y;
+    Result.Z = Left.Z - Right.Z;
+
+    return(Result);    
+}
+
+HMMDEF HINLINE vec4
+SubtractV4(vec4 Left, vec4 Right)
+{
+    vec4 Result;
+
+    Result.X = Left.X - Right.X;
+    Result.Y = Left.Y - Right.Y;
+    Result.Z = Left.Z - Right.Z;
+    Result.W = Left.W - Right.W;
+
+    return(Result);    
+}
+
+HMMDEF HINLINE vec2
+MultiplyV2(vec2 Left, vec2 Right)
+{
+    vec2 Result;
+
+    Result.X = Left.X * Right.X;
+    Result.Y = Left.Y * Right.Y;
+
+    return(Result);
+}
+
+HMMDEF HINLINE vec3
+MultiplyV3(vec3 Left, vec3 Right)
+{
+    vec3 Result;
+
+    Result.X = Left.Z * Right.X;
+    Result.Y = Left.Y * Right.Y;
+    Result.Z = Left.Z * Right.Z;
+
+    return(Result);    
+}
+
+HMMDEF HINLINE vec4
+MultiplyV4(vec4 Left, vec4 Right)
+{
+    vec4 Result;
+
+    Result.X = Left.X * Right.X;
+    Result.Y = Left.Y * Right.Y;
+    Result.Z = Left.Z * Right.Z;
+    Result.W = Left.W * Right.W;
+
+    return(Result);    
+}
+
+HMMDEF HINLINE vec2
+DivideV2(vec2 Left, vec2 Right)
+{
+    vec2 Result;
+
+    Result.X = Left.X / Right.X;
+    Result.Y = Left.Y / Right.Y;
+
+    return(Result);
+}
+
+HMMDEF HINLINE vec3
+DivideV3(vec3 Left, vec3 Right)
+{
+    vec3 Result;
+
+    Result.X = Left.X / Right.X;
+    Result.Y = Left.Y / Right.Y;
+    Result.Z = Left.Z / Right.Z;
+
+    return(Result);    
+}
+
+HMMDEF HINLINE vec4
+DivideV4(vec4 Left, vec4 Right)
+{
+    vec4 Result;
+
+    Result.X = Left.X / Right.X;
+    Result.Y = Left.Y / Right.Y;
+    Result.Z = Left.Z / Right.Z;
+    Result.W = Left.W / Right.W;
+
+    return(Result);    
+}
+\
 HMMDEF mat4 Mat4()
 {
     mat4 Result;
@@ -534,7 +542,7 @@ HMMDEF mat4 Mat4()
     return(Result);
 }
 
-mat4
+HMMDEF mat4
 Mat4d(float Diagonal)
 {
     mat4 Result;
@@ -559,7 +567,7 @@ Mat4d(float Diagonal)
     return(Result);
 }
 
-mat4
+HMMDEF mat4
 MultiplyMat4(mat4 Left, mat4 Right)
 {
     mat4 Result = Mat4();
@@ -579,7 +587,7 @@ MultiplyMat4(mat4 Left, mat4 Right)
     return(Result);
 }
 
-mat4
+HMMDEF mat4
 Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
     mat4 Result = Mat4d(1.0f);
@@ -595,7 +603,7 @@ Orthographic(float Left, float Right, float Bottom, float Top, float Near, float
     return(Result);
 }
 
-mat4
+HMMDEF mat4
 Pespective(float FOV, float AspectRatio, float Near, float Far)
 {
     mat4 Result = Mat4d(1.0f);
@@ -609,7 +617,7 @@ Pespective(float FOV, float AspectRatio, float Near, float Far)
     return(Result);
 }
 
-mat4
+HMMDEF mat4
 Translate(vec3 Translation)
 {
     mat4 Result = Mat4d(1.0f);
@@ -621,7 +629,7 @@ Translate(vec3 Translation)
     return(Result);
 }
 
-mat4
+HMMDEF mat4
 Rotate(float Angle, vec3 Axis)
 {
     mat4 Result = Mat4d(1.0f);
@@ -641,7 +649,7 @@ Rotate(float Angle, vec3 Axis)
     return(Result);
 }
 
-mat4
+HMMDEF mat4
 Scale(vec3 Scale)
 {
     mat4 Result = Mat4d(1.0f);
@@ -653,11 +661,9 @@ Scale(vec3 Scale)
     return(Result);
 }
 
-
-
 #ifdef HANDMADE_MATH_CPP_MODE
 
-HINLINE vec2
+HMMDEF HINLINE vec2
 Add(vec2 Left, vec2 Right)
 {
     vec2 Result = AddV2(Left, Right);
@@ -665,7 +671,7 @@ Add(vec2 Left, vec2 Right)
     return(Result);
 }
 
-HINLINE vec3
+HMMDEF HINLINE vec3
 Add(vec3 Left, vec3 Right)
 {
     vec3 Result = AddV3(Left, Right);
@@ -673,7 +679,7 @@ Add(vec3 Left, vec3 Right)
     return(Result);
 }
 
-HINLINE vec4
+HMMDEF HINLINE vec4
 Add(vec4 Left, vec4 Right)
 {
     vec4 Result = AddV4(Left, Right);
@@ -681,7 +687,7 @@ Add(vec4 Left, vec4 Right)
     return(Result);
 }
 
-HINLINE vec2
+HMMDEF HINLINE vec2
 Subtract(vec2 Left, vec2 Right)
 {
     vec2 Result = SubtractV2(Left, Right);
@@ -689,7 +695,7 @@ Subtract(vec2 Left, vec2 Right)
     return(Result);
 }
 
-HINLINE vec3
+HMMDEF HINLINE vec3
 Subtract(vec3 Left, vec3 Right)
 {
     vec3 Result = SubtractV3(Left, Right);
@@ -697,7 +703,7 @@ Subtract(vec3 Left, vec3 Right)
     return(Result);
 }
 
-HINLINE vec4
+HMMDEF HINLINE vec4
 Subtract(vec4 Left, vec4 Right)
 {
     vec4 Result = SubtractV4(Left, Right);
@@ -705,7 +711,7 @@ Subtract(vec4 Left, vec4 Right)
     return(Result);
 }
 
-HINLINE vec2
+HMMDEF HINLINE vec2
 Multiply(vec2 Left, vec2 Right)
 {
     vec2 Result = MultiplyV2(Left, Right);
@@ -713,7 +719,7 @@ Multiply(vec2 Left, vec2 Right)
     return(Result);
 }
 
-HINLINE vec3
+HMMDEF HINLINE vec3
 Multiply(vec3 Left, vec3 Right)
 {
     vec3 Result = MultiplyV3(Left, Right);
@@ -721,15 +727,23 @@ Multiply(vec3 Left, vec3 Right)
     return(Result);
 }
     
-HINLINE vec4
+HMMDEF HINLINE vec4
 Multiply(vec4 Left, vec4 Right)
 {
     vec4 Result = MultiplyV4(Left, Right);
 
     return(Result);
 }
-    
-HINLINE vec2
+
+HMMDEF HINLINE mat4
+Multiply(mat4 Left, mat4 Right)
+{
+    mat4 Result = MultiplyMat4(Left, Right);
+
+    return(Result);
+}
+
+HMMDEF HINLINE vec2
 Divide(vec2 Left, vec2 Right)
 {
     vec2 Result = DivideV2(Left, Right);
@@ -737,7 +751,7 @@ Divide(vec2 Left, vec2 Right)
     return(Result);
 }
 
-HINLINE vec3
+HMMDEF HINLINE vec3
 Divide(vec3 Left, vec3 Right)
 {
     vec3 Result = DivideV3(Left, Right);
@@ -745,7 +759,7 @@ Divide(vec3 Left, vec3 Right)
     return(Result);
 }
 
-HINLINE vec4
+HMMDEF HINLINE vec4
 Divide(vec4 Left, vec4 Right)
 {
     vec4 Result = DivideV4(Left, Right);
@@ -753,84 +767,104 @@ Divide(vec4 Left, vec4 Right)
     return(Result);
 }
 
-vec2 operator+(vec2 Left, vec2 Right)
+HMMDEF vec2
+operator+(vec2 Left, vec2 Right)
 {
     vec2 Result = Add(Left, Right);
 
     return(Result);
 }
 
-vec3 operator+(vec3 Left, vec3 Right)
+HMMDEF vec3
+operator+(vec3 Left, vec3 Right)
 {
     vec3 Result = Add(Left, Right);
 
     return(Result);
 }
 
-vec4 operator+(vec4 Left, vec4 Right)
+HMMDEF vec4
+operator+(vec4 Left, vec4 Right)
 {
     vec4 Result = Add(Left, Right);
 
     return(Result);
 }
 
-vec2 operator-(vec2 Left, vec2 Right)
+HMMDEF vec2
+operator-(vec2 Left, vec2 Right)
 {
     vec2 Result = Subtract(Left, Right);
 
     return(Result);
 }
 
-vec3 operator-(vec3 Left, vec3 Right)
+HMMDEF vec3
+operator-(vec3 Left, vec3 Right)
 {
     vec3 Result = Subtract(Left, Right);
 
     return(Result);
 }
 
-vec4 operator-(vec4 Left, vec4 Right)
+HMMDEF vec4
+operator-(vec4 Left, vec4 Right)
 {
     vec4 Result = Subtract(Left, Right);
 
     return(Result);
 }
 
-vec2 operator*(vec2 Left, vec2 Right)
+HMMDEF vec2
+operator*(vec2 Left, vec2 Right)
 {
     vec2 Result = Multiply(Left, Right);
 
     return(Result);
 }
 
-vec3 operator*(vec3 Left, vec3 Right)
+HMMDEF vec3
+operator*(vec3 Left, vec3 Right)
 {
     vec3 Result = Multiply(Left, Right);
 
     return(Result);
 }
 
-vec4 operator*(vec4 Left, vec4 Right)
+HMMDEF vec4
+operator*(vec4 Left, vec4 Right)
 {
     vec4 Result = Multiply(Left, Right);
 
     return(Result);
 }
 
-vec2 operator/(vec2 Left, vec2 Right)
+HMMDEF mat4
+operator*(mat4 Left, mat4 Right)
+{
+    mat4 Result = Multiply(Left, Right);
+
+    return(Result);
+}
+
+HMMDEF vec2
+operator/(vec2 Left, vec2 Right)
 {
     vec2 Result = Divide(Left, Right);
 
     return(Result);
 }
 
-vec3 operator/(vec3 Left, vec3 Right)
+HMMDEF vec3
+operator/(vec3 Left, vec3 Right)
 {
     vec3 Result = Divide(Left, Right);
 
     return(Result);
 }
 
-vec4 operator/(vec4 Left, vec4 Right)
+HMMDEF vec4
+operator/(vec4 Left, vec4 Right)
 {
     vec4 Result = Divide(Left, Right);
 

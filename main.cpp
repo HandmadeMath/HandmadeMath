@@ -21,8 +21,7 @@ main(int ArgC, char **ArgV)
 
     mat4 ResultMatrix = MultiplyMat4(Matrix1, Matrix2);
 
-
-    
+    mat4 ResultMatrix2 = Matrix1 * Matrix2;
     _getch();
     return(0);
 }
