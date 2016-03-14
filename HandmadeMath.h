@@ -306,6 +306,14 @@ Power(float Base, int Exponent)
     return (Result);
 }
 
+HMMDEF HINLINE float
+Lerp(real32 A, real32 B, float Time)
+{
+    real32 Result = (1.0f - Time) * A + Time * B;
+
+    return(Result);
+}
+
 HMMDEF HINLINE vec2
 V2(float X, float Y)
 {
