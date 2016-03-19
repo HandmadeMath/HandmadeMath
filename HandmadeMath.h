@@ -45,7 +45,6 @@
   Functionality:
    Matt Mascarenhas (@miblo_)
 
-
   Fixes:
    Jeroen van Rijn (@J_vanRijn)
 */
@@ -226,7 +225,7 @@ HMMDEF mat4 Mat4d(float Diagonal);
 HMMDEF mat4 MultiplyMat4(mat4 Left, mat4 Right);
 
 HMMDEF mat4 Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
-HMMDEF mat4 Pespective(float FOV, float AspectRatio, float Near, float Far);
+HMMDEF mat4 Perspective(float FOV, float AspectRatio, float Near, float Far);
 HMMDEF mat4 Translate(vec3 Translation);
 HMMDEF mat4 Rotate(float Angle, vec3 Axis);
 HMMDEF mat4 Scale(vec3 Scale);
@@ -669,7 +668,7 @@ Orthographic(float Left, float Right, float Bottom, float Top, float Near, float
 }
 
 HMMDEF mat4
-Pespective(float FOV, float AspectRatio, float Near, float Far)
+Perspective(float FOV, float AspectRatio, float Near, float Far)
 {
     mat4 Result = Mat4d(1.0f);
 
