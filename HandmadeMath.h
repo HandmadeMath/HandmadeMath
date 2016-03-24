@@ -706,16 +706,22 @@ Orthographic(float Left, float Right, float Bottom, float Top, float Near, float
     return(Result);
 }
 
+#define HMM_PI 3.14159265358979323846
+
 HMMDEF mat4
 Perspective(float FOV, float AspectRatio, float Near, float Far)
 {
-    mat4 Result = Mat4d(1.0f);
+    double Radians = FOV / 2 * HMM_PI / 180;
+    double Sine = sin(Radians);
+    double Cotangent = cos(Radians) / Sine;
 
-    Result.Elements[0][0] = 1.0f / (AspectRatio  * tan(FOV / 2.0f));
-    Result.Elements[1][1] = 1.0f / tan(FOV / 2.0f);
-    Result.Elements[2][3] = -1.0f;
-    Result.Elements[2][2] = -(Far + Near) / (Far - Near);
-    Result.Elements[3][2] = -(2.0f * Far * Near) / (Far - Near);
+    double DeltaZ = Far - Near;        
+
+    mat4 Result = Mat4d(1.0f);
+    Result.Elements[0][0] = (float)Cotangent / AspectRatio;
+    Result.Elements[1][1] = (float)Cotangent;
+    Result.Elements[2][2] = (float)(-(Far + Near) / DeltaZ);
+    Result.Elements[3][3] = 0;
 
     return(Result);
 }
