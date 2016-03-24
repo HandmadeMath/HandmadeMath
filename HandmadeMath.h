@@ -230,7 +230,7 @@ HMMDEF mat4 Mat4d(float Diagonal);
 HMMDEF mat4 MultiplyMat4(mat4 Left, mat4 Right);
 
 HMMDEF mat4 Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
-HMMDEF mat4 Pespective(float FOV, float AspectRatio, float Near, float Far);
+HMMDEF mat4 Perspective(float FOV, float AspectRatio, float Near, float Far);
 HMMDEF mat4 Translate(vec3 Translation);
 HMMDEF mat4 Rotate(float Angle, vec3 Axis);
 HMMDEF mat4 Scale(vec3 Scale);
@@ -707,7 +707,7 @@ Orthographic(float Left, float Right, float Bottom, float Top, float Near, float
 }
 
 HMMDEF mat4
-Pespective(float FOV, float AspectRatio, float Near, float Far)
+Perspective(float FOV, float AspectRatio, float Near, float Far)
 {
     mat4 Result = Mat4d(1.0f);
 
@@ -758,11 +758,11 @@ LookAt(vec3 Eye, vec3 Center, vec3 Up)
     mat4 Result = {};
 
     vec3 F = Normalize(Center - Eye);
-    vec3 S = Cross(F, Normalize(Up));
-    vec3 U = Cross(Normalize(S), F);
+    vec3 S = Normalize(Cross(F, Up));
+    vec3 U = Cross(S, F);
 
     Result.Elements[0][0] = S.X;
-    Result.Elements[0][1] = U.X;m
+    Result.Elements[0][1] = U.X;
     Result.Elements[0][2] = -F.X;
 
     Result.Elements[1][0] = S.Y;
