@@ -7,16 +7,16 @@
   You MUST
 
      #define HANDMADE_MATH_IMPLEMENTATION
-  
+
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:
-     
+
      #define HANDMADE_MATH_IMPLEMENTATION
      #include "HandmadeMade.h"
 
   All other files should just #include "HandmadeMath.h" without the #define.
   ==========================================================================
-  
+
   For overloaded, and operator overloaded versions of the base C functions.
   You MUST
 
@@ -24,14 +24,14 @@
 
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:
-    
+
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
      #include "HandmadeMath.h"
 
   All other files should just #include "HandmadeMath.h" without the #define.
   ==========================================================================
-  
+
   LICENSE
 
   This software is in the public domain. Where that dedication is not
@@ -73,19 +73,19 @@ extern "C" {
 #endif
 
 #define Pi32 3.14159265359f
-    
+
 typedef union vec2
 {
     struct
     {
         float X, Y;
     };
-    
+
     struct
     {
         float U, V;
     };
-    
+
     struct
     {
         float Left, Right;
@@ -100,35 +100,35 @@ typedef union vec3
     {
         float X, Y, Z;
     };
-    
+
     struct
     {
         float U, V, W;
     };
-    
+
     struct
     {
         float R, G, B;
     };
-    
+
     struct
     {
         vec2 XY;
         float Ignored0_;
     };
-    
+
     struct
     {
         float Ignored1_;
         vec2 YZ;
     };
-    
+
     struct
     {
         vec2 UV;
         float Ignored2_;
     };
-    
+
     struct
     {
         float Ignored3_;
@@ -150,7 +150,7 @@ typedef union vec4
                 float X, Y, Z;
             };
         };
-        
+
         float W;        
     };
     struct
@@ -163,31 +163,31 @@ typedef union vec4
                 float R, G, B;
             };
         };
-        
+
         float A;        
     };
-    
+
     struct
     {
         vec2 XY;
         float Ignored0_;
         float Ignored1_;
     };
-    
+
     struct
     {
         float Ignored2_;
         vec2 YZ;
         float Ignored3_;
     };
-    
+
     struct
     {
         float Ignored4_;
         float Ignored5_;
         vec2 ZW;
     };
-    
+
     float Elements[4];
 } vec4;
 
@@ -201,7 +201,7 @@ HMMDEF HINLINE float Clamp(float Min, float Value, float Max);
 HMMDEF HINLINE vec3 Normalize(vec3 A);
 HMMDEF HINLINE vec3 Cross(vec3 VecOne, vec3 VecTwo);
 HMMDEF HINLINE float Dot(vec3 VecOne, vec3 VecTwo);
-    
+
 HMMDEF HINLINE vec2 Vec2i(int X, int Y);
 HMMDEF HINLINE vec2 Vec2(float X, float Y);
 HMMDEF HINLINE vec3 Vec3(float X, float Y, float Z);
@@ -236,7 +236,7 @@ HMMDEF mat4 Rotate(float Angle, vec3 Axis);
 HMMDEF mat4 Scale(vec3 Scale);
 
 HMMDEF mat4 LookAt(vec3 Eye, vec3 Center, vec3 Up);
-    
+
 #ifdef __cplusplus
 }
 #endif
@@ -255,7 +255,7 @@ HMMDEF HINLINE vec2 Multiply(int X, int Y);
 HMMDEF HINLINE vec3 Multiply(int X, int Y, int Z);
 HMMDEF HINLINE vec4 Multiply(int X, int Y, int Z, int W);
 HMMDEF HINLINE mat4 Multiply(mat4 Left, mat4 Right);
-    
+
 HMMDEF HINLINE vec2 Divide(int X, int Y);
 HMMDEF HINLINE vec3 Divide(int X, int Y, int Z);
 HMMDEF HINLINE vec4 Divide(int X, int Y, int Z, int W);    
@@ -423,7 +423,7 @@ Vec2i(int X, int Y)
 
     return(Result);
 }
-    
+
 HMMDEF HINLINE vec3
 Vec3(float X, float Y, float Z)
 {
@@ -444,10 +444,10 @@ Vec3i(int X, int Y, int Z)
     Result.X = (float)X;
     Result.Y = (float)Y;
     Result.Z = (float)Z;
-    
+
     return(Result);
 }
-    
+
 HMMDEF HINLINE vec4
 Vec4(float X, float Y, float Z, float W)
 {
@@ -470,7 +470,7 @@ Vec4i(int X, int Y, int Z, int W)
     Result.Y = (float)Y;
     Result.Z = (float)Z;
     Result.W = (float)W;
-    
+
     return(Result);
 }    
 
@@ -621,7 +621,7 @@ DivideVec4(vec4 Left, vec4 Right)
 HMMDEF mat4 Mat4()
 {
     mat4 Result;
-    
+
     for(int Rows = 0;
         Rows < 4;
         ++Rows)
@@ -641,7 +641,7 @@ HMMDEF mat4
 Mat4d(float Diagonal)
 {
     mat4 Result;
-    
+
     for(int Rows = 0;
         Rows < 4;
         ++Rows)
@@ -666,7 +666,7 @@ HMMDEF mat4
 MultiplyMat4(mat4 Left, mat4 Right)
 {
     mat4 Result = Mat4();
-    
+
     for(int Rows = 0;
         Rows < 4;
         ++Rows)
@@ -686,7 +686,7 @@ MultiplyMat4(mat4 Left, mat4 Right)
             Result.Elements[Rows][Columns] = Sum;
         }
     }
-    
+
     return(Result);
 }
 
@@ -716,7 +716,7 @@ Pespective(float FOV, float AspectRatio, float Near, float Far)
     Result.Elements[2][3] = -1.0f;
     Result.Elements[2][2] = -(Far + Near) / (Far - Near);
     Result.Elements[3][2] = -(2.0f * Far * Near) / (Far - Near);
-    
+
     return(Result);
 }
 
@@ -728,7 +728,7 @@ Translate(vec3 Translation)
     Result.Elements[0][3] = Translation.X;
     Result.Elements[1][3] = Translation.Y;
     Result.Elements[2][3] = Translation.Z;
-    
+
     return(Result);
 }
 
@@ -756,13 +756,13 @@ HMMDEF mat4
 LookAt(vec3 Eye, vec3 Center, vec3 Up)
 {
     mat4 Result = {};
-    
+
     vec3 F = Normalize(Center - Eye);
-    vec3 S = Normalize(Cross(F, Up));
-    vec3 U = Cross(S, F);
-    
+    vec3 S = Cross(F, Normalize(Up));
+    vec3 U = Cross(Normalize(S), F);
+
     Result.Elements[0][0] = S.X;
-    Result.Elements[0][1] = U.X;
+    Result.Elements[0][1] = U.X;m
     Result.Elements[0][2] = -F.X;
 
     Result.Elements[1][0] = S.Y;
@@ -777,7 +777,7 @@ LookAt(vec3 Eye, vec3 Center, vec3 Up)
     Result.Elements[3][1] = -Dot(U, Eye);
     Result.Elements[3][2] = Dot(F, Eye);
     Result.Elements[3][3] = 1.0f;
-    
+
     return(Result);
 }
 
@@ -789,7 +789,7 @@ Scale(vec3 Scale)
     Result.Elements[0][0] = Scale.X;
     Result.Elements[1][1] = Scale.Y;
     Result.Elements[2][2] = Scale.Z;
-    
+
     return(Result);
 }
 
@@ -858,7 +858,7 @@ Multiply(vec3 Left, vec3 Right)
 
     return(Result);
 }
-    
+
 HMMDEF HINLINE vec4
 Multiply(vec4 Left, vec4 Right)
 {
@@ -879,7 +879,7 @@ HMMDEF HINLINE vec2
 Divide(vec2 Left, vec2 Right)
 {
     vec2 Result = DivideVec2(Left, Right);
-    
+
     return(Result);
 }
 
