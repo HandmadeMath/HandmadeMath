@@ -675,10 +675,18 @@ MultiplyMat4(mat4 Left, mat4 Right)
             Columns < 4;
             ++Columns)
         {
-            Result.Elements[Rows][Columns] = Left.Elements[Rows][Columns] * Right.Elements[Rows][Columns];
+            float Sum = 0;
+            for(int CurrentMatrice = 0;
+                CurrentMatrice < 4;
+                ++CurrentMatrice)
+            {
+                Sum += Left.Elements[Rows][CurrentMatrice] * Right.Elements[CurrentMatrice][Columns];
+            }
+
+            Result.Elements[Rows][Columns] = Sum;
         }
     }
-
+    
     return(Result);
 }
 
@@ -703,12 +711,12 @@ Pespective(float FOV, float AspectRatio, float Near, float Far)
 {
     mat4 Result = Mat4d(1.0f);
 
-    Result.Elements[0][0] = 1.0f / tan(ToRadians(0.5f * FOV));
-    Result.Elements[1][1] = (1.0f / tan(ToRadians(0.5f * FOV))) / AspectRatio;
-    Result.Elements[2][2] = (Near + Far) / (Near - Far);
-    Result.Elements[3][2] = -1.0f;
-    Result.Elements[2][3] = (2.0f * Near * Far) / (Near - Far);
-
+    Result.Elements[0][0] = 1.0f / (AspectRatio  * tan(FOV / 2.0f));
+    Result.Elements[1][1] = 1.0f / tan(FOV / 2.0f);
+    Result.Elements[2][3] = -1.0f;
+    Result.Elements[2][2] = -(Far + Near) / (Far - Near);
+    Result.Elements[3][2] = -(2.0f * Far * Near) / (Far - Near);
+    
     return(Result);
 }
 
@@ -749,16 +757,10 @@ LookAt(vec3 Eye, vec3 Center, vec3 Up)
 {
     mat4 Result = {};
     
-    // returns vec3 Normalize(Center - Eye);
-    // returns vec3 Cross(Center - Eye, Up);
-    // Normalize Cross Product
-    // Cross(CrossResult, NormalizeResult)
-
     vec3 F = Normalize(Center - Eye);
-    vec3 S = Cross(F, Up);
-    vec3 U = Cross(F, S);
+    vec3 S = Normalize(Cross(F, Up));
+    vec3 U = Cross(S, F);
     
-
     Result.Elements[0][0] = S.X;
     Result.Elements[0][1] = U.X;
     Result.Elements[0][2] = -F.X;
@@ -769,13 +771,12 @@ LookAt(vec3 Eye, vec3 Center, vec3 Up)
 
     Result.Elements[2][0] = S.Z;
     Result.Elements[2][1] = U.Z;
-    Result.Elements[2][2] = -F.Y;
+    Result.Elements[2][2] = -F.Z;
 
     Result.Elements[3][0] = -Dot(S, Eye);
     Result.Elements[3][1] = -Dot(U, Eye);
     Result.Elements[3][2] = Dot(F, Eye);
     Result.Elements[3][3] = 1.0f;
-
     
     return(Result);
 }
