@@ -721,6 +721,8 @@ Perspective(float FOV, float AspectRatio, float Near, float Far)
     Result.Elements[0][0] = (float)Cotangent / AspectRatio;
     Result.Elements[1][1] = (float)Cotangent;
     Result.Elements[2][2] = (float)(-(Far + Near) / DeltaZ);
+    Result.Elements[2][3] = (float)-1;
+    Result.Elements[3][2] = (float)(-2 * Near * Far / DeltaZ);
     Result.Elements[3][3] = 0;
 
     return(Result);
