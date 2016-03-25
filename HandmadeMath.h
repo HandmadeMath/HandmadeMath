@@ -12,7 +12,7 @@
   include, like this:
 
      #define HANDMADE_MATH_IMPLEMENTATION
-     #include "HandmadeMade.h"
+     #include "HandmadeMath.h"
 
   All other files should just #include "HandmadeMath.h" without the #define.
   ==========================================================================
@@ -40,14 +40,15 @@
 
   CREDITS
 
-  Written by Zakary Strange (zak@strangedev.net)
+  Written by Zakary Strange (zak@strangedev.net && @strangezak)
 
   Functionality:
    Matt Mascarenhas (@miblo_)
 
-
   Fixes:
    Jeroen van Rijn (@J_vanRijn)
+   Kiljacken (@Kiljacken)
+   Insofaras (@insofaras)
 */
 
 #ifndef HANDMADE_MATH_H
