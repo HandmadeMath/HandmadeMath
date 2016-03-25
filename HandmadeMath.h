@@ -73,6 +73,7 @@ extern "C" {
 #endif
 
 #define Pi32 3.14159265359f
+#define HMM_PI 3.14159265358979323846
 
 typedef union vec2
 {
@@ -680,10 +681,10 @@ MultiplyMat4(mat4 Left, mat4 Right)
                 CurrentMatrice < 4;
                 ++CurrentMatrice)
             {
-                Sum += Left.Elements[Rows][CurrentMatrice] * Right.Elements[CurrentMatrice][Columns];
+                Sum += Right.Elements[Rows][CurrentMatrice] * Left.Elements[CurrentMatrice][Columns];
             }
 
-            Result.Elements[Rows][Columns] = Sum;
+            Result.Elements[Columns][Rows] = Sum;
         }
     }
 
@@ -706,8 +707,6 @@ Orthographic(float Left, float Right, float Bottom, float Top, float Near, float
     return(Result);
 }
 
-#define HMM_PI 3.14159265358979323846
-
 HMMDEF mat4
 Perspective(float FOV, float AspectRatio, float Near, float Far)
 {
@@ -718,7 +717,7 @@ Perspective(float FOV, float AspectRatio, float Near, float Far)
     Result.Elements[2][3] = -1.0f;
     Result.Elements[2][2] = -(Far + Near) / (Far - Near);
     Result.Elements[3][2] = -(2.0f * Far * Near) / (Far - Near);
-    Result.Elements[3][3] = 0;
+    Result.Elements[3][3] = 0.0f;
 
     return(Result);
 }
