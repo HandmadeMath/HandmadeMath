@@ -685,7 +685,7 @@ MultiplyMat4(mat4 Left, mat4 Right)
                 Sum += Right.Elements[Rows][CurrentMatrice] * Left.Elements[CurrentMatrice][Columns];
             }
 
-            Result.Elements[Columns][Rows] = Sum;
+            Result.Elements[Rows][Columns] = Sum;
         }
     }
 
@@ -728,9 +728,9 @@ Translate(vec3 Translation)
 {
     mat4 Result = Mat4d(1.0f);
 
-    Result.Elements[0][3] = Translation.X;
-    Result.Elements[1][3] = Translation.Y;
-    Result.Elements[2][3] = Translation.Z;
+    Result.Elements[3][0] = Translation.X;
+    Result.Elements[3][1] = Translation.Y;
+    Result.Elements[3][2] = Translation.Z;
 
     return(Result);
 }
@@ -740,17 +740,17 @@ Rotate(float Angle, vec3 Axis)
 {
     mat4 Result = Mat4d(1.0f);
 
-    Result.Elements[0][0] = Axis.Z * (1.0f - cos(ToRadians(Angle))) + cos(ToRadians(Angle));
-    Result.Elements[1][0] = Axis.Y * Axis.X * (1.0f - cos(ToRadians(Angle))) + Axis.Z * (sin(ToRadians(Angle)));
-    Result.Elements[2][0] = Axis.X * Axis.Z * (1.0f - cos(ToRadians(Angle))) - Axis.Y * (sin(ToRadians(Angle)));
+    Result.Elements[0][0] = Axis.X * Axis.X * (1.0f - cos(ToRadians(Angle))) + cos(ToRadians(Angle));
+    Result.Elements[0][1] = Axis.Y * Axis.X * (1.0f - cos(ToRadians(Angle))) + Axis.Z * (sin(ToRadians(Angle)));
+    Result.Elements[0][2] = Axis.X * Axis.Z * (1.0f - cos(ToRadians(Angle))) - Axis.Y * (sin(ToRadians(Angle)));
 
-    Result.Elements[0][1] = Axis.X * Axis.Y * (1.0f - cos(ToRadians(Angle))) - Axis.Z * (sin(ToRadians(Angle)));
-    Result.Elements[1][1] = Axis.Y * (1.0f - cos(ToRadians(Angle))) + (cos(ToRadians(Angle)));
-    Result.Elements[2][1] = Axis.Y * Axis.Z * (1.0f - cos(ToRadians(Angle))) + Axis.X * (sin(ToRadians(Angle)));
+    Result.Elements[1][0] = Axis.X * Axis.Y * (1.0f - cos(ToRadians(Angle))) - Axis.Z * (sin(ToRadians(Angle)));
+    Result.Elements[1][1] = Axis.Y * Axis.Y * (1.0f - cos(ToRadians(Angle))) + (cos(ToRadians(Angle)));
+    Result.Elements[1][2] = Axis.Y * Axis.Z * (1.0f - cos(ToRadians(Angle))) + Axis.X * (sin(ToRadians(Angle)));
 
-    Result.Elements[0][2] = Axis.X * Axis.Z * (1.0f - cos(ToRadians(Angle))) + Axis.Y * (sin(ToRadians(Angle)));
-    Result.Elements[1][2] = Axis.Y * Axis.Z * (1.0f - cos(ToRadians(Angle))) - Axis.X * (sin(ToRadians(Angle)));
-    Result.Elements[2][2] = Axis.Z * (1.0f - cos(ToRadians(Angle))) * (cos(ToRadians(Angle)));
+    Result.Elements[2][0] = Axis.X * Axis.Z * (1.0f - cos(ToRadians(Angle))) + Axis.Y * (sin(ToRadians(Angle)));
+    Result.Elements[2][1] = Axis.Y * Axis.Z * (1.0f - cos(ToRadians(Angle))) - Axis.X * (sin(ToRadians(Angle)));
+    Result.Elements[2][2] = Axis.Z * Axis.Z * (1.0f - cos(ToRadians(Angle))) * (cos(ToRadians(Angle)));
 
     return(Result);
 }
