@@ -701,9 +701,9 @@ Orthographic(float Left, float Right, float Bottom, float Top, float Near, float
     Result.Elements[1][1] = 2.0f / (Top - Bottom);
     Result.Elements[2][2] = 2.0f / (Near - Far);
 
-    Result.Elements[0][3] = (Left + Right) / (Left - Right);
-    Result.Elements[1][3] = (Bottom + Top) / (Bottom - Top);
-    Result.Elements[2][3] = (Far + Near) / (Far - Near);
+    Result.Elements[3][0] = (Left + Right) / (Left - Right);
+    Result.Elements[3][1] = (Bottom + Top) / (Bottom - Top);
+    Result.Elements[3][2] = (Far + Near) / (Near - Far);
 
     return(Result);
 }
