@@ -205,78 +205,46 @@ typedef union mat4
     float Elements[4][4];
 } mat4;
 
-HMMDEF float
-Power(float Base, int Exponent);
-HMMDEF float
-Clamp(float Min, float Value, float Max);
-HMMDEF vec3
-Normalize(vec3 A);
-HMMDEF vec3
-Cross(vec3 VecOne, vec3 VecTwo);
-HMMDEF float
-Dot(vec3 VecOne, vec3 VecTwo);
+HMMDEF float Power(float Base, int Exponent);
+HMMDEF float Clamp(float Min, float Value, float Max);
+HMMDEF vec3 Normalize(vec3 A);
+HMMDEF vec3 Cross(vec3 VecOne, vec3 VecTwo);
+HMMDEF float Dot(vec3 VecOne, vec3 VecTwo);
 
-HMMDEF vec2
-Vec2i(int X, int Y);
-HMMDEF vec2
-Vec2(float X, float Y);
-HMMDEF vec3
-Vec3(float X, float Y, float Z);
-HMMDEF vec3
-Vec3i(int X, int Y, int Z);
-HMMDEF vec4
-Vec4(float X, float Y, float Z, float W);
-HMMDEF vec4
-Vec4i(int X, int Y, int Z, int W);
+HMMDEF vec2 Vec2i(int X, int Y);
+HMMDEF vec2 Vec2(float X, float Y);
+HMMDEF vec3 Vec3(float X, float Y, float Z);
+HMMDEF vec3 Vec3i(int X, int Y, int Z);
+HMMDEF vec4 Vec4(float X, float Y, float Z, float W);
+HMMDEF vec4 Vec4i(int X, int Y, int Z, int W);
 
-HMMDEF vec2
-AddVec2(vec2 Left, vec2 Right);
-HMMDEF vec3
-AddVec3(vec3 Left, vec3 Right);
-HMMDEF vec4
-AddVec4(vec4 Left, vec4 Right);
+HMMDEF vec2 AddVec2(vec2 Left, vec2 Right);
+HMMDEF vec3 AddVec3(vec3 Left, vec3 Right);
+HMMDEF vec4 AddVec4(vec4 Left, vec4 Right);
 
-HMMDEF vec2
-SubtractVec2(vec2 Left, vec2 Right);
-HMMDEF vec3
-SubtractVec3(vec3 Left, vec3 Right);
-HMMDEF vec4
-SubtractVec4(vec4 Left, vec4 Right);
+HMMDEF vec2 SubtractVec2(vec2 Left, vec2 Right);
+HMMDEF vec3 SubtractVec3(vec3 Left, vec3 Right);
+HMMDEF vec4 SubtractVec4(vec4 Left, vec4 Right);
 
-HMMDEF vec2
-MultiplyVec2(vec2 Left, vec2 Right);
-HMMDEF vec3
-MultiplyVec3(vec3 Left, vec3 Right);
-HMMDEF vec4
-MultiplyVec4(vec4 Left, vec4 Right);
+HMMDEF vec2 MultiplyVec2(vec2 Left, vec2 Right);
+HMMDEF vec3 MultiplyVec3(vec3 Left, vec3 Right);
+HMMDEF vec4 MultiplyVec4(vec4 Left, vec4 Right);
 
-HMMDEF vec2
-DivideVec2(vec2 Left, vec2 Right);
-HMMDEF vec3
-DivideVec3(vec3 Left, vec3 Right);
-HMMDEF vec4
-DivideVec4(vec4 Left, vec4 Right);
+HMMDEF vec2 DivideVec2(vec2 Left, vec2 Right);
+HMMDEF vec3 DivideVec3(vec3 Left, vec3 Right);
+HMMDEF vec4 DivideVec4(vec4 Left, vec4 Right);
 
-HMMDEF mat4
-Mat4(void);
-HMMDEF mat4
-Mat4d(float Diagonal);
-HMMDEF mat4
-MultiplyMat4(mat4 Left, mat4 Right);
+HMMDEF mat4 Mat4(void);
+HMMDEF mat4 Mat4d(float Diagonal);
+HMMDEF mat4 MultiplyMat4(mat4 Left, mat4 Right);
 
-HMMDEF mat4
-Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
-HMMDEF mat4
-Perspective(float FOV, float AspectRatio, float Near, float Far);
-HMMDEF mat4
-Translate(vec3 Translation);
-HMMDEF mat4
-Rotate(float Angle, vec3 Axis);
-HMMDEF mat4
-Scale(vec3 Scale);
+HMMDEF mat4 Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
+HMMDEF mat4 Perspective(float FOV, float AspectRatio, float Near, float Far);
+HMMDEF mat4 Translate(vec3 Translation);
+HMMDEF mat4 Rotate(float Angle, vec3 Axis);
+HMMDEF mat4 Scale(vec3 Scale);
 
-HMMDEF mat4
-LookAt(vec3 Eye, vec3 Center, vec3 Up);
+HMMDEF mat4 LookAt(vec3 Eye, vec3 Center, vec3 Up);
 
 #ifdef __cplusplus
 }
@@ -284,49 +252,30 @@ LookAt(vec3 Eye, vec3 Center, vec3 Up);
 
 #ifdef HANDMADE_MATH_CPP_MODE
 
-HMMDEF vec2
-Add(int X, int Y);
-HMMDEF vec3
-Add(int X, int Y, int Z);
-HMMDEF vec4
-Add(int X, int Y, int Z, int W);
+HMMDEF vec2 Add(int X, int Y);
+HMMDEF vec3 Add(int X, int Y, int Z);
+HMMDEF vec4 Add(int X, int Y, int Z, int W);
 
-HMMDEF vec2
-Subtract(int X, int Y);
-HMMDEF vec3
-Subtract(int X, int Y, int Z);
-HMMDEF vec4
-Subtract(int X, int Y, int Z, int W);
+HMMDEF vec2 Subtract(int X, int Y);
+HMMDEF vec3 Subtract(int X, int Y, int Z);
+HMMDEF vec4 Subtract(int X, int Y, int Z, int W);
 
-HMMDEF vec2
-Multiply(int X, int Y);
-HMMDEF vec3
-Multiply(int X, int Y, int Z);
-HMMDEF vec4
-Multiply(int X, int Y, int Z, int W);
-HMMDEF mat4
-Multiply(mat4 Left, mat4 Right);
+HMMDEF vec2 Multiply(int X, int Y);
+HMMDEF vec3 Multiply(int X, int Y, int Z);
+HMMDEF vec4 Multiply(int X, int Y, int Z, int W);
+HMMDEF mat4 Multiply(mat4 Left, mat4 Right);
 
-HMMDEF vec2
-Divide(int X, int Y);
-HMMDEF vec3
-Divide(int X, int Y, int Z);
-HMMDEF vec4
-Divide(int X, int Y, int Z, int W);
+HMMDEF vec2 Divide(int X, int Y);
+HMMDEF vec3 Divide(int X, int Y, int Z);
+HMMDEF vec4 Divide(int X, int Y, int Z, int W);
 
-HMMDEF vec2
-operator+(vec2 Left, vec2 Right);
-HMMDEF vec3
-operator+(vec3 Left, vec3 Right);
-HMMDEF vec4
-operator+(vec4 Left, vec4 Right);
+HMMDEF vec2 operator+(vec2 Left, vec2 Right);
+HMMDEF vec3 operator+(vec3 Left, vec3 Right);
+HMMDEF vec4 operator+(vec4 Left, vec4 Right);
 
-HMMDEF vec2
-operator-(vec2 Left, vec2 Right);
-HMMDEF vec3
-operator-(vec3 Left, vec3 Right);
-HMMDEF vec4
-operator-(vec4 Left, vec4 Right);
+HMMDEF vec2 operator-(vec2 Left, vec2 Right);
+HMMDEF vec3 operator-(vec3 Left, vec3 Right);
+HMMDEF vec4 operator-(vec4 Left, vec4 Right);
 
 HMMDEF vec2 operator*(vec2 Left, vec2 Right);
 HMMDEF vec3 operator*(vec3 Left, vec3 Right);
@@ -335,12 +284,9 @@ HMMDEF mat4 operator*(mat4 Left, mat4 Right);
 HMMDEF vec3 operator*(vec3 Left, float Right);
 HMMDEF vec2 operator*(vec2 Left, float Right);
 
-HMMDEF vec2
-operator/(vec2 Left, vec2 Right);
-HMMDEF vec3
-operator/(vec3 Left, vec3 Right);
-HMMDEF vec4
-operator/(vec4 Left, vec4 Right);
+HMMDEF vec2 operator/(vec2 Left, vec2 Right);
+HMMDEF vec3 operator/(vec3 Left, vec3 Right);
+HMMDEF vec4 operator/(vec4 Left, vec4 Right);
 
 #endif /* HANDMADE_MATH_CPP */
 
