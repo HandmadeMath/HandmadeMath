@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v0.2
+  HandmadeMath.h v0.2a
 
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -37,6 +37,8 @@
           (*) Better C compliance
           (*) Prefix all handmade math functions 
           (*) Better operator overloading
+      0.2a
+          (*) Prefixed Macros
 
   LICENSE
 
@@ -65,7 +67,8 @@
 #include <math.h> // TODO(zak): Remove this later on
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #ifdef HANDMADEMATH_STATIC
@@ -80,14 +83,14 @@ extern "C" {
 #define HINLINE inline
 #endif
 
-#define Pi32 3.14159265359f
+#define HMM_PI32 3.14159265359f
 #define HMM_PI 3.14159265358979323846
 
-#define MIN(a, b) (a) > (b) ? (b) : (a)
-#define MAX(a, b) (a) < (b) ? (b) : (a)
-#define ABS(a) (a) < 0 ? -(a) : (a)
-#define MOD(a, m) ((a) % (m)) >= 0 ? ((a) % (m)) : (((a) % (m)) + (m))
-#define Square(x) ((x) * (x))
+#define HMM_MIN(a, b) (a) > (b) ? (b) : (a)
+#define HMM_MAX(a, b) (a) < (b) ? (b) : (a)
+#define HMN_ABS(a) (a) < 0 ? -(a) : (a)
+#define HMM_MOD(a, m) ((a) % (m)) >= 0 ? ((a) % (m)) : (((a) % (m)) + (m))
+#define HMM_SQUARE(x) ((x) * (x))
 
 typedef union hmm_vec2
 {
