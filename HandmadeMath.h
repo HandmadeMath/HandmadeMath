@@ -917,6 +917,14 @@ Multiply(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
+HINLINE hmm_vec4
+Multiply(hmm_mat4 Matrix, hmm_vec4 Vector)
+{
+    hmm_vec4 Result = HMM_MultiplyMat4ByVec4(Matrix, Vector);
+    
+    return (Result);
+}
+
 HINLINE hmm_vec2
 Divide(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -1033,6 +1041,14 @@ operator*(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = Multiply(Left, Right);
 
+    return (Result);
+}
+
+HINLINE hmm_vec4
+operator*(hmm_mat4 Matrix, hmm_vec4 Vector)
+{
+    hmm_vec4 Result = Multiply(Matrix, Vector);
+    
     return (Result);
 }
 
