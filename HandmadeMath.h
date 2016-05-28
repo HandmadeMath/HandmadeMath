@@ -257,6 +257,7 @@ HMMDEF hmm_vec4 HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 HMM_Mat4(void);
 HMMDEF hmm_mat4 HMM_Mat4d(float Diagonal);
 HMMDEF hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector);
 
 HMMDEF hmm_mat4 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
 HMMDEF hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far);
@@ -705,6 +706,26 @@ HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
         }
     }
 
+    return (Result);
+}
+
+hmm_vec4
+HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
+{
+    hmm_vec4 Result = HMM_Vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    
+    int Rows, Columns;
+    for(Rows = 0; Rows < 4; ++Rows)
+    {
+        float Sum = 0;
+        for(Columns = 0; Columns < 4; ++Columns)
+        {
+            Sum += Matrix.Elements[Rows][Columns] * Vector.Elements[Columns];
+        }
+        
+        Result.Elements[Rows] = Sum;
+    }
+    
     return (Result);
 }
 
