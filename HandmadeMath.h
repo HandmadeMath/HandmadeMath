@@ -285,6 +285,7 @@ HMMDEF hmm_vec2 HMM_Multiply(int X, int Y);
 HMMDEF hmm_vec3 HMM_Multiply(int X, int Y, int Z);
 HMMDEF hmm_vec4 HMM_Multiply(int X, int Y, int Z, int W);
 HMMDEF hmm_mat4 HMM_Multiply(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_vec4 HMM_Multiply(hmm_mat4 Matrix, hmm_vec4 Vector);
 
 HMMDEF hmm_vec2 HMM_Divide(int X, int Y);
 HMMDEF hmm_vec3 HMM_Divide(int X, int Y, int Z);
@@ -305,6 +306,8 @@ HMMDEF hmm_mat4 operator*(hmm_mat4 Left, hmm_mat4 Right);
 
 HMMDEF hmm_vec3 operator*(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec2 operator*(hmm_vec2 Left, float Right);
+
+HMMDEF hmm_vec4 operator*(hmm_mat4 Matrix, hmm_vec4 Vector);
 
 HMMDEF hmm_vec2 operator/(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator/(hmm_vec3 Left, hmm_vec3 Right);
@@ -1044,19 +1047,19 @@ operator*(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
-HINLINE hmm_vec4
-operator*(hmm_mat4 Matrix, hmm_vec4 Vector)
-{
-    hmm_vec4 Result = Multiply(Matrix, Vector);
-    
-    return (Result);
-}
-
 HINLINE hmm_mat4
 operator*(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = Multiply(Left, Right);
 
+    return (Result);
+}
+
+HINLINE hmm_vec4
+operator*(hmm_mat4 Matrix, hmm_vec4 Vector)
+{
+    hmm_vec4 Result = Multiply(Matrix, Vector);
+    
     return (Result);
 }
 
