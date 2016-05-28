@@ -355,19 +355,19 @@ HMM_LengthSquareRoot(hmm_vec3 A)
 HINLINE float
 HMM_FastInverseSquareRoot(float Number)
 {
-	long i;
-	float x2, y;
-	const float threehalfs = 1.5f;
+    long i;
+    float x2, y;
+    const float threehalfs = 1.5f;
 
-	x2 = Number * 0.5f;
-	y  = Number;
-	i  = * ( long * ) &y;          // evil floating point bit level hacking
-	i  = 0x5f3759df - ( i >> 1 );  // what the fuck? 
-	y  = * ( float * ) &i;
+    x2 = Number * 0.5f;
+    y  = Number;
+    i  = * ( long * ) &y;          // evil floating point bit level hacking
+    i  = 0x5f3759df - ( i >> 1 );  // what the fuck? 
+    y  = * ( float * ) &i;
     
     y  = y * ( threehalfs - ( x2 * y * y ) );
 
-	return ( y );
+    return ( y );
 }
 
 HINLINE float
