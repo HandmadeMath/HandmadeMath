@@ -223,6 +223,7 @@ HMMDEF float HMM_ToRadians(float Degrees);
 HMMDEF float HMM_Inner(hmm_vec3 A, hmm_vec3 B);
 HMMDEF float HMM_SquareRoot(float Float);
 HMMDEF float HMM_LengthSquareRoot(hmm_vec3 A);
+HMMDEF float HMM_FastInverseSquareRoot(float Number);
 HMMDEF float HMM_Length(hmm_vec3 A);    
 HMMDEF float HMM_Power(float Base, int Exponent);
 HMMDEF float HMM_Clamp(float Min, float Value, float Max);
@@ -344,6 +345,14 @@ HMM_SquareRoot(float Float)
 }
 
 HINLINE float
+HMM_LengthSquareRoot(hmm_vec3 A)
+{
+    float Result = HMM_Inner(A, A);
+
+    return (Result);
+}
+
+HINLINE float
 HMM_FastInverseSquareRoot(float Number)
 {
 	long i;
@@ -359,14 +368,6 @@ HMM_FastInverseSquareRoot(float Number)
     y  = y * ( threehalfs - ( x2 * y * y ) );
 
 	return ( y );
-}
-
-HINLINE float
-HMM_LengthSquareRoot(hmm_vec3 A)
-{
-    float Result = HMM_Inner(A, A);
-
-    return (Result);
 }
 
 HINLINE float
