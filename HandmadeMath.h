@@ -323,7 +323,7 @@ HMMDEF hmm_vec4 operator/(hmm_vec4 Left, hmm_vec4 Right);
 HINLINE float
 HMM_ToRadians(float Degrees)
 {
-    float Result = Degrees * (Pi32 / 180.0f);
+    float Result = Degrees * (HMM_PI32 / 180.0f);
 
     return (Result);
 }
