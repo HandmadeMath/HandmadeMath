@@ -1,64 +1,64 @@
 /*
-HandmadeMath.h v0.2a
+  HandmadeMath.h v0.2a
 
-This is a single header file with a bunch of useful functions for
-basic game math operations.
-==========================================================================
-You MUST
+  This is a single header file with a bunch of useful functions for
+  basic game math operations.
+  ==========================================================================
+  You MUST
 
-#define HANDMADE_MATH_IMPLEMENTATION
+     #define HANDMADE_MATH_IMPLEMENTATION
 
-in EXACTLY one C or C++ file that includes this header, BEFORE the
-include, like this:
+  in EXACTLY one C or C++ file that includes this header, BEFORE the
+  include, like this:
 
-#define HANDMADE_MATH_IMPLEMENTATION
-#include "HandmadeMath.h"
+     #define HANDMADE_MATH_IMPLEMENTATION
+     #include "HandmadeMath.h"
 
-All other files should just #include "HandmadeMath.h" without the #define.
-==========================================================================
+  All other files should just #include "HandmadeMath.h" without the #define.
+  ==========================================================================
 
-For overloaded, and operator overloaded versions of the base C functions.
-You MUST
+  For overloaded, and operator overloaded versions of the base C functions.
+  You MUST
 
-#define HANDMADE_MATH_CPP_MODE
+  #define HANDMADE_MATH_CPP_MODE
 
-in EXACTLY one C or C++ file that includes this header, BEFORE the
-include, like this:
+  in EXACTLY one C or C++ file that includes this header, BEFORE the
+  include, like this:
 
-#define HANDMADE_MATH_IMPLEMENTATION
-#define HANDMADE_MATH_CPP_MODE
-#include "HandmadeMath.h"
+     #define HANDMADE_MATH_IMPLEMENTATION
+     #define HANDMADE_MATH_CPP_MODE
+     #include "HandmadeMath.h"
 
-All other files should just #include "HandmadeMath.h" without the #define.
-==========================================================================
+  All other files should just #include "HandmadeMath.h" without the #define.
+  ==========================================================================
 
-Version History:
-0.2 (*) Updated documentation
-(*) Better C compliance
-(*) Prefix all handmade math functions 
-(*) Better operator overloading
-0.2a
-(*) Prefixed Macros
+  Version History:
+      0.2 (*) Updated documentation
+          (*) Better C compliance
+          (*) Prefix all handmade math functions 
+          (*) Better operator overloading
+      0.2a
+          (*) Prefixed Macros
 
-LICENSE
+  LICENSE
 
-This software is in the public domain. Where that dedication is not
-recognized, you are granted a perpetual, irrevocable license to copy,
-distribute, and modify this file as you see fit.
+  This software is in the public domain. Where that dedication is not
+  recognized, you are granted a perpetual, irrevocable license to copy,
+  distribute, and modify this file as you see fit.
 
-CREDITS
+  CREDITS
 
-Written by Zakary Strange (zak@handmade.network && @strangezak)
+  Written by Zakary Strange (zak@handmade.network && @strangezak)
 
-Functionality:
-Matt Mascarenhas (@miblo_)
-Aleph
-FieryDrake (@fierydrake)
+  Functionality:
+   Matt Mascarenhas (@miblo_)
+   Aleph
+   FieryDrake (@fierydrake)
 
-Fixes:
-Jeroen van Rijn (@J_vanRijn)
-Kiljacken (@Kiljacken)
-Insofaras (@insofaras)
+  Fixes:
+   Jeroen van Rijn (@J_vanRijn)
+   Kiljacken (@Kiljacken)
+   Insofaras (@insofaras)
 */
 
 #ifndef HANDMADE_MATH_H
@@ -70,204 +70,204 @@ Insofaras (@insofaras)
 extern "C"
 {
 #endif
-    
+
 #ifdef HANDMADEMATH_STATIC
 #define HMMDEF static
 #else
 #define HMMDEF extern
 #endif
-    
+
 #if _MSC_VER && !__INTEL_COMPILER
 #define HINLINE __inline
 #else
 #define HINLINE inline
 #endif
-    
+
 #define HMM_PI32 3.14159265359f
 #define HMM_PI 3.14159265358979323846
-    
+
 #define HMM_MIN(a, b) (a) > (b) ? (b) : (a)
 #define HMM_MAX(a, b) (a) < (b) ? (b) : (a)
 #define HMN_ABS(a) (a) < 0 ? -(a) : (a)
 #define HMM_MOD(a, m) ((a) % (m)) >= 0 ? ((a) % (m)) : (((a) % (m)) + (m))
 #define HMM_SQUARE(x) ((x) * (x))
-    
-    typedef union hmm_vec2
+
+typedef union hmm_vec2
+{
+    struct
     {
-        struct
-        {
-            float X, Y;
-        };
-        
-        struct
-        {
-            float U, V;
-        };
-        
-        struct
-        {
-            float Left, Right;
-        };
-        
-        float Elements[2];
-    } hmm_vec2;
-    
-    typedef union hmm_vec3
+        float X, Y;
+    };
+
+    struct
     {
-        struct
-        {
-            float X, Y, Z;
-        };
-        
-        struct
-        {
-            float U, V, W;
-        };
-        
-        struct
-        {
-            float R, G, B;
-        };
-        
-        struct
-        {
-            hmm_vec2 XY;
-            float Ignored0_;
-        };
-        
-        struct
-        {
-            float Ignored1_;
-            hmm_vec2 YZ;
-        };
-        
-        struct
-        {
-            hmm_vec2 UV;
-            float Ignored2_;
-        };
-        
-        struct
-        {
-            float Ignored3_;
-            hmm_vec2 VW;
-        };
-        
-        float Elements[3];
-    } hmm_vec3;
-    
-    typedef union hmm_vec4
+        float U, V;
+    };
+
+    struct
     {
-        struct
+        float Left, Right;
+    };
+
+    float Elements[2];
+} hmm_vec2;
+
+typedef union hmm_vec3
+{
+    struct
+    {
+        float X, Y, Z;
+    };
+
+    struct
+    {
+        float U, V, W;
+    };
+
+    struct
+    {
+        float R, G, B;
+    };
+
+    struct
+    {
+        hmm_vec2 XY;
+        float Ignored0_;
+    };
+
+    struct
+    {
+        float Ignored1_;
+        hmm_vec2 YZ;
+    };
+
+    struct
+    {
+        hmm_vec2 UV;
+        float Ignored2_;
+    };
+
+    struct
+    {
+        float Ignored3_;
+        hmm_vec2 VW;
+    };
+
+    float Elements[3];
+} hmm_vec3;
+
+typedef union hmm_vec4
+{
+    struct
+    {
+        union
         {
-            union
+            hmm_vec3 XYZ;
+            struct
             {
-                hmm_vec3 XYZ;
-                struct
-                {
-                    float X, Y, Z;
-                };
+                float X, Y, Z;
             };
-            
-            float W;
         };
-        struct
-        {
-            union
-            {
-                hmm_vec3 RGB;
-                struct
-                {
-                    float R, G, B;
-                };
-            };
-            
-            float A;
-        };
-        
-        struct
-        {
-            hmm_vec2 XY;
-            float Ignored0_;
-            float Ignored1_;
-        };
-        
-        struct
-        {
-            float Ignored2_;
-            hmm_vec2 YZ;
-            float Ignored3_;
-        };
-        
-        struct
-        {
-            float Ignored4_;
-            float Ignored5_;
-            hmm_vec2 ZW;
-        };
-        
-        float Elements[4];
-    } hmm_vec4;
-    
-    typedef union hmm_mat4
+
+        float W;
+    };
+    struct
     {
-        float Elements[4][4];
-    } hmm_mat4;
-    
-    typedef hmm_vec2 hmm_v2;
-    typedef hmm_vec3 hmm_v3;
-    typedef hmm_vec4 hmm_v4;
-    typedef hmm_mat4 hmm_m4;    
-    
-    HMMDEF float HMM_ToRadians(float Degrees);
-    HMMDEF float HMM_Inner(hmm_vec3 A, hmm_vec3 B);
-    HMMDEF float HMM_SquareRoot(float Float);
-    HMMDEF float HMM_LengthSquareRoot(hmm_vec3 A);
-    HMMDEF float HMM_FastInverseSquareRoot(float Number);
-    HMMDEF float HMM_Length(hmm_vec3 A);    
-    HMMDEF float HMM_Power(float Base, int Exponent);
-    HMMDEF float HMM_Clamp(float Min, float Value, float Max);
-    
-    HMMDEF hmm_vec3 HMM_Normalize(hmm_vec3 A);
-    HMMDEF hmm_vec3 HMM_Cross(hmm_vec3 VecOne, hmm_vec3 VecTwo);
-    HMMDEF float HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo);
-    
-    HMMDEF hmm_vec2 HMM_Vec2i(int X, int Y);
-    HMMDEF hmm_vec2 HMM_Vec2(float X, float Y);
-    HMMDEF hmm_vec3 HMM_Vec3(float X, float Y, float Z);
-    HMMDEF hmm_vec3 HMM_Vec3i(int X, int Y, int Z);
-    HMMDEF hmm_vec4 HMM_Vec4(float X, float Y, float Z, float W);
-    HMMDEF hmm_vec4 HMM_Vec4i(int X, int Y, int Z, int W);
-    
-    HMMDEF hmm_vec2 HMM_AddVec2(hmm_vec2 Left, hmm_vec2 Right);
-    HMMDEF hmm_vec3 HMM_AddVec3(hmm_vec3 Left, hmm_vec3 Right);
-    HMMDEF hmm_vec4 HMM_AddVec4(hmm_vec4 Left, hmm_vec4 Right);
-    
-    HMMDEF hmm_vec2 HMM_SubtractVec2(hmm_vec2 Left, hmm_vec2 Right);
-    HMMDEF hmm_vec3 HMM_SubtractVec3(hmm_vec3 Left, hmm_vec3 Right);
-    HMMDEF hmm_vec4 HMM_SubtractVec4(hmm_vec4 Left, hmm_vec4 Right);
-    
-    HMMDEF hmm_vec2 HMM_MultiplyVec2(hmm_vec2 Left, hmm_vec2 Right);
-    HMMDEF hmm_vec3 HMM_MultiplyVec3(hmm_vec3 Left, hmm_vec3 Right);
-    HMMDEF hmm_vec4 HMM_MultiplyVec4(hmm_vec4 Left, hmm_vec4 Right);
-    
-    HMMDEF hmm_vec2 HMM_DivideVec2(hmm_vec2 Left, hmm_vec2 Right);
-    HMMDEF hmm_vec3 HMM_DivideVec3(hmm_vec3 Left, hmm_vec3 Right);
-    HMMDEF hmm_vec4 HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right);
-    
-    HMMDEF hmm_mat4 HMM_Mat4(void);
-    HMMDEF hmm_mat4 HMM_Mat4d(float Diagonal);
-    HMMDEF hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right);
-    HMMDEF hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector);
-    
-    HMMDEF hmm_mat4 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
-    HMMDEF hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far);
-    HMMDEF hmm_mat4 HMM_Translate(hmm_vec3 Translation);
-    HMMDEF hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis);
-    HMMDEF hmm_mat4 HMM_Scale(hmm_vec3 Scale);
-    
-    HMMDEF hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up);
-    
+        union
+        {
+            hmm_vec3 RGB;
+            struct
+            {
+                float R, G, B;
+            };
+        };
+
+        float A;
+    };
+
+    struct
+    {
+        hmm_vec2 XY;
+        float Ignored0_;
+        float Ignored1_;
+    };
+
+    struct
+    {
+        float Ignored2_;
+        hmm_vec2 YZ;
+        float Ignored3_;
+    };
+
+    struct
+    {
+        float Ignored4_;
+        float Ignored5_;
+        hmm_vec2 ZW;
+    };
+
+    float Elements[4];
+} hmm_vec4;
+
+typedef union hmm_mat4
+{
+    float Elements[4][4];
+} hmm_mat4;
+
+typedef hmm_vec2 hmm_v2;
+typedef hmm_vec3 hmm_v3;
+typedef hmm_vec4 hmm_v4;
+typedef hmm_mat4 hmm_m4;    
+
+HMMDEF float HMM_ToRadians(float Degrees);
+HMMDEF float HMM_Inner(hmm_vec3 A, hmm_vec3 B);
+HMMDEF float HMM_SquareRoot(float Float);
+HMMDEF float HMM_LengthSquareRoot(hmm_vec3 A);
+HMMDEF float HMM_FastInverseSquareRoot(float Number);
+HMMDEF float HMM_Length(hmm_vec3 A);    
+HMMDEF float HMM_Power(float Base, int Exponent);
+HMMDEF float HMM_Clamp(float Min, float Value, float Max);
+
+HMMDEF hmm_vec3 HMM_Normalize(hmm_vec3 A);
+HMMDEF hmm_vec3 HMM_Cross(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+HMMDEF float HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+
+HMMDEF hmm_vec2 HMM_Vec2i(int X, int Y);
+HMMDEF hmm_vec2 HMM_Vec2(float X, float Y);
+HMMDEF hmm_vec3 HMM_Vec3(float X, float Y, float Z);
+HMMDEF hmm_vec3 HMM_Vec3i(int X, int Y, int Z);
+HMMDEF hmm_vec4 HMM_Vec4(float X, float Y, float Z, float W);
+HMMDEF hmm_vec4 HMM_Vec4i(int X, int Y, int Z, int W);
+
+HMMDEF hmm_vec2 HMM_AddVec2(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 HMM_AddVec3(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 HMM_AddVec4(hmm_vec4 Left, hmm_vec4 Right);
+
+HMMDEF hmm_vec2 HMM_SubtractVec2(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 HMM_SubtractVec3(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 HMM_SubtractVec4(hmm_vec4 Left, hmm_vec4 Right);
+
+HMMDEF hmm_vec2 HMM_MultiplyVec2(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 HMM_MultiplyVec3(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 HMM_MultiplyVec4(hmm_vec4 Left, hmm_vec4 Right);
+
+HMMDEF hmm_vec2 HMM_DivideVec2(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 HMM_DivideVec3(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right);
+
+HMMDEF hmm_mat4 HMM_Mat4(void);
+HMMDEF hmm_mat4 HMM_Mat4d(float Diagonal);
+HMMDEF hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector);
+
+HMMDEF hmm_mat4 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
+HMMDEF hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far);
+HMMDEF hmm_mat4 HMM_Translate(hmm_vec3 Translation);
+HMMDEF hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis);
+HMMDEF hmm_mat4 HMM_Scale(hmm_vec3 Scale);
+
+HMMDEF hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up);
+
 #ifdef __cplusplus
 }
 #endif
@@ -324,7 +324,7 @@ HINLINE float
 HMM_ToRadians(float Degrees)
 {
     float Result = Degrees * (HMM_PI32 / 180.0f);
-    
+
     return (Result);
 }
 
@@ -332,7 +332,7 @@ HINLINE float
 HMM_Inner(hmm_vec3 A, hmm_vec3 B)
 {
     float Result = A.X * B.X + A.Y * B.Y + A.Z * B.Z;
-    
+
     return (Result);
 }
 
@@ -340,7 +340,7 @@ HINLINE float
 HMM_SquareRoot(float Float)
 {    
     float Result = sqrtf(Float);
-    
+
     return(Result);
 }
 
@@ -348,11 +348,10 @@ HINLINE float
 HMM_LengthSquareRoot(hmm_vec3 A)
 {
     float Result = HMM_Inner(A, A);
-    
+
     return (Result);
 }
 
-// Derived from https://en.wikipedia.org/wiki/Fast_inverse_square_root
 HINLINE float
 HMM_FastInverseSquareRoot(float Number)
 {
@@ -790,13 +789,9 @@ HMM_Translate(hmm_vec3 Translation)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
 
-    Result.Elements[0][0] = 1.0f;
-    Result.Elements[0][3] = Translation.X;
-    Result.Elements[1][1] = 1.0f;
-    Result.Elements[1][3] = Translation.Y;
-    Result.Elements[2][2] = 1.0f;
-    Result.Elements[2][3] = Translation.Z;
-    Result.Elements[3][3] = 1.0f;
+    Result.Elements[3][0] = Translation.X;
+    Result.Elements[3][1] = Translation.Y;
+    Result.Elements[3][2] = Translation.Z;
 
     return (Result);
 }
