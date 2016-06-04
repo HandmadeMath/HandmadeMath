@@ -789,9 +789,13 @@ HMM_Translate(hmm_vec3 Translation)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
 
-    Result.Elements[3][0] = Translation.X;
-    Result.Elements[3][1] = Translation.Y;
-    Result.Elements[3][2] = Translation.Z;
+    Result.Elements[0][0] = 1.0f;
+    Result.Elements[0][3] = Translation.X;
+    Result.Elements[1][1] = 1.0f;
+    Result.Elements[1][3] = Translation.Y;
+    Result.Elements[2][2] = 1.0f;
+    Result.Elements[2][3] = Translation.Z;
+    Result.Elements[3][3] = 1.0f;
 
     return (Result);
 }
