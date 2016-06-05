@@ -352,6 +352,7 @@ HMM_LengthSquareRoot(hmm_vec3 A)
     return (Result);
 }
 
+// Refer to https://en.wikipedia.org/wiki/Fast_inverse_square_root
 HINLINE float
 HMM_FastInverseSquareRoot(float Number)
 {
