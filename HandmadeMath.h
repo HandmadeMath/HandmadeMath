@@ -800,19 +800,22 @@ hmm_mat4
 HMM_Rotate(float Angle, hmm_vec3 Axis)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
-
-    Result.Elements[0][0] = Axis.X * Axis.X * (1.0f - cosf(HMM_ToRadians(Angle))) + cosf(HMM_ToRadians(Angle));
-    Result.Elements[0][1] = Axis.Y * Axis.X * (1.0f - cosf(HMM_ToRadians(Angle))) + Axis.Z * (sinf(HMM_ToRadians(Angle)));
-    Result.Elements[0][2] = Axis.X * Axis.Z * (1.0f - cosf(HMM_ToRadians(Angle))) - Axis.Y * (sinf(HMM_ToRadians(Angle)));
-
-    Result.Elements[1][0] = Axis.X * Axis.Y * (1.0f - cosf(HMM_ToRadians(Angle))) - Axis.Z * (sinf(HMM_ToRadians(Angle)));
-    Result.Elements[1][1] = Axis.Y * Axis.Y * (1.0f - cosf(HMM_ToRadians(Angle))) + (cosf(HMM_ToRadians(Angle)));
-    Result.Elements[1][2] = Axis.Y * Axis.Z * (1.0f - cosf(HMM_ToRadians(Angle))) + Axis.X * (sinf(HMM_ToRadians(Angle)));
-
-    Result.Elements[2][0] = Axis.X * Axis.Z * (1.0f - cosf(HMM_ToRadians(Angle))) + Axis.Y * (sinf(HMM_ToRadians(Angle)));
-    Result.Elements[2][1] = Axis.Y * Axis.Z * (1.0f - cosf(HMM_ToRadians(Angle))) - Axis.X * (sinf(HMM_ToRadians(Angle)));
-    Result.Elements[2][2] = Axis.Z * Axis.Z * (1.0f - cosf(HMM_ToRadians(Angle))) * (cosf(HMM_ToRadians(Angle)));
-
+    
+    SinTheta = sinf(HMM_ToRadians(Angle));
+    CosTheta = cosf(HMM_ToRadians(Angle));
+    
+    Result.Elements[0][0] = (Axis.X * Axis.X * (1.0f - CosTheta)) + CosTheta;
+    Result.Elements[0][1] = (Axis.X * Axis.Y * (1.0f - CosTheta)) - (Axis.Z * SinTheta);
+    Result.Elements[0][2] = (Axis.X * Axis.Z * (1.0f - CosTheta)) + (Axis.Y * SinTheta);
+    
+    Result.Elements[1][0] = (Axis.X * Axis.Y * (1.0f - CosTheta)) + (Axis.Z * SinTheta);
+    Result.Elements[1][1] = (Axis.Y * Axis.Y * (1.0f - CosTheta)) + CosTheta;
+    Result.Elements[1][2] = (Axis.Y * Axis.Z * (1.0f - CosTheta)) - (Axis.X * SinTheta);
+    
+    Result.Elements[2][0] = (Axis.X * Axis.Z * (1.0f - CosTheta)) - (Axis.Y * SinTheta);
+    Result.Elements[2][1] = (Axis.Y * Axis.Z * (1.0f - CosTheta)) + (Axis.X * SinTheta);
+    Result.Elements[2][2] = (Axis.Z * Axis.Z * (1.0f - CosTheta)) + CosTheta);
+    
     return (Result);
 }
 
