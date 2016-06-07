@@ -84,7 +84,7 @@ extern "C"
 #endif
 
 #define HMM_PI32 3.14159265359f
-#define HMM_PI 3.14159265358979323846
+#define HMM_PI 3.14159265358979323846f
 
 #define HMM_MIN(a, b) (a) > (b) ? (b) : (a)
 #define HMM_MAX(a, b) (a) < (b) ? (b) : (a)
@@ -352,6 +352,7 @@ HMM_LengthSquareRoot(hmm_vec3 A)
     return (Result);
 }
 
+// Refer to https://en.wikipedia.org/wiki/Fast_inverse_square_root
 HINLINE float
 HMM_FastInverseSquareRoot(float Number)
 {
@@ -800,19 +801,25 @@ hmm_mat4
 HMM_Rotate(float Angle, hmm_vec3 Axis)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
-
-    Result.Elements[0][0] = Axis.X * Axis.X * (1.0f - cosf(HMM_ToRadians(Angle))) + cosf(HMM_ToRadians(Angle));
-    Result.Elements[0][1] = Axis.Y * Axis.X * (1.0f - cosf(HMM_ToRadians(Angle))) + Axis.Z * (sinf(HMM_ToRadians(Angle)));
-    Result.Elements[0][2] = Axis.X * Axis.Z * (1.0f - cosf(HMM_ToRadians(Angle))) - Axis.Y * (sinf(HMM_ToRadians(Angle)));
-
-    Result.Elements[1][0] = Axis.X * Axis.Y * (1.0f - cosf(HMM_ToRadians(Angle))) - Axis.Z * (sinf(HMM_ToRadians(Angle)));
-    Result.Elements[1][1] = Axis.Y * Axis.Y * (1.0f - cosf(HMM_ToRadians(Angle))) + (cosf(HMM_ToRadians(Angle)));
-    Result.Elements[1][2] = Axis.Y * Axis.Z * (1.0f - cosf(HMM_ToRadians(Angle))) + Axis.X * (sinf(HMM_ToRadians(Angle)));
-
-    Result.Elements[2][0] = Axis.X * Axis.Z * (1.0f - cosf(HMM_ToRadians(Angle))) + Axis.Y * (sinf(HMM_ToRadians(Angle)));
-    Result.Elements[2][1] = Axis.Y * Axis.Z * (1.0f - cosf(HMM_ToRadians(Angle))) - Axis.X * (sinf(HMM_ToRadians(Angle)));
-    Result.Elements[2][2] = Axis.Z * Axis.Z * (1.0f - cosf(HMM_ToRadians(Angle))) * (cosf(HMM_ToRadians(Angle)));
-
+    
+    Axis = HMM_Normalize(Axis);
+    
+    float SinTheta = sinf(HMM_ToRadians(Angle));
+    float CosTheta = cosf(HMM_ToRadians(Angle));
+    float CosValue = 1.0f - CosTheta;
+    
+    Result.Elements[0][0] = (Axis.X * Axis.X * CosValue) + CosTheta;
+    Result.Elements[0][1] = (Axis.X * Axis.Y * CosValue) + (Axis.Z * SinTheta);
+    Result.Elements[0][2] = (Axis.X * Axis.Z * CosValue) - (Axis.Y * SinTheta);
+    
+    Result.Elements[1][0] = (Axis.Y * Axis.X * CosValue) - (Axis.Z * SinTheta);
+    Result.Elements[1][1] = (Axis.Y * Axis.Y * CosValue) + CosTheta;
+    Result.Elements[1][2] = (Axis.Y * Axis.Z * CosValue) + (Axis.X * SinTheta);
+    
+    Result.Elements[2][0] = (Axis.Z * Axis.X * CosValue) + (Axis.Y * SinTheta);
+    Result.Elements[2][1] = (Axis.Z * Axis.Y * CosValue) - (Axis.X * SinTheta);
+    Result.Elements[2][2] = (Axis.Z * Axis.Z * CosValue) + CosTheta;
+    
     return (Result);
 }
 
