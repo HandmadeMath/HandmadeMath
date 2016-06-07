@@ -802,6 +802,8 @@ HMM_Rotate(float Angle, hmm_vec3 Axis)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
     
+    Axis = HMM_Normalize(Axis);
+    
     float SinTheta = sinf(HMM_ToRadians(Angle));
     float CosTheta = cosf(HMM_ToRadians(Angle));
     float CosValue = 1.0f - CosTheta;
