@@ -809,15 +809,15 @@ HMM_Rotate(float Angle, hmm_vec3 Axis)
     float CosValue = 1.0f - CosTheta;
     
     Result.Elements[0][0] = (Axis.X * Axis.X * CosValue) + CosTheta;
-    Result.Elements[0][1] = (Axis.X * Axis.Y * CosValue) - (Axis.Z * SinTheta);
-    Result.Elements[0][2] = (Axis.X * Axis.Z * CosValue) + (Axis.Y * SinTheta);
+    Result.Elements[0][1] = (Axis.X * Axis.Y * CosValue) + (Axis.Z * SinTheta);
+    Result.Elements[0][2] = (Axis.X * Axis.Z * CosValue) - (Axis.Y * SinTheta);
     
-    Result.Elements[1][0] = (Axis.Y * Axis.X * CosValue) + (Axis.Z * SinTheta);
+    Result.Elements[1][0] = (Axis.Y * Axis.X * CosValue) - (Axis.Z * SinTheta);
     Result.Elements[1][1] = (Axis.Y * Axis.Y * CosValue) + CosTheta;
-    Result.Elements[1][2] = (Axis.Y * Axis.Z * CosValue) - (Axis.X * SinTheta);
+    Result.Elements[1][2] = (Axis.Y * Axis.Z * CosValue) + (Axis.X * SinTheta);
     
-    Result.Elements[2][0] = (Axis.Z * Axis.X * CosValue) - (Axis.Y * SinTheta);
-    Result.Elements[2][1] = (Axis.Z * Axis.Y * CosValue) + (Axis.X * SinTheta);
+    Result.Elements[2][0] = (Axis.Z * Axis.X * CosValue) + (Axis.Y * SinTheta);
+    Result.Elements[2][1] = (Axis.Z * Axis.Y * CosValue) - (Axis.X * SinTheta);
     Result.Elements[2][2] = (Axis.Z * Axis.Z * CosValue) + CosTheta;
     
     return (Result);
