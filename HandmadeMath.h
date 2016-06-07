@@ -808,7 +808,7 @@ HMM_Rotate(float Angle, hmm_vec3 Axis)
     float CosTheta = cosf(HMM_ToRadians(Angle));
     float CosValue = 1.0f - CosTheta;
     
-    Result.Elements[0][0] = (Axis.X * Axis.X * CosValue + CosTheta;
+    Result.Elements[0][0] = (Axis.X * Axis.X * CosValue) + CosTheta;
     Result.Elements[0][1] = (Axis.X * Axis.Y * CosValue) - (Axis.Z * SinTheta);
     Result.Elements[0][2] = (Axis.X * Axis.Z * CosValue) + (Axis.Y * SinTheta);
     
