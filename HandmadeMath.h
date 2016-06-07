@@ -773,8 +773,10 @@ HMM_Perspective(float FOV, float AspectRatio, float Near, float Far)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
 
-    Result.Elements[0][0] = 1.0f / (AspectRatio * tanf(FOV / 2.0f));
-    Result.Elements[1][1] = 1.0f / tanf(FOV / 2.0f);
+    float TanThetaOver2 = tanf(FOV / 2.0f);
+    
+    Result.Elements[0][0] = 1.0f / (AspectRatio * TanThetaOver2);
+    Result.Elements[1][1] = 1.0f / TanThetaOver2;
     Result.Elements[2][3] = -1.0f;
     Result.Elements[2][2] = -(Far + Near) / (Far - Near);
     Result.Elements[3][2] = -(2.0f * Far * Near) / (Far - Near);
@@ -804,7 +806,7 @@ HMM_Rotate(float Angle, hmm_vec3 Axis)
     float CosTheta = cosf(HMM_ToRadians(Angle));
     float CosValue = 1.0f - CosTheta;
     
-    Result.Elements[0][0] = (Axis.X * Axis.X * CosValue) + CosTheta;
+    Result.Elements[0][0] = (Axis.X * Axis.X * CosValue + CosTheta;
     Result.Elements[0][1] = (Axis.X * Axis.Y * CosValue) - (Axis.Z * SinTheta);
     Result.Elements[0][2] = (Axis.X * Axis.Z * CosValue) + (Axis.Y * SinTheta);
     
