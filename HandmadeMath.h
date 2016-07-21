@@ -39,6 +39,9 @@
           (*) Better operator overloading
       0.2a
           (*) Prefixed Macros
+      0.2b
+          (*) Disabled warning 4201 on MSVC as it is legal is C11
+          (*) Removed the f at the end of HMM_PI to get 64bit percision
 
   LICENSE
 
@@ -64,6 +67,10 @@
 #ifndef HANDMADE_MATH_H
 #define HANDMADE_MATH_H
 
+#ifdef _MSC_VER
+#pragma warning(disable:4201)
+#endif
+
 #include <math.h> // TODO(zak): Remove this later on
 
 #ifdef __cplusplus
@@ -84,7 +91,7 @@ extern "C"
 #endif
 
 #define HMM_PI32 3.14159265359f
-#define HMM_PI 3.14159265358979323846f
+#define HMM_PI 3.14159265358979323846
 
 #define HMM_MIN(a, b) (a) > (b) ? (b) : (a)
 #define HMM_MAX(a, b) (a) < (b) ? (b) : (a)
