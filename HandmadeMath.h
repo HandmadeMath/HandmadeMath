@@ -32,6 +32,23 @@
   All other files should just #include "HandmadeMath.h" without the #define.
   ==========================================================================
 
+  To disable SSE intrinsics, for You MUST
+
+  #define HANDMADE_MATH_NO_SSE
+
+  in EXACTLY one C or C++ file that includes this header, BEFORE the
+  include, like this:
+
+     #define HANDMADE_MATH_IMPLEMENTATION
+     #define HANDMADE_MATH_CPP_MODE
+     #define HANDMADE_MATH_NO_SSE
+     #include "HandmadeMath.h"
+
+     or
+
+     #define HANDMADE_MATH_IMPLEMENTATION
+     #define HANDMADE_MATH_NO_SSE
+
   Version History:
       0.2 (*) Updated documentation
           (*) Better C compliance
@@ -41,7 +58,16 @@
           (*) Prefixed Macros
       0.2b
           (*) Disabled warning 4201 on MSVC as it is legal is C11
-          (*) Removed the f at the end of HMM_PI to get 64bit percision
+          (*) Removed the f at the end of HMM_PI to get 64bit precision
+      0.3
+          () Removed CRT
+      0.4
+          (*) SSE Optimized HMM_SqrtF
+          (*) SSE Optimized HMM_RSqrtF
+          () SSE Optimized HMM_SinF
+          () SSE Optimized HMM_CosF
+          () SSe Optimized HMM_TanF
+
 
   LICENSE
 
@@ -57,6 +83,7 @@
    Matt Mascarenhas (@miblo_)
    Aleph
    FieryDrake (@fierydrake)
+   Gingerbill (@TheGingerBill)
 
   Fixes:
    Jeroen van Rijn (@J_vanRijn)
@@ -64,14 +91,14 @@
    Insofaras (@insofaras)
 */
 
+#include <xmmintrin.h>
+
 #ifndef HANDMADE_MATH_H
 #define HANDMADE_MATH_H
 
 #ifdef _MSC_VER
 #pragma warning(disable:4201)
 #endif
-
-#include <math.h> // TODO(zak): Remove this later on
 
 #ifdef __cplusplus
 extern "C"
@@ -226,6 +253,11 @@ typedef hmm_vec3 hmm_v3;
 typedef hmm_vec4 hmm_v4;
 typedef hmm_mat4 hmm_m4;    
 
+HMMDEF float HMM_SinF(float Angle);
+HMMDEF float HMM_TanF(float Angle);
+HMMDEF float HMM_CosF(float Angle);
+HMMDEF float HMM_SqrtF(float Angle);
+
 HMMDEF float HMM_ToRadians(float Degrees);
 HMMDEF float HMM_Inner(hmm_vec3 A, hmm_vec3 B);
 HMMDEF float HMM_SquareRoot(float Float);
@@ -327,6 +359,65 @@ HMMDEF hmm_vec4 operator/(hmm_vec4 Left, hmm_vec4 Right);
 
 #ifdef HANDMADE_MATH_IMPLEMENTATION
 
+#include <math.h>
+
+// TODO(zak): Replace these functions use of the C STD
+HINLINE float 
+HMM_SinF(float Angle)
+{
+    float Result = 0;
+    
+    Result = sinf(Angle);
+    return(0);
+}
+
+HINLINE float 
+HMM_CosF(float Angle)
+{
+    float Result = 0;
+    
+    Result = cosf(Angle);
+    return(Result);
+}
+
+
+HINLINE float 
+HMM_TanF(float Radians)
+{
+    float Result = 0;
+    
+    Result = cosf(Radians);
+    return(0);
+}
+
+HINLINE float 
+HMM_SqrtF(float Value)
+{
+    float Result = 0;
+#ifdef HANDMADE_MATH_NO_SSE
+    Result = sqrtf(Value);
+#else        
+    __m128 In = _mm_load_ss(&Value);
+    __m128 Out = _mm_sqrt_ss(In);
+    _mm_store_ss(&Result, Out);
+#endif 
+    return(Result);
+}
+
+HINLINE float
+HMM_RSqrtF(float Value)
+{
+    float Result = 0;
+#ifdef HANDMADE_MATH_NO_SSE
+    Result = 1.0f/HMM_SqrtF(Value);    
+#else        
+    __m128 In = _mm_load_ss(&Value);
+    __m128 Out = _mm_rsqrt_ss(In);
+    _mm_store_ss(&Result, Out);
+#endif     
+    return(Result);
+}
+
 HINLINE float
 HMM_ToRadians(float Degrees)
 {
@@ -344,14 +435,6 @@ HMM_Inner(hmm_vec3 A, hmm_vec3 B)
 }
 
 HINLINE float
-HMM_SquareRoot(float Float)
-{    
-    float Result = sqrtf(Float);
-
-    return(Result);
-}
-
-HINLINE float
 HMM_LengthSquareRoot(hmm_vec3 A)
 {
     float Result = HMM_Inner(A, A);
@@ -359,29 +442,10 @@ HMM_LengthSquareRoot(hmm_vec3 A)
     return (Result);
 }
 
-// Refer to https://en.wikipedia.org/wiki/Fast_inverse_square_root
-HINLINE float
-HMM_FastInverseSquareRoot(float Number)
-{
-    long i;
-    float x2, y;
-    const float threehalfs = 1.5f;
-
-    x2 = Number * 0.5f;
-    y  = Number;
-    i  = * ( long * ) &y;          // evil floating point bit level hacking
-    i  = 0x5f3759df - ( i >> 1 );  // what the fuck? 
-    y  = * ( float * ) &i;
-    
-    y  = y * ( threehalfs - ( x2 * y * y ) );
-
-    return ( y );
-}
-
 HINLINE float
 HMM_Length(hmm_vec3 A)
 {
-    float Result = HMM_SquareRoot(HMM_LengthSquareRoot(A));
+    float Result = HMM_SqrtF(HMM_LengthSquareRoot(A));
     return (Result);
 }
 
@@ -432,6 +496,7 @@ HMM_Clamp(float Min, float Value, float Max)
 
     return (Result);
 }
+
 
 HINLINE hmm_vec3
 HMM_Normalize(hmm_vec3 A)
@@ -780,7 +845,7 @@ HMM_Perspective(float FOV, float AspectRatio, float Near, float Far)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
 
-    float TanThetaOver2 = tanf(FOV * (HMM_PI32 / 360.0f));
+    float TanThetaOver2 = HMM_TanF(FOV * (HMM_PI32 / 360.0f));
     
     Result.Elements[0][0] = 1.0f / TanThetaOver2;
     Result.Elements[1][1] = AspectRatio / TanThetaOver2;
@@ -811,8 +876,8 @@ HMM_Rotate(float Angle, hmm_vec3 Axis)
     
     Axis = HMM_Normalize(Axis);
     
-    float SinTheta = sinf(HMM_ToRadians(Angle));
-    float CosTheta = cosf(HMM_ToRadians(Angle));
+    float SinTheta = HMM_SinF(HMM_ToRadians(Angle));
+    float CosTheta = HMM_CosF(HMM_ToRadians(Angle));
     float CosValue = 1.0f - CosTheta;
     
     Result.Elements[0][0] = (Axis.X * Axis.X * CosValue) + CosTheta;
