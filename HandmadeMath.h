@@ -386,7 +386,7 @@ HMM_TanF(float Radians)
 {
     float Result = 0;
     
-    Result = cosf(Radians);
+    Result = tanf(Radians);
     return(0);
 }
 
