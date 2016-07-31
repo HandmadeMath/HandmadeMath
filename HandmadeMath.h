@@ -368,7 +368,7 @@ HMM_SinF(float Angle)
     float Result = 0;
     
     Result = sinf(Angle);
-    return(0);
+    return(Result);
 }
 
 HINLINE float 
@@ -380,14 +380,13 @@ HMM_CosF(float Angle)
     return(Result);
 }
 
-
 HINLINE float 
 HMM_TanF(float Radians)
 {
     float Result = 0;
     
     Result = tanf(Radians);
-    return(0);
+    return(Result);
 }
 
 HINLINE float 
