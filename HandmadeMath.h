@@ -49,6 +49,22 @@
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_NO_SSE
 
+  ==========================================================================
+
+  To disable inlining functions, you MUST
+
+  #define HANDMADE_MATH_NO_INLINE
+
+  in EXACTLY one C or C++ file that includes this header, BEFORE the
+  include, like this:
+
+     #define HANDMADE_MATH_IMPLEMENTATION
+     #define HANDMADE_MATH_CPP_MODE
+     #define HANDMADE_MATH_NO_INLINE
+     #include "HandmadeMath.h"
+
+  All other files should just #include "HandmadeMath.h" without the #define.
+
   Version History:
       0.2 (*) Updated documentation
           (*) Better C compliance
@@ -111,7 +127,9 @@ extern "C"
 #define HMMDEF extern
 #endif
 
-#if _MSC_VER && !__INTEL_COMPILER
+#ifdef HANDMADE_MATH_NO_INLINE
+#define HINLINE
+#elif _MSC_VER && !__INTEL_COMPILER
 #define HINLINE __inline
 #else
 #define HINLINE inline
