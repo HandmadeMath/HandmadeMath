@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v0.2b
+  HandmadeMath.h v0.3
 
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -49,6 +49,22 @@
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_NO_SSE
 
+  ==========================================================================
+
+  To disable inlining functions, you MUST
+
+  #define HANDMADE_MATH_NO_INLINE
+
+  in EXACTLY one C or C++ file that includes this header, BEFORE the
+  include, like this:
+
+     #define HANDMADE_MATH_IMPLEMENTATION
+     #define HANDMADE_MATH_CPP_MODE
+     #define HANDMADE_MATH_NO_INLINE
+     #include "HandmadeMath.h"
+
+  All other files should just #include "HandmadeMath.h" without the #define.
+
   Version History:
       0.2 (*) Updated documentation
           (*) Better C compliance
@@ -60,13 +76,11 @@
           (*) Disabled warning 4201 on MSVC as it is legal is C11
           (*) Removed the f at the end of HMM_PI to get 64bit precision
       0.3
-          () Removed CRT
+          (*) Added +=,-=, *=, /= for hmm_vec2, hmm_vec3, hmm_vec4
       0.4
           (*) SSE Optimized HMM_SqrtF
           (*) SSE Optimized HMM_RSqrtF
-          () SSE Optimized HMM_SinF
-          () SSE Optimized HMM_CosF
-          () SSe Optimized HMM_TanF
+          () Remove CRT
 
 
   LICENSE
@@ -84,6 +98,7 @@
    Aleph
    FieryDrake (@fierydrake)
    Gingerbill (@TheGingerBill)
+   Ben Visness (@bvisness) 
 
   Fixes:
    Jeroen van Rijn (@J_vanRijn)
@@ -111,7 +126,9 @@ extern "C"
 #define HMMDEF extern
 #endif
 
-#if _MSC_VER && !__INTEL_COMPILER
+#ifdef HANDMADE_MATH_NO_INLINE
+#define HINLINE
+#elif _MSC_VER && !__INTEL_COMPILER
 #define HINLINE __inline
 #else
 #define HINLINE inline
@@ -1183,6 +1200,87 @@ operator/(hmm_vec4 Left, hmm_vec4 Right)
 
     return (Result);
 }
+
+HINLINE hmm_vec2 &
+operator+=(hmm_vec2 &Left, hmm_vec2 Right)
+{    
+    return(Left = Left + Right);    
+}
+
+HINLINE hmm_vec3 &
+operator+=(hmm_vec3 &Left, hmm_vec3 Right)
+{    
+    return(Left = Left + Right);    
+}
+
+HINLINE hmm_vec4 &
+operator+=(hmm_vec4 &Left, hmm_vec4 Right)
+{    
+    return(Left = Left + Right);    
+}
+
+HINLINE hmm_vec2 &
+operator-=(hmm_vec2 &Left, hmm_vec2 Right)
+{    
+    return(Left = Left - Right);    
+}
+
+
+HINLINE hmm_vec3 &
+operator-=(hmm_vec3 &Left, hmm_vec3 Right)
+{    
+    return(Left = Left - Right);    
+}
+
+
+HINLINE hmm_vec4 &
+operator-=(hmm_vec4 &Left, hmm_vec4 Right)
+{    
+    return(Left = Left - Right);    
+}
+
+
+HINLINE hmm_vec2 &
+operator/=(hmm_vec2 &Left, hmm_vec2 Right)
+{    
+    return(Left = Left / Right);    
+}
+
+
+HINLINE hmm_vec3 &
+operator/=(hmm_vec3 &Left, hmm_vec3 Right)
+{    
+    return(Left = Left / Right);    
+}
+
+
+HINLINE hmm_vec4 &
+operator/=(hmm_vec4 &Left, hmm_vec4 Right)
+{    
+    return(Left = Left / Right);    
+}
+
+
+HINLINE hmm_vec2 &
+operator*=(hmm_vec2 &Left, hmm_vec2 Right)
+{    
+    return(Left = Left * Right);    
+}
+
+
+HINLINE hmm_vec3 &
+operator*=(hmm_vec3 &Left, hmm_vec3 Right)
+{    
+    return(Left = Left * Right);    
+}
+
+
+HINLINE hmm_vec4 &
+operator*=(hmm_vec4 &Left, hmm_vec4 Right)
+{    
+    return(Left = Left * Right);    
+}
+
 
 #endif /* HANDMADE_MATH_CPP_MODE */
 
