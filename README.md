@@ -5,7 +5,7 @@ Single-file public domain game math library for C/C++
 
 Version         | Changes | 
 ----------------|----------------|
-**0.4 (ID)**     | Added SSE Optimized HMM_SqrtF, HMM_RSqrtF, Removed use of CRT              | 
+**0.4**     | Added SSE Optimized HMM_SqrtF, HMM_RSqrtF, Removed use of CRT              | 
 **0.3**     | Added +=,-=, *=, /= for hmm_vec2, hmm_vec3, hmm_vec4              | 
 **0.2b**     | Disabled warning C4201 on MSVC, Added 64bit percision on HMM_PI              | 
 **0.2a**    | Prefixed Macros              | 

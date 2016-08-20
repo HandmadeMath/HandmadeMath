@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v0.3
+  HandmadeMath.h v0.4
 
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -65,6 +65,30 @@
 
   All other files should just #include "HandmadeMath.h" without the #define.
 
+  ==========================================================================
+  
+  To Disable the CRT, you MUST 
+
+  #define HMM_SINF MySinF
+  #define HMM_COSF MyCosF
+  #define HMM_TANF MyTanF 
+  
+  Provide your own implementations of SinF, CosF, and TanF 
+  in EXACTLY one C or C++ file that includes this header, BEFORE the
+  include, like this:     
+
+  #define HMM_SINF MySinF
+  #define HMM_COSF MyCosF
+  #define HMM_TANF MyTanF 
+  #define HANDMADE_MATH_IMPLEMENTATION
+  #define HANDMADE_MATH_CPP_MODE   
+  #include "HandmadeMath.h"
+
+  If you do not define these HandmadeMath.h will use version the version
+  of these function that are provided by the CRT.
+
+  ==========================================================================
+
   Version History:
       0.2 (*) Updated documentation
           (*) Better C compliance
@@ -80,7 +104,7 @@
       0.4
           (*) SSE Optimized HMM_SqrtF
           (*) SSE Optimized HMM_RSqrtF
-          () Remove CRT
+          (*) Removed CRT
 
 
   LICENSE
@@ -106,6 +130,10 @@
    Insofaras (@insofaras)
 */
 
+// NOTE(zak): I think this is the include for SSE 2 on 
+// MacOS, Windows, and Linux if im wrong just open up
+// a issue and tell me, or submit a pull request
+// with the fix.
 #include <xmmintrin.h>
 
 #ifndef HANDMADE_MATH_H
@@ -134,6 +162,22 @@ extern "C"
 #define HINLINE inline
 #endif
 
+#if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF)
+#include <math.h>    
+#endif
+    
+#ifndef HMM_SINF
+#define HMM_SINF sinf
+#endif    
+        
+#ifndef HMM_COSF
+#define HMM_COSF cosf
+#endif    
+        
+#ifndef HMM_TANF
+#define HMM_TANF tanf
+#endif        
+    
 #define HMM_PI32 3.14159265359f
 #define HMM_PI 3.14159265358979323846
 
@@ -376,15 +420,12 @@ HMMDEF hmm_vec4 operator/(hmm_vec4 Left, hmm_vec4 Right);
 
 #ifdef HANDMADE_MATH_IMPLEMENTATION
 
-#include <math.h>
-
-// TODO(zak): Replace these functions use of the C STD
 HINLINE float 
 HMM_SinF(float Angle)
 {
     float Result = 0;
     
-    Result = sinf(Angle);
+    Result = HMM_SINF(Angle);
     return(Result);
 }
 
@@ -393,7 +434,7 @@ HMM_CosF(float Angle)
 {
     float Result = 0;
     
-    Result = cosf(Angle);
+    Result = HMM_COSF(Angle);
     return(Result);
 }
 
@@ -402,7 +443,7 @@ HMM_TanF(float Radians)
 {
     float Result = 0;
     
-    Result = tanf(Radians);
+    Result = HMM_TANF(Radians);
     return(Result);
 }
 
@@ -1239,13 +1280,11 @@ operator-=(hmm_vec4 &Left, hmm_vec4 Right)
     return(Left = Left - Right);    
 }
 
-
 HINLINE hmm_vec2 &
 operator/=(hmm_vec2 &Left, hmm_vec2 Right)
 {    
     return(Left = Left / Right);    
 }
-
 
 HINLINE hmm_vec3 &
 operator/=(hmm_vec3 &Left, hmm_vec3 Right)
@@ -1253,20 +1292,17 @@ operator/=(hmm_vec3 &Left, hmm_vec3 Right)
     return(Left = Left / Right);    
 }
 
-
 HINLINE hmm_vec4 &
 operator/=(hmm_vec4 &Left, hmm_vec4 Right)
 {    
     return(Left = Left / Right);    
 }
 
-
 HINLINE hmm_vec2 &
 operator*=(hmm_vec2 &Left, hmm_vec2 Right)
 {    
     return(Left = Left * Right);    
 }
-
 
 HINLINE hmm_vec3 &
 operator*=(hmm_vec3 &Left, hmm_vec3 Right)
@@ -1280,7 +1316,6 @@ operator*=(hmm_vec4 &Left, hmm_vec4 Right)
 {    
     return(Left = Left * Right);    
 }
-
 
 #endif /* HANDMADE_MATH_CPP_MODE */
 
