@@ -295,6 +295,7 @@ HMMDEF hmm_vec3 HMM_Vec3(float X, float Y, float Z);
 HMMDEF hmm_vec3 HMM_Vec3i(int X, int Y, int Z);
 HMMDEF hmm_vec4 HMM_Vec4(float X, float Y, float Z, float W);
 HMMDEF hmm_vec4 HMM_Vec4i(int X, int Y, int Z, int W);
+HMMDEF hmm_vec4 HMM_Vec4v(hmm_vec3 Vector, float W);
 
 HMMDEF hmm_vec2 HMM_AddVec2(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 HMM_AddVec3(hmm_vec3 Left, hmm_vec3 Right);
@@ -617,6 +618,17 @@ HMM_Vec4i(int X, int Y, int Z, int W)
     Result.Y = (float)Y;
     Result.Z = (float)Z;
     Result.W = (float)W;
+
+    return (Result);
+}
+
+HINLINE hmm_vec4
+HMM_Vec4v(hmm_vec3 Vector, float W)
+{
+    hmm_vec4 Result;
+
+    Result.XYZ = Vector;
+    Result.W = W;
 
     return (Result);
 }
