@@ -314,6 +314,7 @@ HMMDEF hmm_vec4 HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right);
 
 HMMDEF hmm_mat4 HMM_Mat4(void);
 HMMDEF hmm_mat4 HMM_Mat4d(float Diagonal);
+HMMDEF hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right);
 HMMDEF hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right);
 HMMDEF hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector);
 
@@ -352,6 +353,7 @@ HMMDEF hmm_vec4 HMM_Divide(int X, int Y, int Z, int W);
 HMMDEF hmm_vec2 operator+(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator+(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator+(hmm_vec4 Left, hmm_vec4 Right);
+HMMDEF hmm_mat4 operator+(hmm_mat4 Left, hmm_mat4 Right);
 
 HMMDEF hmm_vec2 operator-(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator-(hmm_vec3 Left, hmm_vec3 Right);
@@ -796,6 +798,24 @@ HMM_Mat4d(float Diagonal)
     return (Result);
 }
 
+HINLINE hmm_mat4
+HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
+{
+    hmm_mat4 Result;
+
+    int Rows;
+    for (Rows = 0; Rows < 4; ++Rows)
+    {
+        int Columns;
+        for (Columns = 0; Columns < 4; ++Columns)
+        {
+            Result.Elements[Rows][Columns] = Left.Elements[Rows][Columns] + Right.Elements[Rows][Columns];
+        }
+    }
+
+    return (Result);
+}
+
 hmm_mat4
 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
@@ -979,6 +999,14 @@ Add(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
+HINLINE hmm_mat4
+Add(hmm_mat4 Left, hmm_mat4 Right)
+{
+    hmm_mat4 Result = HMM_AddMat4(Left, Right);
+
+    return (Result);
+}
+
 HINLINE hmm_vec2
 Subtract(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -1087,6 +1115,14 @@ HINLINE hmm_vec4
 operator+(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = Add(Left, Right);
+
+    return (Result);
+}
+
+HINLINE hmm_mat4
+operator+(hmm_mat4 Left, hmm_mat4 Right)
+{
+    hmm_mat4 Result = Add(Left, Right);
 
     return (Result);
 }
