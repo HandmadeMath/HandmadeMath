@@ -349,18 +349,27 @@ HMMDEF hmm_vec3 HMM_SubtractVec3(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 HMM_SubtractVec4(hmm_vec4 Left, hmm_vec4 Right);
 
 HMMDEF hmm_vec2 HMM_MultiplyVec2(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_vec2 HMM_MultiplyVec2f(hmm_vec2 Left, float Right);
 HMMDEF hmm_vec3 HMM_MultiplyVec3(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_vec3 HMM_MultiplyVec3f(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec4 HMM_MultiplyVec4(hmm_vec4 Left, hmm_vec4 Right);
+HMMDEF hmm_vec4 HMM_MultiplyVec4f(hmm_vec4 Left, float Right);
 
 HMMDEF hmm_vec2 HMM_DivideVec2(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_vec2 HMM_DivideVec2f(hmm_vec2 Left, float Right);
 HMMDEF hmm_vec3 HMM_DivideVec3(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_vec3 HMM_DivideVec3f(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec4 HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right);
+HMMDEF hmm_vec4 HMM_DivideVec4f(hmm_vec4 Left, float Right);
 
 HMMDEF hmm_mat4 HMM_Mat4(void);
 HMMDEF hmm_mat4 HMM_Mat4d(float Diagonal);
 HMMDEF hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_mat4 HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right);
 HMMDEF hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar);
 HMMDEF hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector);
+HMMDEF hmm_mat4 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar);
 
 HMMDEF hmm_mat4 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
 HMMDEF hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far);
@@ -402,6 +411,7 @@ HMMDEF hmm_mat4 operator+(hmm_mat4 Left, hmm_mat4 Right);
 HMMDEF hmm_vec2 operator-(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator-(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator-(hmm_vec4 Left, hmm_vec4 Right);
+HMMDEF hmm_mat4 operator-(hmm_mat4 Left, hmm_mat4 Right);
 
 HMMDEF hmm_vec2 operator*(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator*(hmm_vec3 Left, hmm_vec3 Right);
@@ -410,6 +420,13 @@ HMMDEF hmm_mat4 operator*(hmm_mat4 Left, hmm_mat4 Right);
 
 HMMDEF hmm_vec2 operator*(hmm_vec2 Left, float Right);
 HMMDEF hmm_vec3 operator*(hmm_vec3 Left, float Right);
+HMMDEF hmm_vec4 operator*(hmm_vec4 Left, float Right);
+HMMDEF hmm_mat4 operator*(hmm_mat4 Left, float Right);
+
+HMMDEF hmm_vec2 operator*(float Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 operator*(float Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 operator*(float Left, hmm_vec4 Right);
+HMMDEF hmm_mat4 operator*(float Left, hmm_mat4 Right);
 
 HMMDEF hmm_vec4 operator*(hmm_mat4 Matrix, hmm_vec4 Vector);
 
@@ -417,21 +434,38 @@ HMMDEF hmm_vec2 operator/(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator/(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator/(hmm_vec4 Left, hmm_vec4 Right);
 
+HMMDEF hmm_vec2 operator/(hmm_vec2 Left, float Right);
+HMMDEF hmm_vec3 operator/(hmm_vec3 Left, float Right);
+HMMDEF hmm_vec4 operator/(hmm_vec4 Left, float Right);
+HMMDEF hmm_mat4 operator/(hmm_mat4 Left, float Right);
+
 HMMDEF hmm_vec2 & operator+=(hmm_vec2 &Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 & operator+=(hmm_vec3 &Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 & operator+=(hmm_vec4 &Left, hmm_vec4 Right);
+HMMDEF hmm_mat4 & operator+=(hmm_mat4 &Left, hmm_mat4 Right);
 
 HMMDEF hmm_vec2 & operator-=(hmm_vec2 &Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 & operator-=(hmm_vec3 &Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 & operator-=(hmm_vec4 &Left, hmm_vec4 Right);
+HMMDEF hmm_mat4 & operator-=(hmm_mat4 &Left, hmm_mat4 Right);
 
 HMMDEF hmm_vec2 & operator*=(hmm_vec2 &Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 & operator*=(hmm_vec3 &Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 & operator*=(hmm_vec4 &Left, hmm_vec4 Right);
 
+HMMDEF hmm_vec2 & operator*=(hmm_vec2 &Left, float Right);
+HMMDEF hmm_vec3 & operator*=(hmm_vec3 &Left, float Right);
+HMMDEF hmm_vec4 & operator*=(hmm_vec4 &Left, float Right);
+HMMDEF hmm_mat4 & operator*=(hmm_mat4 &Left, float Right);
+
 HMMDEF hmm_vec2 & operator/=(hmm_vec2 &Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 & operator/=(hmm_vec3 &Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 & operator/=(hmm_vec4 &Left, hmm_vec4 Right);
+
+HMMDEF hmm_vec2 & operator/=(hmm_vec2 &Left, float Right);
+HMMDEF hmm_vec3 & operator/=(hmm_vec3 &Left, float Right);
+HMMDEF hmm_vec4 & operator/=(hmm_vec4 &Left, float Right);
+HMMDEF hmm_mat4 & operator/=(hmm_mat4 &Left, float Right);
 
 #endif /* HANDMADE_MATH_CPP */
 
@@ -774,6 +808,17 @@ HMM_MultiplyVec2(hmm_vec2 Left, hmm_vec2 Right)
     return (Result);
 }
 
+HINLINE hmm_vec2
+HMM_MultiplyVec2f(hmm_vec2 Left, float Right)
+{
+    hmm_vec2 Result;
+
+    Result.X = Left.X * Right;
+    Result.Y = Left.Y * Right;
+
+    return (Result);
+}
+
 HINLINE hmm_vec3
 HMM_MultiplyVec3(hmm_vec3 Left, hmm_vec3 Right)
 {
@@ -782,6 +827,18 @@ HMM_MultiplyVec3(hmm_vec3 Left, hmm_vec3 Right)
     Result.X = Left.Z * Right.X;
     Result.Y = Left.Y * Right.Y;
     Result.Z = Left.Z * Right.Z;
+
+    return (Result);
+}
+
+HINLINE hmm_vec3
+HMM_MultiplyVec3f(hmm_vec3 Left, float Right)
+{
+    hmm_vec3 Result;
+
+    Result.X = Left.X * Right;
+    Result.Y = Left.Y * Right;
+    Result.Z = Left.Z * Right;
 
     return (Result);
 }
@@ -799,6 +856,19 @@ HMM_MultiplyVec4(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
+HINLINE hmm_vec4
+HMM_MultiplyVec4f(hmm_vec4 Left, float Right)
+{
+    hmm_vec4 Result;
+
+    Result.X = Left.X * Right;
+    Result.Y = Left.Y * Right;
+    Result.Z = Left.Z * Right;
+    Result.W = Left.W * Right;
+
+    return (Result);
+}
+
 HINLINE hmm_vec2
 HMM_DivideVec2(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -806,6 +876,17 @@ HMM_DivideVec2(hmm_vec2 Left, hmm_vec2 Right)
 
     Result.X = Left.X / Right.X;
     Result.Y = Left.Y / Right.Y;
+
+    return (Result);
+}
+
+HINLINE hmm_vec2
+HMM_DivideVec2f(hmm_vec2 Left, float Right)
+{
+    hmm_vec2 Result;
+
+    Result.X = Left.X / Right;
+    Result.Y = Left.Y / Right;
 
     return (Result);
 }
@@ -822,6 +903,18 @@ HMM_DivideVec3(hmm_vec3 Left, hmm_vec3 Right)
     return (Result);
 }
 
+HINLINE hmm_vec3
+HMM_DivideVec3f(hmm_vec3 Left, float Right)
+{
+    hmm_vec3 Result;
+
+    Result.X = Left.X / Right;
+    Result.Y = Left.Y / Right;
+    Result.Z = Left.Z / Right;
+
+    return (Result);
+}
+
 HINLINE hmm_vec4
 HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right)
 {
@@ -831,6 +924,19 @@ HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right)
     Result.Y = Left.Y / Right.Y;
     Result.Z = Left.Z / Right.Z;
     Result.W = Left.W / Right.W;
+
+    return (Result);
+}
+
+HINLINE hmm_vec4
+HMM_DivideVec4f(hmm_vec4 Left, float Right)
+{
+    hmm_vec4 Result;
+
+    Result.X = Left.X / Right;
+    Result.Y = Left.Y / Right;
+    Result.Z = Left.Z / Right;
+    Result.W = Left.W / Right;
 
     return (Result);
 }
@@ -884,6 +990,24 @@ HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
+HINLINE hmm_mat4
+HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
+{
+    hmm_mat4 Result;
+
+    int Rows;
+    for (Rows = 0; Rows < 4; ++Rows)
+    {
+        int Columns;
+        for (Columns = 0; Columns < 4; ++Columns)
+        {
+            Result.Elements[Rows][Columns] = Left.Elements[Rows][Columns] - Right.Elements[Rows][Columns];
+        }
+    }
+
+    return (Result);
+}
+
 hmm_mat4
 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
@@ -909,6 +1033,24 @@ HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
+hmm_mat4
+HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
+{
+    hmm_mat4 Result;
+
+    int Rows;
+    for (Rows = 0; Rows < 4; ++Rows)
+    {
+        int Columns;
+        for (Columns = 0; Columns < 4; ++Columns)
+        {
+            Result.Elements[Rows][Columns] = Matrix.Elements[Rows][Columns] * Scalar;
+        }
+    }
+
+    return (Result);
+}
+
 hmm_vec4
 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
 {
@@ -926,6 +1068,24 @@ HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
         Result.Elements[Rows] = Sum;
     }
     
+    return (Result);
+}
+
+hmm_mat4
+HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
+{
+    hmm_mat4 Result;
+
+    int Rows;
+    for (Rows = 0; Rows < 4; ++Rows)
+    {
+        int Columns;
+        for (Columns = 0; Columns < 4; ++Columns)
+        {
+            Result.Elements[Rows][Columns] = Matrix.Elements[Rows][Columns] / Scalar;
+        }
+    }
+
     return (Result);
 }
 
@@ -1219,6 +1379,14 @@ operator-(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
+HINLINE hmm_mat4
+operator-(hmm_mat4 Left, hmm_mat4 Right)
+{
+    hmm_mat4 Result = HMM_SubtractMat4(Left, Right);
+
+    return (Result);
+}
+
 HINLINE hmm_vec2
 operator*(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -1235,13 +1403,18 @@ operator*(hmm_vec3 Left, hmm_vec3 Right)
     return (Result);
 }
 
+HINLINE hmm_vec4
+operator*(hmm_vec4 Left, hmm_vec4 Right)
+{
+    hmm_vec4 Result = Multiply(Left, Right);
+
+    return (Result);
+}
+
 HINLINE hmm_vec2
 operator*(hmm_vec2 Left, float Right)
 {
-    hmm_vec2 Result;
-
-    Result.X = Right * Left.X;
-    Result.Y = Right * Left.Y;
+    hmm_vec2 Result = HMM_MultiplyVec2f(Left, Right);
 
     return (Result);
 }
@@ -1249,19 +1422,55 @@ operator*(hmm_vec2 Left, float Right)
 HINLINE hmm_vec3
 operator*(hmm_vec3 Left, float Right)
 {
-    hmm_vec3 Result;
-
-    Result.X = Right * Left.X;
-    Result.Y = Right * Left.Y;
-    Result.Z = Right * Left.Z;
+    hmm_vec3 Result = HMM_MultiplyVec3f(Left, Right);
 
     return (Result);
 }
 
 HINLINE hmm_vec4
-operator*(hmm_vec4 Left, hmm_vec4 Right)
+operator*(hmm_vec4 Left, float Right)
 {
-    hmm_vec4 Result = Multiply(Left, Right);
+    hmm_vec4 Result = HMM_MultiplyVec4f(Left, Right);
+
+    return (Result);
+}
+
+HINLINE hmm_mat4
+operator*(hmm_mat4 Left, float Right)
+{
+    hmm_mat4 Result = HMM_MultiplyMat4f(Left, Right);
+
+    return (Result);
+}
+
+HINLINE hmm_vec2
+operator*(float Left, hmm_vec2 Right)
+{
+    hmm_vec2 Result = HMM_MultiplyVec2f(Right, Left);
+
+    return (Result);
+}
+
+HINLINE hmm_vec3
+operator*(float Left, hmm_vec3 Right)
+{
+    hmm_vec3 Result = HMM_MultiplyVec3f(Right, Left);
+
+    return (Result);
+}
+
+HINLINE hmm_vec4
+operator*(float Left, hmm_vec4 Right)
+{
+    hmm_vec4 Result = HMM_MultiplyVec4f(Right, Left);
+
+    return (Result);
+}
+
+HINLINE hmm_mat4
+operator*(float Left, hmm_mat4 Right)
+{
+    hmm_mat4 Result = HMM_MultiplyMat4f(Right, Left);
 
     return (Result);
 }
@@ -1306,6 +1515,38 @@ operator/(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
+HINLINE hmm_vec2
+operator/(hmm_vec2 Left, float Right)
+{
+    hmm_vec2 Result = HMM_DivideVec2f(Left, Right);
+
+    return (Result);
+}
+
+HINLINE hmm_vec3
+operator/(hmm_vec3 Left, float Right)
+{
+    hmm_vec3 Result = HMM_DivideVec3f(Left, Right);
+
+    return (Result);
+}
+
+HINLINE hmm_vec4
+operator/(hmm_vec4 Left, float Right)
+{
+    hmm_vec4 Result = HMM_DivideVec4f(Left, Right);
+
+    return (Result);
+}
+
+HINLINE hmm_mat4
+operator/(hmm_mat4 Left, float Right)
+{
+    hmm_mat4 Result = HMM_DivideMat4f(Left, Right);
+
+    return (Result);
+}
+
 HINLINE hmm_vec2 &
 operator+=(hmm_vec2 &Left, hmm_vec2 Right)
 {    
@@ -1324,12 +1565,17 @@ operator+=(hmm_vec4 &Left, hmm_vec4 Right)
     return(Left = Left + Right);    
 }
 
+HINLINE hmm_mat4 &
+operator+=(hmm_mat4 &Left, hmm_mat4 Right)
+{
+    return(Left = Left + Right);
+}
+
 HINLINE hmm_vec2 &
 operator-=(hmm_vec2 &Left, hmm_vec2 Right)
 {    
     return(Left = Left - Right);    
 }
-
 
 HINLINE hmm_vec3 &
 operator-=(hmm_vec3 &Left, hmm_vec3 Right)
@@ -1337,11 +1583,16 @@ operator-=(hmm_vec3 &Left, hmm_vec3 Right)
     return(Left = Left - Right);    
 }
 
-
 HINLINE hmm_vec4 &
 operator-=(hmm_vec4 &Left, hmm_vec4 Right)
 {    
     return(Left = Left - Right);    
+}
+
+HINLINE hmm_mat4 &
+operator-=(hmm_mat4 &Left, hmm_mat4 Right)
+{
+    return(Left = Left - Right);
 }
 
 HINLINE hmm_vec2 &
@@ -1363,6 +1614,30 @@ operator/=(hmm_vec4 &Left, hmm_vec4 Right)
 }
 
 HINLINE hmm_vec2 &
+operator/=(hmm_vec2 &Left, float Right)
+{
+    return(Left = Left / Right);
+}
+
+HINLINE hmm_vec3 &
+operator/=(hmm_vec3 &Left, float Right)
+{
+    return(Left = Left / Right);
+}
+
+HINLINE hmm_vec4 &
+operator/=(hmm_vec4 &Left, float Right)
+{
+    return(Left = Left / Right);
+}
+
+HINLINE hmm_mat4 &
+operator/=(hmm_mat4 &Left, float Right)
+{
+    return(Left = Left / Right);
+}
+
+HINLINE hmm_vec2 &
 operator*=(hmm_vec2 &Left, hmm_vec2 Right)
 {    
     return(Left = Left * Right);    
@@ -1374,11 +1649,34 @@ operator*=(hmm_vec3 &Left, hmm_vec3 Right)
     return(Left = Left * Right);    
 }
 
-
 HINLINE hmm_vec4 &
 operator*=(hmm_vec4 &Left, hmm_vec4 Right)
 {    
     return(Left = Left * Right);    
+}
+
+HINLINE hmm_vec2 &
+operator*=(hmm_vec2 &Left, float Right)
+{
+    return(Left = Left * Right);
+}
+
+HINLINE hmm_vec3 &
+operator*=(hmm_vec3 &Left, float Right)
+{
+    return(Left = Left * Right);
+}
+
+HINLINE hmm_vec4 &
+operator*=(hmm_vec4 &Left, float Right)
+{
+    return(Left = Left * Right);
+}
+
+HINLINE hmm_mat4 &
+operator*=(hmm_mat4 &Left, float Right)
+{
+    return(Left = Left * Right);
 }
 
 #endif /* HANDMADE_MATH_CPP_MODE */
