@@ -408,14 +408,30 @@ HMMDEF hmm_vec3 operator*(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator*(hmm_vec4 Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 operator*(hmm_mat4 Left, hmm_mat4 Right);
 
-HMMDEF hmm_vec3 operator*(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec2 operator*(hmm_vec2 Left, float Right);
+HMMDEF hmm_vec3 operator*(hmm_vec3 Left, float Right);
 
 HMMDEF hmm_vec4 operator*(hmm_mat4 Matrix, hmm_vec4 Vector);
 
 HMMDEF hmm_vec2 operator/(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator/(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator/(hmm_vec4 Left, hmm_vec4 Right);
+
+HMMDEF hmm_vec2 & operator+=(hmm_vec2 &Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 & operator+=(hmm_vec3 &Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 & operator+=(hmm_vec4 &Left, hmm_vec4 Right);
+
+HMMDEF hmm_vec2 & operator-=(hmm_vec2 &Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 & operator-=(hmm_vec3 &Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 & operator-=(hmm_vec4 &Left, hmm_vec4 Right);
+
+HMMDEF hmm_vec2 & operator*=(hmm_vec2 &Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 & operator*=(hmm_vec3 &Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 & operator*=(hmm_vec4 &Left, hmm_vec4 Right);
+
+HMMDEF hmm_vec2 & operator/=(hmm_vec2 &Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 & operator/=(hmm_vec3 &Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 & operator/=(hmm_vec4 &Left, hmm_vec4 Right);
 
 #endif /* HANDMADE_MATH_CPP */
 
@@ -1219,6 +1235,17 @@ operator*(hmm_vec3 Left, hmm_vec3 Right)
     return (Result);
 }
 
+HINLINE hmm_vec2
+operator*(hmm_vec2 Left, float Right)
+{
+    hmm_vec2 Result;
+
+    Result.X = Right * Left.X;
+    Result.Y = Right * Left.Y;
+
+    return (Result);
+}
+
 HINLINE hmm_vec3
 operator*(hmm_vec3 Left, float Right)
 {
@@ -1227,17 +1254,6 @@ operator*(hmm_vec3 Left, float Right)
     Result.X = Right * Left.X;
     Result.Y = Right * Left.Y;
     Result.Z = Right * Left.Z;
-
-    return (Result);
-}
-
-HINLINE hmm_vec2
-operator*(hmm_vec2 Left, float Right)
-{
-    hmm_vec2 Result;
-
-    Result.X = Right * Left.X;
-    Result.Y = Right * Left.Y;
 
     return (Result);
 }
