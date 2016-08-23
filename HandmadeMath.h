@@ -1,9 +1,11 @@
 /*
-  HandmadeMath.h v0.4
+  HandmadeMath.h v0.5
 
   This is a single header file with a bunch of useful functions for
   basic game math operations.
+
   ==========================================================================
+
   You MUST
 
      #define HANDMADE_MATH_IMPLEMENTATION
@@ -15,12 +17,13 @@
      #include "HandmadeMath.h"
 
   All other files should just #include "HandmadeMath.h" without the #define.
+
   ==========================================================================
 
-  For overloaded, and operator overloaded versions of the base C functions.
-  You MUST
+  For overloaded and operator overloaded versions of the base C functions,
+  you MUST
 
-  #define HANDMADE_MATH_CPP_MODE
+     #define HANDMADE_MATH_CPP_MODE
 
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:
@@ -30,9 +33,10 @@
      #include "HandmadeMath.h"
 
   All other files should just #include "HandmadeMath.h" without the #define.
+
   ==========================================================================
 
-  To disable SSE intrinsics, for You MUST
+  To disable SSE intrinsics, you MUST
 
   #define HANDMADE_MATH_NO_SSE
 
@@ -48,6 +52,7 @@
 
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_NO_SSE
+     #include "HandmadeMath.h"
 
   ==========================================================================
 
@@ -69,23 +74,23 @@
   
   To Disable the CRT, you MUST 
 
-  #define HMM_SINF MySinF
-  #define HMM_COSF MyCosF
-  #define HMM_TANF MyTanF 
+     #define HMM_SINF MySinF
+     #define HMM_COSF MyCosF
+     #define HMM_TANF MyTanF
   
   Provide your own implementations of SinF, CosF, and TanF 
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:     
 
-  #define HMM_SINF MySinF
-  #define HMM_COSF MyCosF
-  #define HMM_TANF MyTanF 
-  #define HANDMADE_MATH_IMPLEMENTATION
-  #define HANDMADE_MATH_CPP_MODE   
-  #include "HandmadeMath.h"
+     #define HMM_SINF MySinF
+     #define HMM_COSF MyCosF
+     #define HMM_TANF MyTanF
+     #define HANDMADE_MATH_IMPLEMENTATION
+     #define HANDMADE_MATH_CPP_MODE
+     #include "HandmadeMath.h"
 
-  If you do not define these HandmadeMath.h will use version the version
-  of these function that are provided by the CRT.
+  If you do not define all three of these, HandmadeMath.h will use the
+  versions of these functions that are provided by the CRT.
 
   ==========================================================================
 
@@ -100,11 +105,18 @@
           (*) Disabled warning 4201 on MSVC as it is legal is C11
           (*) Removed the f at the end of HMM_PI to get 64bit precision
       0.3
-          (*) Added +=,-=, *=, /= for hmm_vec2, hmm_vec3, hmm_vec4
+          (*) Added +=, -=, *=, /= for hmm_vec2, hmm_vec3, hmm_vec4
       0.4
           (*) SSE Optimized HMM_SqrtF
           (*) SSE Optimized HMM_RSqrtF
           (*) Removed CRT
+      0.5
+          (*) Added scalar multiplication and division for vectors
+              and matrices
+          (*) Added matrix subtraction and += for hmm_mat4
+          (*) Reconciled all headers and implementations
+          (*) Tidied up, and filled in a few missing operators
+
 
 
   LICENSE
