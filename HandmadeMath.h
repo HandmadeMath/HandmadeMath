@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v0.5.1
+  HandmadeMath.h v0.5.2
 
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -119,7 +119,9 @@
       0.5.1
           (*) Ensured column-major order for matrices throughout
           (*) Fixed HMM_Translate producing row-major matrices
-
+      0.5.2
+          (*) Fixed SSE code in HMM_SqrtF
+          (*) Fixed SSE code in HMM_RSqrtF
 
 
   LICENSE
@@ -533,9 +535,9 @@ HMM_SqrtF(float Value)
 #ifdef HANDMADE_MATH_NO_SSE
     Result = sqrtf(Value);
 #else        
-    __m128 In = _mm_load_ss(&Value);
+    __m128 In = _mm_set_ss(Value);
     __m128 Out = _mm_sqrt_ss(In);
-    _mm_store_ss(&Result, Out);
+    Result = _mm_cvtss_f32(Out);
 #endif 
 
     return(Result);
@@ -549,9 +551,9 @@ HMM_RSqrtF(float Value)
 #ifdef HANDMADE_MATH_NO_SSE
     Result = 1.0f/HMM_SqrtF(Value);    
 #else        
-    __m128 In = _mm_load_ss(&Value);
+    __m128 In = _mm_set_ss(Value);
     __m128 Out = _mm_rsqrt_ss(In);
-    _mm_store_ss(&Result, Out);
+    Result = _mm_cvtss_f32(Out);
 #endif
 
     return(Result);
