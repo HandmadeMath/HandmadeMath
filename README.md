@@ -5,6 +5,7 @@ Single-file public domain game math library for C/C++
 
 Version         | Changes | 
 ----------------|----------------|
+**0.5.1**   | Fixed HMM_Translate producing row-major matrices, ensured column-major order for matrices throughout |
 **0.5**     | Added scalar operations on vectors and matrices, added += and -= for hmm_mat4, reconciled headers and implementations, tidied up in general |
 **0.4**     | Added SSE Optimized HMM_SqrtF, HMM_RSqrtF, Removed use of CRT              | 
 **0.3**     | Added +=,-=, *=, /= for hmm_vec2, hmm_vec3, hmm_vec4              | 
