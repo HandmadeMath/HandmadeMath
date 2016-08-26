@@ -79,11 +79,11 @@ TEST(Initialization, Vectors)
     hmm_vec2 v2 = HMM_Vec2(1.0f, 2.0f);
     hmm_vec2 v2i = HMM_Vec2(1, 2);
 
-    EXPECT_FLOAT_EQ(v2.Elements[0], 1.0f);
-    EXPECT_FLOAT_EQ(v2.Elements[1], 2.0f);
+    EXPECT_FLOAT_EQ(v2.X, 1.0f);
+    EXPECT_FLOAT_EQ(v2.Y, 2.0f);
 
-    EXPECT_FLOAT_EQ(v2i.Elements[0], 1.0f);
-    EXPECT_FLOAT_EQ(v2i.Elements[1], 2.0f);
+    EXPECT_FLOAT_EQ(v2i.X, 1.0f);
+    EXPECT_FLOAT_EQ(v2i.Y, 2.0f);
 
     //
     // Test vec3
@@ -91,13 +91,13 @@ TEST(Initialization, Vectors)
     hmm_vec3 v3 = HMM_Vec3(1.0f, 2.0f, 3.0f);
     hmm_vec3 v3i = HMM_Vec3i(1, 2, 3);
 
-    EXPECT_FLOAT_EQ(v3.Elements[0], 1.0f);
-    EXPECT_FLOAT_EQ(v3.Elements[1], 2.0f);
-    EXPECT_FLOAT_EQ(v3.Elements[2], 3.0f);
+    EXPECT_FLOAT_EQ(v3.X, 1.0f);
+    EXPECT_FLOAT_EQ(v3.Y, 2.0f);
+    EXPECT_FLOAT_EQ(v3.Z, 3.0f);
 
-    EXPECT_FLOAT_EQ(v3i.Elements[0], 1.0f);
-    EXPECT_FLOAT_EQ(v3i.Elements[1], 2.0f);
-    EXPECT_FLOAT_EQ(v3i.Elements[2], 3.0f);
+    EXPECT_FLOAT_EQ(v3i.X, 1.0f);
+    EXPECT_FLOAT_EQ(v3i.Y, 2.0f);
+    EXPECT_FLOAT_EQ(v3i.Z, 3.0f);
 
     //
     // Test vec4
@@ -106,20 +106,20 @@ TEST(Initialization, Vectors)
     hmm_vec4 v4i = HMM_Vec4i(1, 2, 3, 4);
     hmm_vec4 v4v = HMM_Vec4v(v3, 4.0f);
 
-    EXPECT_FLOAT_EQ(v4.Elements[0], 1.0f);
-    EXPECT_FLOAT_EQ(v4.Elements[1], 2.0f);
-    EXPECT_FLOAT_EQ(v4.Elements[2], 3.0f);
-    EXPECT_FLOAT_EQ(v4.Elements[3], 4.0f);
+    EXPECT_FLOAT_EQ(v4.X, 1.0f);
+    EXPECT_FLOAT_EQ(v4.Y, 2.0f);
+    EXPECT_FLOAT_EQ(v4.Z, 3.0f);
+    EXPECT_FLOAT_EQ(v4.W, 4.0f);
 
-    EXPECT_FLOAT_EQ(v4i.Elements[0], 1.0f);
-    EXPECT_FLOAT_EQ(v4i.Elements[1], 2.0f);
-    EXPECT_FLOAT_EQ(v4i.Elements[2], 3.0f);
-    EXPECT_FLOAT_EQ(v4i.Elements[3], 4.0f);
+    EXPECT_FLOAT_EQ(v4i.X, 1.0f);
+    EXPECT_FLOAT_EQ(v4i.Y, 2.0f);
+    EXPECT_FLOAT_EQ(v4i.Z, 3.0f);
+    EXPECT_FLOAT_EQ(v4i.W, 4.0f);
 
-    EXPECT_FLOAT_EQ(v4v.Elements[0], 1.0f);
-    EXPECT_FLOAT_EQ(v4v.Elements[1], 2.0f);
-    EXPECT_FLOAT_EQ(v4v.Elements[2], 3.0f);
-    EXPECT_FLOAT_EQ(v4v.Elements[3], 4.0f);
+    EXPECT_FLOAT_EQ(v4v.X, 1.0f);
+    EXPECT_FLOAT_EQ(v4v.Y, 2.0f);
+    EXPECT_FLOAT_EQ(v4v.Z, 3.0f);
+    EXPECT_FLOAT_EQ(v4v.W, 4.0f);
 }
 
 TEST(Initialization, MatrixEmpty)
@@ -148,4 +148,56 @@ TEST(Initialization, MatrixDiagonal)
             }
         }
     }
+}
+
+TEST(VectorOps, Inner)
+{
+    hmm_vec3 v1 = HMM_Vec3(1.0f, 2.0f, 3.0f);
+    hmm_vec3 v2 = HMM_Vec3(4.0f, 5.0f, 6.0f);
+
+    EXPECT_FLOAT_EQ(HMM_Inner(v1, v2), 32.0f);
+}
+
+TEST(VectorOps, LengthSquareRoot)
+{
+    hmm_vec3 v = HMM_Vec3(1.0f, -2.0f, 3.0f);
+
+    EXPECT_FLOAT_EQ(HMM_LengthSquareRoot(v), 14.0f);
+}
+
+TEST(VectorOps, Length)
+{
+    hmm_vec3 v = HMM_Vec3(2.0f, -3.0f, 6.0f);
+
+    EXPECT_FLOAT_EQ(HMM_Length(v), 7.0f);
+}
+
+TEST(VectorOps, Normalize)
+{
+    hmm_vec3 v = HMM_Vec3(1.0f, -2.0f, 3.0f);
+
+    hmm_vec3 result = HMM_Normalize(v);
+
+    EXPECT_FLOAT_EQ(HMM_Length(result), 1.0f);
+    EXPECT_LT(result.Y, 0);
+}
+
+TEST(VectorOps, Cross)
+{
+    hmm_vec3 v1 = HMM_Vec3(1.0f, 2.0f, 3.0f);
+    hmm_vec3 v2 = HMM_Vec3(4.0f, 5.0f, 6.0f);
+
+    hmm_vec3 result = HMM_Cross(v1, v2);
+
+    EXPECT_FLOAT_EQ(result.X, -3.0f);
+    EXPECT_FLOAT_EQ(result.Y, 6.0f);
+    EXPECT_FLOAT_EQ(result.Z, -3.0f);
+}
+
+TEST(VectorOps, Dot)
+{
+    hmm_vec3 v1 = HMM_Vec3(1.0f, 2.0f, 3.0f);
+    hmm_vec3 v2 = HMM_Vec3(4.0f, 5.0f, 6.0f);
+
+    EXPECT_FLOAT_EQ(HMM_Inner(v1, v2), 32.0f);
 }
