@@ -19,10 +19,8 @@ Version         | Changes |
 -----
 _This library is free and will stay free, but if you would like to support development, or you are a company using HandmadeMath, please consider financial support._
 
-![alt text](https://cloud.githubusercontent.com/assets/8225057/5990484/70413560-a9ab-11e4-8942-1a63607c0b00.png "Logo Title Text 1")
 
- 
-
+[![Patreon](https://cloud.githubusercontent.com/assets/8225057/5990484/70413560-a9ab-11e4-8942-1a63607c0b00.png)](http://www.patreon.com/strangezak) [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/zakarystrange)
 
 ## FAQ
 
