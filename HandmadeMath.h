@@ -862,7 +862,7 @@ HMM_MultiplyVec3(hmm_vec3 Left, hmm_vec3 Right)
 {
     hmm_vec3 Result = {0};
 
-    Result.X = Left.Z * Right.X;
+    Result.X = Left.X * Right.X;
     Result.Y = Left.Y * Right.Y;
     Result.Z = Left.Z * Right.Z;
 
