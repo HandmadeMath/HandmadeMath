@@ -857,7 +857,7 @@ HMM_MultiplyVec3(hmm_vec3 Left, hmm_vec3 Right)
 {
     hmm_vec3 Result = {0};
 
-    Result.X = Left.Z * Right.X;
+    Result.X = Left.X * Right.X;
     Result.Y = Left.Y * Right.Y;
     Result.Z = Left.Z * Right.Z;
 
@@ -1095,7 +1095,7 @@ HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
         float Sum = 0;
         for(Columns = 0; Columns < 4; ++Columns)
         {
-            Sum += Matrix.Elements[Rows][Columns] * Vector.Elements[Columns];
+            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
         }
         
         Result.Elements[Rows] = Sum;
@@ -1160,9 +1160,9 @@ HMM_Translate(hmm_vec3 Translation)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
 
-    Result.Elements[0][3] = Translation.X;
-    Result.Elements[1][3] = Translation.Y;
-    Result.Elements[2][3] = Translation.Z;
+    Result.Elements[3][0] = Translation.X;
+    Result.Elements[3][1] = Translation.Y;
+    Result.Elements[3][2] = Translation.Z;
 
     return (Result);
 }
