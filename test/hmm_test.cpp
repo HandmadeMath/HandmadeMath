@@ -1291,21 +1291,21 @@ TEST(Transformations, Rotate)
     hmm_mat4 rotateX = HMM_Rotate(90, HMM_Vec3(1, 0, 0));
     hmm_vec4 rotatedX = rotateX * HMM_Vec4v(original, 1);
     EXPECT_FLOAT_EQ(rotatedX.X, 1.0f);
-    EXPECT_FLOAT_EQ(rotatedX.Y, 1.0f);
-    EXPECT_FLOAT_EQ(rotatedX.Z, -1.0f);
+    EXPECT_FLOAT_EQ(rotatedX.Y, -1.0f);
+    EXPECT_FLOAT_EQ(rotatedX.Z, 1.0f);
     EXPECT_FLOAT_EQ(rotatedX.W, 1.0f);
 
     hmm_mat4 rotateY = HMM_Rotate(90, HMM_Vec3(0, 1, 0));
     hmm_vec4 rotatedY = rotateY * HMM_Vec4v(original, 1);
-    EXPECT_FLOAT_EQ(rotatedY.X, -1.0f);
+    EXPECT_FLOAT_EQ(rotatedY.X, 1.0f);
     EXPECT_FLOAT_EQ(rotatedY.Y, 1.0f);
-    EXPECT_FLOAT_EQ(rotatedY.Z, 1.0f);
+    EXPECT_FLOAT_EQ(rotatedY.Z, -1.0f);
     EXPECT_FLOAT_EQ(rotatedY.W, 1.0f);
 
     hmm_mat4 rotateZ = HMM_Rotate(90, HMM_Vec3(0, 0, 1));
     hmm_vec4 rotatedZ = rotateZ * HMM_Vec4v(original, 1);
-    EXPECT_FLOAT_EQ(rotatedZ.X, 1.0f);
-    EXPECT_FLOAT_EQ(rotatedZ.Y, -1.0f);
+    EXPECT_FLOAT_EQ(rotatedZ.X, -1.0f);
+    EXPECT_FLOAT_EQ(rotatedZ.Y, 1.0f);
     EXPECT_FLOAT_EQ(rotatedZ.Z, 1.0f);
     EXPECT_FLOAT_EQ(rotatedZ.W, 1.0f);
 }
