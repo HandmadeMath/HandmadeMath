@@ -598,26 +598,26 @@ HMM_Length(hmm_vec3 A)
 HINLINE float
 HMM_Power(float Base, int Exponent)
 {
-    float Result = 1;
-
-    if(Exponent > 0)
+    if(Exponent < 0)
     {
-        int i;
-        for(i = 0; i < Exponent; ++i)
-        {
-            Result *= Base;
-        }
+        return (HMM_Power(1 / Base, -Exponent));
+    }
+    else if(Exponent == 0)
+    {
+        return (1);
+    }
+    else if(Exponent == 1)
+    {
+        return (Base);
+    }
+    else if(!Exponent & 1)
+    {
+        return (HMM_Power(Base * Base, Exponent / 2));
     }
     else
     {
-        int i;
-        for(i = 0; i > Exponent; --i)
-        {
-            Result /= Base;
-        }
+        return (Base * HMM_Power(Base * Base, (Exponent - 1) / 2));
     }
-
-    return (Result);
 }
 
 HINLINE float
