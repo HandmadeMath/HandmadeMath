@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v0.5
+  HandmadeMath.h v0.5.2
 
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -116,7 +116,12 @@
           (*) Added matrix subtraction and += for hmm_mat4
           (*) Reconciled all headers and implementations
           (*) Tidied up, and filled in a few missing operators
-
+      0.5.1
+          (*) Ensured column-major order for matrices throughout
+          (*) Fixed HMM_Translate producing row-major matrices
+      0.5.2
+          (*) Fixed SSE code in HMM_SqrtF
+          (*) Fixed SSE code in HMM_RSqrtF
 
 
   LICENSE
@@ -530,9 +535,9 @@ HMM_SqrtF(float Value)
 #ifdef HANDMADE_MATH_NO_SSE
     Result = sqrtf(Value);
 #else        
-    __m128 In = _mm_load_ss(&Value);
+    __m128 In = _mm_set_ss(Value);
     __m128 Out = _mm_sqrt_ss(In);
-    _mm_store_ss(&Result, Out);
+    Result = _mm_cvtss_f32(Out);
 #endif 
 
     return(Result);
@@ -546,9 +551,9 @@ HMM_RSqrtF(float Value)
 #ifdef HANDMADE_MATH_NO_SSE
     Result = 1.0f/HMM_SqrtF(Value);    
 #else        
-    __m128 In = _mm_load_ss(&Value);
+    __m128 In = _mm_set_ss(Value);
     __m128 Out = _mm_rsqrt_ss(In);
-    _mm_store_ss(&Result, Out);
+    Result = _mm_cvtss_f32(Out);
 #endif
 
     return(Result);
@@ -857,7 +862,7 @@ HMM_MultiplyVec3(hmm_vec3 Left, hmm_vec3 Right)
 {
     hmm_vec3 Result = {0};
 
-    Result.X = Left.Z * Right.X;
+    Result.X = Left.X * Right.X;
     Result.Y = Left.Y * Right.Y;
     Result.Z = Left.Z * Right.Z;
 
@@ -987,16 +992,6 @@ HMM_Mat4d(float Diagonal)
 {
     hmm_mat4 Result = HMM_Mat4();
 
-    int Rows;
-    for(Rows = 0; Rows < 4; ++Rows)
-    {
-        int Columns;
-        for(Columns = 0; Columns < 4; ++Columns)
-        {
-            Result.Elements[Rows][Columns] = 0.0f;
-        }
-    }
-
     Result.Elements[0][0] = Diagonal;
     Result.Elements[1][1] = Diagonal;
     Result.Elements[2][2] = Diagonal;
@@ -1010,13 +1005,13 @@ HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = HMM_Mat4();
 
-    int Rows;
-    for (Rows = 0; Rows < 4; ++Rows)
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
     {
-        int Columns;
-        for (Columns = 0; Columns < 4; ++Columns)
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
         {
-            Result.Elements[Rows][Columns] = Left.Elements[Rows][Columns] + Right.Elements[Rows][Columns];
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
         }
     }
 
@@ -1028,13 +1023,13 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = HMM_Mat4();
 
-    int Rows;
-    for (Rows = 0; Rows < 4; ++Rows)
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
     {
-        int Columns;
-        for (Columns = 0; Columns < 4; ++Columns)
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
         {
-            Result.Elements[Rows][Columns] = Left.Elements[Rows][Columns] - Right.Elements[Rows][Columns];
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
         }
     }
 
@@ -1046,20 +1041,20 @@ HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = HMM_Mat4();
 
-    int Rows;
-    for(Rows = 0; Rows < 4; ++Rows)
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
     {
-        int Columns;
-        for(Columns = 0; Columns < 4; ++Columns)
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
         {
             float Sum = 0;
             int CurrentMatrice;
             for(CurrentMatrice = 0; CurrentMatrice < 4; ++CurrentMatrice)
             {
-                Sum += Right.Elements[Rows][CurrentMatrice] * Left.Elements[CurrentMatrice][Columns];
+                Sum += Left.Elements[CurrentMatrice][Rows] * Right.Elements[Columns][CurrentMatrice];
             }
 
-            Result.Elements[Rows][Columns] = Sum;
+            Result.Elements[Columns][Rows] = Sum;
         }
     }
 
@@ -1071,13 +1066,13 @@ HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
 {
     hmm_mat4 Result = HMM_Mat4();
 
-    int Rows;
-    for (Rows = 0; Rows < 4; ++Rows)
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
     {
-        int Columns;
-        for (Columns = 0; Columns < 4; ++Columns)
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
         {
-            Result.Elements[Rows][Columns] = Matrix.Elements[Rows][Columns] * Scalar;
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
         }
     }
 
@@ -1089,13 +1084,13 @@ HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
 {
     hmm_vec4 Result = {0};
     
-    int Rows, Columns;
+    int Columns, Rows;
     for(Rows = 0; Rows < 4; ++Rows)
     {
         float Sum = 0;
         for(Columns = 0; Columns < 4; ++Columns)
         {
-            Sum += Matrix.Elements[Rows][Columns] * Vector.Elements[Columns];
+            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
         }
         
         Result.Elements[Rows] = Sum;
@@ -1109,13 +1104,13 @@ HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
 {
     hmm_mat4 Result = HMM_Mat4();
 
-    int Rows;
-    for (Rows = 0; Rows < 4; ++Rows)
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
     {
-        int Columns;
-        for (Columns = 0; Columns < 4; ++Columns)
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
         {
-            Result.Elements[Rows][Columns] = Matrix.Elements[Rows][Columns] / Scalar;
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
         }
     }
 
@@ -1160,9 +1155,9 @@ HMM_Translate(hmm_vec3 Translation)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
 
-    Result.Elements[0][3] = Translation.X;
-    Result.Elements[1][3] = Translation.Y;
-    Result.Elements[2][3] = Translation.Z;
+    Result.Elements[3][0] = Translation.X;
+    Result.Elements[3][1] = Translation.Y;
+    Result.Elements[3][2] = Translation.Z;
 
     return (Result);
 }
