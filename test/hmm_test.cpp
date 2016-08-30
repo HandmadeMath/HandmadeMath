@@ -35,7 +35,7 @@ TEST(ScalarMath, Trigonometry)
 
 TEST(ScalarMath, SqrtF)
 {
-    EXPECT_FLOAT_EQ(HMM_SqrtF(16.0f), 4.0f);
+    EXPECT_FLOAT_EQ(HMM_SquareRootF(16.0f), 4.0f);
 }
 
 TEST(ScalarMath, ToRadians)
@@ -159,7 +159,7 @@ TEST(VectorOps, LengthSquareRoot)
 {
     hmm_vec3 v = HMM_Vec3(1.0f, -2.0f, 3.0f);
 
-    EXPECT_FLOAT_EQ(HMM_LengthSquareRoot(v), 14.0f);
+    EXPECT_FLOAT_EQ(HMM_LengthSquared(v), 14.0f);
 }
 
 TEST(VectorOps, Length)
