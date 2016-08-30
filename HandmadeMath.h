@@ -350,7 +350,10 @@ HMMDEF float HMM_Clamp(float Min, float Value, float Max);
 
 HMMDEF hmm_vec3 HMM_Normalize(hmm_vec3 A);
 HMMDEF hmm_vec3 HMM_Cross(hmm_vec3 VecOne, hmm_vec3 VecTwo);
-HMMDEF float HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+
+HMMDEF float HMM_DotVec2(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+HMMDEF float HMM_DotVec3(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+HMMDEF float HMM_DotVec4(hmm_vec3 VecOne, hmm_vec3 VecTwo);
 
 HMMDEF hmm_vec2 HMM_Vec2i(int X, int Y);
 HMMDEF hmm_vec2 HMM_Vec2(float X, float Y);
@@ -571,8 +574,18 @@ HMM_ToRadians(float Degrees)
     return (Result);
 }
 
+
 HINLINE float
-HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo)
+HMM_DotVec2(hmm_vec2 VecOne, hmm_vec2 VecTwo)
+{
+    float Result = 0;
+
+    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y);
+    return (Result);
+}
+
+HINLINE float
+HMM_DotVec3(hmm_vec3 VecOne, hmm_vec3 VecTwo)
 {
     float Result = 0;
 
@@ -580,12 +593,23 @@ HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo)
     return (Result);
 }
 
+
+HINLINE float
+HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo)
+{
+    float Result = 0;
+
+    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z);
+    return (Result);
+}
+
+
 HINLINE float
 HMM_LengthSquared(hmm_vec3 A)
 {
     float Result = 0;
 
-    Result = HMM_Dot(A, A);
+    Result = HMM_DotVec3(A, A);
     return (Result);
 }
 
@@ -1199,9 +1223,9 @@ HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
     Result.Elements[2][1] = U.Z;
     Result.Elements[2][2] = -F.Z;
 
-    Result.Elements[3][0] = -HMM_Dot(S, Eye);
-    Result.Elements[3][1] = -HMM_Dot(U, Eye);
-    Result.Elements[3][2] = HMM_Dot(F, Eye);
+    Result.Elements[3][0] = -HMM_DotVec3(S, Eye);
+    Result.Elements[3][1] = -HMM_DotVec3(U, Eye);
+    Result.Elements[3][2] = HMM_DotVec3(F, Eye);
     Result.Elements[3][3] = 1.0f;
 
     return (Result);
