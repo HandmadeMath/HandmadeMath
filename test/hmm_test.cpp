@@ -171,6 +171,7 @@ TEST(VectorOps, DotVec2)
     hmm_vec2 v2 = HMM_Vec2(3.0f, 4.0f);
 
     EXPECT_FLOAT_EQ(HMM_DotVec2(v1, v2), 11.0f);
+    EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 11.0f);
 }
 
 TEST(VectorOps, DotVec3)
@@ -179,6 +180,7 @@ TEST(VectorOps, DotVec3)
     hmm_vec3 v2 = HMM_Vec3(4.0f, 5.0f, 6.0f);
 
     EXPECT_FLOAT_EQ(HMM_DotVec3(v1, v2), 32.0f);
+    EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 32.0f);
 }
 
 TEST(VectorOps, DotVec4)
@@ -187,6 +189,7 @@ TEST(VectorOps, DotVec4)
     hmm_vec4 v2 = HMM_Vec4(5.0f, 6.0f, 7.0f, 8.0f);
 
     EXPECT_FLOAT_EQ(HMM_DotVec4(v1, v2), 70.0f);
+    EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 70.0f);
 }
 
 TEST(Addition, Vec2)
