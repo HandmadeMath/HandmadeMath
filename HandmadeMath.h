@@ -644,6 +644,18 @@ HMM_Power(float Base, int Exponent)
     return (Result);
 }
 
+HINLINE float
+HMM_PowerF(float Base, float Exponent)
+{
+    if (Base > 0)
+    {
+        return expf(Exponent * logf(Base));
+    }
+    else
+    {
+        return -expf(Exponent * logf(-Base));
+    }
+}
 
 HINLINE float
 HMM_Lerp(float A, float Time, float B)
