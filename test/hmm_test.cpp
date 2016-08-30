@@ -33,11 +33,6 @@ TEST(ScalarMath, Trigonometry)
     // checking that things work by default.
 }
 
-TEST(ScalarMath, SqrtF)
-{
-    EXPECT_FLOAT_EQ(HMM_SqrtF(16.0f), 4.0f);
-}
-
 TEST(ScalarMath, ToRadians)
 {
     EXPECT_FLOAT_EQ(HMM_ToRadians(0.0f), 0);
@@ -47,28 +42,12 @@ TEST(ScalarMath, ToRadians)
 
 TEST(ScalarMath, SquareRoot)
 {
-    // EXPECT_FLOAT_EQ(HMM_SquareRoot(16.0f), 4.0f);
-    FAIL() << "Bad header, function not defined. See commented line above.";
+    EXPECT_FLOAT_EQ(HMM_SquareRootF(16.0f), 4.0f);
 }
 
-TEST(ScalarMath, FastInverseSquareRoot)
+TEST(ScalarMath, RSquareRootF)
 {
-    // EXPECT_FLOAT_EQ(HMM_FastInverseSquareRoot(4.0f), 0.5f); // linker error, no function body
-    FAIL() << "Bad header, function not defined. See commented line above.";
-}
-
-TEST(ScalarMath, Power)
-{
-    EXPECT_FLOAT_EQ(HMM_Power(2.0f, 0), 1.0f);
-    EXPECT_FLOAT_EQ(HMM_Power(2.0f, 4), 16.0f);
-    EXPECT_FLOAT_EQ(HMM_Power(2.0f, -2), 0.25f);
-}
-
-TEST(ScalarMath, Clamp)
-{
-    EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, 0.0f, 2.0f), 0.0f);
-    EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, -3.0f, 2.0f), -2.0f);
-    EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, 3.0f, 2.0f), 2.0f);
+    EXPECT_FLOAT_EQ(HMM_RSquareRootF(10.0f), 0.31616211f);
 }
 
 TEST(Initialization, Vectors)
@@ -150,19 +129,11 @@ TEST(Initialization, MatrixDiagonal)
     }
 }
 
-TEST(VectorOps, Inner)
-{
-    hmm_vec3 v1 = HMM_Vec3(1.0f, 2.0f, 3.0f);
-    hmm_vec3 v2 = HMM_Vec3(4.0f, 5.0f, 6.0f);
-
-    EXPECT_FLOAT_EQ(HMM_Inner(v1, v2), 32.0f);
-}
-
 TEST(VectorOps, LengthSquareRoot)
 {
     hmm_vec3 v = HMM_Vec3(1.0f, -2.0f, 3.0f);
 
-    EXPECT_FLOAT_EQ(HMM_LengthSquareRoot(v), 14.0f);
+    EXPECT_FLOAT_EQ(HMM_LengthSquared(v), 14.0f);
 }
 
 TEST(VectorOps, Length)
@@ -194,12 +165,31 @@ TEST(VectorOps, Cross)
     EXPECT_FLOAT_EQ(result.Z, -3.0f);
 }
 
-TEST(VectorOps, Dot)
+TEST(VectorOps, DotVec2)
+{
+    hmm_vec2 v1 = HMM_Vec2(1.0f, 2.0f);
+    hmm_vec2 v2 = HMM_Vec2(3.0f, 4.0f);
+
+    EXPECT_FLOAT_EQ(HMM_DotVec2(v1, v2), 11.0f);
+    EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 11.0f);
+}
+
+TEST(VectorOps, DotVec3)
 {
     hmm_vec3 v1 = HMM_Vec3(1.0f, 2.0f, 3.0f);
     hmm_vec3 v2 = HMM_Vec3(4.0f, 5.0f, 6.0f);
 
-    EXPECT_FLOAT_EQ(HMM_Inner(v1, v2), 32.0f);
+    EXPECT_FLOAT_EQ(HMM_DotVec3(v1, v2), 32.0f);
+    EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 32.0f);
+}
+
+TEST(VectorOps, DotVec4)
+{
+    hmm_vec4 v1 = HMM_Vec4(1.0f, 2.0f, 3.0f, 4.0f);
+    hmm_vec4 v2 = HMM_Vec4(5.0f, 6.0f, 7.0f, 8.0f);
+
+    EXPECT_FLOAT_EQ(HMM_DotVec4(v1, v2), 70.0f);
+    EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 70.0f);
 }
 
 TEST(Addition, Vec2)

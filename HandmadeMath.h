@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v0.5.2
+  HandmadeMath.h v0.6
 
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -122,7 +122,15 @@
       0.5.2
           (*) Fixed SSE code in HMM_SqrtF
           (*) Fixed SSE code in HMM_RSqrtF
-
+      0.6
+          (*) Added Unit testing
+          (*) Made HMM_Power faster
+          (*) Fixed possible efficiency problem with HMM_Normalize 
+          (*) RENAMED HMM_LengthSquareRoot to HMM_LengthSquared
+          (*) RENAMED HMM_RSqrtF to HMM_RSquareRootF
+          (*) RENAMED HMM_SqrtF to HMM_SquareRootF
+          (*) REMOVED Inner function (user should use Dot now)
+          (*) REMOVED HMM_FastInverseSquareRoot function declaration
 
   LICENSE
 
@@ -147,10 +155,6 @@
    Insofaras (@insofaras)
 */
 
-// NOTE(zak): I think this is the include for SSE 2 on 
-// MacOS, Windows, and Linux if im wrong just open up
-// a issue and tell me, or submit a pull request
-// with the fix.
 #include <xmmintrin.h>
 
 #ifndef HANDMADE_MATH_H
@@ -334,20 +338,21 @@ typedef hmm_mat4 hmm_m4;
 HMMDEF float HMM_SinF(float Angle);
 HMMDEF float HMM_TanF(float Angle);
 HMMDEF float HMM_CosF(float Angle);
-HMMDEF float HMM_SqrtF(float Angle);
 
 HMMDEF float HMM_ToRadians(float Degrees);
-HMMDEF float HMM_Inner(hmm_vec3 A, hmm_vec3 B);
-HMMDEF float HMM_SquareRoot(float Float);
-HMMDEF float HMM_LengthSquareRoot(hmm_vec3 A);
-HMMDEF float HMM_FastInverseSquareRoot(float Number);
+HMMDEF float HMM_SquareRootF(float Float);
+HMMDEF float HMM_RSquareRootF(float Float);
+HMMDEF float HMM_LengthSquared(hmm_vec3 A);
 HMMDEF float HMM_Length(hmm_vec3 A);    
 HMMDEF float HMM_Power(float Base, int Exponent);
 HMMDEF float HMM_Clamp(float Min, float Value, float Max);
 
 HMMDEF hmm_vec3 HMM_Normalize(hmm_vec3 A);
 HMMDEF hmm_vec3 HMM_Cross(hmm_vec3 VecOne, hmm_vec3 VecTwo);
-HMMDEF float HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+
+HMMDEF float HMM_DotVec2(hmm_vec2 VecOne, hmm_vec2 VecTwo);
+HMMDEF float HMM_DotVec3(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+HMMDEF float HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo);
 
 HMMDEF hmm_vec2 HMM_Vec2i(int X, int Y);
 HMMDEF hmm_vec2 HMM_Vec2(float X, float Y);
@@ -401,6 +406,11 @@ HMMDEF hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up);
 #endif
 
 #ifdef HANDMADE_MATH_CPP_MODE
+
+
+HMMDEF float HMM_Dot(hmm_vec2 VecOne, hmm_vec2 VecTwo);
+HMMDEF float HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+HMMDEF float HMM_Dot(hmm_vec4 VecOne, hmm_vec4 VecTwo);
 
 HMMDEF hmm_vec2 HMM_Add(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 HMM_Add(hmm_vec3 Left, hmm_vec3 Right);
@@ -528,7 +538,7 @@ HMM_TanF(float Radians)
 }
 
 HINLINE float 
-HMM_SqrtF(float Value)
+HMM_SquareRootF(float Value)
 {
     float Result = 0;
 
@@ -544,7 +554,7 @@ HMM_SqrtF(float Value)
 }
 
 HINLINE float
-HMM_RSqrtF(float Value)
+HMM_RSquareRootF(float Value)
 {
     float Result = 0;
 
@@ -568,21 +578,42 @@ HMM_ToRadians(float Degrees)
     return (Result);
 }
 
+
 HINLINE float
-HMM_Inner(hmm_vec3 A, hmm_vec3 B)
+HMM_DotVec2(hmm_vec2 VecOne, hmm_vec2 VecTwo)
 {
     float Result = 0;
 
-    Result = A.X * B.X + A.Y * B.Y + A.Z * B.Z;
+    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y);
     return (Result);
 }
 
 HINLINE float
-HMM_LengthSquareRoot(hmm_vec3 A)
+HMM_DotVec3(hmm_vec3 VecOne, hmm_vec3 VecTwo)
 {
     float Result = 0;
 
-    Result = HMM_Inner(A, A);
+    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z);
+    return (Result);
+}
+
+
+HINLINE float
+HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo)
+{
+    float Result = 0;
+
+    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z) + (VecOne.W * VecTwo.W);
+    return (Result);
+}
+
+
+HINLINE float
+HMM_LengthSquared(hmm_vec3 A)
+{
+    float Result = 0;
+
+    Result = HMM_DotVec3(A, A);
     return (Result);
 }
 
@@ -591,7 +622,7 @@ HMM_Length(hmm_vec3 A)
 {
     float Result = 0;
 
-    Result = HMM_SqrtF(HMM_LengthSquareRoot(A));
+    Result = HMM_SquareRootF(HMM_LengthSquared(A));
     return (Result);
 }
 
@@ -646,9 +677,11 @@ HMM_Normalize(hmm_vec3 A)
 {
     hmm_vec3 Result = {0};
 
-    Result.X = A.X * (1.0f / HMM_Length(A));
-    Result.Y = A.Y * (1.0f / HMM_Length(A));
-    Result.Z = A.Z * (1.0f / HMM_Length(A));
+    float VectorLength = HMM_Length(A);
+    
+    Result.X = A.X * (1.0f / VectorLength);
+    Result.Y = A.Y * (1.0f / VectorLength);
+    Result.Z = A.Z * (1.0f / VectorLength);
     
     return (Result);
 }
@@ -662,15 +695,6 @@ HMM_Cross(hmm_vec3 VecOne, hmm_vec3 VecTwo)
     Result.Y = (VecOne.Z * VecTwo.X) - (VecOne.X * VecTwo.Z);
     Result.Z = (VecOne.X * VecTwo.Y) - (VecOne.Y * VecTwo.X);
 
-    return (Result);
-}
-
-HINLINE float
-HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo)
-{
-    float Result = 0;
-
-    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z);
     return (Result);
 }
 
@@ -1203,9 +1227,9 @@ HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
     Result.Elements[2][1] = U.Z;
     Result.Elements[2][2] = -F.Z;
 
-    Result.Elements[3][0] = -HMM_Dot(S, Eye);
-    Result.Elements[3][1] = -HMM_Dot(U, Eye);
-    Result.Elements[3][2] = HMM_Dot(F, Eye);
+    Result.Elements[3][0] = -HMM_DotVec3(S, Eye);
+    Result.Elements[3][1] = -HMM_DotVec3(U, Eye);
+    Result.Elements[3][2] = HMM_DotVec3(F, Eye);
     Result.Elements[3][3] = 1.0f;
 
     return (Result);
@@ -1224,6 +1248,36 @@ HMM_Scale(hmm_vec3 Scale)
 }
 
 #ifdef HANDMADE_MATH_CPP_MODE
+
+HINLINE float 
+HMM_Dot(hmm_vec2 VecOne, hmm_vec2 VecTwo)
+{
+    float Result = 0;
+    
+    Result = HMM_DotVec2(VecOne, VecTwo);
+    
+    return(Result);
+}
+
+HINLINE float 
+HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo)
+{
+    float Result = 0;
+    
+    Result = HMM_DotVec3(VecOne, VecTwo);
+    
+    return(Result);
+}
+
+HMMDEF float 
+HMM_Dot(hmm_vec4 VecOne, hmm_vec4 VecTwo)
+{
+    float Result = 0;
+    
+    Result = HMM_DotVec4(VecOne, VecTwo);
+    
+    return(Result);
+}
 
 HINLINE hmm_vec2
 HMM_Add(hmm_vec2 Left, hmm_vec2 Right)
