@@ -33,11 +33,6 @@ TEST(ScalarMath, Trigonometry)
     // checking that things work by default.
 }
 
-TEST(ScalarMath, SqrtF)
-{
-    EXPECT_FLOAT_EQ(HMM_SquareRootF(16.0f), 4.0f);
-}
-
 TEST(ScalarMath, ToRadians)
 {
     EXPECT_FLOAT_EQ(HMM_ToRadians(0.0f), 0);
@@ -47,33 +42,12 @@ TEST(ScalarMath, ToRadians)
 
 TEST(ScalarMath, SquareRoot)
 {
-    // EXPECT_FLOAT_EQ(HMM_SquareRoot(16.0f), 4.0f);
-    FAIL() << "Bad header, function not defined. See commented line above.";
-}
-
-TEST(ScalarMath, FastInverseSquareRoot)
-{
-    // EXPECT_FLOAT_EQ(HMM_FastInverseSquareRoot(4.0f), 0.5f); // linker error, no function body
-    FAIL() << "Bad header, function not defined. See commented line above.";
-}
-
-TEST(ScalarMath, Power)
-{
-    EXPECT_FLOAT_EQ(HMM_Power(2.0f, 0), 1.0f);
-    EXPECT_FLOAT_EQ(HMM_Power(2.0f, 4), 16.0f);
-    EXPECT_FLOAT_EQ(HMM_Power(2.0f, -2), 0.25f);
-}
-
-TEST(ScalarMath, Clamp)
-{
-    EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, 0.0f, 2.0f), 0.0f);
-    EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, -3.0f, 2.0f), -2.0f);
-    EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, 3.0f, 2.0f), 2.0f);
+    EXPECT_FLOAT_EQ(HMM_SquareRootF(16.0f), 4.0f);
 }
 
 TEST(ScalarMath, RSquareRootF)
 {
-    EXPECT_FLOAT_EQ(HMM_RSquareRootF(16.0f), 0.25f);
+    EXPECT_FLOAT_EQ(HMM_RSquareRootF(10.0f), 0.31616211f);
 }
 
 TEST(Initialization, Vectors)
