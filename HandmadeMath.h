@@ -603,7 +603,7 @@ HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo)
 {
     float Result = 0;
 
-    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z);
+    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z) + (VecOne.W * VecTwo.W);
     return (Result);
 }
 
