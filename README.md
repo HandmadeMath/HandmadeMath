@@ -1,11 +1,14 @@
 # Handmade-Math
 ------
 
+[![Build Status](https://travis-ci.org/StrangeZak/Handmade-Math.svg?branch=master)](https://travis-ci.org/StrangeZak/Handmade-Math)
+
 Single-file cross-platform public domain game math library for C/C++
 
 
 Version         | Changes        | 
 ----------------|----------------|
+**0.6**   | Made HMM_Power faster, Fixed possible efficiency problem with HMM_Normalize, RENAMED HMM_LengthSquareRoot to HMM_LengthSquared, RENAMED HMM_RSqrtF to HMM_RSquareRootF, RENAMED HMM_SqrtF to HMM_SquareRootF, REMOVED Inner function (user should use Dot now), REMOVED HMM_FastInverseSquareRoot function declaration |
 **0.5.2**   | Fixed SSE code in HMM_SqrtF and HMM_RSqrtF |
 **0.5.1**   | Fixed HMM_Translate producing row-major matrices, ensured column-major order for matrices throughout |
 **0.5**     | Added scalar operations on vectors and matrices, added += and -= for hmm_mat4, reconciled headers and implementations, tidied up in general |
@@ -32,12 +35,3 @@ This library is in the public domain. You can do whatever you want with them.
 **Where can I contact you to ask questions?**
 
 You can email me at: Zak@Handmade.Network
-
-
-## Testing
-
-```shell
-cd test
-make
-./hmm_test
-```
