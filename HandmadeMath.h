@@ -343,7 +343,6 @@ HMMDEF float HMM_ToRadians(float Degrees);
 HMMDEF float HMM_SquareRootF(float Float);
 HMMDEF float HMM_RSquareRootF(float Float);
 HMMDEF float HMM_LengthSquared(hmm_vec3 A);
-HMMDEF float HMM_FastInverseSquareRoot(float Number);
 HMMDEF float HMM_Length(hmm_vec3 A);    
 HMMDEF float HMM_Power(float Base, int Exponent);
 HMMDEF float HMM_Clamp(float Min, float Value, float Max);
@@ -351,9 +350,9 @@ HMMDEF float HMM_Clamp(float Min, float Value, float Max);
 HMMDEF hmm_vec3 HMM_Normalize(hmm_vec3 A);
 HMMDEF hmm_vec3 HMM_Cross(hmm_vec3 VecOne, hmm_vec3 VecTwo);
 
-HMMDEF float HMM_DotVec2(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+HMMDEF float HMM_DotVec2(hmm_vec2 VecOne, hmm_vec2 VecTwo);
 HMMDEF float HMM_DotVec3(hmm_vec3 VecOne, hmm_vec3 VecTwo);
-HMMDEF float HMM_DotVec4(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+HMMDEF float HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo);
 
 HMMDEF hmm_vec2 HMM_Vec2i(int X, int Y);
 HMMDEF hmm_vec2 HMM_Vec2(float X, float Y);
@@ -407,6 +406,11 @@ HMMDEF hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up);
 #endif
 
 #ifdef HANDMADE_MATH_CPP_MODE
+
+
+HMMDEF float HMM_Dot(hmm_vec2 VecOne, hmm_vec2 VecTwo);
+HMMDEF float HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+HMMDEF float HMM_Dot(hmm_vec4 VecOne, hmm_vec4 VecTwo);
 
 HMMDEF hmm_vec2 HMM_Add(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 HMM_Add(hmm_vec3 Left, hmm_vec3 Right);
@@ -1244,6 +1248,36 @@ HMM_Scale(hmm_vec3 Scale)
 }
 
 #ifdef HANDMADE_MATH_CPP_MODE
+
+HINLINE float 
+HMM_Dot(hmm_vec2 VecOne, hmm_vec2 VecTwo)
+{
+    float Result = 0;
+    
+    Result = HMM_DotVec2(VecOne, VecTwo);
+    
+    return(Result);
+}
+
+HINLINE float 
+HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo)
+{
+    float Result = 0;
+    
+    Result = HMM_DotVec3(VecOne, VecTwo);
+    
+    return(Result);
+}
+
+HMMDEF float 
+HMM_Dot(hmm_vec4 VecOne, hmm_vec4 VecTwo)
+{
+    float Result = 0;
+    
+    Result = HMM_DotVec4(VecOne, VecTwo);
+    
+    return(Result);
+}
 
 HINLINE hmm_vec2
 HMM_Add(hmm_vec2 Left, hmm_vec2 Right)
