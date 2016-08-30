@@ -393,6 +393,8 @@ HMMDEF hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar);
 HMMDEF hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector);
 HMMDEF hmm_mat4 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar);
 
+HMMDEF hmm_mat4 HMM_Transpose(hmm_mat4 Matrix);
+
 HMMDEF hmm_mat4 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
 HMMDEF hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far);
 HMMDEF hmm_mat4 HMM_Translate(hmm_vec3 Translation);
@@ -1129,6 +1131,24 @@ HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
         for(Rows = 0; Rows < 4; ++Rows)
         {
             Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
+        }
+    }
+
+    return (Result);
+}
+
+hmm_mat4
+HMM_Transpose(hmm_mat4 Matrix)
+{
+    hmm_mat4 Result = HMM_Mat4();
+
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
+        {
+            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
         }
     }
 
