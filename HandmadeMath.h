@@ -409,7 +409,6 @@ HMMDEF hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up);
 
 #ifdef HANDMADE_MATH_CPP_MODE
 
-
 HMMDEF float HMM_Dot(hmm_vec2 VecOne, hmm_vec2 VecTwo);
 HMMDEF float HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo);
 HMMDEF float HMM_Dot(hmm_vec4 VecOne, hmm_vec4 VecTwo);
@@ -580,7 +579,6 @@ HMM_ToRadians(float Degrees)
     return (Result);
 }
 
-
 HINLINE float
 HMM_DotVec2(hmm_vec2 VecOne, hmm_vec2 VecTwo)
 {
@@ -599,7 +597,6 @@ HMM_DotVec3(hmm_vec3 VecOne, hmm_vec3 VecTwo)
     return (Result);
 }
 
-
 HINLINE float
 HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo)
 {
@@ -608,7 +605,6 @@ HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo)
     Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z) + (VecOne.W * VecTwo.W);
     return (Result);
 }
-
 
 HINLINE float
 HMM_LengthSquared(hmm_vec3 A)
@@ -646,7 +642,6 @@ HMM_Power(float Base, int Exponent)
     return (Result);
 }
 
-
 HINLINE float
 HMM_Lerp(float A, float Time, float B)
 {
@@ -672,7 +667,6 @@ HMM_Clamp(float Min, float Value, float Max)
 
     return (Result);
 }
-
 
 HINLINE hmm_vec3
 HMM_Normalize(hmm_vec3 A)
