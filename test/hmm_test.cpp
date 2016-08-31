@@ -64,6 +64,7 @@ TEST(ScalarMath, PowerF)
     EXPECT_FLOAT_EQ(HMM_PowerF(-2.0f, 4.1), -17.148376f);
     EXPECT_FLOAT_EQ(HMM_PowerF(2.0f, -2.5), 0.176777f);
     EXPECT_FLOAT_EQ(HMM_PowerF(-2.0f, -2.5), -0.176777f);
+}
 
 TEST(ScalarMath, Lerp)
 {
