@@ -345,6 +345,7 @@ HMMDEF float HMM_RSquareRootF(float Float);
 HMMDEF float HMM_LengthSquared(hmm_vec3 A);
 HMMDEF float HMM_Length(hmm_vec3 A);    
 HMMDEF float HMM_Power(float Base, int Exponent);
+HMMDEF float HMM_Lerp(float A, float Time, float B);
 HMMDEF float HMM_Clamp(float Min, float Value, float Max);
 
 HMMDEF hmm_vec3 HMM_Normalize(hmm_vec3 A);
