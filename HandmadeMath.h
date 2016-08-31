@@ -77,19 +77,23 @@
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
      #define HMM_TANF MyTanF
+     #define HMM_EXPF MyExpF
+     #define HMM_LOGF MyLogF
   
-  Provide your own implementations of SinF, CosF, and TanF 
+  Provide your own implementations of SinF, CosF, TanF, ExpF and LogF
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:     
 
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
      #define HMM_TANF MyTanF
+     #define HMM_EXPF MyExpF
+     #define HMM_LOGF MyLogF
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
      #include "HandmadeMath.h"
 
-  If you do not define all three of these, HandmadeMath.h will use the
+  If you do not define all five of these, HandmadeMath.h will use the
   versions of these functions that are provided by the CRT.
 
   ==========================================================================
@@ -183,7 +187,8 @@ extern "C"
 #define HINLINE inline
 #endif
 
-#if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF)
+#if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
+    !defined(HMM_EXPF) || !defined(HMM_LOGF)
 #include <math.h>    
 #endif
     
@@ -199,6 +204,14 @@ extern "C"
 #define HMM_TANF tanf
 #endif        
     
+#ifndef HMM_EXPF
+#define HMM_EXPF expf
+#endif
+
+#ifndef HMM_LOGF
+#define HMM_LOGF logf
+#endif
+
 #define HMM_PI32 3.14159265359f
 #define HMM_PI 3.14159265358979323846
 
@@ -338,6 +351,8 @@ typedef hmm_mat4 hmm_m4;
 HMMDEF float HMM_SinF(float Angle);
 HMMDEF float HMM_TanF(float Angle);
 HMMDEF float HMM_CosF(float Angle);
+HMMDEF float HMM_ExpF(float Float);
+HMMDEF float HMM_LogF(float Float);
 
 HMMDEF float HMM_ToRadians(float Degrees);
 HMMDEF float HMM_SquareRootF(float Float);
@@ -511,7 +526,7 @@ HMMDEF hmm_mat4 & operator/=(hmm_mat4 &Left, float Right);
 
 #ifdef HANDMADE_MATH_IMPLEMENTATION
 
-HINLINE float 
+HINLINE float
 HMM_SinF(float Angle)
 {
     float Result = 0;
@@ -520,7 +535,7 @@ HMM_SinF(float Angle)
     return (Result);
 }
 
-HINLINE float 
+HINLINE float
 HMM_CosF(float Angle)
 {
     float Result = 0;
@@ -529,7 +544,7 @@ HMM_CosF(float Angle)
     return (Result);
 }
 
-HINLINE float 
+HINLINE float
 HMM_TanF(float Radians)
 {
     float Result = 0;
@@ -538,7 +553,25 @@ HMM_TanF(float Radians)
     return (Result);
 }
 
-HINLINE float 
+HINLINE float
+HMM_ExpF(float Float)
+{
+    float Result = 0;
+
+    Result = HMM_EXPF(Float);
+    return (Result);
+}
+
+HINLINE float
+HMM_LogF(float Float)
+{
+    float Result = 0;
+
+    Result = HMM_LOGF(Float);
+    return (Result);
+}
+
+HINLINE float
 HMM_SquareRootF(float Value)
 {
     float Result = 0;
