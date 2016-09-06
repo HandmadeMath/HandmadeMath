@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v0.6
+  HandmadeMath.h v0.7
 
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -135,6 +135,16 @@
           (*) RENAMED HMM_SqrtF to HMM_SquareRootF
           (*) REMOVED Inner function (user should use Dot now)
           (*) REMOVED HMM_FastInverseSquareRoot function declaration
+      0.7 
+          (*) REMOVED HMM_LengthSquared in HANDMADE_MATH_IMPLEMENTATION  (should use HMM_LengthSquaredVec3, or HANDMADE_MATH_CPP_MODE for function overloaded version)
+          (*) REMOVED HMM_Length in HANDMADE_MATH_IMPLEMENTATION (should use HMM_LengthVec3, HANDMADE_MATH_CPP_MODE for function overloaded version)
+          (*) REMOVED HMM_Normalize in HANDMADE_MATH_IMPLEMENTATION (should use HMM_NormalizeVec3, or HANDMADE_MATH_CPP_MODE for function overloaded version)
+          (*) Added HMM_LengthSquaredVec2
+          (*) Added HMM_LengthSquaredVec4
+          (*) Addd HMM_LengthVec2
+          (*) Added HMM_LengthVec4
+          (*) Added HMM_NormalizeVec2
+          (*) Added HMM_NormalizeVec4
 
   LICENSE
 
@@ -357,19 +367,29 @@ HMMDEF float HMM_LogF(float Float);
 HMMDEF float HMM_ToRadians(float Degrees);
 HMMDEF float HMM_SquareRootF(float Float);
 HMMDEF float HMM_RSquareRootF(float Float);
-HMMDEF float HMM_LengthSquared(hmm_vec3 A);
-HMMDEF float HMM_Length(hmm_vec3 A);    
+
+HMMDEF float HMM_LengthSquaredVec2(hmm_vec2 A);
+HMMDEF float HMM_LengthSquaredVec3(hmm_vec3 A);
+HMMDEF float HMM_LengthSquaredVec4(hmm_vec4 A);
+
+HMMDEF float HMM_LengthVec2(hmm_vec2 A);    
+HMMDEF float HMM_LengthVec3(hmm_vec3 A);    
+HMMDEF float HMM_LengthVec4(hmm_vec4 A);    
+
 HMMDEF float HMM_Power(float Base, int Exponent);
 HMMDEF float HMM_PowerF(float Base, float Exponent);
 HMMDEF float HMM_Lerp(float A, float Time, float B);
 HMMDEF float HMM_Clamp(float Min, float Value, float Max);
 
-HMMDEF hmm_vec3 HMM_Normalize(hmm_vec3 A);
-HMMDEF hmm_vec3 HMM_Cross(hmm_vec3 VecOne, hmm_vec3 VecTwo);
+HMMDEF hmm_vec2 HMM_NormalizeVec2(hmm_vec2 A);
+HMMDEF hmm_vec3 HMM_NormalizeVec3(hmm_vec3 A);
+HMMDEF hmm_vec4 HMM_NormalizeVec4(hmm_vec4 A);
 
 HMMDEF float HMM_DotVec2(hmm_vec2 VecOne, hmm_vec2 VecTwo);
 HMMDEF float HMM_DotVec3(hmm_vec3 VecOne, hmm_vec3 VecTwo);
 HMMDEF float HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo);
+
+HMMDEF hmm_vec3 HMM_Cross(hmm_vec3 VecOne, hmm_vec3 VecTwo);
 
 HMMDEF hmm_vec2 HMM_Vec2i(int X, int Y);
 HMMDEF hmm_vec2 HMM_Vec2(float X, float Y);
@@ -414,6 +434,7 @@ HMMDEF hmm_mat4 HMM_Transpose(hmm_mat4 Matrix);
 
 HMMDEF hmm_mat4 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
 HMMDEF hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far);
+
 HMMDEF hmm_mat4 HMM_Translate(hmm_vec3 Translation);
 HMMDEF hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis);
 HMMDEF hmm_mat4 HMM_Scale(hmm_vec3 Scale);
@@ -425,6 +446,18 @@ HMMDEF hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up);
 #endif
 
 #ifdef HANDMADE_MATH_CPP_MODE
+
+HMMDEF float HMM_Length(hmm_vec2 A);
+HMMDEF float HMM_Length(hmm_vec3 A);
+HMMDEF float HMM_Length(hmm_vec4 A);
+
+HMMDEF float HMM_LengthSquared(hmm_vec2 A);
+HMMDEF float HMM_LengthSquared(hmm_vec3 A);
+HMMDEF float HMM_LengthSquared(hmm_vec4 A);
+
+HMMDEF hmm_vec2 HMM_Normalize(hmm_vec2 A);
+HMMDEF hmm_vec3 HMM_Normalize(hmm_vec3 A);
+HMMDEF hmm_vec4 HMM_Normalize(hmm_vec4 A);
 
 HMMDEF float HMM_Dot(hmm_vec2 VecOne, hmm_vec2 VecTwo);
 HMMDEF float HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo);
@@ -494,33 +527,33 @@ HMMDEF hmm_vec3 operator/(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec4 operator/(hmm_vec4 Left, float Right);
 HMMDEF hmm_mat4 operator/(hmm_mat4 Left, float Right);
 
-HMMDEF hmm_vec2 & operator+=(hmm_vec2 &Left, hmm_vec2 Right);
-HMMDEF hmm_vec3 & operator+=(hmm_vec3 &Left, hmm_vec3 Right);
-HMMDEF hmm_vec4 & operator+=(hmm_vec4 &Left, hmm_vec4 Right);
-HMMDEF hmm_mat4 & operator+=(hmm_mat4 &Left, hmm_mat4 Right);
+HMMDEF hmm_vec2 &operator+=(hmm_vec2 &Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 &operator+=(hmm_vec3 &Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 &operator+=(hmm_vec4 &Left, hmm_vec4 Right);
+HMMDEF hmm_mat4 &operator+=(hmm_mat4 &Left, hmm_mat4 Right);
 
-HMMDEF hmm_vec2 & operator-=(hmm_vec2 &Left, hmm_vec2 Right);
-HMMDEF hmm_vec3 & operator-=(hmm_vec3 &Left, hmm_vec3 Right);
-HMMDEF hmm_vec4 & operator-=(hmm_vec4 &Left, hmm_vec4 Right);
-HMMDEF hmm_mat4 & operator-=(hmm_mat4 &Left, hmm_mat4 Right);
+HMMDEF hmm_vec2 &operator-=(hmm_vec2 &Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 &operator-=(hmm_vec3 &Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 &operator-=(hmm_vec4 &Left, hmm_vec4 Right);
+HMMDEF hmm_mat4 &operator-=(hmm_mat4 &Left, hmm_mat4 Right);
 
-HMMDEF hmm_vec2 & operator*=(hmm_vec2 &Left, hmm_vec2 Right);
-HMMDEF hmm_vec3 & operator*=(hmm_vec3 &Left, hmm_vec3 Right);
-HMMDEF hmm_vec4 & operator*=(hmm_vec4 &Left, hmm_vec4 Right);
+HMMDEF hmm_vec2 &operator*=(hmm_vec2 &Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 &operator*=(hmm_vec3 &Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 &operator*=(hmm_vec4 &Left, hmm_vec4 Right);
 
-HMMDEF hmm_vec2 & operator*=(hmm_vec2 &Left, float Right);
-HMMDEF hmm_vec3 & operator*=(hmm_vec3 &Left, float Right);
-HMMDEF hmm_vec4 & operator*=(hmm_vec4 &Left, float Right);
-HMMDEF hmm_mat4 & operator*=(hmm_mat4 &Left, float Right);
+HMMDEF hmm_vec2 &operator*=(hmm_vec2 &Left, float Right);
+HMMDEF hmm_vec3 &operator*=(hmm_vec3 &Left, float Right);
+HMMDEF hmm_vec4 &operator*=(hmm_vec4 &Left, float Right);
+HMMDEF hmm_mat4 &operator*=(hmm_mat4 &Left, float Right);
 
-HMMDEF hmm_vec2 & operator/=(hmm_vec2 &Left, hmm_vec2 Right);
-HMMDEF hmm_vec3 & operator/=(hmm_vec3 &Left, hmm_vec3 Right);
-HMMDEF hmm_vec4 & operator/=(hmm_vec4 &Left, hmm_vec4 Right);
+HMMDEF hmm_vec2 &operator/=(hmm_vec2 &Left, hmm_vec2 Right);
+HMMDEF hmm_vec3 &operator/=(hmm_vec3 &Left, hmm_vec3 Right);
+HMMDEF hmm_vec4 &operator/=(hmm_vec4 &Left, hmm_vec4 Right);
 
-HMMDEF hmm_vec2 & operator/=(hmm_vec2 &Left, float Right);
-HMMDEF hmm_vec3 & operator/=(hmm_vec3 &Left, float Right);
-HMMDEF hmm_vec4 & operator/=(hmm_vec4 &Left, float Right);
-HMMDEF hmm_mat4 & operator/=(hmm_mat4 &Left, float Right);
+HMMDEF hmm_vec2 &operator/=(hmm_vec2 &Left, float Right);
+HMMDEF hmm_vec3 &operator/=(hmm_vec3 &Left, float Right);
+HMMDEF hmm_vec4 &operator/=(hmm_vec4 &Left, float Right);
+HMMDEF hmm_mat4 &operator/=(hmm_mat4 &Left, float Right);
 
 #endif /* HANDMADE_MATH_CPP */
 
@@ -531,7 +564,7 @@ HMMDEF hmm_mat4 & operator/=(hmm_mat4 &Left, float Right);
 HINLINE float
 HMM_SinF(float Angle)
 {
-    float Result = 0;
+    float Result = 0.0f;
 
     Result = HMM_SINF(Angle);
     return (Result);
@@ -540,7 +573,7 @@ HMM_SinF(float Angle)
 HINLINE float
 HMM_CosF(float Angle)
 {
-    float Result = 0;
+    float Result = 0.0f;
 
     Result = HMM_COSF(Angle);
     return (Result);
@@ -549,7 +582,7 @@ HMM_CosF(float Angle)
 HINLINE float
 HMM_TanF(float Radians)
 {
-    float Result = 0;
+    float Result = 0.0f;
 
     Result = HMM_TANF(Radians);
     return (Result);
@@ -558,7 +591,7 @@ HMM_TanF(float Radians)
 HINLINE float
 HMM_ExpF(float Float)
 {
-    float Result = 0;
+    float Result = 0.0f;
 
     Result = HMM_EXPF(Float);
     return (Result);
@@ -567,16 +600,25 @@ HMM_ExpF(float Float)
 HINLINE float
 HMM_LogF(float Float)
 {
-    float Result = 0;
+    float Result = 0.0f;
 
     Result = HMM_LOGF(Float);
     return (Result);
 }
 
 HINLINE float
+HMM_ToRadians(float Degrees)
+{
+    float Result = 0.0f;
+
+    Result = Degrees * (HMM_PI32 / 180.0f);
+    return (Result);
+}
+
+HINLINE float
 HMM_SquareRootF(float Value)
 {
-    float Result = 0;
+    float Result = 0.0f;
 
 #ifdef HANDMADE_MATH_NO_SSE
     Result = sqrtf(Value);
@@ -592,7 +634,7 @@ HMM_SquareRootF(float Value)
 HINLINE float
 HMM_RSquareRootF(float Value)
 {
-    float Result = 0;
+    float Result = 0.0f;
 
 #ifdef HANDMADE_MATH_NO_SSE
     Result = 1.0f/HMM_SqrtF(Value);    
@@ -606,57 +648,63 @@ HMM_RSquareRootF(float Value)
 }
 
 HINLINE float
-HMM_ToRadians(float Degrees)
+HMM_LengthSquaredVec2(hmm_vec2 A)
 {
-    float Result = 0;
-
-    Result = Degrees * (HMM_PI32 / 180.0f);
-    return (Result);
+    float Result = 0.0f;
+    
+    Result = HMM_DotVec2(A, A);
+    
+    return(Result);
 }
 
 HINLINE float
-HMM_DotVec2(hmm_vec2 VecOne, hmm_vec2 VecTwo)
+HMM_LengthSquaredVec3(hmm_vec3 A)
 {
-    float Result = 0;
-
-    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y);
-    return (Result);
-}
-
-HINLINE float
-HMM_DotVec3(hmm_vec3 VecOne, hmm_vec3 VecTwo)
-{
-    float Result = 0;
-
-    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z);
-    return (Result);
-}
-
-HINLINE float
-HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo)
-{
-    float Result = 0;
-
-    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z) + (VecOne.W * VecTwo.W);
-    return (Result);
-}
-
-HINLINE float
-HMM_LengthSquared(hmm_vec3 A)
-{
-    float Result = 0;
+    float Result = 0.0f;
 
     Result = HMM_DotVec3(A, A);
+    
     return (Result);
 }
 
-HINLINE float
-HMM_Length(hmm_vec3 A)
+HINLINE float 
+HMM_LengthSquaredVec4(hmm_vec4 A)
 {
-    float Result = 0;
+    float Result = 0.0f;
+    
+    Result = HMM_DotVec4(A, A);
+    
+    return(Result);
+}
 
-    Result = HMM_SquareRootF(HMM_LengthSquared(A));
+HINLINE float
+HMM_LengthVec2(hmm_vec2 A)
+{
+    float Result = 0.0f;
+    
+    Result = HMM_SquareRootF(HMM_LengthSquaredVec2(A));
+    
+    return(Result);
+}
+
+HINLINE float
+HMM_LengthVec3(hmm_vec3 A)
+{
+    float Result = 0.0f;
+
+    Result = HMM_SquareRootF(HMM_LengthSquaredVec3(A));
+    
     return (Result);
+}
+
+HINLINE float 
+HMM_LengthVec4(hmm_vec4 A)
+{
+    float Result = 0.0f;
+    
+    Result = HMM_SquareRootF(HMM_LengthSquaredVec4(A));
+    
+    return(Result);
 }
 
 HINLINE float
@@ -671,9 +719,11 @@ HMM_Power(float Base, int Exponent)
         {
             Result *= Mul;
         }
+        
         Mul *= Mul;
         X >>= 1;
     }
+    
     return (Result);
 }
 
@@ -709,16 +759,74 @@ HMM_Clamp(float Min, float Value, float Max)
     return (Result);
 }
 
+HINLINE hmm_vec2
+HMM_NormalizeVec2(hmm_vec2 A)
+{
+    hmm_vec2 Result = {0};
+
+    float VectorLength = HMM_LengthVec2(A);
+    
+    Result.X = A.X * (1.0f / VectorLength);
+    Result.Y = A.Y * (1.0f / VectorLength);
+    
+    return (Result);
+}
+
 HINLINE hmm_vec3
-HMM_Normalize(hmm_vec3 A)
+HMM_NormalizeVec3(hmm_vec3 A)
 {
     hmm_vec3 Result = {0};
 
-    float VectorLength = HMM_Length(A);
+    float VectorLength = HMM_LengthVec3(A);
     
     Result.X = A.X * (1.0f / VectorLength);
     Result.Y = A.Y * (1.0f / VectorLength);
     Result.Z = A.Z * (1.0f / VectorLength);
+    
+    return (Result);
+}
+
+HINLINE hmm_vec4
+HMM_NormalizeVec4(hmm_vec4 A)
+{
+    hmm_vec4 Result = {0};
+
+    float VectorLength = HMM_LengthVec4(A);
+    
+    Result.X = A.X * (1.0f / VectorLength);
+    Result.Y = A.Y * (1.0f / VectorLength);
+    Result.Z = A.Z * (1.0f / VectorLength);
+    Result.W = A.W * (1.0f / VectorLength);
+    
+    return (Result);
+}
+
+HINLINE float
+HMM_DotVec2(hmm_vec2 VecOne, hmm_vec2 VecTwo)
+{
+    float Result = 0.0f;
+
+    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y);
+    
+    return (Result);
+}
+
+HINLINE float
+HMM_DotVec3(hmm_vec3 VecOne, hmm_vec3 VecTwo)
+{
+    float Result = 0.0f;
+
+    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z);
+    
+    return (Result);
+}
+
+HINLINE float
+HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo)
+{
+    float Result = 0.0f;
+
+    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z) + (VecOne.W * VecTwo.W);
     
     return (Result);
 }
@@ -1035,14 +1143,14 @@ HMM_DivideVec4f(hmm_vec4 Left, float Right)
 }
 
 HINLINE hmm_mat4
-HMM_Mat4()
+HMM_Mat4(void)
 {
     hmm_mat4 Result = {0};
 
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_Mat4d(float Diagonal)
 {
     hmm_mat4 Result = HMM_Mat4();
@@ -1240,7 +1348,7 @@ HMM_Rotate(float Angle, hmm_vec3 Axis)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
     
-    Axis = HMM_Normalize(Axis);
+    Axis = HMM_NormalizeVec3(Axis);
     
     float SinTheta = HMM_SinF(HMM_ToRadians(Angle));
     float CosTheta = HMM_CosF(HMM_ToRadians(Angle));
@@ -1262,12 +1370,24 @@ HMM_Rotate(float Angle, hmm_vec3 Axis)
 }
 
 hmm_mat4
+HMM_Scale(hmm_vec3 Scale)
+{
+    hmm_mat4 Result = HMM_Mat4d(1.0f);
+
+    Result.Elements[0][0] = Scale.X;
+    Result.Elements[1][1] = Scale.Y;
+    Result.Elements[2][2] = Scale.Z;
+
+    return (Result);
+}
+
+hmm_mat4
 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
 {
     hmm_mat4 Result = {0};
 
-    hmm_vec3 F = HMM_Normalize(HMM_SubtractVec3(Center, Eye));
-    hmm_vec3 S = HMM_Normalize(HMM_Cross(F, Up));
+    hmm_vec3 F = HMM_NormalizeVec3(HMM_SubtractVec3(Center, Eye));
+    hmm_vec3 S = HMM_NormalizeVec3(HMM_Cross(F, Up));
     hmm_vec3 U = HMM_Cross(S, F);
 
     Result.Elements[0][0] = S.X;
@@ -1290,19 +1410,97 @@ HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
     return (Result);
 }
 
-hmm_mat4
-HMM_Scale(hmm_vec3 Scale)
+#ifdef HANDMADE_MATH_CPP_MODE
+
+HMMDEF float 
+HMM_Length(hmm_vec2 A)
 {
-    hmm_mat4 Result = HMM_Mat4d(1.0f);
-
-    Result.Elements[0][0] = Scale.X;
-    Result.Elements[1][1] = Scale.Y;
-    Result.Elements[2][2] = Scale.Z;
-
-    return (Result);
+    float Result = 0.0f;
+    
+    Result = HMM_LengthVec2(A);
+    
+    return(Result);
 }
 
-#ifdef HANDMADE_MATH_CPP_MODE
+HMMDEF float 
+HMM_Length(hmm_vec3 A)
+{
+    float Result = 0.0f;
+    
+    Result = HMM_LengthVec3(A);
+    
+    return(Result);
+}
+
+HMMDEF float 
+HMM_Length(hmm_vec4 A)
+{
+    float Result = 0.0f;
+    
+    Result = HMM_LengthVec4(A);
+    
+    return(Result);
+}
+
+HINLINE float 
+HMM_LengthSquared(hmm_vec2 A)
+{
+    float Result = 0.0f;
+    
+    Result = HMM_LengthSquaredVec2(A);
+    
+    return(Result);
+}
+
+HINLINE float 
+HMM_LengthSquared(hmm_vec3 A)
+{
+    float Result = 0.0f;
+    
+    Result = HMM_LengthSquaredVec3(A);
+    
+    return(Result);
+}
+
+HINLINE float 
+HMM_LengthSquared(hmm_vec4 A)
+{
+    float Result = 0.0f;
+    
+    Result = HMM_LengthSquaredVec4(A);
+    
+    return(Result);
+}
+
+HINLINE hmm_vec2 
+HMM_Normalize(hmm_vec2 A)
+{
+    hmm_vec2 Result = {0};
+    
+    Result = HMM_NormalizeVec2(A);    
+    
+    return(Result);
+}
+
+HINLINE hmm_vec3 
+HMM_Normalize(hmm_vec3 A)
+{
+    hmm_vec3 Result = {0};
+    
+    Result = HMM_NormalizeVec3(A);
+    
+    return(Result);
+}
+
+HINLINE hmm_vec4 
+HMM_Normalize(hmm_vec4 A)
+{
+    hmm_vec4 Result = {0};
+    
+    Result = HMM_NormalizeVec4(A);
+    
+    return(Result);
+}
 
 HINLINE float 
 HMM_Dot(hmm_vec2 VecOne, hmm_vec2 VecTwo)
@@ -1324,7 +1522,7 @@ HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo)
     return(Result);
 }
 
-HMMDEF float 
+HINLINE float 
 HMM_Dot(hmm_vec4 VecOne, hmm_vec4 VecTwo)
 {
     float Result = 0;
