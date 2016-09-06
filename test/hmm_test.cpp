@@ -157,7 +157,7 @@ TEST(Initialization, MatrixDiagonal)
     }
 }
 
-TEST(VectorOps, LengthSquareRoot)
+TEST(VectorOps, LengthSquared)
 {
     hmm_vec2 v2 = HMM_Vec2(1.0f, -2.0f);
     hmm_vec3 v3 = HMM_Vec3(1.0f, -2.0f, 3.0f); 
@@ -166,27 +166,78 @@ TEST(VectorOps, LengthSquareRoot)
     EXPECT_FLOAT_EQ(HMM_LengthSquaredVec2(v2), 5.0f);
     EXPECT_FLOAT_EQ(HMM_LengthSquaredVec3(v3), 14.0f);
     EXPECT_FLOAT_EQ(HMM_LengthSquaredVec4(v4), 15.0f);
+
+    EXPECT_FLOAT_EQ(HMM_LengthSquared(v2), 5.0f);
+    EXPECT_FLOAT_EQ(HMM_LengthSquared(v3), 14.0f);
+    EXPECT_FLOAT_EQ(HMM_LengthSquared(v4), 15.0f);
 }
 
 TEST(VectorOps, Length)
 {
-    hmm_vec3 v2 = HMM_Vec2(1.0f, -9.0f);
+    hmm_vec2 v2 = HMM_Vec2(1.0f, -9.0f);
     hmm_vec3 v3 = HMM_Vec3(2.0f, -3.0f, 6.0f);
-    hmm_vec3 v4 = HMM_Vec4(2.0f, -3.0f, 6.0f, 12.0f);
+    hmm_vec4 v4 = HMM_Vec4(2.0f, -3.0f, 6.0f, 12.0f);
 
     EXPECT_FLOAT_EQ(HMM_LengthVec2(v2), 9.0553856f);
     EXPECT_FLOAT_EQ(HMM_LengthVec3(v3), 7.0f);
     EXPECT_FLOAT_EQ(HMM_LengthVec4(v4), 13.892444f);
+
+    EXPECT_FLOAT_EQ(HMM_Length(v2), 9.0553856f);
+    EXPECT_FLOAT_EQ(HMM_Length(v3), 7.0f);
+    EXPECT_FLOAT_EQ(HMM_Length(v4), 13.892444f);
 }
 
 TEST(VectorOps, Normalize)
 {
-    hmm_vec3 v = HMM_Vec3(1.0f, -2.0f, 3.0f);
+    hmm_vec2 v2 = HMM_Vec2(1.0f, -2.0f);
+    hmm_vec3 v3 = HMM_Vec3(1.0f, -2.0f, 3.0f); 
+    hmm_vec4 v4 = HMM_Vec4(1.0f, -2.0f, 3.0f, -1.0f);
 
-    hmm_vec3 result = HMM_Normalize(v);
+    // Test C functions
+    {
+        hmm_vec2 result = HMM_NormalizeVec2(v2);
+        EXPECT_FLOAT_EQ(HMM_LengthVec2(result), 1.0f);
+        EXPECT_GT(result.X, 0);
+        EXPECT_LT(result.Y, 0);
+    }
+    {
+        hmm_vec3 result = HMM_NormalizeVec3(v3);
+        EXPECT_FLOAT_EQ(HMM_LengthVec3(result), 1.0f);
+        EXPECT_GT(result.X, 0);
+        EXPECT_LT(result.Y, 0);
+        EXPECT_GT(result.Z, 0);
+    }
+    {
+        hmm_vec4 result = HMM_NormalizeVec4(v4);
+        EXPECT_FLOAT_EQ(HMM_LengthVec4(result), 1.0f);
+        EXPECT_GT(result.X, 0);
+        EXPECT_LT(result.Y, 0);
+        EXPECT_GT(result.Z, 0);
+        EXPECT_LT(result.W, 0);
+    }
 
-    EXPECT_FLOAT_EQ(HMM_LengthVec3(result), 1.0f);
-    EXPECT_LT(result.Y, 0);
+    // Test C++ functions
+    {
+        hmm_vec2 result = HMM_Normalize(v2);
+        EXPECT_FLOAT_EQ(HMM_LengthVec2(result), 1.0f);
+        EXPECT_GT(result.X, 0);
+        EXPECT_LT(result.Y, 0);
+    }
+    {
+        hmm_vec3 result = HMM_Normalize(v3);
+        EXPECT_FLOAT_EQ(HMM_LengthVec3(result), 1.0f);
+        EXPECT_GT(result.X, 0);
+        EXPECT_LT(result.Y, 0);
+        EXPECT_GT(result.Z, 0);
+    }
+    {
+        hmm_vec4 result = HMM_Normalize(v4);
+        EXPECT_FLOAT_EQ(HMM_LengthVec4(result), 1.0f);
+        EXPECT_GT(result.X, 0);
+        EXPECT_LT(result.Y, 0);
+        EXPECT_GT(result.Z, 0);
+        EXPECT_LT(result.W, 0);
+    }
 }
 
 TEST(VectorOps, Cross)
