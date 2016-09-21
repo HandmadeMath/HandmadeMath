@@ -178,6 +178,10 @@
 #pragma warning(disable:4201)
 #endif
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wgnu-anonymous-struct"
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {
