@@ -1,89 +1,89 @@
 /*
-  HandmadeMath.h v0.7
-
+  HandmadeMath.h v1.0
+  
   This is a single header file with a bunch of useful functions for
   basic game math operations.
-
+  
   ==========================================================================
-
+  
   You MUST
-
+  
      #define HANDMADE_MATH_IMPLEMENTATION
-
+     
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:
-
+  
      #define HANDMADE_MATH_IMPLEMENTATION
      #include "HandmadeMath.h"
-
+     
   All other files should just #include "HandmadeMath.h" without the #define.
-
+  
   ==========================================================================
-
+  
   For overloaded and operator overloaded versions of the base C functions,
   you MUST
-
+  
      #define HANDMADE_MATH_CPP_MODE
-
+     
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:
-
+  
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
      #include "HandmadeMath.h"
-
+     
   All other files should just #include "HandmadeMath.h" without the #define.
-
+  
   ==========================================================================
-
+  
   To disable SSE intrinsics, you MUST
-
+  
   #define HANDMADE_MATH_NO_SSE
-
+  
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:
-
+  
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
      #define HANDMADE_MATH_NO_SSE
      #include "HandmadeMath.h"
-
+     
      or
-
+     
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_NO_SSE
      #include "HandmadeMath.h"
-
+     
   ==========================================================================
-
+  
   To disable inlining functions, you MUST
-
+  
   #define HANDMADE_MATH_NO_INLINE
-
+  
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:
-
+  
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
      #define HANDMADE_MATH_NO_INLINE
      #include "HandmadeMath.h"
-
+     
   All other files should just #include "HandmadeMath.h" without the #define.
-
+  
   ==========================================================================
   
   To Disable the CRT, you MUST 
-
+  
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
      #define HMM_TANF MyTanF
      #define HMM_EXPF MyExpF
      #define HMM_LOGF MyLogF
-  
+     
   Provide your own implementations of SinF, CosF, TanF, ExpF and LogF
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:     
-
+  
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
      #define HMM_TANF MyTanF
@@ -92,12 +92,12 @@
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
      #include "HandmadeMath.h"
-
+     
   If you do not define all five of these, HandmadeMath.h will use the
   versions of these functions that are provided by the CRT.
-
+  
   ==========================================================================
-
+  
   Version History:
       0.2 (*) Updated documentation
           (*) Better C compliance
@@ -145,24 +145,26 @@
           (*) Added HMM_LengthVec4
           (*) Added HMM_NormalizeVec2
           (*) Added HMM_NormalizeVec4
-
+     1.0
+          (*) Lots of testing!
+          
   LICENSE
-
+  
   This software is in the public domain. Where that dedication is not
   recognized, you are granted a perpetual, irrevocable license to copy,
   distribute, and modify this file as you see fit.
-
+  
   CREDITS
-
+  
   Written by Zakary Strange (zak@handmade.network && @strangezak)
-
+  
   Functionality:
    Matt Mascarenhas (@miblo_)
    Aleph
    FieryDrake (@fierydrake)
    Gingerbill (@TheGingerBill)
    Ben Visness (@bvisness) 
-
+   
   Fixes:
    Jeroen van Rijn (@J_vanRijn)
    Kiljacken (@Kiljacken)

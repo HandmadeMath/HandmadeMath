@@ -12,6 +12,7 @@ _This library is free and will stay free, but if you would like to support devel
 
 Version         | Changes        | 
 ----------------|----------------|
+**1.0**   | Lots of testing |
 **0.7**   | Added HMM_Vec2, and HMM_Vec4 versions of  HMM_LengthSquared, HMM_Length, and HMM_Normalize.   |
 **0.6**   | Made HMM_Power faster, Fixed possible efficiency problem with HMM_Normalize, RENAMED HMM_LengthSquareRoot to HMM_LengthSquared, RENAMED HMM_RSqrtF to HMM_RSquareRootF, RENAMED HMM_SqrtF to HMM_SquareRootF, REMOVED Inner function (user should use Dot now), REMOVED HMM_FastInverseSquareRoot function declaration |
 **0.5.2**   | Fixed SSE code in HMM_SqrtF and HMM_RSqrtF |
