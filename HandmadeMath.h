@@ -736,7 +736,7 @@ HMM_Power(float Base, int Exponent)
 HINLINE float
 HMM_PowerF(float Base, float Exponent)
 {
-    return expf(Exponent * logf(Base));
+    return HMM_EXPF(Exponent * HMM_LOGF(Base));
 }
 
 HINLINE float
