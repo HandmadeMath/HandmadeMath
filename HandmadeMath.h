@@ -354,6 +354,25 @@ typedef union hmm_vec4
     float Elements[4];
 } hmm_vec4;
 
+typedef struct hmm_quaternion
+{
+    struct
+    {
+        union
+        {
+            hmm_vec3 XYZ;
+            struct
+            {
+                float X, Y, Z;
+            };
+        };
+        
+        float W;
+    };
+    
+    float Elements[4];
+} hmm_quaternion;
+
 typedef union hmm_mat4
 {
     float Elements[4][4];
@@ -446,6 +465,9 @@ HMMDEF hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis);
 HMMDEF hmm_mat4 HMM_Scale(hmm_vec3 Scale);
 
 HMMDEF hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up);
+
+HMMDEF hmm_quaternion HMM_Quaternion(float X, float Y, float Z, float W);
+HMMDEF hmm_quaternion HMM_QuaternionV4(hmm_vec4 Vector);
 
 #ifdef __cplusplus
 }
@@ -1205,7 +1227,7 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = HMM_Mat4();
@@ -1230,7 +1252,7 @@ HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
 {
     hmm_mat4 Result = HMM_Mat4();
@@ -1248,7 +1270,7 @@ HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
     return (Result);
 }
 
-hmm_vec4
+HINLINE hmm_vec4
 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
 {
     hmm_vec4 Result = {0};
@@ -1268,7 +1290,7 @@ HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
 {
     hmm_mat4 Result = HMM_Mat4();
@@ -1286,7 +1308,7 @@ HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_Transpose(hmm_mat4 Matrix)
 {
     hmm_mat4 Result = HMM_Mat4();
@@ -1304,7 +1326,7 @@ HMM_Transpose(hmm_mat4 Matrix)
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
@@ -1320,7 +1342,7 @@ HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, f
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
@@ -1337,7 +1359,7 @@ HMM_Perspective(float FOV, float AspectRatio, float Near, float Far)
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_Translate(hmm_vec3 Translation)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
@@ -1349,7 +1371,7 @@ HMM_Translate(hmm_vec3 Translation)
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_Rotate(float Angle, hmm_vec3 Axis)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
@@ -1375,7 +1397,7 @@ HMM_Rotate(float Angle, hmm_vec3 Axis)
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_Scale(hmm_vec3 Scale)
 {
     hmm_mat4 Result = HMM_Mat4d(1.0f);
@@ -1387,7 +1409,7 @@ HMM_Scale(hmm_vec3 Scale)
     return (Result);
 }
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
 {
     hmm_mat4 Result = {0};
@@ -1414,6 +1436,33 @@ HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
     Result.Elements[3][3] = 1.0f;
 
     return (Result);
+}
+
+
+HMMDEF hmm_quaternion 
+HMM_Quaternion(float X, float Y, float Z, float W)
+{
+    hmm_quaternion Result = {0};
+    
+    Result.X = X;
+    Result.Y = Y;
+    Result.Z = Z;
+    Result.W = W;
+    
+    return(Result);
+}
+
+HINLINE hmm_quaternion 
+HMM_QuaternionV4(hmm_vec4 Vector)
+{
+    hmm_quaternion Result = {0};
+    
+    Result.X = Vector.X;
+    Result.Y = Vector.Y;
+    Result.Z = Vector.Z;
+    Result.W = Vector.W;
+    
+    return(Result);    
 }
 
 #ifdef HANDMADE_MATH_CPP_MODE
