@@ -1516,6 +1516,12 @@ HMM_DivQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
 {
     hmm_quaternion Result = {0};
 
+    Result.X = QuaternionOne.X * (1/QuaternionTwo.X);
+    Result.Y = QuaternionOne.Y * (1/QuaternionTwo.Y);
+    Result.Z = QuaternionOne.Z * (1/QuaternionTwo.Z);
+    Result.W = QuaternionOne.W * (1/QuaternionTwo.W);
+}
+
 #ifdef HANDMADE_MATH_CPP_MODE
 
 HMMDEF float 
