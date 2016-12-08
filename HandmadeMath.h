@@ -373,6 +373,8 @@ typedef struct hmm_quaternion
     float Elements[4];
 } hmm_quaternion;
 
+
+
 typedef union hmm_mat4
 {
     float Elements[4][4];
@@ -468,6 +470,11 @@ HMMDEF hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up);
 
 HMMDEF hmm_quaternion HMM_Quaternion(float X, float Y, float Z, float W);
 HMMDEF hmm_quaternion HMM_QuaternionV4(hmm_vec4 Vector);
+HMMDEF hmm_quaternion HMM_AddQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
+HMMDEF hmm_quaternion HMM_SubQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
+HMMDEF hmm_quaternion HMM_MulQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
+HMMDef hmm_quaternion HMM_DivQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
+//TODO(Trent): Don't forget the line numbers!
 
 #ifdef __cplusplus
 }
@@ -1464,6 +1471,50 @@ HMM_QuaternionV4(hmm_vec4 Vector)
     
     return(Result);    
 }
+
+HINLINE hmm_quaternion
+HMM_AddQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
+{
+    hmm_quaternion Result = {0};
+
+    Result.X = QuaternionOne.X + QuaternionTwo.X;
+    Result.Y = QuaternionOne.Y + QuaternionTwo.Y;
+    Result.Z = QuaternionOne.Z + QuaternionTwo.Z;
+    Result.W = QuaternionOne.W + QuaternionTwo.W;
+
+    return(Result);
+}
+
+HINLINE hmm_quaternion
+HMM_SubQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
+{
+    hmm_quaternion Result = {0};
+
+    Result.X = QuaternionOne.X - QuaternionTwo.X;
+    Result.Y = QuaternionOne.Y - QuaternionTwo.Y;
+    Result.Z = QuaternionOne.Z - QuaternionTwo.Z;
+    Result.W = QuaternionOne.W - QuaternionTwo.W;
+
+    return(Result);
+}
+
+HINLINE hmm_quaternion
+HMM_MulQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
+{
+    hmm_quaternion Result = {0};
+
+    Result.X = QuaternionOne.X * QuaternionTwo.X;
+    Result.Y = QuaternionOne.Y * QuaternionTwo.Y;
+    Result.Z = QuaternionOne.Z * QuaternionTwo.Z;
+    Result.W = QuaternionOne.W * QuaternionTwo.W;
+
+    return(Result);
+}
+
+HINLINE hmm_quaternion
+HMM_DivQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
+{
+    hmm_quaternion Result = {0};
 
 #ifdef HANDMADE_MATH_CPP_MODE
 
