@@ -473,7 +473,9 @@ HMMDEF hmm_quaternion HMM_QuaternionV4(hmm_vec4 Vector);
 HMMDEF hmm_quaternion HMM_AddQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
 HMMDEF hmm_quaternion HMM_SubQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
 HMMDEF hmm_quaternion HMM_MulQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
-HMMDef hmm_quaternion HMM_DivQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
+HMMDEF hmm_quaternion HMM_DivQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
+HMMDEF float HMM_DotQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
+//HMMDef hmm_quaternion HMM_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo, float time);
 //TODO(Trent): Don't forget the line numbers!
 
 #ifdef __cplusplus
@@ -1520,7 +1522,28 @@ HMM_DivQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
     Result.Y = QuaternionOne.Y * (1/QuaternionTwo.Y);
     Result.Z = QuaternionOne.Z * (1/QuaternionTwo.Z);
     Result.W = QuaternionOne.W * (1/QuaternionTwo.W);
+
+    return(Result);
 }
+
+HINLINE float
+HMM_DotQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
+{
+    float Result = 0.00f;
+
+    Result = (QuaternionOne.X * QuaternionTwo.X) + (QuaternionOne.Y * QuaternionTwo.Y) + (QuaternionOne.Z * QuaternionTwo.Z) + (QuaternionOne.W * QuaternionTwo.W);
+
+    return(Result);
+}
+
+/**HMM_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo, float time)
+{
+    hmm_quaternion Result = {0};
+
+    float Theta = HMM_DotQuat(QuaternionOne, QuaternionTwo);
+
+    return(Result);
+}**/
 
 #ifdef HANDMADE_MATH_CPP_MODE
 
