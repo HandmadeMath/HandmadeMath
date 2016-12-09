@@ -233,7 +233,7 @@ extern "C"
 
 #define HMM_MIN(a, b) (a) > (b) ? (b) : (a)
 #define HMM_MAX(a, b) (a) < (b) ? (b) : (a)
-#define HMN_ABS(a) (a) < 0 ? -(a) : (a)
+#define HMM_ABS(a) ((a) > 0 ? (a) : -(a))
 #define HMM_MOD(a, m) ((a) % (m)) >= 0 ? ((a) % (m)) : (((a) % (m)) + (m))
 #define HMM_SQUARE(x) ((x) * (x))
 
@@ -387,7 +387,10 @@ typedef hmm_mat4 hmm_m4;
 
 HMMDEF float HMM_SinF(float Angle);
 HMMDEF float HMM_TanF(float Angle);
+HMMDEF float HMM_ATanF(float Theta);
+HMMDEF float HMM_ATanF2(float Theta, float Theta2);
 HMMDEF float HMM_CosF(float Angle);
+HMMDEF float HMM_ACosF(float Theta);
 HMMDEF float HMM_ExpF(float Float);
 HMMDEF float HMM_LogF(float Float);
 
@@ -608,6 +611,15 @@ HMM_SinF(float Angle)
 }
 
 HINLINE float
+HMM_ACosF(float Theta)
+{
+    float Result = 0.0f;
+    float Theta2 = HMM_SquareRootF((1.0f + Theta) * (1.0f - Theta));
+    Result = HMM_ATanF2(Theta2, Theta);
+    return(Result);
+}
+
+HINLINE float
 HMM_CosF(float Angle)
 {
     float Result = 0.0f;
@@ -623,6 +635,36 @@ HMM_TanF(float Radians)
 
     Result = HMM_TANF(Radians);
     return (Result);
+}
+
+HINLINE float
+HMM_ATanF(float Theta)
+{
+    float u = Theta*Theta;
+    float u2 = u*u;
+    float u3 = u2*u;
+    float u4 = u3*u;
+    float f = 1.0f + 0.33288950512027f*u - 0.08467922817644f*u2 + 0.03252232640125f*u3 - 0.00749305860992f*u4;
+    return Theta / f;
+}
+
+HINLINE float
+HMM_ATanF2(float Theta, float Theta2)
+{
+    if (HMM_ABS(Theta2) > HMM_ABS(Theta)) {
+        float a = HMM_ATanF(Theta / Theta2);
+        if (Theta2 > 0.0f)
+            return a;
+        else
+            return Theta > 0.0f ? a + HMM_PI : a - HMM_PI;
+    }
+    else {
+        float a = HMM_ATanF(Theta2 / Theta);
+        if (Theta2 > 0.0f)
+            return Theta > 0.0f ? (HMM_PI/2) - a : - (HMM_PI/2) - a;
+        else 
+            return Theta > 0.0f ? (HMM_PI/2) + a : - (HMM_PI/2) + a;
+    }
 }
 
 HINLINE float
@@ -1536,14 +1578,42 @@ HMM_DotQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
     return(Result);
 }
 
-/**HMM_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo, float time)
+HINLINE hmm_quaternion
+HMM_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo, float time)
 {
     hmm_quaternion Result = {0};
+    hmm_quaternion QuaternionLeft = {0};
+    hmm_quaternion QuaternionRight = {0};
 
-    float Theta = HMM_DotQuat(QuaternionOne, QuaternionTwo);
+    float Cos_Theta = HMM_DotQuat(QuaternionOne, QuaternionTwo);
+    float angle = HMM_ACosF(Cos_Theta);
+    
+    float s1 = HMM_SinF(1.0f - time*angle);
+    float s2 = HMM_SinF(time*angle);
+    float is = 1.0f / HMM_SinF(angle);
+
+   QuaternionLeft.X = QuaternionTwo.X * s1;
+   QuaternionLeft.Y = QuaternionTwo.Y * s1;
+   QuaternionLeft.Z = QuaternionTwo.Z * s1;
+   QuaternionLeft.W = QuaternionTwo.W * s1;
+
+   QuaternionRight.X = QuaternionTwo.X * s2;
+   QuaternionRight.Y = QuaternionTwo.Y * s2;
+   QuaternionRight.Z = QuaternionTwo.Z * s2;
+   QuaternionRight.W = QuaternionTwo.W * s2;
+
+   Result.X = QuaternionLeft.X + QuaternionRight.X;
+   Result.Y = QuaternionLeft.Y + QuaternionRight.Y;
+   Result.Z = QuaternionLeft.Z + QuaternionRight.Z;
+   Result.W = QuaternionLeft.W + QuaternionRight.W;
+
+   Result.X = Result.X * is;
+   Result.Y = Result.Y * is;
+   Result.Z = Result.Z * is;
+   Result.W = Result.W * is;
 
     return(Result);
-}**/
+}
 
 #ifdef HANDMADE_MATH_CPP_MODE
 
