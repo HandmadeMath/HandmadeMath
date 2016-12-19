@@ -475,11 +475,11 @@ HMMDEF hmm_quaternion HMM_Quaternion(float X, float Y, float Z, float W);
 HMMDEF hmm_quaternion HMM_QuaternionV4(hmm_vec4 Vector);
 HMMDEF hmm_quaternion HMM_Quaternion_Addition(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
 HMMDEF hmm_quaternion HMM_Quaternion_Subtraction(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
-HMMDEF hmm_quaternion HMM_Multiply_Quaternion(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
-HMMDEF hmm_quaternion HMM_Multiply_Quaternion_Float(hmm_quaternion QuaternionOne, float Multiplicative);
+HMMDEF hmm_quaternion HMM_Quaternion_Multiply(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
+HMMDEF hmm_quaternion HMM_Quaternion_Multiply_Float(hmm_quaternion QuaternionOne, float Multiplicative);
 HMMDEF hmm_quaternion HMM_Quaternion_Divide(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
-HMMDEF float HMM_DotQuat(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
-HMMDEF hmm_quaternion HMM_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo, float time);
+HMMDEF float HMM_Quaternion_Dot(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
+HMMDEF hmm_quaternion HMM_Quaternion_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo, float time);
 
 #ifdef __cplusplus
 }
@@ -1543,7 +1543,7 @@ HMM_Quaternion_Subtraction(hmm_quaternion QuaternionOne, hmm_quaternion Quaterni
 }
 
 HINLINE hmm_quaternion
-HMM_Multiply_Quaternion(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
+HMM_Quaternion_Multiply(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
 {
     hmm_quaternion Result = {0};
 
@@ -1556,7 +1556,7 @@ HMM_Multiply_Quaternion(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionT
 }
 
 HINLINE hmm_quaternion
-HMM_Multiply_Quaternion_Float(hmm_quaternion QuaternionOne, float Multiplicative)
+HMM_Quaternion_Multiply_Float(hmm_quaternion QuaternionOne, float Multiplicative)
 {
     hmm_quaternion Result = {0};
 
@@ -1569,7 +1569,7 @@ HMM_Multiply_Quaternion_Float(hmm_quaternion QuaternionOne, float Multiplicative
 }
 
 HINLINE hmm_quaternion
-HMM_Division_Quaternion(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
+HMM_Quaternion_Divide(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
 {
     hmm_quaternion Result = {0};
 
@@ -1582,7 +1582,7 @@ HMM_Division_Quaternion(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionT
 }
 
 HINLINE float
-HMM_Dot_Quaternion(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
+HMM_Quaternion_Dot(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
 {
     float Result = 0.00f;
 
