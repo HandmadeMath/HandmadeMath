@@ -1598,7 +1598,7 @@ HMM_Quaternion_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo,
     hmm_quaternion QuaternionLeft = {0};
     hmm_quaternion QuaternionRight = {0};
 
-    float Cos_Theta = HMM_DotQuat(QuaternionOne, QuaternionTwo);
+    float Cos_Theta = HMM_Quaternion_Dot(QuaternionOne, QuaternionTwo);
     float angle = HMM_ACosF(Cos_Theta);
     
     float s1 = HMM_SinF(1.0f - time*angle);
