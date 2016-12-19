@@ -1628,13 +1628,11 @@ HMM_Quaternion_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo,
     return(Result);
 }
 
-HINLINE hmm_mat4
+/*HINLINE hmm_mat4
 HMM_Quaternion_To_Mat4(hmm_quaternion Quaternion)
 {
     hmm_mat4 Result = {0};
-
-    Result.
-}
+}*/
 
 #ifdef HANDMADE_MATH_CPP_MODE
 
