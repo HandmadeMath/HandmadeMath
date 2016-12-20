@@ -641,9 +641,9 @@ HINLINE float
 HMM_ATanF(float Theta)
 {
     float U = Theta*Theta;
-    float U2 = u*u;
-    float U3 = u2*u;
-    float U4 = u3*u;
+    float U2 = U*U;
+    float U3 = U2*U;
+    float U4 = U3*U;
     float F = 1.0f + 0.33288950512027f*U - 0.08467922817644f*U2 + 0.03252232640125f*U3 - 0.00749305860992f*U4;
     return Theta / F;
 }
