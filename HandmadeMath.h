@@ -1601,9 +1601,9 @@ HMM_Quaternion_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo,
     float Cos_Theta = HMM_Quaternion_Dot(QuaternionOne, QuaternionTwo);
     float Angle = HMM_ACosF(Cos_Theta);
     
-    float S1 = HMM_SinF(1.0f - Time*angle);
-    float S2 = HMM_SinF(Time*angle);
-    float Is = 1.0f / HMM_SinF(angle);
+    float S1 = HMM_SinF(1.0f - Time*Angle);
+    float S2 = HMM_SinF(Time*Angle);
+    float Is = 1.0f / HMM_SinF(Angle);
 
    QuaternionLeft.X = QuaternionTwo.X * S1;
    QuaternionLeft.Y = QuaternionTwo.Y * S1;
