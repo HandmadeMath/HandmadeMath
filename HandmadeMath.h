@@ -479,7 +479,7 @@ HMMDEF hmm_quaternion HMM_Quaternion_Multiply(hmm_quaternion QuaternionOne, hmm_
 HMMDEF hmm_quaternion HMM_Quaternion_Multiply_Float(hmm_quaternion QuaternionOne, float Multiplicative);
 HMMDEF hmm_quaternion HMM_Quaternion_Divide(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
 HMMDEF float HMM_Quaternion_Dot(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo);
-HMMDEF hmm_quaternion HMM_Quaternion_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo, float time);
+HMMDEF hmm_quaternion HMM_Quaternion_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo, float Time);
 
 #ifdef __cplusplus
 }
@@ -640,30 +640,30 @@ HMM_TanF(float Radians)
 HINLINE float
 HMM_ATanF(float Theta)
 {
-    float u = Theta*Theta;
-    float u2 = u*u;
-    float u3 = u2*u;
-    float u4 = u3*u;
-    float f = 1.0f + 0.33288950512027f*u - 0.08467922817644f*u2 + 0.03252232640125f*u3 - 0.00749305860992f*u4;
-    return Theta / f;
+    float U = Theta*Theta;
+    float U2 = u*u;
+    float U3 = u2*u;
+    float U4 = u3*u;
+    float F = 1.0f + 0.33288950512027f*U - 0.08467922817644f*U2 + 0.03252232640125f*U3 - 0.00749305860992f*U4;
+    return Theta / F;
 }
 
 HINLINE float
 HMM_ATanF2(float Theta, float Theta2)
 {
     if (HMM_ABS(Theta2) > HMM_ABS(Theta)) {
-        float a = HMM_ATanF(Theta / Theta2);
+        float A = HMM_ATanF(Theta / Theta2);
         if (Theta2 > 0.0f)
-            return a;
+            return A;
         else
-            return Theta > 0.0f ? a + HMM_PI : a - HMM_PI;
+            return Theta > 0.0f ? A + HMM_PI : A - HMM_PI;
     }
     else {
-        float a = HMM_ATanF(Theta2 / Theta);
+        float A = HMM_ATanF(Theta2 / Theta);
         if (Theta2 > 0.0f)
-            return Theta > 0.0f ? (HMM_PI/2) - a : - (HMM_PI/2) - a;
+            return Theta > 0.0f ? (HMM_PI/2) - A : - (HMM_PI/2) - A;
         else 
-            return Theta > 0.0f ? (HMM_PI/2) + a : - (HMM_PI/2) + a;
+            return Theta > 0.0f ? (HMM_PI/2) + A : - (HMM_PI/2) + A;
     }
 }
 
@@ -1592,38 +1592,38 @@ HMM_Quaternion_Dot(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo)
 }
 
 HINLINE hmm_quaternion
-HMM_Quaternion_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo, float time)
+HMM_Quaternion_Slerp(hmm_quaternion QuaternionOne, hmm_quaternion QuaternionTwo, float Time)
 {
     hmm_quaternion Result = {0};
     hmm_quaternion QuaternionLeft = {0};
     hmm_quaternion QuaternionRight = {0};
 
     float Cos_Theta = HMM_Quaternion_Dot(QuaternionOne, QuaternionTwo);
-    float angle = HMM_ACosF(Cos_Theta);
+    float Angle = HMM_ACosF(Cos_Theta);
     
-    float s1 = HMM_SinF(1.0f - time*angle);
-    float s2 = HMM_SinF(time*angle);
-    float is = 1.0f / HMM_SinF(angle);
+    float S1 = HMM_SinF(1.0f - Time*angle);
+    float S2 = HMM_SinF(Time*angle);
+    float Is = 1.0f / HMM_SinF(angle);
 
-   QuaternionLeft.X = QuaternionTwo.X * s1;
-   QuaternionLeft.Y = QuaternionTwo.Y * s1;
-   QuaternionLeft.Z = QuaternionTwo.Z * s1;
-   QuaternionLeft.W = QuaternionTwo.W * s1;
+   QuaternionLeft.X = QuaternionTwo.X * S1;
+   QuaternionLeft.Y = QuaternionTwo.Y * S1;
+   QuaternionLeft.Z = QuaternionTwo.Z * S1;
+   QuaternionLeft.W = QuaternionTwo.W * S1;
 
-   QuaternionRight.X = QuaternionTwo.X * s2;
-   QuaternionRight.Y = QuaternionTwo.Y * s2;
-   QuaternionRight.Z = QuaternionTwo.Z * s2;
-   QuaternionRight.W = QuaternionTwo.W * s2;
+   QuaternionRight.X = QuaternionTwo.X * S2;
+   QuaternionRight.Y = QuaternionTwo.Y * S2;
+   QuaternionRight.Z = QuaternionTwo.Z * S2;
+   QuaternionRight.W = QuaternionTwo.W * S2;
 
    Result.X = QuaternionLeft.X + QuaternionRight.X;
    Result.Y = QuaternionLeft.Y + QuaternionRight.Y;
    Result.Z = QuaternionLeft.Z + QuaternionRight.Z;
    Result.W = QuaternionLeft.W + QuaternionRight.W;
 
-   Result.X = Result.X * is;
-   Result.Y = Result.Y * is;
-   Result.Z = Result.Z * is;
-   Result.W = Result.W * is;
+   Result.X = Result.X * Is;
+   Result.Y = Result.Y * Is;
+   Result.Z = Result.Z * Is;
+   Result.W = Result.W * Is;
 
     return(Result);
 }
