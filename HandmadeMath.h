@@ -1677,7 +1677,7 @@ HMM_QuaternionToMat4(hmm_quaternion Left)
     Result.Elements[2][1] = 2.0f * (YZ - WX);
     Result.Elements[2][2] = 1.0f - 2.0f * (XX + YY);
 
-    return(Result)
+    return(Result);
 }
 
 HINLINE hmm_quaternion
