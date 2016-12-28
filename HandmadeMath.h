@@ -1686,7 +1686,7 @@ HMM_QuaternionFromEulerAxis(hmm_vec3 Axis, float AngleOfRotation)
     hmm_quaternion Result = {0};
 
     Result.W = HMM_CosF(AngleOfRotation / 2.0f);
-    Result.XYZ = Axis * HMM_SinF(AngleOfRotation / 2.0f) / HMM_NormalizeVec3(Axis);
+    Result.XYZ = Axis * HMM_SinF(AngleOfRotation / 2.0f) / HMM_NormalizeVec3(Axis);
 
     return(Result);
 }
