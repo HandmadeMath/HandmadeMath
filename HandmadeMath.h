@@ -164,6 +164,7 @@
    FieryDrake (@fierydrake)
    Gingerbill (@TheGingerBill)
    Ben Visness (@bvisness) 
+    Trinton Bullard (@Peliex_Dev)
    
   Fixes:
    Jeroen van Rijn (@J_vanRijn)
@@ -171,7 +172,9 @@
    Insofaras (@insofaras)
 */
 
+#ifndef HANDMADE_NO_SSE
 #include <xmmintrin.h>
+#endif
 
 #ifndef HANDMADE_MATH_H
 #define HANDMADE_MATH_H
@@ -189,7 +192,7 @@ extern "C"
 {
 #endif
 
-#ifdef HANDMADEMATH_STATIC
+#ifdef HANDMADE_MATH_STATIC
 #define HMMDEF static
 #else
 #define HMMDEF extern
@@ -476,8 +479,11 @@ HMMDEF hmm_quaternion HMM_SubtractQuaternion(hmm_quaternion Left, hmm_quaternion
 HMMDEF hmm_quaternion HMM_MultiplyQuaternion(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_MultiplyQuaternionF(hmm_quaternion Left, float Multiplicative);
 HMMDEF hmm_quaternion HMM_DivideQuaternion(hmm_quaternion Left, hmm_quaternion Right);
+HMMDEF hmm_quaternion HMM_DivideQuaternionF(hmm_quaternion Left, float Dividend);
 HMMDEF float HMM_DotQuaternion(hmm_quaternion Left, hmm_quaternion Right);
+HMMDEF hmm_quaternion HMM_NormalizeQuaternion(hmm_quaternion Left);
 HMMDEF hmm_quaternion HMM_Slerp(hmm_quaternion Left, hmm_quaternion Right, float Time);
+HMMDEF hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left);
 
 #ifdef __cplusplus
 }
@@ -1571,10 +1577,23 @@ HMM_DivideQuaternion(hmm_quaternion Left, hmm_quaternion Right)
 {
     hmm_quaternion Result = {0};
 
-    Result.X = Left.X * (1/Right.X);
-    Result.Y = Left.Y * (1/Right.Y);
-    Result.Z = Left.Z * (1/Right.Z);
-    Result.W = Left.W * (1/Right.W);
+    Result.X = Left.X / Right.X;
+    Result.Y = Left.Y / Right.Y;
+    Result.Z = Left.Z / Right.Z;
+    Result.W = Left.W / Right.W;
+
+    return(Result);
+}
+
+HINLINE hmm_quaternion
+HMM_DivideQuaternionF(hmm_quaternion Left, float Dividend)
+{
+    hmm_quaternion Result = {0};
+
+    Result.X = Left.X / Dividend;
+    Result.Y = Left.Y / Dividend;
+    Result.Z = Left.Z / Dividend;
+    Result.W = Left.W / Dividend;
 
     return(Result);
 }
@@ -1585,6 +1604,17 @@ HMM_DotQuaternion(hmm_quaternion Left, hmm_quaternion Right)
     float Result = 0.0f;
 
     Result = (Left.X * Right.X) + (Left.Y * Right.Y) + (Left.Z * Right.Z) + (Left.W * Right.W);
+
+    return(Result);
+}
+
+HINLINE hmm_quaternion
+HMM_NormalizeQuaternion(hmm_quaternion Left)
+{
+    hmm_quaternion Result = {0};
+
+    float Length = HMM_SquareRootF(HMM_DotQuaternion(Left, Left));
+    Result = HMM_DivideQuaternionF(Left, Length);
 
     return(Result);
 }
@@ -1610,6 +1640,43 @@ HMM_Slerp(hmm_quaternion Left, hmm_quaternion Right, float Time)
 	Result = HMM_MultiplyQuaternionF(Result, Is);
 
     return(Result);
+}
+
+HINLINE hmm_mat4
+HMM_QuaternionToMat4(hmm_quaternion Left)
+{
+    hmm_mat4 Result = {0};
+    Result = HMM_Mat4d(1);
+
+    hmm_quaternion NormalizedQuaternion = HMM_NormalizeQuaternion(Left);
+    
+    float XX, YY, ZZ,
+          XY, XZ, YZ,
+          WX, WY, WZ;
+
+    XX = NormalizedQuaternion.X * NormalizedQuaternion.X;
+    YY = NormalizedQuaternion.Y * NormalizedQuaternion.Y;
+    ZZ = NormalizedQuaternion.Z * NormalizedQuaternion.Z;
+    XY = NormalizedQuaternion.X * NormalizedQuaternion.Y;
+    XZ = NormalizedQuaternion.X * NormalizedQuaternion.Z;
+    YZ = NormalizedQuaternion.Y * NormalizedQuaternion.Z;
+    WX = NormalizedQuaternion.W * NormalizedQuaternion.X;
+    WY = NormalizedQuaternion.W * NormalizedQuaternion.Y;
+    WZ = NormalizedQuaternion.W * NormalizedQuaternion.Z;
+
+    Result.Elements[0][0] = 1.0f - 2.0f * (YY + ZZ);
+    Result.Elements[0][1] = 2.0f * (XY + WZ);
+    Result.Elements[0][2] = 2.0f * (XZ + WY);
+
+    Result.Elements[1][0] = 2.0f * (XY - WZ);
+    Result.Elements[1][1] = 1.0f - 2.0f * (XX + ZZ);
+    Result.Elements[1][2] = 2.0f * (YZ + WX);
+
+    Result.Elements[2][0] = 2.0f * (XZ + WY);
+    Result.Elements[2][1] = 2.0f * (YZ - WX);
+    Result.Elements[2][2] = 1.0f - 2.0f * (XX + YY);
+
+    return(Result)
 }
 
 #ifdef HANDMADE_MATH_CPP_MODE
@@ -2150,7 +2217,9 @@ operator/(hmm_vec2 Left, hmm_vec2 Right)
 HINLINE hmm_vec3
 operator/(hmm_vec3 Left, hmm_vec3 Right)
 {
-    hmm_vec3 Result = HMM_Divide(Left, Right);
+    hmm_vec3 Result = {0};
+    
+    Result = HMM_Divide(Left, Right);
 
     return (Result);
 }
@@ -2335,3 +2404,10 @@ operator*=(hmm_mat4 &Left, float Right)
 #endif /* HANDMADE_MATH_CPP_MODE */
 
 #endif /* HANDMADE_MATH_IMPLEMENTATION */
+#ifdef _MSC_VER
+#pragma warning(restore:4201)
+#endif
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
