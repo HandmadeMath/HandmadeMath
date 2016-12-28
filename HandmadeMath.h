@@ -503,20 +503,24 @@ HMMDEF float HMM_LengthSquared(hmm_vec4 A);
 HMMDEF hmm_vec2 HMM_Normalize(hmm_vec2 A);
 HMMDEF hmm_vec3 HMM_Normalize(hmm_vec3 A);
 HMMDEF hmm_vec4 HMM_Normalize(hmm_vec4 A);
+HMMDEF hmm_quaternion HMM_Normalize(hmm_quaternion A);
 
 HMMDEF float HMM_Dot(hmm_vec2 VecOne, hmm_vec2 VecTwo);
 HMMDEF float HMM_Dot(hmm_vec3 VecOne, hmm_vec3 VecTwo);
 HMMDEF float HMM_Dot(hmm_vec4 VecOne, hmm_vec4 VecTwo);
+HMMDEF float HMM_Dot(hmm_quaternion QuatOne, hmm_quaternion QuatTwo);
 
 HMMDEF hmm_vec2 HMM_Add(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 HMM_Add(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 HMM_Add(hmm_vec4 Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 HMM_Add(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_quaternion HMM_Add(hmm_quaternion Left, hmm_quaternion Right);
 
 HMMDEF hmm_vec2 HMM_Subtract(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 HMM_Subtract(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 HMM_Subtract(hmm_vec4 Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 HMM_Subtract(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_quaternion HMM_Subtract(hmm_quaternion Left, hmm_quaternion Right);
 
 HMMDEF hmm_vec2 HMM_Multiply(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec2 HMM_Multiply(hmm_vec2 Left, float Right);
@@ -527,6 +531,8 @@ HMMDEF hmm_vec4 HMM_Multiply(hmm_vec4 Left, float Right);
 HMMDEF hmm_mat4 HMM_Multiply(hmm_mat4 Left, hmm_mat4 Right);
 HMMDEF hmm_mat4 HMM_Multiply(hmm_mat4 Left, float Right);
 HMMDEF hmm_vec4 HMM_Multiply(hmm_mat4 Matrix, hmm_vec4 Vector);
+HMMDEF hmm_quaternion HMM_Multiply(hmm_quaternion Left, hmm_quaternion Right);
+HMMDEF hmm_quaternion HMM_Multiply(hmm_quaternion Left, float Right);
 
 HMMDEF hmm_vec2 HMM_Divide(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec2 HMM_Divide(hmm_vec2 Left, float Right);
@@ -535,16 +541,20 @@ HMMDEF hmm_vec3 HMM_Divide(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec4 HMM_Divide(hmm_vec4 Left, hmm_vec4 Right);
 HMMDEF hmm_vec4 HMM_Divide(hmm_vec4 Left, float Right);
 HMMDEF hmm_mat4 HMM_Divide(hmm_mat4 Left, float Right);
+HMMDEF hmm_quaternion HMM_Divide(hmm_quaternion Left, hmm_quaternion Right);
+HMMDEF hmm_quaternion HMM_Divide(hmm_quaternion Left, float Right);
 
 HMMDEF hmm_vec2 operator+(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator+(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator+(hmm_vec4 Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 operator+(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_quaternion operator+(hmm_quaternion Left, hmm_quaternion Right);
 
 HMMDEF hmm_vec2 operator-(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator-(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator-(hmm_vec4 Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 operator-(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_quaternion operator-(hmm_quaternion Left, hmm_quaternion Right);
 
 HMMDEF hmm_vec2 operator*(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator*(hmm_vec3 Left, hmm_vec3 Right);
@@ -562,6 +572,8 @@ HMMDEF hmm_vec4 operator*(float Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 operator*(float Left, hmm_mat4 Right);
 
 HMMDEF hmm_vec4 operator*(hmm_mat4 Matrix, hmm_vec4 Vector);
+HMMDEF hmm_quaternion operator*(hmm_quaternion Left, hmm_quaternion Right);
+HMMDEF hmm_quaternion operator*(hmm_quaternion Left, float Right);
 
 HMMDEF hmm_vec2 operator/(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator/(hmm_vec3 Left, hmm_vec3 Right);
@@ -571,6 +583,8 @@ HMMDEF hmm_vec2 operator/(hmm_vec2 Left, float Right);
 HMMDEF hmm_vec3 operator/(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec4 operator/(hmm_vec4 Left, float Right);
 HMMDEF hmm_mat4 operator/(hmm_mat4 Left, float Right);
+HMMDEF hmm_quaternion operator/(hmm_quaternion Left, hmm_quaternion Right);
+HMMDEF hmm_quaternion operator/(hmm_quaternion Left, float Right);
 
 HMMDEF hmm_vec2 &operator+=(hmm_vec2 &Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 &operator+=(hmm_vec3 &Left, hmm_vec3 Right);
@@ -1783,6 +1797,16 @@ HMM_Normalize(hmm_vec4 A)
     return(Result);
 }
 
+HINLINE hmm_quaternion
+HMM_Normalize(hmm_quaternion A)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_NormalizeQuaternion(A);
+
+    return(Result);
+}
+
 HINLINE float 
 HMM_Dot(hmm_vec2 VecOne, hmm_vec2 VecTwo)
 {
@@ -1810,6 +1834,16 @@ HMM_Dot(hmm_vec4 VecOne, hmm_vec4 VecTwo)
     
     Result = HMM_DotVec4(VecOne, VecTwo);
     
+    return(Result);
+}
+
+HINLINE float
+HMM_Dot(hmm_quaternion QuatOne, hmm_quaternion QuatTwo)
+{
+    float Result = 0;
+
+    Result = HMM_DotQuaternion(QuatOne, QuatTwo);
+
     return(Result);
 }
 
@@ -1849,6 +1883,15 @@ HMM_Add(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
+HINLINE hmm_quaternion
+HMM_Add(hmm_quaternion Left, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_AddQuaternion(Left, Right);
+    return(Result);
+}
+
 HINLINE hmm_vec2
 HMM_Subtract(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -1882,6 +1925,15 @@ HMM_Subtract(hmm_mat4 Left, hmm_mat4 Right)
     hmm_mat4 Result = {0};
 
     Result = HMM_SubtractMat4(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_quaternion
+HMM_Subtract(hmm_quaternion Left, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_SubtractQuaternion(Left, Right);
     return (Result);
 }
 
@@ -1966,6 +2018,24 @@ HMM_Multiply(hmm_mat4 Matrix, hmm_vec4 Vector)
     return (Result);
 }
 
+HINLINE hmm_quaternion
+HMM_Multiply(hmm_quaternion Left, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_MultiplyQuaternion(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_quaternion
+HMM_Multiply(hmm_quaternion Left, float Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_MultiplyQuaternionF(Left, Right);
+    return (Result);
+}
+
 HINLINE hmm_vec2
 HMM_Divide(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -2029,6 +2099,24 @@ HMM_Divide(hmm_mat4 Left, float Right)
     return (Result);
 }
 
+HINLINE hmm_quaternion
+HMM_Divide(hmm_quaternion Left, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_DivideQuaternion(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_quaternion
+HMM_Divide(hmm_quaternion Left, float Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_DivideQuaternionF(Left, Right);
+    return (Result);
+}
+
 HINLINE hmm_vec2
 operator+(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -2065,6 +2153,15 @@ operator+(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
+HINLINE hmm_quaternion
+operator+(hmm_quaternion Left, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_Add(Left, Right);
+    return (Result);
+}
+
 HINLINE hmm_vec2
 operator-(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -2096,6 +2193,15 @@ HINLINE hmm_mat4
 operator-(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = {0};
+
+    Result = HMM_Subtract(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_quaternion
+operator-(hmm_quaternion Left, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
 
     Result = HMM_Subtract(Left, Right);
     return (Result);
@@ -2217,6 +2323,24 @@ operator*(hmm_mat4 Matrix, hmm_vec4 Vector)
     return (Result);
 }
 
+HINLINE hmm_quaternion
+operator*(hmm_quaternion Left, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_Multiply(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_quaternion
+operator*(hmm_quaternion Left, float Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_Multiply(Left, Right);
+    return (Result);
+}
+
 HINLINE hmm_vec2
 operator/(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -2276,6 +2400,24 @@ HINLINE hmm_mat4
 operator/(hmm_mat4 Left, float Right)
 {
     hmm_mat4 Result = {0};
+
+    Result = HMM_Divide(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_quaternion
+operator/(hmm_quaternion Left, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_Divide(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_quaternion
+operator/(hmm_quaternion Left, float Right)
+{
+    hmm_quaternion Result = {0};
 
     Result = HMM_Divide(Left, Right);
     return (Result);
