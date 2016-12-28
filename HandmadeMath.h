@@ -484,6 +484,7 @@ HMMDEF float HMM_DotQuaternion(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_NormalizeQuaternion(hmm_quaternion Left);
 HMMDEF hmm_quaternion HMM_Slerp(hmm_quaternion Left, hmm_quaternion Right, float Time);
 HMMDEF hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left);
+HMMDEF hmm_quaternion HMM_QuaternionFromEulerAxis(hmm_vec3 Axis, float AngleOfRotation);
 
 #ifdef __cplusplus
 }
@@ -1633,11 +1634,11 @@ HMM_Slerp(hmm_quaternion Left, hmm_quaternion Right, float Time)
     float S2 = HMM_SinF(Time * Angle);
     float Is = 1.0f / HMM_SinF(Angle);
 
-	QuaternionLeft = HMM_MultiplyQuaternionF(Left, S1);
-	QuaternionRight = HMM_MultiplyQuaternionF(Right, S2);
+    QuaternionLeft = HMM_MultiplyQuaternionF(Left, S1);
+    QuaternionRight = HMM_MultiplyQuaternionF(Right, S2);
 
-	Result = HMM_AddQuaternion(QuaternionLeft, QuaternionRight);
-	Result = HMM_MultiplyQuaternionF(Result, Is);
+    Result = HMM_AddQuaternion(QuaternionLeft, QuaternionRight);
+    Result = HMM_MultiplyQuaternionF(Result, Is);
 
     return(Result);
 }
@@ -1677,6 +1678,17 @@ HMM_QuaternionToMat4(hmm_quaternion Left)
     Result.Elements[2][2] = 1.0f - 2.0f * (XX + YY);
 
     return(Result)
+}
+
+HINLINE hmm_quaternion
+HMM_QuaternionFromEulerAxis(hmm_vec3 Axis, float AngleOfRotation)
+{
+    hmm_quaternion Result = {0};
+
+    Result.W = HMM_CosF(AngleOfRotation / 2.0f);
+    Result.XYZ = Axis * HMM_SinF(AngleOfRotation / 2.0f) / HMM_NormalizeVec3(Axis);
+
+    return(Result);
 }
 
 #ifdef HANDMADE_MATH_CPP_MODE
