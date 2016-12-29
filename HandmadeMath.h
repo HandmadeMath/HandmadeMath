@@ -666,14 +666,14 @@ HMM_ATanF2(float Theta, float Theta2)
         if (Theta2 > 0.0f)
             return A;
         else
-            return Theta > 0.0f ? A + HMM_PI : A - HMM_PI;
+            return Theta > 0.0f ? A + HMM_PI32 : A - HMM_PI32;
     }
     else {
         float A = HMM_ATanF(Theta2 / Theta);
         if (Theta2 > 0.0f)
-            return Theta > 0.0f ? (HMM_PI/2) - A : - (HMM_PI/2) - A;
+            return Theta > 0.0f ? (HMM_PI32/2) - A : - (HMM_PI32/2) - A;
         else 
-            return Theta > 0.0f ? (HMM_PI/2) + A : - (HMM_PI/2) + A;
+            return Theta > 0.0f ? (HMM_PI32/2) + A : - (HMM_PI32/2) + A;
     }
 }
 
@@ -1698,9 +1698,15 @@ HINLINE hmm_quaternion
 HMM_QuaternionFromEulerAxis(hmm_vec3 Axis, float AngleOfRotation)
 {
     hmm_quaternion Result = {0};
+	float NormalizedVec3 = 0;
+	float SineOfRotation = 0;
+	hmm_vec3 RotatedVector = { 0 };
+	NormalizedVec3 = HMM_SquareRootF(HMM_DotVec3(Axis, Axis));
+	SineOfRotation = HMM_SinF(AngleOfRotation / 2.0f);
+	RotatedVector = HMM_MultiplyVec3f(Axis, SineOfRotation);
 
-    Result.W = HMM_CosF(AngleOfRotation / 2.0f);
-    Result.XYZ = Axis * HMM_SinF(AngleOfRotation / 2.0f) / HMM_NormalizeVec3(Axis);
+	Result.W = HMM_CosF(AngleOfRotation / 2.0f);
+	Result.XYZ = HMM_DivideVec3f(RotatedVector, NormalizedVec3);
 
     return(Result);
 }
