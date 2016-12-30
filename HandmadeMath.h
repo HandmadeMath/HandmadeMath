@@ -164,7 +164,7 @@
    FieryDrake (@fierydrake)
    Gingerbill (@TheGingerBill)
    Ben Visness (@bvisness) 
-    Trinton Bullard (@Peliex_Dev)
+   Trinton Bullard (@Peliex_Dev)
    
   Fixes:
    Jeroen van Rijn (@J_vanRijn)
@@ -207,7 +207,8 @@ extern "C"
 #endif
 
 #if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
-    !defined(HMM_EXPF) || !defined(HMM_LOGF)
+    !defined(HMM_EXPF) || !defined(HMM_LOGF) || !defined(HMM_ACOSF) || \
+    !defined(HMM_ATANF)|| !defined(HMM_ATANF2)
 #include <math.h>    
 #endif
     
@@ -229,6 +230,18 @@ extern "C"
 
 #ifndef HMM_LOGF
 #define HMM_LOGF logf
+#endif
+
+#ifndef HMM_ACOSF
+#define HMM_ACOSF acos
+#endif
+
+#ifndef HMM_ATANF
+#define HMM_ATANF atan
+#endif
+
+#ifndef HMM_ATANF2
+#define HMM_ATANF2 atan2
 #endif
 
 #define HMM_PI32 3.14159265359f
@@ -484,7 +497,7 @@ HMMDEF float HMM_DotQuaternion(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_NormalizeQuaternion(hmm_quaternion Left);
 HMMDEF hmm_quaternion HMM_Slerp(hmm_quaternion Left, hmm_quaternion Right, float Time);
 HMMDEF hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left);
-HMMDEF hmm_quaternion HMM_QuaternionFromEulerAxis(hmm_vec3 Axis, float AngleOfRotation);
+HMMDEF hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation);
 
 #ifdef __cplusplus
 }
@@ -560,30 +573,31 @@ HMMDEF hmm_vec2 operator*(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator*(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator*(hmm_vec4 Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 operator*(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_quaternion operator*(hmm_quaternion Left, hmm_quaternion Right);
 
 HMMDEF hmm_vec2 operator*(hmm_vec2 Left, float Right);
 HMMDEF hmm_vec3 operator*(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec4 operator*(hmm_vec4 Left, float Right);
 HMMDEF hmm_mat4 operator*(hmm_mat4 Left, float Right);
+HMMDEF hmm_quaternion operator*(hmm_quaternion Left, float Right);
 
 HMMDEF hmm_vec2 operator*(float Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator*(float Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator*(float Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 operator*(float Left, hmm_mat4 Right);
+HMMDEF hmm_quaternion operator*(float Left, hmm_quaternion Right);
 
 HMMDEF hmm_vec4 operator*(hmm_mat4 Matrix, hmm_vec4 Vector);
-HMMDEF hmm_quaternion operator*(hmm_quaternion Left, hmm_quaternion Right);
-HMMDEF hmm_quaternion operator*(hmm_quaternion Left, float Right);
 
 HMMDEF hmm_vec2 operator/(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator/(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator/(hmm_vec4 Left, hmm_vec4 Right);
+HMMDEF hmm_quaternion operator/(hmm_quaternion Left, hmm_quaternion Right);
 
 HMMDEF hmm_vec2 operator/(hmm_vec2 Left, float Right);
 HMMDEF hmm_vec3 operator/(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec4 operator/(hmm_vec4 Left, float Right);
 HMMDEF hmm_mat4 operator/(hmm_mat4 Left, float Right);
-HMMDEF hmm_quaternion operator/(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion operator/(hmm_quaternion Left, float Right);
 
 HMMDEF hmm_vec2 &operator+=(hmm_vec2 &Left, hmm_vec2 Right);
@@ -648,42 +662,30 @@ HMM_TanF(float Radians)
 }
 
 HINLINE float
-HMM_ATanF(float Theta)
+HMM_ACosF(float Radians)
 {
-    float U = Theta*Theta;
-    float U2 = U*U;
-    float U3 = U2*U;
-    float U4 = U3*U;
-    float F = 1.0f + 0.33288950512027f*U - 0.08467922817644f*U2 + 0.03252232640125f*U3 - 0.00749305860992f*U4;
-    return Theta / F;
+    float Result = 0.0f;
+
+    Result = HMM_ACOSF(Radians);
+    return (Result);
 }
 
 HINLINE float
-HMM_ATanF2(float Theta, float Theta2)
+HMM_ATanF(float Radians)
 {
-    if (HMM_ABS(Theta2) > HMM_ABS(Theta)) {
-        float A = HMM_ATanF(Theta / Theta2);
-        if (Theta2 > 0.0f)
-            return A;
-        else
-            return Theta > 0.0f ? A + HMM_PI32 : A - HMM_PI32;
-    }
-    else {
-        float A = HMM_ATanF(Theta2 / Theta);
-        if (Theta2 > 0.0f)
-            return Theta > 0.0f ? (HMM_PI32/2) - A : - (HMM_PI32/2) - A;
-        else 
-            return Theta > 0.0f ? (HMM_PI32/2) + A : - (HMM_PI32/2) + A;
-    }
+    float Result = 0.0f;
+
+    Result = HMM_ATANF(Radians);
+    return (Result);
 }
 
 HINLINE float
-HMM_ACosF(float Theta)
+HMM_AtanF2(float Left, float Right)
 {
-	float Result = 0.0f;
-	float Theta2 = HMM_SquareRootF((1.0f + Theta) * (1.0f - Theta));
-	Result = HMM_ATanF2(Theta2, Theta);
-	return(Result);
+    float Result = 0.0f;
+
+    Result = HMM_ATANF2(Left, Right);
+    return (Result);
 }
 
 HINLINE float
@@ -1695,7 +1697,7 @@ HMM_QuaternionToMat4(hmm_quaternion Left)
 }
 
 HINLINE hmm_quaternion
-HMM_QuaternionFromEulerAxis(hmm_vec3 Axis, float AngleOfRotation)
+HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation)
 {
     hmm_quaternion Result = {0};
 	float NormalizedVec3 = 0;
@@ -2039,6 +2041,15 @@ HMM_Multiply(hmm_quaternion Left, float Right)
     hmm_quaternion Result = {0};
 
     Result = HMM_MultiplyQuaternionF(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_quaternion
+HMM_Multiply(float Left, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_MultiplyQuaternionF(Right, Left);
     return (Result);
 }
 
