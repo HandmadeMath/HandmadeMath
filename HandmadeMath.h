@@ -1681,7 +1681,7 @@ HMM_QuaternionToMat4(hmm_quaternion Left)
 
     Result.Elements[0][0] = 1.0f - 2.0f * (YY + ZZ);
     Result.Elements[0][1] = 2.0f * (XY + WZ);
-    Result.Elements[0][2] = 2.0f * (XZ + WY);
+    Result.Elements[0][2] = 2.0f * (XZ - WY);
 
     Result.Elements[1][0] = 2.0f * (XY - WZ);
     Result.Elements[1][1] = 1.0f - 2.0f * (XX + ZZ);
