@@ -2565,7 +2565,7 @@ operator*=(hmm_mat4 &Left, float Right)
 
 #endif /* HANDMADE_MATH_IMPLEMENTATION */
 #ifdef _MSC_VER
-#pragma warning(default:4201)
+#pragma warning(restore:4201)
 #endif
 
 #ifdef __GNUC__
