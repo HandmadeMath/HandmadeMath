@@ -1700,15 +1700,15 @@ HINLINE hmm_quaternion
 HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation)
 {
     hmm_quaternion Result = {0};
-	float NormalizedVec3 = 0;
-	float SineOfRotation = 0;
-	hmm_vec3 RotatedVector = { 0 };
-	NormalizedVec3 = HMM_SquareRootF(HMM_DotVec3(Axis, Axis));
-	SineOfRotation = HMM_SinF(AngleOfRotation / 2.0f);
-	RotatedVector = HMM_MultiplyVec3f(Axis, SineOfRotation);
+    float NormalizedVec3 = 0;
+    float SineOfRotation = 0;
+    hmm_vec3 RotatedVector = { 0 };
+    NormalizedVec3 = HMM_SquareRootF(HMM_DotVec3(Axis, Axis));
+    SineOfRotation = HMM_SinF(AngleOfRotation / 2.0f);
+    RotatedVector = HMM_MultiplyVec3f(Axis, SineOfRotation);
 
-	Result.W = HMM_CosF(AngleOfRotation / 2.0f);
-	Result.XYZ = HMM_DivideVec3f(RotatedVector, NormalizedVec3);
+    Result.W = HMM_CosF(AngleOfRotation / 2.0f);
+    Result.XYZ = HMM_DivideVec3f(RotatedVector, NormalizedVec3);
 
     return(Result);
 }
@@ -2355,6 +2355,15 @@ operator*(hmm_quaternion Left, float Right)
     hmm_quaternion Result = {0};
 
     Result = HMM_Multiply(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_quaternion
+operator*(float Left, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result = HMM_Multiply(Right, Left);
     return (Result);
 }
 
