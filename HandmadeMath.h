@@ -79,6 +79,9 @@
      #define HMM_TANF MyTanF
      #define HMM_EXPF MyExpF
      #define HMM_LOGF MyLogF
+     #define HMM_ACOSF MyACosF
+     #define HMM_ATANF MyATanF
+     #define HMM_ATAN2F MyATan2F
      
   Provide your own implementations of SinF, CosF, TanF, ExpF and LogF
   in EXACTLY one C or C++ file that includes this header, BEFORE the
@@ -90,7 +93,7 @@
      #define HMM_EXPF MyExpF
      #define HMM_LOGF MyLogF
      #define HMM_ACOSF MyACosF
-     #define HMM_ATANF MyATanf
+     #define HMM_ATANF MyATanF
      #define HMM_ATAN2F MyATan2F
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
@@ -228,7 +231,7 @@ extern "C"
 
 #if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
     !defined(HMM_EXPF) || !defined(HMM_LOGF) || !defined(HMM_ACOSF) || \
-    !defined(HMM_ATANF)|| !defined(HMM_ATAN2F)
+    !defined(HMM_ATANF)|| !defined(HMM_ATANF2)
 #include <math.h>    
 #endif
     
@@ -253,11 +256,11 @@ extern "C"
 #endif
 
 #ifndef HMM_ACOSF
-#define HMM_ACOSF acosf
+#define HMM_ACOSF acos
 #endif
 
 #ifndef HMM_ATANF
-#define HMM_ATANF atanf
+#define HMM_ATANF atan
 #endif
 
 #ifndef HMM_ATAN2F
@@ -422,6 +425,7 @@ typedef hmm_mat4 hmm_m4;
 HMMDEF float HMM_SinF(float Angle);
 HMMDEF float HMM_TanF(float Angle);
 HMMDEF float HMM_ATanF(float Theta);
+HMMDEF float HMM_ATanF2(float Theta, float Theta2);
 HMMDEF float HMM_ATan2F(float Theta, float Theta2);
 HMMDEF float HMM_CosF(float Angle);
 HMMDEF float HMM_ACosF(float Theta);
@@ -2604,3 +2608,10 @@ operator*=(hmm_mat4 &Left, float Right)
 #endif /* HANDMADE_MATH_CPP_MODE */
 
 #endif /* HANDMADE_MATH_IMPLEMENTATION */
+#ifdef _MSC_VER
+#pragma warning(default:4201)
+#endif
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
