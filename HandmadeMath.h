@@ -2584,10 +2584,3 @@ operator*=(hmm_mat4 &Left, float Right)
 #endif /* HANDMADE_MATH_CPP_MODE */
 
 #endif /* HANDMADE_MATH_IMPLEMENTATION */
-#ifdef _MSC_VER
-#pragma warning(default:4201)
-#endif
-
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
