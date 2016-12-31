@@ -231,11 +231,7 @@ extern "C"
 
 #if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
     !defined(HMM_EXPF) || !defined(HMM_LOGF) || !defined(HMM_ACOSF) || \
-<<<<<<< HEAD
     !defined(HMM_ATANF)|| !defined(HMM_ATANF2)
-=======
-    !defined(HMM_ATANF)|| !defined(HMM_ATAN2F)
->>>>>>> d17e5b60744c1b5a4fa11f1d8d481df113621f57
 #include <math.h>    
 #endif
     
@@ -260,7 +256,6 @@ extern "C"
 #endif
 
 #ifndef HMM_ACOSF
-<<<<<<< HEAD
 #define HMM_ACOSF acos
 #endif
 
@@ -270,7 +265,6 @@ extern "C"
 
 #ifndef HMM_ATANF2
 #define HMM_ATANF2 atan2
-=======
 #define HMM_ACOSF acosf
 #endif
 
@@ -280,7 +274,6 @@ extern "C"
 
 #ifndef HMM_ATAN2F
 #define HMM_ATAN2F atan2f
->>>>>>> d17e5b60744c1b5a4fa11f1d8d481df113621f57
 #endif
 
 #define HMM_PI32 3.14159265359f
@@ -441,11 +434,8 @@ typedef hmm_mat4 hmm_m4;
 HMMDEF float HMM_SinF(float Angle);
 HMMDEF float HMM_TanF(float Angle);
 HMMDEF float HMM_ATanF(float Theta);
-<<<<<<< HEAD
 HMMDEF float HMM_ATanF2(float Theta, float Theta2);
-=======
 HMMDEF float HMM_ATan2F(float Theta, float Theta2);
->>>>>>> d17e5b60744c1b5a4fa11f1d8d481df113621f57
 HMMDEF float HMM_CosF(float Angle);
 HMMDEF float HMM_ACosF(float Theta);
 HMMDEF float HMM_ExpF(float Float);
@@ -723,19 +713,19 @@ HMM_ATanF(float Radians)
 }
 
 HINLINE float
-<<<<<<< HEAD
 HMM_AtanF2(float Left, float Right)
 {
     float Result = 0.0f;
 
     Result = HMM_ATANF2(Left, Right);
-=======
+    return (Result);
+}
+
 HMM_Atan2F(float Left, float Right)
 {
     float Result = 0.0f;
 
     Result = HMM_ATAN2F(Left, Right);
->>>>>>> d17e5b60744c1b5a4fa11f1d8d481df113621f57
     return (Result);
 }
 
@@ -2635,7 +2625,6 @@ operator*=(hmm_mat4 &Left, float Right)
 #endif /* HANDMADE_MATH_CPP_MODE */
 
 #endif /* HANDMADE_MATH_IMPLEMENTATION */
-<<<<<<< HEAD
 #ifdef _MSC_VER
 #pragma warning(default:4201)
 #endif
@@ -2643,5 +2632,3 @@ operator*=(hmm_mat4 &Left, float Right)
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
-=======
->>>>>>> d17e5b60744c1b5a4fa11f1d8d481df113621f57
