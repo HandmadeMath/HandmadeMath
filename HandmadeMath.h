@@ -79,8 +79,11 @@
      #define HMM_TANF MyTanF
      #define HMM_EXPF MyExpF
      #define HMM_LOGF MyLogF
+     #define HMM_ACOSF MyACosF
+     #define HMM_ATANF MyATanF
+     #define HMM_ATAN2F MYATan2F
      
-  Provide your own implementations of SinF, CosF, TanF, ExpF and LogF
+  Provide your own implementations of SinF, CosF, TanF, ACosF, ATanF, ATan2F, ExpF and LogF 
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:     
   
@@ -90,7 +93,7 @@
      #define HMM_EXPF MyExpF
      #define HMM_LOGF MyLogF
      #define HMM_ACOSF MyACosF
-     #define HMM_ATANF MyATanf
+     #define HMM_ATANF MyATanF
      #define HMM_ATAN2F MyATan2F
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
