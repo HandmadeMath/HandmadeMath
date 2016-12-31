@@ -91,7 +91,7 @@
      #define HMM_LOGF MyLogF
      #define HMM_ACOSF MyACosF
      #define HMM_ATANF MyATanf
-     #define HMM_ATANF2 MyATanF2
+     #define HMM_ATAN2F MyATan2F
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
      #include "HandmadeMath.h"
@@ -228,7 +228,7 @@ extern "C"
 
 #if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
     !defined(HMM_EXPF) || !defined(HMM_LOGF) || !defined(HMM_ACOSF) || \
-    !defined(HMM_ATANF)|| !defined(HMM_ATANF2)
+    !defined(HMM_ATANF)|| !defined(HMM_ATAN2F)
 #include <math.h>    
 #endif
     
@@ -260,8 +260,8 @@ extern "C"
 #define HMM_ATANF atanf
 #endif
 
-#ifndef HMM_ATANF2
-#define HMM_ATANF2 atan2f
+#ifndef HMM_ATAN2F
+#define HMM_ATAN2F atan2f
 #endif
 
 #define HMM_PI32 3.14159265359f
@@ -422,7 +422,7 @@ typedef hmm_mat4 hmm_m4;
 HMMDEF float HMM_SinF(float Angle);
 HMMDEF float HMM_TanF(float Angle);
 HMMDEF float HMM_ATanF(float Theta);
-HMMDEF float HMM_ATanF2(float Theta, float Theta2);
+HMMDEF float HMM_ATan2F(float Theta, float Theta2);
 HMMDEF float HMM_CosF(float Angle);
 HMMDEF float HMM_ACosF(float Theta);
 HMMDEF float HMM_ExpF(float Float);
@@ -700,11 +700,11 @@ HMM_ATanF(float Radians)
 }
 
 HINLINE float
-HMM_AtanF2(float Left, float Right)
+HMM_Atan2F(float Left, float Right)
 {
     float Result = 0.0f;
 
-    Result = HMM_ATANF2(Left, Right);
+    Result = HMM_ATAN2F(Left, Right);
     return (Result);
 }
 
