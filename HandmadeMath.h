@@ -263,15 +263,6 @@ extern "C"
 #define HMM_ATANF atan
 #endif
 
-#ifndef HMM_ATANF2
-#define HMM_ATANF2 atan2
-#define HMM_ACOSF acosf
-#endif
-
-#ifndef HMM_ATANF
-#define HMM_ATANF atanf
-#endif
-
 #ifndef HMM_ATAN2F
 #define HMM_ATAN2F atan2f
 #endif
@@ -713,14 +704,6 @@ HMM_ATanF(float Radians)
 }
 
 HINLINE float
-HMM_AtanF2(float Left, float Right)
-{
-    float Result = 0.0f;
-
-    Result = HMM_ATANF2(Left, Right);
-    return (Result);
-}
-
 HMM_Atan2F(float Left, float Right)
 {
     float Result = 0.0f;
