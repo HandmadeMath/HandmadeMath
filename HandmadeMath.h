@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.0
+  HandmadeMath.h v1.1
   
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -89,6 +89,9 @@
      #define HMM_TANF MyTanF
      #define HMM_EXPF MyExpF
      #define HMM_LOGF MyLogF
+     #define HMM_ACOSF MyACosF
+     #define HMM_ATANF MyATanf
+     #define HMM_ATANF2 MyATanF2
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
      #include "HandmadeMath.h"
@@ -147,6 +150,23 @@
           (*) Added HMM_NormalizeVec4
      1.0
           (*) Lots of testing!
+
+     1.1
+          (*) Quaternion support
+          (*) Added type hmm_quaternion
+          (*) Added HMM_Quaternion
+          (*) Added HMM_QuaternionV4
+          (*) Added HMM_AddQuaternion
+          (*) Added HMM_SubtractQuaternion
+          (*) Added HMM_MultiplyQuaternion
+          (*) Added HMM_MultiplyQuaternionF
+          (*) Added HMM_DivideQuaternion
+          (*) Added HMM_DivideQuaternionF
+          (*) Added HMM_DotQuaternion
+          (*) Added HMM_NormalizeQuaternion
+          (*) Added HMM_Slerp
+          (*) Added HMM_QuaternionToMat4
+          (*) Added HMM_QuaternionFromAxisAngle
           
   LICENSE
   
@@ -233,15 +253,15 @@ extern "C"
 #endif
 
 #ifndef HMM_ACOSF
-#define HMM_ACOSF acos
+#define HMM_ACOSF acosf
 #endif
 
 #ifndef HMM_ATANF
-#define HMM_ATANF atan
+#define HMM_ATANF atanf
 #endif
 
 #ifndef HMM_ATANF2
-#define HMM_ATANF2 atan2
+#define HMM_ATANF2 atan2f
 #endif
 
 #define HMM_PI32 3.14159265359f
