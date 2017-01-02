@@ -518,6 +518,7 @@ HMMDEF hmm_quaternion HMM_DivideQuaternionF(hmm_quaternion Left, float Dividend)
 HMMDEF hmm_quaternion HMM_InverseQuaternion(hmm_quaternion Left);
 HMMDEF float HMM_DotQuaternion(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_NormalizeQuaternion(hmm_quaternion Left);
+HMMDEF hmm_quaternion HMM_NLerp(hmm_quaternion Left, float Time, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_Slerp(hmm_quaternion Left, hmm_quaternion Right, float Time);
 HMMDEF hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left);
 HMMDEF hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation);
@@ -1669,6 +1670,21 @@ HMM_NormalizeQuaternion(hmm_quaternion Left)
 
     float Length = HMM_SquareRootF(HMM_DotQuaternion(Left, Left));
     Result = HMM_DivideQuaternionF(Left, Length);
+
+    return(Result);
+}
+
+HINLINE hmm_quaternion
+HMM_NLerp(hmm_quaternion Left, float Time, hmm_quaternion Right)
+{
+    hmm_quaternion Result = {0};
+
+    Result.X = HMM_Lerp(Left.X, Time, Right.X);
+    Result.Y = HMM_Lerp(Left.Y, Time, Right.Y);
+    Result.Z = HMM_Lerp(Left.Z, Time, Right.Z);
+    Result.W = HMM_Lerp(Left.W, Time, Right.W);
+
+    Result = HMM_Normalize(Result);
 
     return(Result);
 }
