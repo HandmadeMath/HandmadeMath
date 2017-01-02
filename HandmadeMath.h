@@ -514,8 +514,8 @@ HMMDEF hmm_quaternion HMM_AddQuaternion(hmm_quaternion Left, hmm_quaternion Righ
 HMMDEF hmm_quaternion HMM_SubtractQuaternion(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_MultiplyQuaternion(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_MultiplyQuaternionF(hmm_quaternion Left, float Multiplicative);
-HMMDEF hmm_quaternion HMM_DivideQuaternion(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_DivideQuaternionF(hmm_quaternion Left, float Dividend);
+HMMDEF hmm_quaternion HMM_InverseQuaternion(hmm_quaternion Left);
 HMMDEF float HMM_DotQuaternion(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_NormalizeQuaternion(hmm_quaternion Left);
 HMMDEF hmm_quaternion HMM_Slerp(hmm_quaternion Left, hmm_quaternion Right, float Time);
@@ -615,7 +615,6 @@ HMMDEF hmm_vec4 operator*(hmm_mat4 Matrix, hmm_vec4 Vector);
 HMMDEF hmm_vec2 operator/(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator/(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator/(hmm_vec4 Left, hmm_vec4 Right);
-HMMDEF hmm_quaternion operator/(hmm_quaternion Left, hmm_quaternion Right);
 
 HMMDEF hmm_vec2 operator/(hmm_vec2 Left, float Right);
 HMMDEF hmm_vec3 operator/(hmm_vec3 Left, float Right);
@@ -1613,19 +1612,6 @@ HMM_MultiplyQuaternionF(hmm_quaternion Left, float Multiplicative)
 }
 
 HINLINE hmm_quaternion
-HMM_DivideQuaternion(hmm_quaternion Left, hmm_quaternion Right)
-{
-    hmm_quaternion Result = {0};
-
-    Result.X = Left.X / Right.X;
-    Result.Y = Left.Y / Right.Y;
-    Result.Z = Left.Z / Right.Z;
-    Result.W = Left.W / Right.W;
-
-    return(Result);
-}
-
-HINLINE hmm_quaternion
 HMM_DivideQuaternionF(hmm_quaternion Left, float Dividend)
 {
     hmm_quaternion Result = {0};
@@ -1634,6 +1620,30 @@ HMM_DivideQuaternionF(hmm_quaternion Left, float Dividend)
     Result.Y = Left.Y / Dividend;
     Result.Z = Left.Z / Dividend;
     Result.W = Left.W / Dividend;
+
+    return(Result);
+}
+
+HINLINE hmm_quaternion
+HMM_InverseQuaternion(hmm_quaternion Left)
+{
+    hmm_quaternion Conjugate = {0};
+    hmm_quaternion Result = {0};
+    float Norm = 0;
+    float NormSquared = 0;
+
+    Conjugate.X = -Left.X;
+    Conjugate.Y = -Left.Y;
+    Conjugate.Z = -Left.Z;
+    Conjugate.W = Left.W;
+
+    Norm = HMM_SquareRootF(HMM_DotQuaternion(Left, Left));
+    NormSquared = Norm * Norm;
+
+    Result.X = Conjugate.X / NormSquared;
+    Result.Y = Conjugate.Y / NormSquared;
+    Result.Z = Conjugate.Z / NormSquared;
+    Result.W = Conjugate.W / NormSquared;
 
     return(Result);
 }
@@ -2141,15 +2151,6 @@ HMM_Divide(hmm_mat4 Left, float Right)
 }
 
 HINLINE hmm_quaternion
-HMM_Divide(hmm_quaternion Left, hmm_quaternion Right)
-{
-    hmm_quaternion Result = {0};
-
-    Result = HMM_DivideQuaternion(Left, Right);
-    return (Result);
-}
-
-HINLINE hmm_quaternion
 HMM_Divide(hmm_quaternion Left, float Right)
 {
     hmm_quaternion Result = {0};
@@ -2450,15 +2451,6 @@ HINLINE hmm_mat4
 operator/(hmm_mat4 Left, float Right)
 {
     hmm_mat4 Result = {0};
-
-    Result = HMM_Divide(Left, Right);
-    return (Result);
-}
-
-HINLINE hmm_quaternion
-operator/(hmm_quaternion Left, hmm_quaternion Right)
-{
-    hmm_quaternion Result = {0};
 
     Result = HMM_Divide(Left, Right);
     return (Result);

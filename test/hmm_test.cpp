@@ -337,6 +337,19 @@ TEST(MatrixOps, Transpose)
     EXPECT_FLOAT_EQ(result.Elements[3][3], 16.0f);
 }
 
+TEST(QuaternionOps, Inverse)
+{
+    hmm_quaternion q1 = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    hmm_quaternion inverse = HMM_InverseQuaternion(q1);
+
+    hmm_quaternion result = HMM_MultiplyQuaternion(q1, inverse);
+
+    EXPECT_FLOAT_EQ(result.X, 0.0f);
+    EXPECT_FLOAT_EQ(result.Y, 0.0f);
+    EXPECT_FLOAT_EQ(result.Z, 0.0f);
+    EXPECT_FLOAT_EQ(result.W, 1.0f);
+}
+
 TEST(QuaternionOps, Dot)
 {
     hmm_quaternion q1 = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
