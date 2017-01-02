@@ -626,11 +626,13 @@ HMMDEF hmm_vec2 &operator+=(hmm_vec2 &Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 &operator+=(hmm_vec3 &Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 &operator+=(hmm_vec4 &Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 &operator+=(hmm_mat4 &Left, hmm_mat4 Right);
+HMMDEF hmm_quaternion &operator+=(hmm_quaternion &Left, hmm_quaternion Right);
 
 HMMDEF hmm_vec2 &operator-=(hmm_vec2 &Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 &operator-=(hmm_vec3 &Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 &operator-=(hmm_vec4 &Left, hmm_vec4 Right);
 HMMDEF hmm_mat4 &operator-=(hmm_mat4 &Left, hmm_mat4 Right);
+HMMDEF hmm_quaternion &operator-=(hmm_quaternion &Left, hmm_quaternion Right);
 
 HMMDEF hmm_vec2 &operator*=(hmm_vec2 &Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 &operator*=(hmm_vec3 &Left, hmm_vec3 Right);
@@ -640,6 +642,7 @@ HMMDEF hmm_vec2 &operator*=(hmm_vec2 &Left, float Right);
 HMMDEF hmm_vec3 &operator*=(hmm_vec3 &Left, float Right);
 HMMDEF hmm_vec4 &operator*=(hmm_vec4 &Left, float Right);
 HMMDEF hmm_mat4 &operator*=(hmm_mat4 &Left, float Right);
+HMMDEF hmm_quaternion &operator*=(hmm_quaternion &Left, float Right);
 
 HMMDEF hmm_vec2 &operator/=(hmm_vec2 &Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 &operator/=(hmm_vec3 &Left, hmm_vec3 Right);
@@ -649,6 +652,7 @@ HMMDEF hmm_vec2 &operator/=(hmm_vec2 &Left, float Right);
 HMMDEF hmm_vec3 &operator/=(hmm_vec3 &Left, float Right);
 HMMDEF hmm_vec4 &operator/=(hmm_vec4 &Left, float Right);
 HMMDEF hmm_mat4 &operator/=(hmm_mat4 &Left, float Right);
+HMMDEF hmm_quaternion &operator/=(hmm_quaternion &Left, float Right);
 
 #endif /* HANDMADE_MATH_CPP */
 
@@ -2489,6 +2493,12 @@ operator+=(hmm_mat4 &Left, hmm_mat4 Right)
     return (Left = Left + Right);
 }
 
+HINLINE hmm_quaternion &
+operator+=(hmm_quaternion &Left, hmm_quaternion Right)
+{
+    return (Left = Left + Right);
+}
+
 HINLINE hmm_vec2 &
 operator-=(hmm_vec2 &Left, hmm_vec2 Right)
 {    
@@ -2509,6 +2519,12 @@ operator-=(hmm_vec4 &Left, hmm_vec4 Right)
 
 HINLINE hmm_mat4 &
 operator-=(hmm_mat4 &Left, hmm_mat4 Right)
+{
+    return (Left = Left - Right);
+}
+
+HINLINE hmm_quaternion &
+operator-=(hmm_quaternion &Left, hmm_quaternion Right)
 {
     return (Left = Left - Right);
 }
@@ -2555,6 +2571,12 @@ operator/=(hmm_mat4 &Left, float Right)
     return (Left = Left / Right);
 }
 
+HINLINE hmm_quaternion &
+operator/=(hmm_quaternion &Left, float Right)
+{
+    return (Left = Left / Right);
+}
+
 HINLINE hmm_vec2 &
 operator*=(hmm_vec2 &Left, hmm_vec2 Right)
 {    
@@ -2593,6 +2615,12 @@ operator*=(hmm_vec4 &Left, float Right)
 
 HINLINE hmm_mat4 &
 operator*=(hmm_mat4 &Left, float Right)
+{
+    return (Left = Left * Right);
+}
+
+HINLINE hmm_quaternion &
+operator*=(hmm_quaternion &Left, float Right)
 {
     return (Left = Left * Right);
 }

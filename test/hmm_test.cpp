@@ -629,11 +629,11 @@ TEST(Addition, Quaternion)
         EXPECT_FLOAT_EQ(result.W, 12.0f);
     }
 
-    // q1 += q2;
-    // EXPECT_FLOAT_EQ(q1.X, 6.0f);
-    // EXPECT_FLOAT_EQ(q1.Y, 8.0f);
-    // EXPECT_FLOAT_EQ(q1.Z, 10.0f);
-    // EXPECT_FLOAT_EQ(q1.W, 12.0f);
+    q1 += q2;
+    EXPECT_FLOAT_EQ(q1.X, 6.0f);
+    EXPECT_FLOAT_EQ(q1.Y, 8.0f);
+    EXPECT_FLOAT_EQ(q1.Z, 10.0f);
+    EXPECT_FLOAT_EQ(q1.W, 12.0f);
 }
 
 TEST(Subtraction, Vec2)
@@ -819,11 +819,11 @@ TEST(Subtraction, Quaternion)
         EXPECT_FLOAT_EQ(result.W, -4.0f);
     }
 
-    // q1 -= q2;
-    // EXPECT_FLOAT_EQ(q1.X, -4.0f);
-    // EXPECT_FLOAT_EQ(q1.Y, -4.0f);
-    // EXPECT_FLOAT_EQ(q1.Z, -4.0f);
-    // EXPECT_FLOAT_EQ(q1.W, -4.0f);
+    q1 -= q2;
+    EXPECT_FLOAT_EQ(q1.X, -4.0f);
+    EXPECT_FLOAT_EQ(q1.Y, -4.0f);
+    EXPECT_FLOAT_EQ(q1.Z, -4.0f);
+    EXPECT_FLOAT_EQ(q1.W, -4.0f);
 }
 
 TEST(Multiplication, Vec2Vec2)
@@ -1332,11 +1332,11 @@ TEST(Multiplication, QuaternionScalar)
         EXPECT_FLOAT_EQ(result.W, 8.0f);
     }
 
-    // q *= f
-    // EXPECT_FLOAT_EQ(q.X, 2.0f);
-    // EXPECT_FLOAT_EQ(q.Y, 4.0f);
-    // EXPECT_FLOAT_EQ(q.Z, 6.0f);
-    // EXPECT_FLOAT_EQ(q.W, 8.0f);
+    q *= f;
+    EXPECT_FLOAT_EQ(q.X, 2.0f);
+    EXPECT_FLOAT_EQ(q.Y, 4.0f);
+    EXPECT_FLOAT_EQ(q.Z, 6.0f);
+    EXPECT_FLOAT_EQ(q.W, 8.0f);
 }
 
 TEST(Division, Vec2Vec2)
@@ -1640,11 +1640,11 @@ TEST(Division, QuaternionScalar)
         EXPECT_FLOAT_EQ(result.W, 2.0f);
     }
 
-    // q /= f;
-    // EXPECT_FLOAT_EQ(q.X, 0.5f);
-    // EXPECT_FLOAT_EQ(q.Y, 1.0f);
-    // EXPECT_FLOAT_EQ(q.Z, 1.5f);
-    // EXPECT_FLOAT_EQ(q.W, 2.0f);
+    q /= f;
+    EXPECT_FLOAT_EQ(q.X, 0.5f);
+    EXPECT_FLOAT_EQ(q.Y, 1.0f);
+    EXPECT_FLOAT_EQ(q.Z, 1.5f);
+    EXPECT_FLOAT_EQ(q.W, 2.0f);
 }
 
 TEST(Projection, Orthographic)
