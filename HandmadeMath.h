@@ -393,7 +393,7 @@ typedef union hmm_vec4
     float Elements[4];
 } hmm_vec4;
 
-typedef struct hmm_quaternion
+typedef union hmm_quaternion
 {
     struct
     {
@@ -458,8 +458,8 @@ HMMDEF float HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo);
 
 HMMDEF hmm_vec3 HMM_Cross(hmm_vec3 VecOne, hmm_vec3 VecTwo);
 
-HMMDEF hmm_vec2 HMM_Vec2i(int X, int Y);
 HMMDEF hmm_vec2 HMM_Vec2(float X, float Y);
+HMMDEF hmm_vec2 HMM_Vec2i(int X, int Y);
 HMMDEF hmm_vec3 HMM_Vec3(float X, float Y, float Z);
 HMMDEF hmm_vec3 HMM_Vec3i(int X, int Y, int Z);
 HMMDEF hmm_vec4 HMM_Vec4(float X, float Y, float Z, float W);
@@ -1669,7 +1669,7 @@ HMM_Slerp(hmm_quaternion Left, hmm_quaternion Right, float Time)
     float Cos_Theta = HMM_DotQuaternion(Left, Right);
     float Angle = HMM_ACosF(Cos_Theta);
     
-    float S1 = HMM_SinF(1.0f - Time * Angle);
+    float S1 = HMM_SinF((1.0f - Time) * Angle);
     float S2 = HMM_SinF(Time * Angle);
     float Is = 1.0f / HMM_SinF(Angle);
 
@@ -1723,15 +1723,16 @@ HINLINE hmm_quaternion
 HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation)
 {
     hmm_quaternion Result = {0};
-    float NormalizedVec3 = 0;
+    float AxisNorm = 0;
     float SineOfRotation = 0;
-    hmm_vec3 RotatedVector = { 0 };
-    NormalizedVec3 = HMM_SquareRootF(HMM_DotVec3(Axis, Axis));
+    hmm_vec3 RotatedVector = {0};
+
+    AxisNorm = HMM_SquareRootF(HMM_DotVec3(Axis, Axis));
     SineOfRotation = HMM_SinF(AngleOfRotation / 2.0f);
     RotatedVector = HMM_MultiplyVec3f(Axis, SineOfRotation);
 
     Result.W = HMM_CosF(AngleOfRotation / 2.0f);
-    Result.XYZ = HMM_DivideVec3f(RotatedVector, NormalizedVec3);
+    Result.XYZ = HMM_DivideVec3f(RotatedVector, AxisNorm);
 
     return(Result);
 }
