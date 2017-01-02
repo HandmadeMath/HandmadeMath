@@ -163,8 +163,8 @@
           (*) Added HMM_SubtractQuaternion
           (*) Added HMM_MultiplyQuaternion
           (*) Added HMM_MultiplyQuaternionF
-          (*) Added HMM_DivideQuaternion
           (*) Added HMM_DivideQuaternionF
+          (*) Added HMM_InverseQuaternion
           (*) Added HMM_DotQuaternion
           (*) Added HMM_NormalizeQuaternion
           (*) Added HMM_Slerp
@@ -393,6 +393,11 @@ typedef union hmm_vec4
     float Elements[4];
 } hmm_vec4;
 
+typedef union hmm_mat4
+{
+    float Elements[4][4];
+} hmm_mat4;
+
 typedef union hmm_quaternion
 {
     struct
@@ -411,11 +416,6 @@ typedef union hmm_quaternion
     
     float Elements[4];
 } hmm_quaternion;
-
-typedef union hmm_mat4
-{
-    float Elements[4][4];
-} hmm_mat4;
 
 typedef hmm_vec2 hmm_v2;
 typedef hmm_vec3 hmm_v3;
