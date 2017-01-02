@@ -402,7 +402,7 @@ TEST(QuaternionOps, Slerp)
     hmm_quaternion from = HMM_Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
     hmm_quaternion to = HMM_Quaternion(0.5f, 0.5f, -0.5f, 0.5f);
 
-    hmm_quaternion result = HMM_Slerp(from, to, 0.5f);
+    hmm_quaternion result = HMM_Slerp(from, 0.5f, to);
     EXPECT_FLOAT_EQ(result.X, 0.28867513f);
     EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
     EXPECT_FLOAT_EQ(result.Z, -0.28867513f);

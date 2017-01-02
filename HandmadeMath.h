@@ -519,7 +519,7 @@ HMMDEF hmm_quaternion HMM_InverseQuaternion(hmm_quaternion Left);
 HMMDEF float HMM_DotQuaternion(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_NormalizeQuaternion(hmm_quaternion Left);
 HMMDEF hmm_quaternion HMM_NLerp(hmm_quaternion Left, float Time, hmm_quaternion Right);
-HMMDEF hmm_quaternion HMM_Slerp(hmm_quaternion Left, hmm_quaternion Right, float Time);
+HMMDEF hmm_quaternion HMM_Slerp(hmm_quaternion Left, float Time, hmm_quaternion Right);
 HMMDEF hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left);
 HMMDEF hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation);
 
@@ -1690,7 +1690,7 @@ HMM_NLerp(hmm_quaternion Left, float Time, hmm_quaternion Right)
 }
 
 HINLINE hmm_quaternion
-HMM_Slerp(hmm_quaternion Left, hmm_quaternion Right, float Time)
+HMM_Slerp(hmm_quaternion Left, float Time, hmm_quaternion Right)
 {
     hmm_quaternion Result = {0};
     hmm_quaternion QuaternionLeft = {0};
