@@ -157,6 +157,29 @@ TEST(Initialization, MatrixDiagonal)
     }
 }
 
+TEST(Initialization, Quaternion)
+{
+    hmm_quaternion q = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+
+    EXPECT_FLOAT_EQ(q.X, 1.0f);
+    EXPECT_FLOAT_EQ(q.Y, 2.0f);
+    EXPECT_FLOAT_EQ(q.Z, 3.0f);
+    EXPECT_FLOAT_EQ(q.W, 4.0f);
+
+    EXPECT_FLOAT_EQ(q.Elements[0], 1.0f);
+    EXPECT_FLOAT_EQ(q.Elements[1], 2.0f);
+    EXPECT_FLOAT_EQ(q.Elements[2], 3.0f);
+    EXPECT_FLOAT_EQ(q.Elements[3], 4.0f);
+
+    hmm_vec4 v = HMM_Vec4(1.0f, 2.0f, 3.0f, 4.0f);
+    hmm_quaternion qv = HMM_QuaternionV4(v);
+
+    EXPECT_FLOAT_EQ(qv.X, 1.0f);
+    EXPECT_FLOAT_EQ(qv.Y, 2.0f);
+    EXPECT_FLOAT_EQ(qv.Z, 3.0f);
+    EXPECT_FLOAT_EQ(qv.W, 4.0f);
+}
+
 TEST(VectorOps, LengthSquared)
 {
     hmm_vec2 v2 = HMM_Vec2(1.0f, -2.0f);
@@ -312,6 +335,119 @@ TEST(MatrixOps, Transpose)
     EXPECT_FLOAT_EQ(result.Elements[3][1], 8.0f);
     EXPECT_FLOAT_EQ(result.Elements[3][2], 12.0f);
     EXPECT_FLOAT_EQ(result.Elements[3][3], 16.0f);
+}
+
+TEST(QuaternionOps, Inverse)
+{
+    hmm_quaternion q1 = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    hmm_quaternion inverse = HMM_InverseQuaternion(q1);
+
+    hmm_quaternion result = HMM_MultiplyQuaternion(q1, inverse);
+
+    EXPECT_FLOAT_EQ(result.X, 0.0f);
+    EXPECT_FLOAT_EQ(result.Y, 0.0f);
+    EXPECT_FLOAT_EQ(result.Z, 0.0f);
+    EXPECT_FLOAT_EQ(result.W, 1.0f);
+}
+
+TEST(QuaternionOps, Dot)
+{
+    hmm_quaternion q1 = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    hmm_quaternion q2 = HMM_Quaternion(5.0f, 6.0f, 7.0f, 8.0f);
+
+    {
+        float result = HMM_DotQuaternion(q1, q2);
+        EXPECT_FLOAT_EQ(result, 70.0f);
+    }
+    {
+        float result = HMM_Dot(q1, q2);
+        EXPECT_FLOAT_EQ(result, 70.0f);
+    }
+}
+
+TEST(QuaternionOps, Normalize)
+{
+    hmm_quaternion q = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+
+    {
+        hmm_quaternion result = HMM_NormalizeQuaternion(q);
+        EXPECT_FLOAT_EQ(result.X, 0.1825741858f);
+        EXPECT_FLOAT_EQ(result.Y, 0.3651483717f);
+        EXPECT_FLOAT_EQ(result.Z, 0.5477225575f);
+        EXPECT_FLOAT_EQ(result.W, 0.7302967433f);
+    }
+    {
+        hmm_quaternion result = HMM_Normalize(q);
+        EXPECT_FLOAT_EQ(result.X, 0.1825741858f);
+        EXPECT_FLOAT_EQ(result.Y, 0.3651483717f);
+        EXPECT_FLOAT_EQ(result.Z, 0.5477225575f);
+        EXPECT_FLOAT_EQ(result.W, 0.7302967433f);
+    }
+}
+
+TEST(QuaternionOps, NLerp)
+{
+    hmm_quaternion from = HMM_Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+    hmm_quaternion to = HMM_Quaternion(0.5f, 0.5f, -0.5f, 0.5f);
+
+    hmm_quaternion result = HMM_NLerp(from, 0.5f, to);
+    EXPECT_FLOAT_EQ(result.X, 0.28867513f);
+    EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
+    EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
+    EXPECT_FLOAT_EQ(result.W, 0.86602540f);
+}
+
+TEST(QuaternionOps, Slerp)
+{
+    hmm_quaternion from = HMM_Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+    hmm_quaternion to = HMM_Quaternion(0.5f, 0.5f, -0.5f, 0.5f);
+
+    hmm_quaternion result = HMM_Slerp(from, 0.5f, to);
+    EXPECT_FLOAT_EQ(result.X, 0.28867513f);
+    EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
+    EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
+    EXPECT_FLOAT_EQ(result.W, 0.86602540f);
+}
+
+TEST(QuaternionOps, ToMat4)
+{
+    const float abs_error = 0.0001f;
+
+    hmm_quaternion rot = HMM_Quaternion(0.707107f, 0.0f, 0.0f, 0.707107f);
+
+    hmm_mat4 result = HMM_QuaternionToMat4(rot);
+
+    EXPECT_NEAR(result.Elements[0][0], 1.0f, abs_error);
+    EXPECT_NEAR(result.Elements[0][1], 0.0f, abs_error);
+    EXPECT_NEAR(result.Elements[0][2], 0.0f, abs_error);
+    EXPECT_NEAR(result.Elements[0][3], 0.0f, abs_error);
+
+    EXPECT_NEAR(result.Elements[1][0], 0.0f, abs_error);
+    EXPECT_NEAR(result.Elements[1][1], 0.0f, abs_error);
+    EXPECT_NEAR(result.Elements[1][2], 1.0f, abs_error);
+    EXPECT_NEAR(result.Elements[1][3], 0.0f, abs_error);
+
+    EXPECT_NEAR(result.Elements[2][0], 0.0f, abs_error);
+    EXPECT_NEAR(result.Elements[2][1], -1.0f, abs_error);
+    EXPECT_NEAR(result.Elements[2][2], 0.0f, abs_error);
+    EXPECT_NEAR(result.Elements[2][3], 0.0f, abs_error);
+
+    EXPECT_NEAR(result.Elements[3][0], 0.0f, abs_error);
+    EXPECT_NEAR(result.Elements[3][1], 0.0f, abs_error);
+    EXPECT_NEAR(result.Elements[3][2], 0.0f, abs_error);
+    EXPECT_NEAR(result.Elements[3][3], 1.0f, abs_error);
+}
+
+TEST(QuaternionOps, FromAxisAngle)
+{
+    hmm_vec3 axis = HMM_Vec3(1.0f, 0.0f, 0.0f);
+    float angle = HMM_PI32 / 2.0f;
+
+    hmm_quaternion result = HMM_QuaternionFromAxisAngle(axis, angle);
+    EXPECT_FLOAT_EQ(result.X, 0.707107f);
+    EXPECT_FLOAT_EQ(result.Y, 0.0f);
+    EXPECT_FLOAT_EQ(result.Z, 0.0f);
+    EXPECT_FLOAT_EQ(result.W, 0.707107f);
 }
 
 TEST(Addition, Vec2)
@@ -478,6 +614,40 @@ TEST(Addition, Mat4)
     }
 }
 
+TEST(Addition, Quaternion)
+{
+    hmm_quaternion q1 = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    hmm_quaternion q2 = HMM_Quaternion(5.0f, 6.0f, 7.0f, 8.0f);
+
+    {
+        hmm_quaternion result = HMM_AddQuaternion(q1, q2);
+        EXPECT_FLOAT_EQ(result.X, 6.0f);
+        EXPECT_FLOAT_EQ(result.Y, 8.0f);
+        EXPECT_FLOAT_EQ(result.Z, 10.0f);
+        EXPECT_FLOAT_EQ(result.W, 12.0f);
+    }
+    {
+        hmm_quaternion result = HMM_Add(q1, q2);
+        EXPECT_FLOAT_EQ(result.X, 6.0f);
+        EXPECT_FLOAT_EQ(result.Y, 8.0f);
+        EXPECT_FLOAT_EQ(result.Z, 10.0f);
+        EXPECT_FLOAT_EQ(result.W, 12.0f);
+    }
+    {
+        hmm_quaternion result = q1 + q2;
+        EXPECT_FLOAT_EQ(result.X, 6.0f);
+        EXPECT_FLOAT_EQ(result.Y, 8.0f);
+        EXPECT_FLOAT_EQ(result.Z, 10.0f);
+        EXPECT_FLOAT_EQ(result.W, 12.0f);
+    }
+
+    q1 += q2;
+    EXPECT_FLOAT_EQ(q1.X, 6.0f);
+    EXPECT_FLOAT_EQ(q1.Y, 8.0f);
+    EXPECT_FLOAT_EQ(q1.Z, 10.0f);
+    EXPECT_FLOAT_EQ(q1.W, 12.0f);
+}
+
 TEST(Subtraction, Vec2)
 {
     hmm_vec2 v2_1 = HMM_Vec2(1.0f, 2.0f);
@@ -632,6 +802,40 @@ TEST(Subtraction, Mat4)
             EXPECT_FLOAT_EQ(m4_1.Elements[Column][Row], -16.0f) << "At column " << Column << ", row " << Row;
         }
     }
+}
+
+TEST(Subtraction, Quaternion)
+{
+    hmm_quaternion q1 = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    hmm_quaternion q2 = HMM_Quaternion(5.0f, 6.0f, 7.0f, 8.0f);
+
+    {
+        hmm_quaternion result = HMM_SubtractQuaternion(q1, q2);
+        EXPECT_FLOAT_EQ(result.X, -4.0f);
+        EXPECT_FLOAT_EQ(result.Y, -4.0f);
+        EXPECT_FLOAT_EQ(result.Z, -4.0f);
+        EXPECT_FLOAT_EQ(result.W, -4.0f);
+    }
+    {
+        hmm_quaternion result = HMM_Subtract(q1, q2);
+        EXPECT_FLOAT_EQ(result.X, -4.0f);
+        EXPECT_FLOAT_EQ(result.Y, -4.0f);
+        EXPECT_FLOAT_EQ(result.Z, -4.0f);
+        EXPECT_FLOAT_EQ(result.W, -4.0f);
+    }
+    {
+        hmm_quaternion result = q1 - q2;
+        EXPECT_FLOAT_EQ(result.X, -4.0f);
+        EXPECT_FLOAT_EQ(result.Y, -4.0f);
+        EXPECT_FLOAT_EQ(result.Z, -4.0f);
+        EXPECT_FLOAT_EQ(result.W, -4.0f);
+    }
+
+    q1 -= q2;
+    EXPECT_FLOAT_EQ(q1.X, -4.0f);
+    EXPECT_FLOAT_EQ(q1.Y, -4.0f);
+    EXPECT_FLOAT_EQ(q1.Z, -4.0f);
+    EXPECT_FLOAT_EQ(q1.W, -4.0f);
 }
 
 TEST(Multiplication, Vec2Vec2)
@@ -1074,6 +1278,79 @@ TEST(Multiplication, Mat4Vec4)
     // *= makes no sense for this particular case.
 }
 
+TEST(Multiplication, QuaternionQuaternion)
+{
+    hmm_quaternion q1 = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    hmm_quaternion q2 = HMM_Quaternion(5.0f, 6.0f, 7.0f, 8.0f);
+
+    {
+        hmm_quaternion result = HMM_MultiplyQuaternion(q1, q2);
+        EXPECT_FLOAT_EQ(result.X, 24.0f);
+        EXPECT_FLOAT_EQ(result.Y, 48.0f);
+        EXPECT_FLOAT_EQ(result.Z, 48.0f);
+        EXPECT_FLOAT_EQ(result.W, -6.0f);
+    }
+    {
+        hmm_quaternion result = HMM_Multiply(q1, q2);
+        EXPECT_FLOAT_EQ(result.X, 24.0f);
+        EXPECT_FLOAT_EQ(result.Y, 48.0f);
+        EXPECT_FLOAT_EQ(result.Z, 48.0f);
+        EXPECT_FLOAT_EQ(result.W, -6.0f);
+    }
+    {
+        hmm_quaternion result = q1 * q2;
+        EXPECT_FLOAT_EQ(result.X, 24.0f);
+        EXPECT_FLOAT_EQ(result.Y, 48.0f);
+        EXPECT_FLOAT_EQ(result.Z, 48.0f);
+        EXPECT_FLOAT_EQ(result.W, -6.0f);
+    }
+
+    // Like with matrices, we're not implementing the *=
+    // operator for quaternions because quaternion multiplication
+    // is not commutative.
+}
+
+TEST(Multiplication, QuaternionScalar)
+{
+    hmm_quaternion q = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    float f = 2.0f;
+
+    {
+        hmm_quaternion result = HMM_MultiplyQuaternionF(q, f);
+        EXPECT_FLOAT_EQ(result.X, 2.0f);
+        EXPECT_FLOAT_EQ(result.Y, 4.0f);
+        EXPECT_FLOAT_EQ(result.Z, 6.0f);
+        EXPECT_FLOAT_EQ(result.W, 8.0f);
+    }
+    {
+        hmm_quaternion result = HMM_Multiply(q, f);
+        EXPECT_FLOAT_EQ(result.X, 2.0f);
+        EXPECT_FLOAT_EQ(result.Y, 4.0f);
+        EXPECT_FLOAT_EQ(result.Z, 6.0f);
+        EXPECT_FLOAT_EQ(result.W, 8.0f);
+    }
+    {
+        hmm_quaternion result = q * f;
+        EXPECT_FLOAT_EQ(result.X, 2.0f);
+        EXPECT_FLOAT_EQ(result.Y, 4.0f);
+        EXPECT_FLOAT_EQ(result.Z, 6.0f);
+        EXPECT_FLOAT_EQ(result.W, 8.0f);
+    }
+    {
+        hmm_quaternion result = f * q;
+        EXPECT_FLOAT_EQ(result.X, 2.0f);
+        EXPECT_FLOAT_EQ(result.Y, 4.0f);
+        EXPECT_FLOAT_EQ(result.Z, 6.0f);
+        EXPECT_FLOAT_EQ(result.W, 8.0f);
+    }
+
+    q *= f;
+    EXPECT_FLOAT_EQ(q.X, 2.0f);
+    EXPECT_FLOAT_EQ(q.Y, 4.0f);
+    EXPECT_FLOAT_EQ(q.Z, 6.0f);
+    EXPECT_FLOAT_EQ(q.W, 8.0f);
+}
+
 TEST(Division, Vec2Vec2)
 {
     hmm_vec2 v2_1 = HMM_Vec2(1.0f, 3.0f);
@@ -1346,6 +1623,40 @@ TEST(Division, Mat4Scalar)
     EXPECT_FLOAT_EQ(m4.Elements[3][1], 7.0f);
     EXPECT_FLOAT_EQ(m4.Elements[3][2], 7.5f);
     EXPECT_FLOAT_EQ(m4.Elements[3][3], 8.0f);
+}
+
+TEST(Division, QuaternionScalar)
+{
+    hmm_quaternion q = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    float f = 2.0f;
+
+    {
+        hmm_quaternion result = HMM_DivideQuaternionF(q, f);
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 1.0f);
+        EXPECT_FLOAT_EQ(result.Z, 1.5f);
+        EXPECT_FLOAT_EQ(result.W, 2.0f);
+    }
+    {
+        hmm_quaternion result = HMM_Divide(q, f);
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 1.0f);
+        EXPECT_FLOAT_EQ(result.Z, 1.5f);
+        EXPECT_FLOAT_EQ(result.W, 2.0f);
+    }
+    {
+        hmm_quaternion result = q / f;
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 1.0f);
+        EXPECT_FLOAT_EQ(result.Z, 1.5f);
+        EXPECT_FLOAT_EQ(result.W, 2.0f);
+    }
+
+    q /= f;
+    EXPECT_FLOAT_EQ(q.X, 0.5f);
+    EXPECT_FLOAT_EQ(q.Y, 1.0f);
+    EXPECT_FLOAT_EQ(q.Z, 1.5f);
+    EXPECT_FLOAT_EQ(q.W, 2.0f);
 }
 
 TEST(Projection, Orthographic)
