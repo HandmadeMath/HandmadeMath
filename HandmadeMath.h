@@ -206,7 +206,8 @@
 #pragma warning(disable:4201)
 #endif
 
-#ifdef __GNUC__
+#ifdef __clang__
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wgnu-anonymous-struct"
 #endif
 
@@ -2644,3 +2645,7 @@ operator*=(hmm_quaternion &Left, float Right)
 #endif /* HANDMADE_MATH_CPP_MODE */
 
 #endif /* HANDMADE_MATH_IMPLEMENTATION */
+
+#ifdef __clang__
+#pragma GCC diagnostic pop
+#endif
