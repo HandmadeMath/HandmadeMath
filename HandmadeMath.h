@@ -659,6 +659,10 @@ HMMDEF hmm_quaternion &operator/=(hmm_quaternion &Left, float Right);
 
 #endif /* HANDMADE_MATH_CPP */
 
+#ifdef __clang__
+#pragma GCC diagnostic pop
+#endif
+
 #endif /* HANDMADE_MATH_H */
 
 #ifdef HANDMADE_MATH_IMPLEMENTATION
@@ -2646,7 +2650,3 @@ operator*=(hmm_quaternion &Left, float Right)
 #endif /* HANDMADE_MATH_CPP_MODE */
 
 #endif /* HANDMADE_MATH_IMPLEMENTATION */
-
-#ifdef __clang__
-#pragma GCC diagnostic pop
-#endif
