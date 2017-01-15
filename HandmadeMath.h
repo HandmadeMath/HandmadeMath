@@ -153,7 +153,6 @@
           (*) Added HMM_NormalizeVec4
      1.0
           (*) Lots of testing!
-
      1.1
           (*) Quaternion support
           (*) Added type hmm_quaternion
@@ -170,6 +169,8 @@
           (*) Added HMM_Slerp
           (*) Added HMM_QuaternionToMat4
           (*) Added HMM_QuaternionFromAxisAngle
+     1.1.1
+          (*) Resolved compiler warnings on gcc and g++
           
   LICENSE
   
