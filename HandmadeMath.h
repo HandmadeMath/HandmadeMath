@@ -153,7 +153,6 @@
           (*) Added HMM_NormalizeVec4
      1.0
           (*) Lots of testing!
-
      1.1
           (*) Quaternion support
           (*) Added type hmm_quaternion
@@ -170,6 +169,8 @@
           (*) Added HMM_Slerp
           (*) Added HMM_QuaternionToMat4
           (*) Added HMM_QuaternionFromAxisAngle
+     1.1.1
+          (*) Resolved compiler warnings on gcc and g++
           
   LICENSE
   
@@ -206,7 +207,8 @@
 #pragma warning(disable:4201)
 #endif
 
-#ifdef __GNUC__
+#ifdef __clang__
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wgnu-anonymous-struct"
 #endif
 
@@ -656,6 +658,10 @@ HMMDEF hmm_mat4 &operator/=(hmm_mat4 &Left, float Right);
 HMMDEF hmm_quaternion &operator/=(hmm_quaternion &Left, float Right);
 
 #endif /* HANDMADE_MATH_CPP */
+
+#ifdef __clang__
+#pragma GCC diagnostic pop
+#endif
 
 #endif /* HANDMADE_MATH_H */
 
