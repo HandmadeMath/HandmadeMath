@@ -503,7 +503,7 @@ HMMDEF hmm_mat4 HMM_Transpose(hmm_mat4 Matrix);
 
 HMMDEF hmm_mat4 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
 HMMDEF hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far);
-HMMDEF hmm_mat4 HMM_PerspectiveReverseZToInfinity(float FOV, float AspectRatio, float Near)
+HMMDEF hmm_mat4 HMM_PerspectiveReverseZToInfinity(float FOV, float AspectRatio, float Near);
 
 HMMDEF hmm_mat4 HMM_Translate(hmm_vec3 Translation);
 HMMDEF hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis);
