@@ -503,6 +503,7 @@ HMMDEF hmm_mat4 HMM_Transpose(hmm_mat4 Matrix);
 
 HMMDEF hmm_mat4 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far);
 HMMDEF hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far);
+HMMDEF hmm_mat4 HMM_PerspectiveReverseZToInfinity(float FOV, float AspectRatio, float Near)
 
 HMMDEF hmm_mat4 HMM_Translate(hmm_vec3 Translation);
 HMMDEF hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis);
@@ -1515,10 +1516,10 @@ HMM_Scale(hmm_vec3 Scale)
 }
 
 HINLINE hmm_mat4
-HMM_ReverseZPerspectiveToInfinity(float FOV_Degrees, float AspectRatio, float Near){
+HMM_PerspectiveReverseZToInfinity(float FOV, float AspectRatio, float Near){
     hmm_mat4 Result = HMM_Mat4();
     
-    float f = 1.f / HMM_TanF(HMM_ToRadians(FOV_Degrees) / 2.f);
+    float f = 1.f / HMM_TanF(HMM_ToRadians(FOV) / 2.f);
 
     Result.Elements[0][0] = f / AspectRatio;
     Result.Elements[1][1] = f;
