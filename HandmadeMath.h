@@ -1517,16 +1517,16 @@ HMM_Scale(hmm_vec3 Scale)
 
 HINLINE hmm_mat4
 HMM_PerspectiveReverseZToInfinity(float FOV, float AspectRatio, float Near){
-    hmm_mat4 Result = HMM_Mat4();
+    hmm_mat4 Result = {0};
     
-    float f = 1.f / HMM_TanF(HMM_ToRadians(FOV) / 2.f);
+    float f = 1.f / HMM_TanF(HMM_ToRadians(FOV) / 2.0f);
 
     Result.Elements[0][0] = f / AspectRatio;
     Result.Elements[1][1] = f;
-    Result.Elements[2][3] = -1.f;
+    Result.Elements[2][3] = -1.0f;
     Result.Elements[3][2] = Near;
     
-    return Result;
+    return (Result);
 }
 
 HINLINE hmm_mat4
