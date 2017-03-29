@@ -12,6 +12,8 @@ _This library is free and will stay free, but if you would like to support devel
 
 Version         | Changes        | 
 ----------------|----------------|
+**1.1.2** | Fixed invalid HMMDEF's in the function definitions
+**1.1.1** | Resolved compiler warnings on gcc and g++
 **1.1**   | Quaternions! |
 **1.0**   | Lots of testing |
 **0.7**   | Added HMM_Vec2, and HMM_Vec4 versions of  HMM_LengthSquared, HMM_Length, and HMM_Normalize.   |

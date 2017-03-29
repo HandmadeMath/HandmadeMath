@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.1
+  HandmadeMath.h v1.1.2
   
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -171,6 +171,8 @@
           (*) Added HMM_QuaternionFromAxisAngle
      1.1.1
           (*) Resolved compiler warnings on gcc and g++
+     1.1.2
+          (*) Fixed invalid HMMDEF's in the function definitions
           
   LICENSE
   
@@ -1544,7 +1546,7 @@ HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
 }
 
 
-HMMDEF hmm_quaternion 
+HINLINE hmm_quaternion 
 HMM_Quaternion(float X, float Y, float Z, float W)
 {
     hmm_quaternion Result = {0};
@@ -1775,7 +1777,7 @@ HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation)
 
 #ifdef HANDMADE_MATH_CPP_MODE
 
-HMMDEF float 
+HINLINE float 
 HMM_Length(hmm_vec2 A)
 {
     float Result = 0.0f;
@@ -1785,7 +1787,7 @@ HMM_Length(hmm_vec2 A)
     return(Result);
 }
 
-HMMDEF float 
+HINLINE float 
 HMM_Length(hmm_vec3 A)
 {
     float Result = 0.0f;
@@ -1795,7 +1797,7 @@ HMM_Length(hmm_vec3 A)
     return(Result);
 }
 
-HMMDEF float 
+HINLINE float 
 HMM_Length(hmm_vec4 A)
 {
     float Result = 0.0f;
@@ -1933,7 +1935,7 @@ HMM_Add(hmm_vec3 Left, hmm_vec3 Right)
     return (Result);
 }
 
-HMMDEF HINLINE hmm_vec4
+HINLINE hmm_vec4
 HMM_Add(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = {0};
