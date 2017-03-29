@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.1
+  HandmadeMath.h v1.1.2
   
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -171,6 +171,8 @@
           (*) Added HMM_QuaternionFromAxisAngle
      1.1.1
           (*) Resolved compiler warnings on gcc and g++
+     1.1.2
+          (*) Fixed invalid HMMDEF's in the function definitions
           
   LICENSE
   
