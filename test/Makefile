@@ -9,7 +9,7 @@ clean:
 
 c: $(ROOT_DIR)/test/HandmadeMath.c test_impl
 	$(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 -c $(ROOT_DIR)/test/HandmadeMath.c $(ROOT_DIR)/test/hmm_test.c
-	$(CC) -ohmm_test_c -lm HandmadeMath.o hmm_test.o
+	$(CC) -std=c99 -ohmm_test_c -lm HandmadeMath.o hmm_test.o
 
 cpp: $(ROOT_DIR)/test/HandmadeMath.cpp test_impl
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp $(ROOT_DIR)/test/HandmadeMath.cpp $(ROOT_DIR)/test/hmm_test.cpp
