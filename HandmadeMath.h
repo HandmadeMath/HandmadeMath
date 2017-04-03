@@ -1692,7 +1692,7 @@ HMM_NLerp(hmm_quaternion Left, float Time, hmm_quaternion Right)
     Result.Z = HMM_Lerp(Left.Z, Time, Right.Z);
     Result.W = HMM_Lerp(Left.W, Time, Right.W);
 
-    Result = HMM_Normalize(Result);
+    Result = HMM_NormalizeQuaternion(Result);
 
     return(Result);
 }
