@@ -173,6 +173,8 @@
           (*) Resolved compiler warnings on gcc and g++
      1.1.2
           (*) Fixed invalid HMMDEF's in the function definitions
+     1.1.3
+          (*) Fixed compile error in C mode
           
   LICENSE
   
@@ -1692,7 +1694,7 @@ HMM_NLerp(hmm_quaternion Left, float Time, hmm_quaternion Right)
     Result.Z = HMM_Lerp(Left.Z, Time, Right.Z);
     Result.W = HMM_Lerp(Left.W, Time, Right.W);
 
-    Result = HMM_Normalize(Result);
+    Result = HMM_NormalizeQuaternion(Result);
 
     return(Result);
 }
