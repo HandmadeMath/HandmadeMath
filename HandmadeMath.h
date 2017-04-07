@@ -173,6 +173,8 @@
           (*) Resolved compiler warnings on gcc and g++
      1.1.2
           (*) Fixed invalid HMMDEF's in the function definitions
+     1.1.3
+          (*) Fixed compile error in C mode
           
   LICENSE
   
