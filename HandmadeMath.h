@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.1.2
+  HandmadeMath.h v1.1.4
   
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -175,6 +175,12 @@
           (*) Fixed invalid HMMDEF's in the function definitions
      1.1.3
           (*) Fixed compile error in C mode
+     1.1.4
+          (*) Added Width and Height elements to hmm_vec2
+          (*) Fixed SquareRoot for when SSE is disabled
+          (*) Added SSE implementation of HMM_MultiplyMat4f
+          (*) Added SSE implementation of HMM_Transpose
+          
           
   LICENSE
   
@@ -237,7 +243,7 @@ extern "C"
 
 #if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
     !defined(HMM_EXPF) || !defined(HMM_LOGF) || !defined(HMM_ACOSF) || \
-    !defined(HMM_ATANF)|| !defined(HMM_ATAN2F)
+    !defined(HMM_ATANF)|| !defined(HMM_ATAN2F) || !defined(HMM_SQRTF)
 #include <math.h>    
 #endif
     
@@ -272,6 +278,11 @@ extern "C"
 #ifndef HMM_ATAN2F
 #define HMM_ATAN2F atan2f
 #endif
+    
+#ifndef HMM_SQRTF    
+#define HMM_SQRTF sqrtf
+#endif    
+    
 
 #define HMM_PI32 3.14159265359f
 #define HMM_PI 3.14159265358979323846
@@ -298,7 +309,12 @@ typedef union hmm_vec2
     {
         float Left, Right;
     };
-
+    
+    struct 
+    {
+        float Width, Height;
+    };
+    
     float Elements[2];
 } hmm_vec2;
 
@@ -401,7 +417,11 @@ typedef union hmm_vec4
 
 typedef union hmm_mat4
 {
-    float Elements[4][4];
+    float Elements[4][4];   
+    
+#ifndef HANDMADE_MATH_NO_SSE
+    __m128 Rows[4];
+#endif
 } hmm_mat4;
 
 typedef union hmm_quaternion
@@ -498,7 +518,7 @@ HMMDEF hmm_mat4 HMM_Mat4(void);
 HMMDEF hmm_mat4 HMM_Mat4d(float Diagonal);
 HMMDEF hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right);
 HMMDEF hmm_mat4 HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right);
-HMMDEF hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right);
+HMMDEF hmm_mat4 HMM_MultiplyMat4(hmm_mat4 &Left, hmm_mat4 &Right);
 HMMDEF hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar);
 HMMDEF hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector);
 HMMDEF hmm_mat4 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar);
@@ -758,7 +778,7 @@ HMM_SquareRootF(float Value)
     float Result = 0.0f;
 
 #ifdef HANDMADE_MATH_NO_SSE
-    Result = sqrtf(Value);
+    Result = HMM_SQRTF(Value);
 #else        
     __m128 In = _mm_set_ss(Value);
     __m128 Out = _mm_sqrt_ss(In);
@@ -774,7 +794,7 @@ HMM_RSquareRootF(float Value)
     float Result = 0.0f;
 
 #ifdef HANDMADE_MATH_NO_SSE
-    Result = 1.0f/HMM_SqrtF(Value);    
+    Result = 1.0f / HMM_SquareRootF(Value);    
 #else        
     __m128 In = _mm_set_ss(Value);
     __m128 Out = _mm_rsqrt_ss(In);
@@ -1336,9 +1356,24 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
-HINLINE hmm_mat4
-HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
+#ifndef HANDMADE_MATH_NO_SSE
+inline __m128
+HMM_LinearCombineSSE(const __m128 &Left, const hmm_mat4 &Right)
 {
+    __m128 Result;
+    Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Rows[0]);
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x55), Right.Rows[1]));
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xaa), Right.Rows[2]));
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xff), Right.Rows[3]));
+
+    return Result;
+}
+#endif
+
+hmm_mat4
+HMM_MultiplyMat4(hmm_mat4 &Left, hmm_mat4 &Right)
+{
+#ifdef HANDMADE_MATH_NO_SSE
     hmm_mat4 Result = HMM_Mat4();
 
     int Columns;
@@ -1357,8 +1392,21 @@ HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
             Result.Elements[Columns][Rows] = Sum;
         }
     }
-
-    return (Result);
+#else
+    hmm_mat4 Result = {0};
+    
+    hmm_mat4 Left_ = HMM_Transpose(Left);
+    hmm_mat4 Right_ = HMM_Transpose(Right);
+    Result.Rows[0] = HMM_LinearCombineSSE(Left_.Rows[0], Right_);
+    Result.Rows[1] = HMM_LinearCombineSSE(Left_.Rows[1], Right_);
+    Result.Rows[2] = HMM_LinearCombineSSE(Left_.Rows[2], Right_);
+    Result.Rows[3] = HMM_LinearCombineSSE(Left_.Rows[3], Right_);
+    
+    Result = HMM_Transpose(Result);
+#endif
+    
+    
+    return(Result);
 }
 
 HINLINE hmm_mat4
@@ -1422,6 +1470,7 @@ HMM_Transpose(hmm_mat4 Matrix)
 {
     hmm_mat4 Result = HMM_Mat4();
 
+#ifdef HANDMADE_MATH_NO_SSE
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1431,7 +1480,12 @@ HMM_Transpose(hmm_mat4 Matrix)
             Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
         }
     }
-
+#else   
+    Result = Matrix;
+    
+    _MM_TRANSPOSE4_PS(Result.Rows[0], Result.Rows[1], Result.Rows[2], Result.Rows[3]);
+#endif
+    
     return (Result);
 }
 
