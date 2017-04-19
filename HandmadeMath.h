@@ -1358,7 +1358,7 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
 
 #ifndef HANDMADE_MATH_NO_SSE
 inline __m128
-HMM_LinearCombineSSE(const __m128 &Left, const hmm_mat4 &Right)
+HMM_LinearCombineSSE(__m128 *Left, hmm_mat4 *Right)
 {
     __m128 Result;
     Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Rows[0]);
@@ -1397,10 +1397,10 @@ HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
     
     hmm_mat4 Left_ = HMM_Transpose(Left);
     hmm_mat4 Right_ = HMM_Transpose(Right);
-    Result.Rows[0] = HMM_LinearCombineSSE(Left_.Rows[0], Right_);
-    Result.Rows[1] = HMM_LinearCombineSSE(Left_.Rows[1], Right_);
-    Result.Rows[2] = HMM_LinearCombineSSE(Left_.Rows[2], Right_);
-    Result.Rows[3] = HMM_LinearCombineSSE(Left_.Rows[3], Right_);
+    Result.Rows[0] = HMM_LinearCombineSSE(&Left_.Rows[0], &Right_);
+    Result.Rows[1] = HMM_LinearCombineSSE(&Left_.Rows[1], &Right_);
+    Result.Rows[2] = HMM_LinearCombineSSE(&Left_.Rows[2], &Right_);
+    Result.Rows[3] = HMM_LinearCombineSSE(&Left_.Rows[3], &Right_);
     
     Result = HMM_Transpose(Result);
 #endif
