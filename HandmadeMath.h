@@ -500,6 +500,10 @@ HMMDEF hmm_vec2 HMM_SubtractVec2(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 HMM_SubtractVec3(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 HMM_SubtractVec4(hmm_vec4 Left, hmm_vec4 Right);
 
+#ifndef HANDMADE_MATH_NO_SSE
+HMMDEF __m128 HMM_LinearCombineSSE(__m128 Left, hmm_mat4 Right);
+#endif
+
 HMMDEF hmm_vec2 HMM_MultiplyVec2(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec2 HMM_MultiplyVec2f(hmm_vec2 Left, float Right);
 HMMDEF hmm_vec3 HMM_MultiplyVec3(hmm_vec3 Left, hmm_vec3 Right);
