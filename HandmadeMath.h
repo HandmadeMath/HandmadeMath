@@ -82,6 +82,7 @@
      #define HMM_ACOSF MyACosF
      #define HMM_ATANF MyATanF
      #define HMM_ATAN2F MYATan2F
+     #define HMM_SQRTF MySqrtF
      
   Provide your own implementations of SinF, CosF, TanF, ACosF, ATanF, ATan2F, ExpF and LogF 
   in EXACTLY one C or C++ file that includes this header, BEFORE the
@@ -95,6 +96,7 @@
      #define HMM_ACOSF MyACosF
      #define HMM_ATANF MyATanF
      #define HMM_ATAN2F MyATan2F
+     #define HMM_SQRTF MySqrtF
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_CPP_MODE
      #include "HandmadeMath.h"
@@ -1361,7 +1363,7 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
 }
 
 #ifndef HANDMADE_MATH_NO_SSE
-inline __m128
+HINLINE __m128
 HMM_LinearCombineSSE(__m128 Left, hmm_mat4 Right)
 {
     __m128 Result;
@@ -1374,7 +1376,7 @@ HMM_LinearCombineSSE(__m128 Left, hmm_mat4 Right)
 }
 #endif
 
-hmm_mat4
+HINLINE hmm_mat4
 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
 #ifdef HANDMADE_MATH_NO_SSE
