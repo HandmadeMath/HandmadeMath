@@ -5,7 +5,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread -Wno-missing-braces -Wno-missing-field-ini
 all: c c_no_sse cpp cpp_no_sse
 
 clean:
-	rm -f hmm_test_c hmm_test_cpp *.o
+	rm -f hmm_test_c hmm_test_cpp hmm_test_c_no_sse hmm_test_cpp_no_sse *.o
 
 c: $(ROOT_DIR)/test/HandmadeMath.c test_impl
 	$(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 -c $(ROOT_DIR)/test/HandmadeMath.c $(ROOT_DIR)/test/hmm_test.c -lm

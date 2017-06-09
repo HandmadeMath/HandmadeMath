@@ -774,7 +774,7 @@ HMM_RSquareRootF(float Value)
     float Result = 0.0f;
 
 #ifdef HANDMADE_MATH_NO_SSE
-    Result = 1.0f/HMM_SqrtF(Value);    
+    Result = 1.0f/HMM_SquareRootF(Value);    
 #else        
     __m128 In = _mm_set_ss(Value);
     __m128 Out = _mm_rsqrt_ss(In);
