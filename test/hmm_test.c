@@ -70,7 +70,7 @@ int run_tests()
 
         TEST_BEGIN(RSquareRootF)
         {
-            EXPECT_FLOAT_EQ(HMM_RSquareRootF(10.0f), 0.31616211f);
+            EXPECT_NEAR(HMM_RSquareRootF(10.0f), 0.31616211f, 0.0001f);
         }
         TEST_END()
 
