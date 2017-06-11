@@ -201,23 +201,23 @@
 */
 
 
-// let's figure out if SSE is really available (unless disabled anyway)
-// (it isn't on non-x86/x86_64 platforms or even x86 without explicit SSE support)
-// => only use "#ifdef HANDMADE_MATH__USE_SSE" to check for SSE support below this block!
+/* let's figure out if SSE is really available (unless disabled anyway)
+   (it isn't on non-x86/x86_64 platforms or even x86 without explicit SSE support)
+   => only use "#ifdef HANDMADE_MATH__USE_SSE" to check for SSE support below this block! */
 #ifndef HANDMADE_MATH_NO_SSE
 
 # ifdef _MSC_VER
-   // MSVC supports SSE in amd64 mode or _M_IX86_FP >= 1 (2 means SSE2)
+   /* MSVC supports SSE in amd64 mode or _M_IX86_FP >= 1 (2 means SSE2) */
 #  if defined(_M_AMD64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 1 )
 #   define HANDMADE_MATH__USE_SSE 1
 #  endif
-# else // not MSVC, probably GCC, clang, icc or something that doesn't support SSE anyway
-#  ifdef __SSE__ // they #define __SSE__ if it's supported
+# else /* not MSVC, probably GCC, clang, icc or something that doesn't support SSE anyway */
+#  ifdef __SSE__ /* they #define __SSE__ if it's supported */
 #   define HANDMADE_MATH__USE_SSE 1
-#  endif //  __SSE__
-# endif // not _MSC_VER
+#  endif /*  __SSE__ */
+# endif /* not _MSC_VER */
 
-#endif // #ifndef HANDMADE_MATH_NO_SSE
+#endif /* #ifndef HANDMADE_MATH_NO_SSE */
 
 
 #ifdef HANDMADE_MATH__USE_SSE
