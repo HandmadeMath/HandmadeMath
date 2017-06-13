@@ -310,6 +310,54 @@ int run_tests()
         }
         TEST_END()
 
+        TEST_BEGIN(NormalizeZero)
+        {
+            hmm_vec2 v2 = HMM_Vec2(0.0f, 0.0f);
+            hmm_vec3 v3 = HMM_Vec3(0.0f, 0.0f, 0.0f);
+            hmm_vec4 v4 = HMM_Vec4(0.0f, 0.0f, 0.0f, 0.0f);
+
+            {
+                hmm_vec2 result = HMM_NormalizeVec2(v2);
+                EXPECT_FLOAT_EQ(result.X, 0.0f);
+                EXPECT_FLOAT_EQ(result.Y, 0.0f);
+            }
+            {
+                hmm_vec3 result = HMM_NormalizeVec3(v3);
+                EXPECT_FLOAT_EQ(result.X, 0.0f);
+                EXPECT_FLOAT_EQ(result.Y, 0.0f);
+                EXPECT_FLOAT_EQ(result.Z, 0.0f);
+            }
+            {
+                hmm_vec4 result = HMM_NormalizeVec4(v4);
+                EXPECT_FLOAT_EQ(result.X, 0.0f);
+                EXPECT_FLOAT_EQ(result.Y, 0.0f);
+                EXPECT_FLOAT_EQ(result.Z, 0.0f);
+                EXPECT_FLOAT_EQ(result.W, 0.0f);
+            }
+
+#ifdef HANDMADE_MATH_CPP_MODE
+            {
+                hmm_vec2 result = HMM_Normalize(v2);
+                EXPECT_FLOAT_EQ(result.X, 0.0f);
+                EXPECT_FLOAT_EQ(result.Y, 0.0f);
+            }
+            {
+                hmm_vec3 result = HMM_Normalize(v3);
+                EXPECT_FLOAT_EQ(result.X, 0.0f);
+                EXPECT_FLOAT_EQ(result.Y, 0.0f);
+                EXPECT_FLOAT_EQ(result.Z, 0.0f);
+            }
+            {
+                hmm_vec4 result = HMM_Normalize(v4);
+                EXPECT_FLOAT_EQ(result.X, 0.0f);
+                EXPECT_FLOAT_EQ(result.Y, 0.0f);
+                EXPECT_FLOAT_EQ(result.Z, 0.0f);
+                EXPECT_FLOAT_EQ(result.W, 0.0f);
+            }
+#endif
+        }
+        TEST_END()
+
         TEST_BEGIN(Cross)
         {
             hmm_vec3 v1 = HMM_Vec3(1.0f, 2.0f, 3.0f);
