@@ -923,8 +923,12 @@ HMM_NormalizeVec2(hmm_vec2 A)
 
     float VectorLength = HMM_LengthVec2(A);
     
-    Result.X = A.X * (1.0f / VectorLength);
-    Result.Y = A.Y * (1.0f / VectorLength);
+    /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
+    if (VectorLength != 0.0f)
+    {
+        Result.X = A.X * (1.0f / VectorLength);
+        Result.Y = A.Y * (1.0f / VectorLength);
+    }
     
     return (Result);
 }
@@ -936,9 +940,13 @@ HMM_NormalizeVec3(hmm_vec3 A)
 
     float VectorLength = HMM_LengthVec3(A);
     
-    Result.X = A.X * (1.0f / VectorLength);
-    Result.Y = A.Y * (1.0f / VectorLength);
-    Result.Z = A.Z * (1.0f / VectorLength);
+    /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
+    if (VectorLength != 0.0f)
+    {
+        Result.X = A.X * (1.0f / VectorLength);
+        Result.Y = A.Y * (1.0f / VectorLength);
+        Result.Z = A.Z * (1.0f / VectorLength);
+    }
     
     return (Result);
 }
@@ -950,10 +958,14 @@ HMM_NormalizeVec4(hmm_vec4 A)
 
     float VectorLength = HMM_LengthVec4(A);
     
-    Result.X = A.X * (1.0f / VectorLength);
-    Result.Y = A.Y * (1.0f / VectorLength);
-    Result.Z = A.Z * (1.0f / VectorLength);
-    Result.W = A.W * (1.0f / VectorLength);
+    /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
+    if (VectorLength != 0.0f)
+    {
+        Result.X = A.X * (1.0f / VectorLength);
+        Result.Y = A.Y * (1.0f / VectorLength);
+        Result.Z = A.Z * (1.0f / VectorLength);
+        Result.W = A.W * (1.0f / VectorLength);
+    }
     
     return (Result);
 }
