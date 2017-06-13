@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.1.2
+  HandmadeMath.h v1.1.4
   
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -175,6 +175,8 @@
           (*) Fixed invalid HMMDEF's in the function definitions
      1.1.3
           (*) Fixed compile error in C mode
+     1.1.4
+          (*) Fixed divide-by-zero errors when normalizing zero vectors.
           
   LICENSE
   

@@ -12,6 +12,7 @@ _This library is free and will stay free, but if you would like to support devel
 
 Version         | Changes        | 
 ----------------|----------------|
+**1.1.4** | Fixed divide-by-zero errors when normalizing zero vectors.
 **1.1.3** | Fixed compile error in C mode
 **1.1.2** | Fixed invalid HMMDEF's in the function definitions
 **1.1.1** | Resolved compiler warnings on gcc and g++
