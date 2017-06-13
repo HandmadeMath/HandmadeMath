@@ -176,6 +176,7 @@
      1.1.3
           (*) Fixed compile error in C mode
      1.1.4
+          (*) Fixed SSE being included on platforms that don't support it
           (*) Fixed divide-by-zero errors when normalizing zero vectors.
           
   LICENSE
@@ -200,6 +201,7 @@
    Jeroen van Rijn (@J_vanRijn)
    Kiljacken (@Kiljacken)
    Insofaras (@insofaras)
+   Daniel Gibson (@DanielGibson)
 */
 
 
