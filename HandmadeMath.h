@@ -265,7 +265,7 @@ extern "C"
 #endif
 
 #if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
-    !defined(HMM_SQRTF) !defined(HMM_EXPF) || !defined(HMM_LOGF) || \
+    !defined(HMM_SQRTF) || !defined(HMM_EXPF) || !defined(HMM_LOGF) || \
     !defined(HMM_ACOSF) || !defined(HMM_ATANF)|| !defined(HMM_ATAN2F)
 #include <math.h>    
 #endif
