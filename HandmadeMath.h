@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.1.4
+  HandmadeMath.h v1.1.5
   
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -72,11 +72,12 @@
   
   ==========================================================================
   
-  To Disable the CRT, you MUST 
+  To use HandmadeMath without the CRT, you MUST 
   
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
      #define HMM_TANF MyTanF
+     #define HMM_SQRTF MySqrtF
      #define HMM_EXPF MyExpF
      #define HMM_LOGF MyLogF
      #define HMM_ACOSF MyACosF
@@ -90,6 +91,7 @@
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
      #define HMM_TANF MyTanF
+     #define HMM_SQRTF MySqrtF
      #define HMM_EXPF MyExpF
      #define HMM_LOGF MyLogF
      #define HMM_ACOSF MyACosF
@@ -178,6 +180,9 @@
      1.1.4
           (*) Fixed SSE being included on platforms that don't support it
           (*) Fixed divide-by-zero errors when normalizing zero vectors.
+     1.1.5
+          (*) Add Width and Height to HMM_Vec2
+          (*) Made it so you can supply your own SqrtF 
           
   LICENSE
   
@@ -260,8 +265,8 @@ extern "C"
 #endif
 
 #if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
-    !defined(HMM_EXPF) || !defined(HMM_LOGF) || !defined(HMM_ACOSF) || \
-    !defined(HMM_ATANF)|| !defined(HMM_ATAN2F)
+    !defined(HMM_SQRTF) || !defined(HMM_EXPF) || !defined(HMM_LOGF) || \
+    !defined(HMM_ACOSF) || !defined(HMM_ATANF)|| !defined(HMM_ATAN2F)
 #include <math.h>    
 #endif
     
@@ -276,6 +281,10 @@ extern "C"
 #ifndef HMM_TANF
 #define HMM_TANF tanf
 #endif        
+
+#ifndef HMM_SQRTF
+#define HMM_SQRTF sqrtf
+#endif    
     
 #ifndef HMM_EXPF
 #define HMM_EXPF expf
@@ -321,6 +330,11 @@ typedef union hmm_vec2
     struct
     {
         float Left, Right;
+    };
+    
+    struct
+    {
+        float Width, Height;
     };
 
     float Elements[2];
@@ -786,7 +800,7 @@ HMM_SquareRootF(float Value)
     __m128 Out = _mm_sqrt_ss(In);
     Result = _mm_cvtss_f32(Out);
 #else
-    Result = sqrtf(Value);
+    Result = HMM_SQRTF(Value);
 #endif 
 
     return(Result);
