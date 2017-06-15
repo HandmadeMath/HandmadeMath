@@ -120,9 +120,25 @@ int run_tests()
 
             EXPECT_FLOAT_EQ(v2.X, 1.0f);
             EXPECT_FLOAT_EQ(v2.Y, 2.0f);
+            EXPECT_FLOAT_EQ(v2.U, 1.0f);
+            EXPECT_FLOAT_EQ(v2.V, 2.0f);
+            EXPECT_FLOAT_EQ(v2.Left, 1.0f);
+            EXPECT_FLOAT_EQ(v2.Right, 2.0f);
+            EXPECT_FLOAT_EQ(v2.Width, 1.0f);
+            EXPECT_FLOAT_EQ(v2.Height, 2.0f);
+            EXPECT_FLOAT_EQ(v2.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v2.Elements[1], 2.0f);
 
             EXPECT_FLOAT_EQ(v2i.X, 1.0f);
             EXPECT_FLOAT_EQ(v2i.Y, 2.0f);
+            EXPECT_FLOAT_EQ(v2i.U, 1.0f);
+            EXPECT_FLOAT_EQ(v2i.V, 2.0f);
+            EXPECT_FLOAT_EQ(v2i.Left, 1.0f);
+            EXPECT_FLOAT_EQ(v2i.Right, 2.0f);
+            EXPECT_FLOAT_EQ(v2i.Width, 1.0f);
+            EXPECT_FLOAT_EQ(v2i.Height, 2.0f);
+            EXPECT_FLOAT_EQ(v2i.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v2i.Elements[1], 2.0f);
 
             //
             // Test vec3
@@ -133,10 +149,44 @@ int run_tests()
             EXPECT_FLOAT_EQ(v3.X, 1.0f);
             EXPECT_FLOAT_EQ(v3.Y, 2.0f);
             EXPECT_FLOAT_EQ(v3.Z, 3.0f);
+            EXPECT_FLOAT_EQ(v3.U, 1.0f);
+            EXPECT_FLOAT_EQ(v3.V, 2.0f);
+            EXPECT_FLOAT_EQ(v3.W, 3.0f);
+            EXPECT_FLOAT_EQ(v3.R, 1.0f);
+            EXPECT_FLOAT_EQ(v3.G, 2.0f);
+            EXPECT_FLOAT_EQ(v3.B, 3.0f);
+            EXPECT_FLOAT_EQ(v3.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v3.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v3.Elements[2], 3.0f);
+            EXPECT_FLOAT_EQ(v3.XY.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v3.XY.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v3.YZ.Elements[0], 2.0f);
+            EXPECT_FLOAT_EQ(v3.YZ.Elements[1], 3.0f);
+            EXPECT_FLOAT_EQ(v3.UV.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v3.UV.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v3.VW.Elements[0], 2.0f);
+            EXPECT_FLOAT_EQ(v3.VW.Elements[1], 3.0f);
 
             EXPECT_FLOAT_EQ(v3i.X, 1.0f);
             EXPECT_FLOAT_EQ(v3i.Y, 2.0f);
             EXPECT_FLOAT_EQ(v3i.Z, 3.0f);
+            EXPECT_FLOAT_EQ(v3i.U, 1.0f);
+            EXPECT_FLOAT_EQ(v3i.V, 2.0f);
+            EXPECT_FLOAT_EQ(v3i.W, 3.0f);
+            EXPECT_FLOAT_EQ(v3i.R, 1.0f);
+            EXPECT_FLOAT_EQ(v3i.G, 2.0f);
+            EXPECT_FLOAT_EQ(v3i.B, 3.0f);
+            EXPECT_FLOAT_EQ(v3i.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v3i.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v3i.Elements[2], 3.0f);
+            EXPECT_FLOAT_EQ(v3i.XY.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v3i.XY.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v3i.YZ.Elements[0], 2.0f);
+            EXPECT_FLOAT_EQ(v3i.YZ.Elements[1], 3.0f);
+            EXPECT_FLOAT_EQ(v3i.UV.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v3i.UV.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v3i.VW.Elements[0], 2.0f);
+            EXPECT_FLOAT_EQ(v3i.VW.Elements[1], 3.0f);
 
             //
             // Test vec4
@@ -149,16 +199,70 @@ int run_tests()
             EXPECT_FLOAT_EQ(v4.Y, 2.0f);
             EXPECT_FLOAT_EQ(v4.Z, 3.0f);
             EXPECT_FLOAT_EQ(v4.W, 4.0f);
+            EXPECT_FLOAT_EQ(v4.R, 1.0f);
+            EXPECT_FLOAT_EQ(v4.G, 2.0f);
+            EXPECT_FLOAT_EQ(v4.B, 3.0f);
+            EXPECT_FLOAT_EQ(v4.A, 4.0f);
+            EXPECT_FLOAT_EQ(v4.XY.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4.XY.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4.YZ.Elements[0], 2.0f);
+            EXPECT_FLOAT_EQ(v4.YZ.Elements[1], 3.0f);
+            EXPECT_FLOAT_EQ(v4.ZW.Elements[0], 3.0f);
+            EXPECT_FLOAT_EQ(v4.ZW.Elements[1], 4.0f);
+            EXPECT_FLOAT_EQ(v4.XY.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4.XY.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4.XYZ.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4.XYZ.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4.XYZ.Elements[2], 3.0f);
+            EXPECT_FLOAT_EQ(v4.RGB.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4.RGB.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4.RGB.Elements[2], 3.0f);
 
             EXPECT_FLOAT_EQ(v4i.X, 1.0f);
             EXPECT_FLOAT_EQ(v4i.Y, 2.0f);
             EXPECT_FLOAT_EQ(v4i.Z, 3.0f);
             EXPECT_FLOAT_EQ(v4i.W, 4.0f);
+            EXPECT_FLOAT_EQ(v4i.R, 1.0f);
+            EXPECT_FLOAT_EQ(v4i.G, 2.0f);
+            EXPECT_FLOAT_EQ(v4i.B, 3.0f);
+            EXPECT_FLOAT_EQ(v4i.A, 4.0f);
+            EXPECT_FLOAT_EQ(v4i.XY.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4i.XY.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4i.YZ.Elements[0], 2.0f);
+            EXPECT_FLOAT_EQ(v4i.YZ.Elements[1], 3.0f);
+            EXPECT_FLOAT_EQ(v4i.ZW.Elements[0], 3.0f);
+            EXPECT_FLOAT_EQ(v4i.ZW.Elements[1], 4.0f);
+            EXPECT_FLOAT_EQ(v4i.XY.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4i.XY.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4i.XYZ.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4i.XYZ.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4i.XYZ.Elements[2], 3.0f);
+            EXPECT_FLOAT_EQ(v4i.RGB.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4i.RGB.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4i.RGB.Elements[2], 3.0f);
 
             EXPECT_FLOAT_EQ(v4v.X, 1.0f);
             EXPECT_FLOAT_EQ(v4v.Y, 2.0f);
             EXPECT_FLOAT_EQ(v4v.Z, 3.0f);
             EXPECT_FLOAT_EQ(v4v.W, 4.0f);
+            EXPECT_FLOAT_EQ(v4v.R, 1.0f);
+            EXPECT_FLOAT_EQ(v4v.G, 2.0f);
+            EXPECT_FLOAT_EQ(v4v.B, 3.0f);
+            EXPECT_FLOAT_EQ(v4v.A, 4.0f);
+            EXPECT_FLOAT_EQ(v4v.XY.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4v.XY.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4v.YZ.Elements[0], 2.0f);
+            EXPECT_FLOAT_EQ(v4v.YZ.Elements[1], 3.0f);
+            EXPECT_FLOAT_EQ(v4v.ZW.Elements[0], 3.0f);
+            EXPECT_FLOAT_EQ(v4v.ZW.Elements[1], 4.0f);
+            EXPECT_FLOAT_EQ(v4v.XY.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4v.XY.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4v.XYZ.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4v.XYZ.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4v.XYZ.Elements[2], 3.0f);
+            EXPECT_FLOAT_EQ(v4v.RGB.Elements[0], 1.0f);
+            EXPECT_FLOAT_EQ(v4v.RGB.Elements[1], 2.0f);
+            EXPECT_FLOAT_EQ(v4v.RGB.Elements[2], 3.0f);
         }
         TEST_END()
 
