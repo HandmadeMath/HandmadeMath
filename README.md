@@ -12,6 +12,7 @@ _This library is free and will stay free, but if you would like to support devel
 
 Version         | Changes        | 
 ----------------|----------------|
+**1.1.5** | Added `Width` and `Height` to `HMM_Vec2`, and made it so you can supply your own `SqrtF`.
 **1.1.4** | Fixed SSE being included on platforms that don't support it, and fixed divide-by-zero errors when normalizing zero vectors.
 **1.1.3** | Fixed compile error in C mode
 **1.1.2** | Fixed invalid HMMDEF's in the function definitions
