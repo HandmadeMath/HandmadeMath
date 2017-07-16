@@ -228,6 +228,7 @@
 
 #endif /* #ifndef HANDMADE_MATH_NO_SSE */
 
+#include <stdint.h> // This is for types
 
 #ifdef HANDMADE_MATH__USE_SSE
 #include <xmmintrin.h>
@@ -440,6 +441,11 @@ typedef union hmm_vec4
 typedef union hmm_mat4
 {
     float Elements[4][4];
+    
+    
+#ifdef HANDMADE_MATH__USE_SSE
+    __m128 Rows[4];
+#endif
 } hmm_mat4;
 
 typedef union hmm_quaternion
@@ -460,6 +466,8 @@ typedef union hmm_quaternion
     
     float Elements[4];
 } hmm_quaternion;
+
+typedef int32_t hmm_bool;
 
 typedef hmm_vec2 hmm_v2;
 typedef hmm_vec3 hmm_v3;
@@ -536,6 +544,11 @@ HMMDEF hmm_mat4 HMM_Mat4(void);
 HMMDEF hmm_mat4 HMM_Mat4d(float Diagonal);
 HMMDEF hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right);
 HMMDEF hmm_mat4 HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right);
+
+#ifdef HANDMADE_MATH__USE_SSE
+HMMDEF __m128 HMM_LinearCombineSSE(__m128 Left, hmm_mat4 Right);
+#endif 
+
 HMMDEF hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right);
 HMMDEF hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar);
 HMMDEF hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector);
@@ -1386,11 +1399,38 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
+#ifdef HANDMADE_MATH__USE_SSE
+HINLINE __m128
+HMM_LinearCombineSSE(__m128 Left, hmm_mat4 Right)
+{
+    __m128 Result = {};
+    Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Rows[0]);
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x55), Right.Rows[1]));
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xaa), Right.Rows[2]));
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xff), Right.Rows[3]));
+    
+    return(Result);
+}
+#endif
+
 HINLINE hmm_mat4
 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = HMM_Mat4();
 
+#ifdef HANDMADE_MATH__USE_SSE
+    
+    hmm_mat4 TransposedLeft = HMM_Transpose(Left);
+    hmm_mat4 TransposedRight = HMM_Transpose(Right);
+
+    Result.Rows[0] = HMM_LinearCombineSSE(TransposedLeft.Rows[0], TransposedRight);
+    Result.Rows[1] = HMM_LinearCombineSSE(TransposedLeft.Rows[1], TransposedRight);
+    Result.Rows[2] = HMM_LinearCombineSSE(TransposedLeft.Rows[2], TransposedRight);
+    Result.Rows[3] = HMM_LinearCombineSSE(TransposedLeft.Rows[3], TransposedRight);       
+    
+    Result = HMM_Transpose(Result);
+    
+#else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1407,7 +1447,7 @@ HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
             Result.Elements[Columns][Rows] = Sum;
         }
     }
-
+#endif 
     return (Result);
 }
 
@@ -1472,6 +1512,11 @@ HMM_Transpose(hmm_mat4 Matrix)
 {
     hmm_mat4 Result = HMM_Mat4();
 
+#ifdef HANDMADE_MATH__USE_SSE
+    Result = Matrix;
+    
+    _MM_TRANSPOSE4_PS(Result.Rows[0], Result.Rows[1], Result.Rows[2], Result.Rows[3]);    
+#else 
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1481,7 +1526,8 @@ HMM_Transpose(hmm_mat4 Matrix)
             Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
         }
     }
-
+#endif 
+        
     return (Result);
 }
 
@@ -2699,6 +2745,24 @@ HINLINE hmm_quaternion &
 operator*=(hmm_quaternion &Left, float Right)
 {
     return (Left = Left * Right);
+}
+
+HINLINE hmm_bool
+operator==(hmm_vec2 Left, hmm_vec2 Right)
+{
+    return (Left.X == Right.X && Left.Y == Right.Y);    
+}
+
+HINLINE hmm_bool
+operator==(hmm_vec3 Left, hmm_vec3 Right)
+{
+    return (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z);    
+}
+
+HINLINE hmm_bool
+operator==(hmm_vec4 Left, hmm_vec4 Right)
+{
+    return (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z && Left.W == Right.W);    
 }
 
 #endif /* HANDMADE_MATH_CPP_MODE */
