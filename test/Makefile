@@ -15,7 +15,7 @@ c: $(ROOT_DIR)/test/HandmadeMath.c test_impl
 c_no_sse: $(ROOT_DIR)/test/HandmadeMath.c test_impl
 	@echo "\nCompiling in C mode (no SSE)"
 	$(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 -DHANDMADE_MATH_NO_SSE -c $(ROOT_DIR)/test/HandmadeMath.c $(ROOT_DIR)/test/hmm_test.c -lm
-	$(CC) -ohmm_test_c_no_sse HandmadeMath_NoSSE.o hmm_test.o -lm
+	$(CC) -ohmm_test_c_no_sse HandmadeMath.o hmm_test.o -lm
 
 cpp: $(ROOT_DIR)/test/HandmadeMath.cpp test_impl
 	@echo "\nCompiling in C++ mode"
