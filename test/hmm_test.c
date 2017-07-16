@@ -2135,6 +2135,7 @@ int run_tests()
         TEST_END()
     }
     CATEGORY_END()
-#endif   
+#endif
+
     return 0;
 }
