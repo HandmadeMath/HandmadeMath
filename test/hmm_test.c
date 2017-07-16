@@ -2093,6 +2093,7 @@ int run_tests()
     }
     CATEGORY_END()
 
+#ifdef HANDMADE_MATH__USE_SSE
     CATEGORY_BEGIN(SSE)
     {
         TEST_BEGIN(LinearCombine)
@@ -2100,7 +2101,6 @@ int run_tests()
             hmm_mat4 MatrixOne = HMM_Mat4d(2.0f);
             hmm_mat4 MatrixTwo = HMM_Mat4d(4.0f);
             hmm_mat4 Result;
-            
             
             Result.Rows[0] = HMM_LinearCombineSSE(MatrixOne.Rows[0], MatrixTwo);
             Result.Rows[1] = HMM_LinearCombineSSE(MatrixOne.Rows[1], MatrixTwo);
@@ -2135,6 +2135,6 @@ int run_tests()
         TEST_END()
     }
     CATEGORY_END()
-    
+#endif   
     return 0;
 }
