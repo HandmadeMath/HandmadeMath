@@ -721,6 +721,10 @@ HMMDEF hmm_bool operator==(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_bool operator==(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_bool operator==(hmm_vec4 Left, hmm_vec4 Right);
 
+HMMDEF hmm_bool operator!=(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_bool operator!=(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_bool operator!=(hmm_vec4 Left, hmm_vec4 Right);
+
 #endif /* HANDMADE_MATH_CPP */
 
 #ifdef __clang__
@@ -2772,6 +2776,25 @@ HINLINE hmm_bool
 operator==(hmm_vec4 Left, hmm_vec4 Right)
 {
     return (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z && Left.W == Right.W);    
+}
+
+
+HINLINE hmm_bool 
+operator!=(hmm_vec2 Left, hmm_vec2 Right)
+{
+    return (Left.X != Right.X || Left.Y != Right.Y);    
+}
+
+HINLINE hmm_bool 
+operator!=(hmm_vec3 Left, hmm_vec3 Right)
+{
+    return (Left.X != Right.X || Left.Y != Right.Y || Left.Z != Right.Z);    
+}
+
+HINLINE hmm_bool 
+operator!=(hmm_vec4 Left, hmm_vec4 Right)
+{
+    return (Left.X != Right.X || Left.Y != Right.Y || Left.Z != Right.Z || Left.W != Right.W);    
 }
 
 #endif /* HANDMADE_MATH_CPP_MODE */
