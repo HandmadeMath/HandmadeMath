@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.1.5
+  HandmadeMath.h v1.1.6
   
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -183,6 +183,10 @@
      1.1.5
           (*) Add Width and Height to HMM_Vec2
           (*) Made it so you can supply your own SqrtF 
+     v1.1.6
+          (*) Added == operator for HMM_Vec2, HMM_Vec3, and HMM_Vec4
+          (*) SSEd HMM_MultiplyMat4 (this is _WAY_ faster)
+          (*) SSEd HMM_Transpose          
           
   LICENSE
   
