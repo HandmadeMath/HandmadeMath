@@ -545,6 +545,10 @@ HMMDEF hmm_vec3 HMM_DivideVec3f(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec4 HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right);
 HMMDEF hmm_vec4 HMM_DivideVec4f(hmm_vec4 Left, float Right);
 
+HMMDEF hmm_bool HMM_EqualsVec2(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_bool HMM_EqualsVec3(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_bool HMM_EqualsVec4(hmm_vec4 Left, hmm_vec4 Right);
+
 HMMDEF hmm_mat4 HMM_Mat4(void);
 HMMDEF hmm_mat4 HMM_Mat4d(float Diagonal);
 HMMDEF hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right);
@@ -642,6 +646,10 @@ HMMDEF hmm_vec4 HMM_Divide(hmm_vec4 Left, float Right);
 HMMDEF hmm_mat4 HMM_Divide(hmm_mat4 Left, float Right);
 HMMDEF hmm_quaternion HMM_Divide(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_Divide(hmm_quaternion Left, float Right);
+
+HMMDEF hmm_bool HMM_Equals(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_bool HMM_Equals(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_bool HMM_Equals(hmm_vec4 Left, hmm_vec4 Right);
 
 HMMDEF hmm_vec2 operator+(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator+(hmm_vec3 Left, hmm_vec3 Right);
@@ -1351,6 +1359,36 @@ HMM_DivideVec4f(hmm_vec4 Left, float Right)
     Result.Y = Left.Y / Right;
     Result.Z = Left.Z / Right;
     Result.W = Left.W / Right;
+
+    return (Result);
+}
+
+HINLINE hmm_bool
+HMM_EqualsVec2(hmm_vec2 Left, hmm_vec2 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = (Left.X == Right.X && Left.Y == Right.Y);
+
+    return (Result);
+}
+
+HINLINE hmm_bool
+HMM_EqualsVec3(hmm_vec3 Left, hmm_vec3 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z);
+
+    return (Result);
+}
+
+HINLINE hmm_bool
+HMM_EqualsVec4(hmm_vec4 Left, hmm_vec4 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z && Left.W == Right.W);
 
     return (Result);
 }
@@ -2298,6 +2336,33 @@ HMM_Divide(hmm_quaternion Left, float Right)
     return (Result);
 }
 
+HINLINE hmm_bool
+HMM_Equals(hmm_vec2 Left, hmm_vec2 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = HMM_EqualsVec2(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_bool
+HMM_Equals(hmm_vec3 Left, hmm_vec3 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = HMM_EqualsVec3(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_bool
+HMM_Equals(hmm_vec4 Left, hmm_vec4 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = HMM_EqualsVec4(Left, Right);
+    return (Result);
+}
+
 HINLINE hmm_vec2
 operator+(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -2763,38 +2828,38 @@ operator*=(hmm_quaternion &Left, float Right)
 HINLINE hmm_bool
 operator==(hmm_vec2 Left, hmm_vec2 Right)
 {
-    return (Left.X == Right.X && Left.Y == Right.Y);    
+    return HMM_EqualsVec2(Left, Right);    
 }
 
 HINLINE hmm_bool
 operator==(hmm_vec3 Left, hmm_vec3 Right)
 {
-    return (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z);    
+    return HMM_EqualsVec3(Left, Right);    
 }
 
 HINLINE hmm_bool
 operator==(hmm_vec4 Left, hmm_vec4 Right)
 {
-    return (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z && Left.W == Right.W);    
+    return HMM_EqualsVec4(Left, Right);    
 }
 
 
 HINLINE hmm_bool 
 operator!=(hmm_vec2 Left, hmm_vec2 Right)
 {
-    return (Left.X != Right.X || Left.Y != Right.Y);    
+    return !HMM_EqualsVec2(Left, Right);    
 }
 
 HINLINE hmm_bool 
 operator!=(hmm_vec3 Left, hmm_vec3 Right)
 {
-    return (Left.X != Right.X || Left.Y != Right.Y || Left.Z != Right.Z);    
+    return !HMM_EqualsVec3(Left, Right);    
 }
 
 HINLINE hmm_bool 
 operator!=(hmm_vec4 Left, hmm_vec4 Right)
 {
-    return (Left.X != Right.X || Left.Y != Right.Y || Left.Z != Right.Z || Left.W != Right.W);    
+    return !HMM_EqualsVec4(Left, Right);    
 }
 
 #endif /* HANDMADE_MATH_CPP_MODE */
