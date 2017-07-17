@@ -4,7 +4,7 @@
   This is a single header file with a bunch of useful functions for
   basic game math operations.
   
-  ==========================================================================
+  =============================================================================
   
   You MUST
   
@@ -18,7 +18,7 @@
      
   All other files should just #include "HandmadeMath.h" without the #define.
   
-  ==========================================================================
+  =============================================================================
   
   For overloaded and operator overloaded versions of the base C functions,
   you MUST
@@ -34,7 +34,7 @@
      
   All other files should just #include "HandmadeMath.h" without the #define.
   
-  ==========================================================================
+  =============================================================================
   
   To disable SSE intrinsics, you MUST
   
@@ -54,7 +54,7 @@
      #define HANDMADE_MATH_NO_SSE
      #include "HandmadeMath.h"
      
-  ==========================================================================
+  =============================================================================
   
   To disable inlining functions, you MUST
   
@@ -70,7 +70,7 @@
      
   All other files should just #include "HandmadeMath.h" without the #define.
   
-  ==========================================================================
+  =============================================================================
   
   To use HandmadeMath without the CRT, you MUST 
   
@@ -84,9 +84,9 @@
      #define HMM_ATANF MyATanF
      #define HMM_ATAN2F MYATan2F
      
-  Provide your own implementations of SinF, CosF, TanF, ACosF, ATanF, ATan2F, ExpF and LogF 
-  in EXACTLY one C or C++ file that includes this header, BEFORE the
-  include, like this:     
+  Provide your own implementations of SinF, CosF, TanF, ACosF, ATanF, ATan2F, 
+  ExpF, and LogF in EXACTLY one C or C++ file that includes this header,
+  BEFORE the include, like this:     
   
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
@@ -104,7 +104,7 @@
   If you do not define all five of these, HandmadeMath.h will use the
   versions of these functions that are provided by the CRT.
   
-  ==========================================================================
+  =============================================================================
   
   Version History:
       0.2 (*) Updated documentation
@@ -144,9 +144,15 @@
           (*) REMOVED Inner function (user should use Dot now)
           (*) REMOVED HMM_FastInverseSquareRoot function declaration
       0.7 
-          (*) REMOVED HMM_LengthSquared in HANDMADE_MATH_IMPLEMENTATION  (should use HMM_LengthSquaredVec3, or HANDMADE_MATH_CPP_MODE for function overloaded version)
-          (*) REMOVED HMM_Length in HANDMADE_MATH_IMPLEMENTATION (should use HMM_LengthVec3, HANDMADE_MATH_CPP_MODE for function overloaded version)
-          (*) REMOVED HMM_Normalize in HANDMADE_MATH_IMPLEMENTATION (should use HMM_NormalizeVec3, or HANDMADE_MATH_CPP_MODE for function overloaded version)
+          (*) REMOVED HMM_LengthSquared in HANDMADE_MATH_IMPLEMENTATION (should
+              use HMM_LengthSquaredVec3, or HANDMADE_MATH_CPP_MODE for function
+              overloaded version)
+          (*) REMOVED HMM_Length in HANDMADE_MATH_IMPLEMENTATION (should use
+              HMM_LengthVec3, HANDMADE_MATH_CPP_MODE for function
+              overloaded version)
+          (*) REMOVED HMM_Normalize in HANDMADE_MATH_IMPLEMENTATION (should use
+              HMM_NormalizeVec3, or HANDMADE_MATH_CPP_MODE for function
+              overloaded version)
           (*) Added HMM_LengthSquaredVec2
           (*) Added HMM_LengthSquaredVec4
           (*) Addd HMM_LengthVec2
@@ -183,11 +189,13 @@
      1.1.5
           (*) Add Width and Height to HMM_Vec2
           (*) Made it so you can supply your own SqrtF 
-     v1.1.6
-          (*) Added == operator for HMM_Vec2, HMM_Vec3, and HMM_Vec4
-          (*) Added != operator for HMM_Vec2, HMM_Vec3, and HMM_Vec4          
-          (*) SSEd HMM_MultiplyMat4 (this is _WAY_ faster)
-          (*) SSEd HMM_Transpose          
+     1.2.0
+          (*) Added equality functions for HMM_Vec2, HMM_Vec3, and HMM_Vec4.
+              (*) Added HMM_EqualsVec2, HMM_EqualsVec3, and HMM_EqualsVec4
+              (*) Added C++ overloaded HMM_Equals for all three
+              (*) Added C++ == and != operators for all three
+          (*) SSE'd HMM_MultiplyMat4 (this is _WAY_ faster)
+          (*) SSE'd HMM_Transpose
           
   LICENSE
   
