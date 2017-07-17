@@ -185,6 +185,7 @@
           (*) Made it so you can supply your own SqrtF 
      v1.1.6
           (*) Added == operator for HMM_Vec2, HMM_Vec3, and HMM_Vec4
+          (*) Added != operator for HMM_Vec2, HMM_Vec3, and HMM_Vec4          
           (*) SSEd HMM_MultiplyMat4 (this is _WAY_ faster)
           (*) SSEd HMM_Transpose          
           
@@ -715,6 +716,10 @@ HMMDEF hmm_vec3 &operator/=(hmm_vec3 &Left, float Right);
 HMMDEF hmm_vec4 &operator/=(hmm_vec4 &Left, float Right);
 HMMDEF hmm_mat4 &operator/=(hmm_mat4 &Left, float Right);
 HMMDEF hmm_quaternion &operator/=(hmm_quaternion &Left, float Right);
+
+HMMDEF hmm_bool operator==(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_bool operator==(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_bool operator==(hmm_vec4 Left, hmm_vec4 Right);
 
 #endif /* HANDMADE_MATH_CPP */
 
