@@ -12,6 +12,7 @@ _This library is free and will stay free, but if you would like to support devel
 
 Version         | Changes        | 
 ----------------|----------------|
+**1.2.0** | Added equality functions for `HMM_Vec2`, `HMM_Vec3`, and `HMM_Vec4`, and SSE'd `HMM_MultiplyMat4` and `HMM_Transpose`.
 **1.1.5** | Added `Width` and `Height` to `HMM_Vec2`, and made it so you can supply your own `SqrtF`.
 **1.1.4** | Fixed SSE being included on platforms that don't support it, and fixed divide-by-zero errors when normalizing zero vectors.
 **1.1.3** | Fixed compile error in C mode

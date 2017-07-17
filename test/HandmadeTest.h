@@ -45,6 +45,20 @@ int hmt_count_failures = 0;
 /*
  * Asserts and expects
  */
+#define EXPECT_TRUE(_actual) do { \
+    if (!(_actual)) { \
+        CASE_FAIL(); \
+        printf("Expected true but got something false"); \
+    } \
+} while (0)
+
+#define EXPECT_FALSE(_actual) do { \
+    if (_actual) { \
+        CASE_FAIL(); \
+        printf("Expected false but got something true"); \
+    } \
+} while (0)
+
 #define EXPECT_FLOAT_EQ(_actual, _expected) do { \
     float actual = (_actual); \
     float diff = actual - (_expected); \

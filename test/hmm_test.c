@@ -827,7 +827,7 @@ int run_tests()
                 {
                     for (int Row = 0; Row < 4; ++Row)
                     {
-                        EXPECT_FLOAT_EQ(result.Elements[Column][Row], Expected) << "At column " << Column << ", row " << Row;
+                        EXPECT_FLOAT_EQ(result.Elements[Column][Row], Expected);
                         Expected += 2.0f;
                     }
                 }
@@ -839,7 +839,7 @@ int run_tests()
                 {
                     for (int Row = 0; Row < 4; ++Row)
                     {
-                        EXPECT_FLOAT_EQ(result.Elements[Column][Row], Expected) << "At column " << Column << ", row " << Row;
+                        EXPECT_FLOAT_EQ(result.Elements[Column][Row], Expected);
                         Expected += 2.0f;
                     }
                 }
@@ -851,7 +851,7 @@ int run_tests()
             {
                 for (int Row = 0; Row < 4; ++Row)
                 {
-                    EXPECT_FLOAT_EQ(m4_1.Elements[Column][Row], Expected) << "At column " << Column << ", row " << Row;
+                    EXPECT_FLOAT_EQ(m4_1.Elements[Column][Row], Expected);
                     Expected += 2.0f;
                 }
             }
@@ -1041,7 +1041,7 @@ int run_tests()
                 {
                     for (int Row = 0; Row < 4; ++Row)
                     {
-                        EXPECT_FLOAT_EQ(result.Elements[Column][Row], -16.0f) << "At column " << Column << ", row " << Row;
+                        EXPECT_FLOAT_EQ(result.Elements[Column][Row], -16.0f);
                     }
                 }
             }
@@ -1051,7 +1051,7 @@ int run_tests()
                 {
                     for (int Row = 0; Row < 4; ++Row)
                     {
-                        EXPECT_FLOAT_EQ(result.Elements[Column][Row], -16.0f) << "At column " << Column << ", row " << Row;
+                        EXPECT_FLOAT_EQ(result.Elements[Column][Row], -16.0f);
                     }
                 }
             }
@@ -1061,7 +1061,7 @@ int run_tests()
             {
                 for (int Row = 0; Row < 4; ++Row)
                 {
-                    EXPECT_FLOAT_EQ(m4_1.Elements[Column][Row], -16.0f) << "At column " << Column << ", row " << Row;
+                    EXPECT_FLOAT_EQ(m4_1.Elements[Column][Row], -16.0f);
                 }
             }
 #endif
@@ -1993,6 +1993,67 @@ int run_tests()
     }
     CATEGORY_END()
 
+    CATEGORY_BEGIN(Equality)
+    {
+        TEST_BEGIN(Vec2)
+        {
+            hmm_vec2 a = HMM_Vec2(1.0f, 2.0f);
+            hmm_vec2 b = HMM_Vec2(1.0f, 2.0f);
+            hmm_vec2 c = HMM_Vec2(3.0f, 4.0f);
+
+            EXPECT_TRUE(HMM_EqualsVec2(a, b));
+            EXPECT_FALSE(HMM_EqualsVec2(a, c));
+
+#ifdef HANDMADE_MATH_CPP_MODE
+            EXPECT_TRUE(HMM_Equals(a, b));
+            EXPECT_FALSE(HMM_Equals(a, c));
+
+            EXPECT_TRUE(a == b);
+            EXPECT_FALSE(a == c);
+#endif
+        }
+        TEST_END()
+
+        TEST_BEGIN(Vec3)
+        {
+            hmm_vec3 a = HMM_Vec3(1.0f, 2.0f, 3.0f);
+            hmm_vec3 b = HMM_Vec3(1.0f, 2.0f, 3.0f);
+            hmm_vec3 c = HMM_Vec3(4.0f, 5.0f, 6.0f);
+
+            EXPECT_TRUE(HMM_EqualsVec3(a, b));
+            EXPECT_FALSE(HMM_EqualsVec3(a, c));
+
+#ifdef HANDMADE_MATH_CPP_MODE
+            EXPECT_TRUE(HMM_Equals(a, b));
+            EXPECT_FALSE(HMM_Equals(a, c));
+
+            EXPECT_TRUE(a == b);
+            EXPECT_FALSE(a == c);
+#endif
+        }
+        TEST_END()
+
+        TEST_BEGIN(Vec4)
+        {
+            hmm_vec4 a = HMM_Vec4(1.0f, 2.0f, 3.0f, 4.0f);
+            hmm_vec4 b = HMM_Vec4(1.0f, 2.0f, 3.0f, 4.0f);
+            hmm_vec4 c = HMM_Vec4(5.0f, 6.0f, 7.0f, 8.0f);
+
+            EXPECT_TRUE(HMM_EqualsVec4(a, b));
+            EXPECT_FALSE(HMM_EqualsVec4(a, c));
+
+#ifdef HANDMADE_MATH_CPP_MODE
+            EXPECT_TRUE(HMM_Equals(a, b));
+            EXPECT_FALSE(HMM_Equals(a, c));
+
+            EXPECT_TRUE(a == b);
+            EXPECT_FALSE(a == c);
+#endif
+        }
+        TEST_END()
+    }
+    CATEGORY_END()
+
     CATEGORY_BEGIN(Projection)
     {
         TEST_BEGIN(Orthographic)
@@ -2092,6 +2153,50 @@ int run_tests()
         TEST_END()
     }
     CATEGORY_END()
+
+#ifdef HANDMADE_MATH__USE_SSE
+    CATEGORY_BEGIN(SSE)
+    {
+        TEST_BEGIN(LinearCombine)
+        {
+            hmm_mat4 MatrixOne = HMM_Mat4d(2.0f);
+            hmm_mat4 MatrixTwo = HMM_Mat4d(4.0f);
+            hmm_mat4 Result;
+            
+            Result.Rows[0] = HMM_LinearCombineSSE(MatrixOne.Rows[0], MatrixTwo);
+            Result.Rows[1] = HMM_LinearCombineSSE(MatrixOne.Rows[1], MatrixTwo);
+            Result.Rows[2] = HMM_LinearCombineSSE(MatrixOne.Rows[2], MatrixTwo);
+            Result.Rows[3] = HMM_LinearCombineSSE(MatrixOne.Rows[3], MatrixTwo);
+            
+            {
+                EXPECT_FLOAT_EQ(Result.Elements[0][0], 8.0f);
+                EXPECT_FLOAT_EQ(Result.Elements[0][1], 0.0f);
+                EXPECT_FLOAT_EQ(Result.Elements[0][2], 0.0f);
+                EXPECT_FLOAT_EQ(Result.Elements[0][3], 0.0f);
+                                
+                EXPECT_FLOAT_EQ(Result.Elements[1][0], 0.0f);
+                EXPECT_FLOAT_EQ(Result.Elements[1][1], 8.0f);                
+                EXPECT_FLOAT_EQ(Result.Elements[1][2], 0.0f);
+                EXPECT_FLOAT_EQ(Result.Elements[1][3], 0.0f);
+
+                                
+                EXPECT_FLOAT_EQ(Result.Elements[2][0], 0.0f);
+                EXPECT_FLOAT_EQ(Result.Elements[2][1], 0.0f);                
+                EXPECT_FLOAT_EQ(Result.Elements[2][2], 8.0f);
+                EXPECT_FLOAT_EQ(Result.Elements[2][3], 0.0f);
+
+                
+                EXPECT_FLOAT_EQ(Result.Elements[3][0], 0.0f);
+                EXPECT_FLOAT_EQ(Result.Elements[3][1], 0.0f);                
+                EXPECT_FLOAT_EQ(Result.Elements[3][2], 0.0f);
+                EXPECT_FLOAT_EQ(Result.Elements[3][3], 8.0f);                
+            }
+            
+        }
+        TEST_END()
+    }
+    CATEGORY_END()
+#endif
 
     return 0;
 }

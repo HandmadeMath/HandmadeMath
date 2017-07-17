@@ -1,10 +1,10 @@
 /*
-  HandmadeMath.h v1.1.5
+  HandmadeMath.h v1.1.6
   
   This is a single header file with a bunch of useful functions for
   basic game math operations.
   
-  ==========================================================================
+  =============================================================================
   
   You MUST
   
@@ -18,7 +18,7 @@
      
   All other files should just #include "HandmadeMath.h" without the #define.
   
-  ==========================================================================
+  =============================================================================
   
   For overloaded and operator overloaded versions of the base C functions,
   you MUST
@@ -34,7 +34,7 @@
      
   All other files should just #include "HandmadeMath.h" without the #define.
   
-  ==========================================================================
+  =============================================================================
   
   To disable SSE intrinsics, you MUST
   
@@ -54,7 +54,7 @@
      #define HANDMADE_MATH_NO_SSE
      #include "HandmadeMath.h"
      
-  ==========================================================================
+  =============================================================================
   
   To disable inlining functions, you MUST
   
@@ -70,7 +70,7 @@
      
   All other files should just #include "HandmadeMath.h" without the #define.
   
-  ==========================================================================
+  =============================================================================
   
   To use HandmadeMath without the CRT, you MUST 
   
@@ -84,9 +84,9 @@
      #define HMM_ATANF MyATanF
      #define HMM_ATAN2F MYATan2F
      
-  Provide your own implementations of SinF, CosF, TanF, ACosF, ATanF, ATan2F, ExpF and LogF 
-  in EXACTLY one C or C++ file that includes this header, BEFORE the
-  include, like this:     
+  Provide your own implementations of SinF, CosF, TanF, ACosF, ATanF, ATan2F, 
+  ExpF, and LogF in EXACTLY one C or C++ file that includes this header,
+  BEFORE the include, like this:     
   
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
@@ -104,7 +104,7 @@
   If you do not define all five of these, HandmadeMath.h will use the
   versions of these functions that are provided by the CRT.
   
-  ==========================================================================
+  =============================================================================
   
   Version History:
       0.2 (*) Updated documentation
@@ -144,9 +144,15 @@
           (*) REMOVED Inner function (user should use Dot now)
           (*) REMOVED HMM_FastInverseSquareRoot function declaration
       0.7 
-          (*) REMOVED HMM_LengthSquared in HANDMADE_MATH_IMPLEMENTATION  (should use HMM_LengthSquaredVec3, or HANDMADE_MATH_CPP_MODE for function overloaded version)
-          (*) REMOVED HMM_Length in HANDMADE_MATH_IMPLEMENTATION (should use HMM_LengthVec3, HANDMADE_MATH_CPP_MODE for function overloaded version)
-          (*) REMOVED HMM_Normalize in HANDMADE_MATH_IMPLEMENTATION (should use HMM_NormalizeVec3, or HANDMADE_MATH_CPP_MODE for function overloaded version)
+          (*) REMOVED HMM_LengthSquared in HANDMADE_MATH_IMPLEMENTATION (should
+              use HMM_LengthSquaredVec3, or HANDMADE_MATH_CPP_MODE for function
+              overloaded version)
+          (*) REMOVED HMM_Length in HANDMADE_MATH_IMPLEMENTATION (should use
+              HMM_LengthVec3, HANDMADE_MATH_CPP_MODE for function
+              overloaded version)
+          (*) REMOVED HMM_Normalize in HANDMADE_MATH_IMPLEMENTATION (should use
+              HMM_NormalizeVec3, or HANDMADE_MATH_CPP_MODE for function
+              overloaded version)
           (*) Added HMM_LengthSquaredVec2
           (*) Added HMM_LengthSquaredVec4
           (*) Addd HMM_LengthVec2
@@ -183,6 +189,13 @@
      1.1.5
           (*) Add Width and Height to HMM_Vec2
           (*) Made it so you can supply your own SqrtF 
+     1.2.0
+          (*) Added equality functions for HMM_Vec2, HMM_Vec3, and HMM_Vec4.
+              (*) Added HMM_EqualsVec2, HMM_EqualsVec3, and HMM_EqualsVec4
+              (*) Added C++ overloaded HMM_Equals for all three
+              (*) Added C++ == and != operators for all three
+          (*) SSE'd HMM_MultiplyMat4 (this is _WAY_ faster)
+          (*) SSE'd HMM_Transpose
           
   LICENSE
   
@@ -228,6 +241,7 @@
 
 #endif /* #ifndef HANDMADE_MATH_NO_SSE */
 
+#include <stdint.h> // This is for types
 
 #ifdef HANDMADE_MATH__USE_SSE
 #include <xmmintrin.h>
@@ -440,6 +454,11 @@ typedef union hmm_vec4
 typedef union hmm_mat4
 {
     float Elements[4][4];
+    
+    
+#ifdef HANDMADE_MATH__USE_SSE
+    __m128 Rows[4];
+#endif
 } hmm_mat4;
 
 typedef union hmm_quaternion
@@ -460,6 +479,8 @@ typedef union hmm_quaternion
     
     float Elements[4];
 } hmm_quaternion;
+
+typedef int32_t hmm_bool;
 
 typedef hmm_vec2 hmm_v2;
 typedef hmm_vec3 hmm_v3;
@@ -532,10 +553,19 @@ HMMDEF hmm_vec3 HMM_DivideVec3f(hmm_vec3 Left, float Right);
 HMMDEF hmm_vec4 HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right);
 HMMDEF hmm_vec4 HMM_DivideVec4f(hmm_vec4 Left, float Right);
 
+HMMDEF hmm_bool HMM_EqualsVec2(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_bool HMM_EqualsVec3(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_bool HMM_EqualsVec4(hmm_vec4 Left, hmm_vec4 Right);
+
 HMMDEF hmm_mat4 HMM_Mat4(void);
 HMMDEF hmm_mat4 HMM_Mat4d(float Diagonal);
 HMMDEF hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right);
 HMMDEF hmm_mat4 HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right);
+
+#ifdef HANDMADE_MATH__USE_SSE
+HMMDEF __m128 HMM_LinearCombineSSE(__m128 Left, hmm_mat4 Right);
+#endif 
+
 HMMDEF hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right);
 HMMDEF hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar);
 HMMDEF hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector);
@@ -625,6 +655,10 @@ HMMDEF hmm_mat4 HMM_Divide(hmm_mat4 Left, float Right);
 HMMDEF hmm_quaternion HMM_Divide(hmm_quaternion Left, hmm_quaternion Right);
 HMMDEF hmm_quaternion HMM_Divide(hmm_quaternion Left, float Right);
 
+HMMDEF hmm_bool HMM_Equals(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_bool HMM_Equals(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_bool HMM_Equals(hmm_vec4 Left, hmm_vec4 Right);
+
 HMMDEF hmm_vec2 operator+(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_vec3 operator+(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_vec4 operator+(hmm_vec4 Left, hmm_vec4 Right);
@@ -698,6 +732,14 @@ HMMDEF hmm_vec3 &operator/=(hmm_vec3 &Left, float Right);
 HMMDEF hmm_vec4 &operator/=(hmm_vec4 &Left, float Right);
 HMMDEF hmm_mat4 &operator/=(hmm_mat4 &Left, float Right);
 HMMDEF hmm_quaternion &operator/=(hmm_quaternion &Left, float Right);
+
+HMMDEF hmm_bool operator==(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_bool operator==(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_bool operator==(hmm_vec4 Left, hmm_vec4 Right);
+
+HMMDEF hmm_bool operator!=(hmm_vec2 Left, hmm_vec2 Right);
+HMMDEF hmm_bool operator!=(hmm_vec3 Left, hmm_vec3 Right);
+HMMDEF hmm_bool operator!=(hmm_vec4 Left, hmm_vec4 Right);
 
 #endif /* HANDMADE_MATH_CPP */
 
@@ -1329,6 +1371,36 @@ HMM_DivideVec4f(hmm_vec4 Left, float Right)
     return (Result);
 }
 
+HINLINE hmm_bool
+HMM_EqualsVec2(hmm_vec2 Left, hmm_vec2 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = (Left.X == Right.X && Left.Y == Right.Y);
+
+    return (Result);
+}
+
+HINLINE hmm_bool
+HMM_EqualsVec3(hmm_vec3 Left, hmm_vec3 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z);
+
+    return (Result);
+}
+
+HINLINE hmm_bool
+HMM_EqualsVec4(hmm_vec4 Left, hmm_vec4 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z && Left.W == Right.W);
+
+    return (Result);
+}
+
 HINLINE hmm_mat4
 HMM_Mat4(void)
 {
@@ -1386,11 +1458,38 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
+#ifdef HANDMADE_MATH__USE_SSE
+HINLINE __m128
+HMM_LinearCombineSSE(__m128 Left, hmm_mat4 Right)
+{
+    __m128 Result = {};
+    Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Rows[0]);
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x55), Right.Rows[1]));
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xaa), Right.Rows[2]));
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xff), Right.Rows[3]));
+    
+    return(Result);
+}
+#endif
+
 HINLINE hmm_mat4
 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = HMM_Mat4();
 
+#ifdef HANDMADE_MATH__USE_SSE
+    
+    hmm_mat4 TransposedLeft = HMM_Transpose(Left);
+    hmm_mat4 TransposedRight = HMM_Transpose(Right);
+
+    Result.Rows[0] = HMM_LinearCombineSSE(TransposedLeft.Rows[0], TransposedRight);
+    Result.Rows[1] = HMM_LinearCombineSSE(TransposedLeft.Rows[1], TransposedRight);
+    Result.Rows[2] = HMM_LinearCombineSSE(TransposedLeft.Rows[2], TransposedRight);
+    Result.Rows[3] = HMM_LinearCombineSSE(TransposedLeft.Rows[3], TransposedRight);       
+    
+    Result = HMM_Transpose(Result);
+    
+#else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1407,7 +1506,7 @@ HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
             Result.Elements[Columns][Rows] = Sum;
         }
     }
-
+#endif 
     return (Result);
 }
 
@@ -1472,6 +1571,11 @@ HMM_Transpose(hmm_mat4 Matrix)
 {
     hmm_mat4 Result = HMM_Mat4();
 
+#ifdef HANDMADE_MATH__USE_SSE
+    Result = Matrix;
+    
+    _MM_TRANSPOSE4_PS(Result.Rows[0], Result.Rows[1], Result.Rows[2], Result.Rows[3]);    
+#else 
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1481,7 +1585,8 @@ HMM_Transpose(hmm_mat4 Matrix)
             Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
         }
     }
-
+#endif 
+        
     return (Result);
 }
 
@@ -2239,6 +2344,33 @@ HMM_Divide(hmm_quaternion Left, float Right)
     return (Result);
 }
 
+HINLINE hmm_bool
+HMM_Equals(hmm_vec2 Left, hmm_vec2 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = HMM_EqualsVec2(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_bool
+HMM_Equals(hmm_vec3 Left, hmm_vec3 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = HMM_EqualsVec3(Left, Right);
+    return (Result);
+}
+
+HINLINE hmm_bool
+HMM_Equals(hmm_vec4 Left, hmm_vec4 Right)
+{
+    hmm_bool Result = 0;
+
+    Result = HMM_EqualsVec4(Left, Right);
+    return (Result);
+}
+
 HINLINE hmm_vec2
 operator+(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -2699,6 +2831,43 @@ HINLINE hmm_quaternion &
 operator*=(hmm_quaternion &Left, float Right)
 {
     return (Left = Left * Right);
+}
+
+HINLINE hmm_bool
+operator==(hmm_vec2 Left, hmm_vec2 Right)
+{
+    return HMM_EqualsVec2(Left, Right);    
+}
+
+HINLINE hmm_bool
+operator==(hmm_vec3 Left, hmm_vec3 Right)
+{
+    return HMM_EqualsVec3(Left, Right);    
+}
+
+HINLINE hmm_bool
+operator==(hmm_vec4 Left, hmm_vec4 Right)
+{
+    return HMM_EqualsVec4(Left, Right);    
+}
+
+
+HINLINE hmm_bool 
+operator!=(hmm_vec2 Left, hmm_vec2 Right)
+{
+    return !HMM_EqualsVec2(Left, Right);    
+}
+
+HINLINE hmm_bool 
+operator!=(hmm_vec3 Left, hmm_vec3 Right)
+{
+    return !HMM_EqualsVec3(Left, Right);    
+}
+
+HINLINE hmm_bool 
+operator!=(hmm_vec4 Left, hmm_vec4 Right)
+{
+    return !HMM_EqualsVec4(Left, Right);    
 }
 
 #endif /* HANDMADE_MATH_CPP_MODE */

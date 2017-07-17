@@ -1,5 +1,2 @@
-
-#define HANDMADE_MATH_IMPLEMENTATION
-#define HANDMADE_MATH_CPP_MODE
-#define HANDMADE_MATH_NO_INLINE
-#include "../HandmadeMath.h"
+#include "HandmadeMath.c"
+// C++ compilers complain when compiling a .c file...
