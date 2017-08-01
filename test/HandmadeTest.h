@@ -25,27 +25,32 @@ int hmt_count_failures = 0;
 }
 
 #define TEST_BEGIN(name) { \
-    int count_testfailures = 0; \
+    int count_testcases = 0, count_testfailures = 0; \
     count_categorytests++; \
     printf("    " #name ":");
 #define TEST_END() \
     count_categoryfailures += count_testfailures; \
     if (count_testfailures > 0) { \
         count_categoryfailedtests++; \
+        printf("\n      " RED "(%d/%d passed)" RESET, count_testcases - count_testfailures, count_testcases); \
         printf("\n"); \
     } else { \
-        printf(GREEN " [PASS]\n" RESET); \
+        printf(GREEN " [PASS] (%d/%d passed) \n" RESET, count_testcases - count_testfailures, count_testcases); \
     } \
 }
 
+#define CASE_START() \
+    count_testcases++;
+
 #define CASE_FAIL() \
     count_testfailures++; \
-    printf("\n      - " RED "[FAIL] (%d) " RESET, __LINE__)
+    printf("\n      - " RED "[FAIL] (%d) " RESET, __LINE__);
 
 /*
  * Asserts and expects
  */
 #define EXPECT_TRUE(_actual) do { \
+    CASE_START(); \
     if (!(_actual)) { \
         CASE_FAIL(); \
         printf("Expected true but got something false"); \
@@ -53,6 +58,7 @@ int hmt_count_failures = 0;
 } while (0)
 
 #define EXPECT_FALSE(_actual) do { \
+    CASE_START(); \
     if (_actual) { \
         CASE_FAIL(); \
         printf("Expected false but got something true"); \
@@ -60,6 +66,7 @@ int hmt_count_failures = 0;
 } while (0)
 
 #define EXPECT_FLOAT_EQ(_actual, _expected) do { \
+    CASE_START(); \
     float actual = (_actual); \
     float diff = actual - (_expected); \
     if (diff < -FLT_EPSILON || FLT_EPSILON < diff) { \
@@ -69,6 +76,7 @@ int hmt_count_failures = 0;
 } while (0)
 
 #define EXPECT_NEAR(_actual, _expected, _epsilon) do { \
+    CASE_START(); \
     float actual = (_actual); \
     float diff = actual - (_expected); \
     if (diff < -(_epsilon) || (_epsilon) < diff) { \
@@ -78,6 +86,7 @@ int hmt_count_failures = 0;
 } while (0)
 
 #define EXPECT_LT(_actual, _expected) do { \
+    CASE_START(); \
     if ((_actual) >= (_expected)) { \
         CASE_FAIL(); \
         printf("Expected %f to be less than %f", (_actual), (_expected)); \
@@ -85,6 +94,7 @@ int hmt_count_failures = 0;
 } while (0)
 
 #define EXPECT_GT(_actual, _expected) do { \
+    CASE_START(); \
     if ((_actual) <= (_expected)) { \
         CASE_FAIL(); \
         printf("Expected %f to be greater than %f", (_actual), (_expected)); \

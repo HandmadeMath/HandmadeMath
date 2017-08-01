@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.2.0
+  HandmadeMath.h v1.3.0
   
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -14,22 +14,6 @@
   include, like this:
   
      #define HANDMADE_MATH_IMPLEMENTATION
-     #include "HandmadeMath.h"
-     
-  All other files should just #include "HandmadeMath.h" without the #define.
-  
-  =============================================================================
-  
-  For overloaded and operator overloaded versions of the base C functions,
-  you MUST
-  
-     #define HANDMADE_MATH_CPP_MODE
-     
-  in EXACTLY one C or C++ file that includes this header, BEFORE the
-  include, like this:
-  
-     #define HANDMADE_MATH_IMPLEMENTATION
-     #define HANDMADE_MATH_CPP_MODE
      #include "HandmadeMath.h"
      
   All other files should just #include "HandmadeMath.h" without the #define.
@@ -196,6 +180,8 @@
               (*) Added C++ == and != operators for all three
           (*) SSE'd HMM_MultiplyMat4 (this is _WAY_ faster)
           (*) SSE'd HMM_Transpose
+     1.3.0
+          (*) Remove need to #define HANDMADE_MATH_CPP_MODE
           
   LICENSE
   
@@ -601,7 +587,7 @@ HMMDEF hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRo
 }
 #endif
 
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
 
 HMMDEF float HMM_Length(hmm_vec2 A);
 HMMDEF float HMM_Length(hmm_vec3 A);
@@ -741,7 +727,7 @@ HMMDEF hmm_bool operator!=(hmm_vec2 Left, hmm_vec2 Right);
 HMMDEF hmm_bool operator!=(hmm_vec3 Left, hmm_vec3 Right);
 HMMDEF hmm_bool operator!=(hmm_vec4 Left, hmm_vec4 Right);
 
-#endif /* HANDMADE_MATH_CPP */
+#endif /* __cplusplus */
 
 #ifdef __clang__
 #pragma GCC diagnostic pop
@@ -1932,7 +1918,7 @@ HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation)
     return(Result);
 }
 
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
 
 HINLINE float 
 HMM_Length(hmm_vec2 A)
@@ -2870,6 +2856,6 @@ operator!=(hmm_vec4 Left, hmm_vec4 Right)
     return !HMM_EqualsVec4(Left, Right);    
 }
 
-#endif /* HANDMADE_MATH_CPP_MODE */
+#endif /* __cplusplus */
 
 #endif /* HANDMADE_MATH_IMPLEMENTATION */
