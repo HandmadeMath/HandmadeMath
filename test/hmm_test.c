@@ -334,7 +334,7 @@ int run_tests()
             EXPECT_FLOAT_EQ(HMM_LengthSquaredVec3(v3), 14.0f);
             EXPECT_FLOAT_EQ(HMM_LengthSquaredVec4(v4), 15.0f);
 
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             EXPECT_FLOAT_EQ(HMM_LengthSquared(v2), 5.0f);
             EXPECT_FLOAT_EQ(HMM_LengthSquared(v3), 14.0f);
             EXPECT_FLOAT_EQ(HMM_LengthSquared(v4), 15.0f);
@@ -352,7 +352,7 @@ int run_tests()
             EXPECT_FLOAT_EQ(HMM_LengthVec3(v3), 7.0f);
             EXPECT_FLOAT_EQ(HMM_LengthVec4(v4), 13.892444f);
 
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             EXPECT_FLOAT_EQ(HMM_Length(v2), 9.0553856f);
             EXPECT_FLOAT_EQ(HMM_Length(v3), 7.0f);
             EXPECT_FLOAT_EQ(HMM_Length(v4), 13.892444f);
@@ -388,7 +388,7 @@ int run_tests()
                 EXPECT_LT(result.W, 0.0f);
             }
 
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec2 result = HMM_Normalize(v2);
                 EXPECT_FLOAT_EQ(HMM_LengthVec2(result), 1.0f);
@@ -439,7 +439,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.W, 0.0f);
             }
 
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec2 result = HMM_Normalize(v2);
                 EXPECT_FLOAT_EQ(result.X, 0.0f);
@@ -481,7 +481,7 @@ int run_tests()
             hmm_vec2 v2 = HMM_Vec2(3.0f, 4.0f);
 
             EXPECT_FLOAT_EQ(HMM_DotVec2(v1, v2), 11.0f);
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 11.0f);
 #endif
         }
@@ -493,7 +493,7 @@ int run_tests()
             hmm_vec3 v2 = HMM_Vec3(4.0f, 5.0f, 6.0f);
 
             EXPECT_FLOAT_EQ(HMM_DotVec3(v1, v2), 32.0f);
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 32.0f);
 #endif
         }
@@ -505,7 +505,7 @@ int run_tests()
             hmm_vec4 v2 = HMM_Vec4(5.0f, 6.0f, 7.0f, 8.0f);
 
             EXPECT_FLOAT_EQ(HMM_DotVec4(v1, v2), 70.0f);
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 70.0f);
 #endif
         }
@@ -578,7 +578,7 @@ int run_tests()
                 float result = HMM_DotQuaternion(q1, q2);
                 EXPECT_FLOAT_EQ(result, 70.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 float result = HMM_Dot(q1, q2);
                 EXPECT_FLOAT_EQ(result, 70.0f);
@@ -598,7 +598,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 0.5477225575f);
                 EXPECT_FLOAT_EQ(result.W, 0.7302967433f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_quaternion result = HMM_Normalize(q);
                 EXPECT_FLOAT_EQ(result.X, 0.1825741858f);
@@ -693,7 +693,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.X, 4.0f);
                 EXPECT_FLOAT_EQ(result.Y, 6.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec2 result = HMM_Add(v2_1, v2_2);
                 EXPECT_FLOAT_EQ(result.X, 4.0f);
@@ -723,7 +723,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Y, 7.0f);
                 EXPECT_FLOAT_EQ(result.Z, 9.0f);    
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec3 result = HMM_Add(v3_1, v3_2);
                 EXPECT_FLOAT_EQ(result.X, 5.0f);
@@ -757,7 +757,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 10.0f);
                 EXPECT_FLOAT_EQ(result.W, 12.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec4 result = HMM_Add(v4_1, v4_2);
                 EXPECT_FLOAT_EQ(result.X, 6.0f);
@@ -819,7 +819,7 @@ int run_tests()
                     }
                 }
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_mat4 result = HMM_Add(m4_1, m4_2);
                 float Expected = 18.0f;
@@ -871,7 +871,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 10.0f);
                 EXPECT_FLOAT_EQ(result.W, 12.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_quaternion result = HMM_Add(q1, q2);
                 EXPECT_FLOAT_EQ(result.X, 6.0f);
@@ -910,7 +910,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.X, -2.0f);
                 EXPECT_FLOAT_EQ(result.Y, -2.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec2 result = HMM_Subtract(v2_1, v2_2);
                 EXPECT_FLOAT_EQ(result.X, -2.0f);
@@ -940,7 +940,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Y, -3.0f);
                 EXPECT_FLOAT_EQ(result.Z, -3.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec3 result = HMM_Subtract(v3_1, v3_2);
                 EXPECT_FLOAT_EQ(result.X, -3.0f);
@@ -974,7 +974,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, -4.0f);
                 EXPECT_FLOAT_EQ(result.W, -4.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec4 result = HMM_Subtract(v4_1, v4_2);
                 EXPECT_FLOAT_EQ(result.X, -4.0f);
@@ -1034,7 +1034,7 @@ int run_tests()
                     }
                 }
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_mat4 result = HMM_Subtract(m4_1, m4_2);
                 for (int Column = 0; Column < 4; ++Column)
@@ -1080,7 +1080,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, -4.0f);
                 EXPECT_FLOAT_EQ(result.W, -4.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_quaternion result = HMM_Subtract(q1, q2);
                 EXPECT_FLOAT_EQ(result.X, -4.0f);
@@ -1119,7 +1119,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.X, 3.0f);
                 EXPECT_FLOAT_EQ(result.Y, 8.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec2 result = HMM_Multiply(v2_1, v2_2);
                 EXPECT_FLOAT_EQ(result.X, 3.0f);
@@ -1148,7 +1148,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.X, 3.0f);
                 EXPECT_FLOAT_EQ(result.Y, 6.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec2 result = HMM_Multiply(v2, s);
                 EXPECT_FLOAT_EQ(result.X, 3.0f);
@@ -1183,7 +1183,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Y, 10.0f);
                 EXPECT_FLOAT_EQ(result.Z, 18.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec3 result = HMM_Multiply(v3_1, v3_2);
                 EXPECT_FLOAT_EQ(result.X, 4.0f);
@@ -1216,7 +1216,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Y, 6.0f);
                 EXPECT_FLOAT_EQ(result.Z, 9.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec3 result = HMM_Multiply(v3, s);
                 EXPECT_FLOAT_EQ(result.X, 3.0f);
@@ -1256,7 +1256,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 21.0f);
                 EXPECT_FLOAT_EQ(result.W, 32.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec4 result = HMM_Multiply(v4_1, v4_2);
                 EXPECT_FLOAT_EQ(result.X, 5.0f);
@@ -1293,7 +1293,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 9.0f);
                 EXPECT_FLOAT_EQ(result.W, 12.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec4 result = HMM_Multiply(v4, s);
                 EXPECT_FLOAT_EQ(result.X, 3.0f);
@@ -1368,7 +1368,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Elements[3][2], 1118.0f);
                 EXPECT_FLOAT_EQ(result.Elements[3][3], 1240.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_mat4 result = HMM_Multiply(m4_1, m4_2);
                 EXPECT_FLOAT_EQ(result.Elements[0][0], 538.0f);
@@ -1451,7 +1451,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Elements[3][2], 45.0f);
                 EXPECT_FLOAT_EQ(result.Elements[3][3], 48.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_mat4 result = HMM_Multiply(m4, s);
                 EXPECT_FLOAT_EQ(result.Elements[0][0], 3.0f);
@@ -1555,7 +1555,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 110.0f);
                 EXPECT_FLOAT_EQ(result.W, 120.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec4 result = HMM_Multiply(m4, v4);
                 EXPECT_FLOAT_EQ(result.X, 90.0f);
@@ -1588,7 +1588,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 48.0f);
                 EXPECT_FLOAT_EQ(result.W, -6.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_quaternion result = HMM_Multiply(q1, q2);
                 EXPECT_FLOAT_EQ(result.X, 24.0f);
@@ -1623,7 +1623,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 6.0f);
                 EXPECT_FLOAT_EQ(result.W, 8.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_quaternion result = HMM_Multiply(q, f);
                 EXPECT_FLOAT_EQ(result.X, 2.0f);
@@ -1669,7 +1669,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.X, 0.5f);
                 EXPECT_FLOAT_EQ(result.Y, 0.75f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec2 result = HMM_Divide(v2_1, v2_2);
                 EXPECT_FLOAT_EQ(result.X, 0.5f);
@@ -1698,7 +1698,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.X, 0.5f);
                 EXPECT_FLOAT_EQ(result.Y, 1.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec2 result = HMM_Divide(v2, s);
                 EXPECT_FLOAT_EQ(result.X, 0.5f);
@@ -1728,7 +1728,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Y, 0.75f);
                 EXPECT_FLOAT_EQ(result.Z, 10.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec3 result = HMM_Divide(v3_1, v3_2);
                 EXPECT_FLOAT_EQ(result.X, 0.5f);
@@ -1761,7 +1761,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Y, 1.0f);
                 EXPECT_FLOAT_EQ(result.Z, 1.5f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec3 result = HMM_Divide(v3, s);
                 EXPECT_FLOAT_EQ(result.X, 0.5f);
@@ -1795,7 +1795,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 10.0f);
                 EXPECT_FLOAT_EQ(result.W, 0.25f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec4 result = HMM_Divide(v4_1, v4_2);
                 EXPECT_FLOAT_EQ(result.X, 0.5f);
@@ -1832,7 +1832,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 1.5f);
                 EXPECT_FLOAT_EQ(result.W, 2.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_vec4 result = HMM_Divide(v4, s);
                 EXPECT_FLOAT_EQ(result.X, 0.5f);
@@ -1893,7 +1893,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Elements[3][2], 7.5f);
                 EXPECT_FLOAT_EQ(result.Elements[3][3], 8.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_mat4 result = HMM_Divide(m4, s);
                 EXPECT_FLOAT_EQ(result.Elements[0][0], 0.5f);
@@ -1966,7 +1966,7 @@ int run_tests()
                 EXPECT_FLOAT_EQ(result.Z, 1.5f);
                 EXPECT_FLOAT_EQ(result.W, 2.0f);
             }
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             {
                 hmm_quaternion result = HMM_Divide(q, f);
                 EXPECT_FLOAT_EQ(result.X, 0.5f);
@@ -2004,7 +2004,7 @@ int run_tests()
             EXPECT_TRUE(HMM_EqualsVec2(a, b));
             EXPECT_FALSE(HMM_EqualsVec2(a, c));
 
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             EXPECT_TRUE(HMM_Equals(a, b));
             EXPECT_FALSE(HMM_Equals(a, c));
 
@@ -2023,7 +2023,7 @@ int run_tests()
             EXPECT_TRUE(HMM_EqualsVec3(a, b));
             EXPECT_FALSE(HMM_EqualsVec3(a, c));
 
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             EXPECT_TRUE(HMM_Equals(a, b));
             EXPECT_FALSE(HMM_Equals(a, c));
 
@@ -2042,7 +2042,7 @@ int run_tests()
             EXPECT_TRUE(HMM_EqualsVec4(a, b));
             EXPECT_FALSE(HMM_EqualsVec4(a, c));
 
-#ifdef HANDMADE_MATH_CPP_MODE
+#ifdef __cplusplus
             EXPECT_TRUE(HMM_Equals(a, b));
             EXPECT_FALSE(HMM_Equals(a, c));
 
