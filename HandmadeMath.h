@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.3.0
+  HandmadeMath.h v1.4
   
   This is a single header file with a bunch of useful functions for
   basic game math operations.
@@ -182,6 +182,8 @@
           (*) SSE'd HMM_Transpose
      1.3.0
           (*) Remove need to #define HANDMADE_MATH_CPP_MODE
+     1.4
+          (*)
           
   LICENSE
   
@@ -1448,7 +1450,7 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
 HINLINE __m128
 HMM_LinearCombineSSE(__m128 Left, hmm_mat4 Right)
 {
-    __m128 Result = {};
+    __m128 Result = {0};
     Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Rows[0]);
     Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x55), Right.Rows[1]));
     Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xaa), Right.Rows[2]));
