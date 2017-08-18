@@ -184,7 +184,7 @@
           (*) Remove need to #define HANDMADE_MATH_CPP_MODE
      1.4.0
           (*) Fixed bug when using HandmadeMath in C mode
-          
+          (*) SSEd all vec4 operations          
           
           
   LICENSE
@@ -1441,6 +1441,8 @@ HMM_EqualsVec4(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
+// TODO(zak): Remove before pushing to main.
+// I dont think its worth us SSEing HMM_Mat4 since its just a mem-zero
 HINLINE hmm_mat4
 HMM_Mat4(void)
 {
@@ -1449,11 +1451,14 @@ HMM_Mat4(void)
     return (Result);
 }
 
+// TODO(zak): Remove before pushing to main.
+// I dont think its worth us SSEing HMM_Mat4d since it would be the same ammount of instructions,
+// since we have to address each row individually.
 HINLINE hmm_mat4
 HMM_Mat4d(float Diagonal)
 {
     hmm_mat4 Result = HMM_Mat4();
-
+    
     Result.Elements[0][0] = Diagonal;
     Result.Elements[1][1] = Diagonal;
     Result.Elements[2][2] = Diagonal;
@@ -1467,6 +1472,12 @@ HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = HMM_Mat4();
 
+#if HANDMADE_MATH__USE_SSE    
+    Result.Rows[0] = _mm_add_ps(Left.Rows[0], Right.Rows[0]);
+    Result.Rows[1] = _mm_add_ps(Left.Rows[1], Right.Rows[1]);
+    Result.Rows[2] = _mm_add_ps(Left.Rows[2], Right.Rows[2]);
+    Result.Rows[3] = _mm_add_ps(Left.Rows[3], Right.Rows[3]);    
+#else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1476,7 +1487,7 @@ HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
             Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
         }
     }
-
+#endif
     return (Result);
 }
 
@@ -1485,6 +1496,12 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = HMM_Mat4();
 
+#if HANDMADE_MATH__USE_SSE
+    Result.Rows[0] = _mm_sub_ps(Left.Rows[0], Right.Rows[0]);
+    Result.Rows[1] = _mm_sub_ps(Left.Rows[1], Right.Rows[1]);
+    Result.Rows[2] = _mm_sub_ps(Left.Rows[2], Right.Rows[2]);
+    Result.Rows[3] = _mm_sub_ps(Left.Rows[3], Right.Rows[3]);
+#else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1494,7 +1511,7 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
             Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
         }
     }
-
+#endif
     return (Result);
 }
 
@@ -1554,7 +1571,17 @@ HINLINE hmm_mat4
 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
 {
     hmm_mat4 Result = HMM_Mat4();
-
+    
+#if HANDMADE_MATH__USE_SSE
+    // TODO(zak): Before pushing to main. See if there is a better way to do this. 
+    // 4 instructions is still a lot cheaper than the non-sse version, but we might be able
+    // to get it cheaper    
+    __m128 SSEScalar = _mm_set1_ps(Scalar);
+    Result.Rows[0] = _mm_mul_ps(Matrix.Rows[0], SSEScalar);
+    Result.Rows[1] = _mm_mul_ps(Matrix.Rows[1], SSEScalar);
+    Result.Rows[2] = _mm_mul_ps(Matrix.Rows[2], SSEScalar);
+    Result.Rows[3] = _mm_mul_ps(Matrix.Rows[3], SSEScalar);
+#else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1564,7 +1591,7 @@ HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
             Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
         }
     }
-
+#endif
     return (Result);
 }
 
