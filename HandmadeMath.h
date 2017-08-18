@@ -182,8 +182,10 @@
           (*) SSE'd HMM_Transpose
      1.3.0
           (*) Remove need to #define HANDMADE_MATH_CPP_MODE
-     1.4
-          (*)
+     1.4.0
+          (*) Fixed bug when using HandmadeMath in C mode
+          
+          
           
   LICENSE
   
@@ -437,13 +439,13 @@ typedef union hmm_vec4
     };
 
     float Elements[4];
+    __m128 InternalElementsSSE;
 } hmm_vec4;
 
 typedef union hmm_mat4
 {
     float Elements[4][4];
-    
-    
+        
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Rows[4];
 #endif
@@ -1009,10 +1011,17 @@ HMM_NormalizeVec4(hmm_vec4 A)
     /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
     if (VectorLength != 0.0f)
     {
-        Result.X = A.X * (1.0f / VectorLength);
-        Result.Y = A.Y * (1.0f / VectorLength);
-        Result.Z = A.Z * (1.0f / VectorLength);
-        Result.W = A.W * (1.0f / VectorLength);
+        float Multiplier = 1.0f / VectorLength;
+        
+#if HANDMADE_MATH__USE_SSE
+        __m128 SSEMultiplier = _mm_set1_ps(Multiplier);
+        Result.InternalElementsSSE = _mm_mul_ps(A.InternalElementsSSE, SSEMultiplier);        
+#else 
+        Result.X = A.X * Multiplier;
+        Result.Y = A.Y * Multiplier;
+        Result.Z = A.Z * Multiplier;
+        Result.W = A.W * Multiplier;
+#endif
     }
     
     return (Result);
@@ -1043,7 +1052,18 @@ HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo)
 {
     float Result = 0.0f;
 
+    // TODO(zak): IN the future if we wanna check what version SSE is support we can use _mm_dp_ps (4.3)
+    // but for now we will use the old way. Or a r = _mm_mul_ps(v1, v2), r = _mm_hadd_ps(r, r), r = _mm_hadd_ps(r, r) for SSE3
+#if HANDMADE_MATH__USE_SSE
+    __m128 SSEResultOne = _mm_mul_ps(VecOne.InternalElementsSSE, VecTwo.InternalElementsSSE);
+    __m128 SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(2, 3, 0, 1));
+    SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
+    SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(0, 1, 2, 3));
+    SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);       
+    _mm_store_ss(&Result, SSEResultOne);
+#else
     Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z) + (VecOne.W * VecTwo.W);
+#endif
     
     return (Result);
 }
@@ -1171,10 +1191,14 @@ HMM_AddVec4(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = {0};
 
+#if HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_add_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+#else    
     Result.X = Left.X + Right.X;
     Result.Y = Left.Y + Right.Y;
     Result.Z = Left.Z + Right.Z;
-    Result.W = Left.W + Right.W;
+    Result.W = Left.W + Right.W;    
+#endif
 
     return (Result);
 }
@@ -1206,11 +1230,15 @@ HINLINE hmm_vec4
 HMM_SubtractVec4(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = {0};
-
+    
+#if HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_sub_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+#else    
     Result.X = Left.X - Right.X;
     Result.Y = Left.Y - Right.Y;
     Result.Z = Left.Z - Right.Z;
-    Result.W = Left.W - Right.W;
+    Result.W = Left.W - Right.W;    
+#endif
 
     return (Result);
 }
@@ -1266,10 +1294,14 @@ HMM_MultiplyVec4(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = {0};
 
+#if HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_mul_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+#else
     Result.X = Left.X * Right.X;
     Result.Y = Left.Y * Right.Y;
     Result.Z = Left.Z * Right.Z;
-    Result.W = Left.W * Right.W;
+    Result.W = Left.W * Right.W;    
+#endif
 
     return (Result);
 }
@@ -1279,11 +1311,16 @@ HMM_MultiplyVec4f(hmm_vec4 Left, float Right)
 {
     hmm_vec4 Result = {0};
 
+#if HANDMADE_MATH__USE_SSE
+    __m128 Scalar = _mm_set1_ps(Right);
+    Result.InternalElementsSSE = _mm_mul_ps(Left.InternalElementsSSE, Scalar);
+#else    
     Result.X = Left.X * Right;
     Result.Y = Left.Y * Right;
     Result.Z = Left.Z * Right;
     Result.W = Left.W * Right;
-
+#endif
+    
     return (Result);
 }
 
@@ -1337,12 +1374,16 @@ HINLINE hmm_vec4
 HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = {0};
-
+    
+#if HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_div_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+#else
     Result.X = Left.X / Right.X;
     Result.Y = Left.Y / Right.Y;
     Result.Z = Left.Z / Right.Z;
     Result.W = Left.W / Right.W;
-
+#endif
+    
     return (Result);
 }
 
@@ -1351,11 +1392,16 @@ HMM_DivideVec4f(hmm_vec4 Left, float Right)
 {
     hmm_vec4 Result = {0};
 
+#if HANDMADE_MATH__USE_SSE
+    __m128 Scalar = _mm_set1_ps(Right);
+    Result.InternalElementsSSE = _mm_div_ps(Left.InternalElementsSSE, Scalar);
+#else    
     Result.X = Left.X / Right;
     Result.Y = Left.Y / Right;
     Result.Z = Left.Z / Right;
     Result.W = Left.W / Right;
-
+#endif
+    
     return (Result);
 }
 
