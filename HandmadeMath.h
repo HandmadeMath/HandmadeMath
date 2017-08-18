@@ -1135,7 +1135,7 @@ HMM_Vec4(float X, float Y, float Z, float W)
     hmm_vec4 Result = {0};
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_set_ps(X, Y, Z, W); // TODO(zak): Check this before it goes to main. I wonder if this really is faster, if so do it for HMM_Vec4i also.
+    Result.InternalElementsSSE = _mm_setr_ps(X, Y, Z, W); // TODO(zak): Check this before it goes to main. I wonder if this really is faster, if so do it for HMM_Vec4i also.
 #else
     Result.X = X;
     Result.Y = Y;
