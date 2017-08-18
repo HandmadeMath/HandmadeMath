@@ -439,7 +439,10 @@ typedef union hmm_vec4
     };
 
     float Elements[4];
+    
+#ifdef HANDMADE_MATH__USE_SSE    
     __m128 InternalElementsSSE;
+#endif
 } hmm_vec4;
 
 typedef union hmm_mat4
@@ -1054,7 +1057,7 @@ HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo)
 
     // TODO(zak): IN the future if we wanna check what version SSE is support we can use _mm_dp_ps (4.3)
     // but for now we will use the old way. Or a r = _mm_mul_ps(v1, v2), r = _mm_hadd_ps(r, r), r = _mm_hadd_ps(r, r) for SSE3
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
     __m128 SSEResultOne = _mm_mul_ps(VecOne.InternalElementsSSE, VecTwo.InternalElementsSSE);
     __m128 SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(2, 3, 0, 1));
     SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
@@ -1131,11 +1134,14 @@ HMM_Vec4(float X, float Y, float Z, float W)
 {
     hmm_vec4 Result = {0};
 
+#ifdef HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_set_ps(X, Y, Z, W); // TODO(zak): Check this before it goes to main. I wonder if this really is faster, if so do it for HMM_Vec4i also.
+#else
     Result.X = X;
     Result.Y = Y;
     Result.Z = Z;
     Result.W = W;
-
+#endif
     return (Result);
 }
 
@@ -1191,7 +1197,7 @@ HMM_AddVec4(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = {0};
 
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
     Result.InternalElementsSSE = _mm_add_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
 #else    
     Result.X = Left.X + Right.X;
@@ -1231,7 +1237,7 @@ HMM_SubtractVec4(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = {0};
     
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
     Result.InternalElementsSSE = _mm_sub_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
 #else    
     Result.X = Left.X - Right.X;
@@ -1294,7 +1300,7 @@ HMM_MultiplyVec4(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = {0};
 
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
     Result.InternalElementsSSE = _mm_mul_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
 #else
     Result.X = Left.X * Right.X;
@@ -1311,7 +1317,7 @@ HMM_MultiplyVec4f(hmm_vec4 Left, float Right)
 {
     hmm_vec4 Result = {0};
 
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
     __m128 Scalar = _mm_set1_ps(Right);
     Result.InternalElementsSSE = _mm_mul_ps(Left.InternalElementsSSE, Scalar);
 #else    
@@ -1375,7 +1381,7 @@ HMM_DivideVec4(hmm_vec4 Left, hmm_vec4 Right)
 {
     hmm_vec4 Result = {0};
     
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
     Result.InternalElementsSSE = _mm_div_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
 #else
     Result.X = Left.X / Right.X;
@@ -1392,7 +1398,7 @@ HMM_DivideVec4f(hmm_vec4 Left, float Right)
 {
     hmm_vec4 Result = {0};
 
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
     __m128 Scalar = _mm_set1_ps(Right);
     Result.InternalElementsSSE = _mm_div_ps(Left.InternalElementsSSE, Scalar);
 #else    
