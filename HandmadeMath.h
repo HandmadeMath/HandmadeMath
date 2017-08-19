@@ -1619,7 +1619,14 @@ HINLINE hmm_mat4
 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
 {
     hmm_mat4 Result = HMM_Mat4();
-
+    
+#if HANDMADE_MATH__USE_SSE
+    __m128 SSEScalar = _mm_set1_ps(Scalar);
+    Result.Rows[0] = _mm_div_ps(Matrix.Rows[0], SSEScalar);
+    Result.Rows[1] = _mm_div_ps(Matrix.Rows[1], SSEScalar);
+    Result.Rows[2] = _mm_div_ps(Matrix.Rows[2], SSEScalar);
+    Result.Rows[3] = _mm_div_ps(Matrix.Rows[3], SSEScalar);    
+#else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1629,7 +1636,7 @@ HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
             Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
         }
     }
-
+#endif
     return (Result);
 }
 
