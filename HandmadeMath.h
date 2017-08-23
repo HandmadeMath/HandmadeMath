@@ -1016,7 +1016,7 @@ HMM_NormalizeVec4(hmm_vec4 A)
     {
         float Multiplier = 1.0f / VectorLength;
         
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
         __m128 SSEMultiplier = _mm_set1_ps(Multiplier);
         Result.InternalElementsSSE = _mm_mul_ps(A.InternalElementsSSE, SSEMultiplier);        
 #else 
@@ -1472,7 +1472,7 @@ HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = HMM_Mat4();
 
-#if HANDMADE_MATH__USE_SSE    
+#ifdef HANDMADE_MATH__USE_SSE    
     Result.Rows[0] = _mm_add_ps(Left.Rows[0], Right.Rows[0]);
     Result.Rows[1] = _mm_add_ps(Left.Rows[1], Right.Rows[1]);
     Result.Rows[2] = _mm_add_ps(Left.Rows[2], Right.Rows[2]);
@@ -1496,7 +1496,7 @@ HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result = HMM_Mat4();
 
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
     Result.Rows[0] = _mm_sub_ps(Left.Rows[0], Right.Rows[0]);
     Result.Rows[1] = _mm_sub_ps(Left.Rows[1], Right.Rows[1]);
     Result.Rows[2] = _mm_sub_ps(Left.Rows[2], Right.Rows[2]);
@@ -1572,7 +1572,7 @@ HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
 {
     hmm_mat4 Result = HMM_Mat4();
     
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
     // TODO(zak): Before pushing to main. See if there is a better way to do this. 
     // 4 instructions is still a lot cheaper than the non-sse version, but we might be able
     // to get it cheaper    
@@ -1620,7 +1620,7 @@ HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
 {
     hmm_mat4 Result = HMM_Mat4();
     
-#if HANDMADE_MATH__USE_SSE
+#ifdef HANDMADE_MATH__USE_SSE
     __m128 SSEScalar = _mm_set1_ps(Scalar);
     Result.Rows[0] = _mm_div_ps(Matrix.Rows[0], SSEScalar);
     Result.Rows[1] = _mm_div_ps(Matrix.Rows[1], SSEScalar);
