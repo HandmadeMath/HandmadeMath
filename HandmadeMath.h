@@ -1055,8 +1055,9 @@ HMM_DotVec4(hmm_vec4 VecOne, hmm_vec4 VecTwo)
 {
     float Result = 0.0f;
 
-    // TODO(zak): IN the future if we wanna check what version SSE is support we can use _mm_dp_ps (4.3)
-    // but for now we will use the old way. Or a r = _mm_mul_ps(v1, v2), r = _mm_hadd_ps(r, r), r = _mm_hadd_ps(r, r) for SSE3
+    // NOTE(zak): IN the future if we wanna check what version SSE is support 
+    // we can use _mm_dp_ps (4.3) but for now we will use the old way. 
+    // Or a r = _mm_mul_ps(v1, v2), r = _mm_hadd_ps(r, r), r = _mm_hadd_ps(r, r) for SSE3
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 SSEResultOne = _mm_mul_ps(VecOne.InternalElementsSSE, VecTwo.InternalElementsSSE);
     __m128 SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(2, 3, 0, 1));
@@ -1135,7 +1136,7 @@ HMM_Vec4(float X, float Y, float Z, float W)
     hmm_vec4 Result = {0};
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_setr_ps(X, Y, Z, W); // TODO(zak): Check this before it goes to main. I wonder if this really is faster, if so do it for HMM_Vec4i also.
+    Result.InternalElementsSSE = _mm_setr_ps(X, Y, Z, W);
 #else
     Result.X = X;
     Result.Y = Y;
@@ -1150,11 +1151,14 @@ HMM_Vec4i(int X, int Y, int Z, int W)
 {
     hmm_vec4 Result = {0};
 
+#ifdef HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_setr_ps((float)X, (float)Y, (float)Z, (float)W);
+#else
     Result.X = (float)X;
     Result.Y = (float)Y;
     Result.Z = (float)Z;
     Result.W = (float)W;
-
+#endif
     return (Result);
 }
 
@@ -1162,10 +1166,14 @@ HINLINE hmm_vec4
 HMM_Vec4v(hmm_vec3 Vector, float W)
 {
     hmm_vec4 Result = {0};
-
+    
+#ifdef HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_setr_ps(Vector.X, Vector.Y, Vector.Z, W);
+#else
     Result.XYZ = Vector;
     Result.W = W;
-
+#endif
+    
     return (Result);
 }
 
