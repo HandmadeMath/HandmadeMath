@@ -981,7 +981,7 @@ HMM_Clamp(float Min, float Value, float Max)
 HINLINE hmm_vec2
 HMM_NormalizeVec2(hmm_vec2 A)
 {
-    hmm_vec2 Result;
+    hmm_vec2 Result = {0};
 
     float VectorLength = HMM_LengthVec2(A);
     
@@ -998,7 +998,7 @@ HMM_NormalizeVec2(hmm_vec2 A)
 HINLINE hmm_vec3
 HMM_NormalizeVec3(hmm_vec3 A)
 {
-    hmm_vec3 Result;
+    hmm_vec3 Result = {0};
 
     float VectorLength = HMM_LengthVec3(A);
     
@@ -1016,7 +1016,7 @@ HMM_NormalizeVec3(hmm_vec3 A)
 HINLINE hmm_vec4
 HMM_NormalizeVec4(hmm_vec4 A)
 {
-    hmm_vec4 Result;
+    hmm_vec4 Result = {0};
 
     float VectorLength = HMM_LengthVec4(A);
     
