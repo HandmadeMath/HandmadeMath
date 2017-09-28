@@ -185,6 +185,7 @@
      1.4.0
           (*) Fixed bug when using HandmadeMath in C mode
           (*) SSEd all vec4 operations          
+          (*) Removed all zero-ing
           
           
   LICENSE
@@ -1458,8 +1459,6 @@ HMM_EqualsVec4(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
-// TODO(zak): Remove before pushing to main.
-// I dont think its worth us SSEing HMM_Mat4 since its just a mem-zero
 HINLINE hmm_mat4
 HMM_Mat4(void)
 {
@@ -1468,9 +1467,6 @@ HMM_Mat4(void)
     return (Result);
 }
 
-// TODO(zak): Remove before pushing to main.
-// I dont think its worth us SSEing HMM_Mat4d since it would be the same ammount of instructions,
-// since we have to address each row individually.
 HINLINE hmm_mat4
 HMM_Mat4d(float Diagonal)
 {
@@ -1590,9 +1586,6 @@ HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
     hmm_mat4 Result;
     
 #ifdef HANDMADE_MATH__USE_SSE
-    // TODO(zak): Before pushing to main. See if there is a better way to do this. 
-    // 4 instructions is still a lot cheaper than the non-sse version, but we might be able
-    // to get it cheaper    
     __m128 SSEScalar = _mm_set1_ps(Scalar);
     Result.Rows[0] = _mm_mul_ps(Matrix.Rows[0], SSEScalar);
     Result.Rows[1] = _mm_mul_ps(Matrix.Rows[1], SSEScalar);
