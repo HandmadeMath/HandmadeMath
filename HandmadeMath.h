@@ -196,7 +196,7 @@
   
   CREDITS
   
-  Written by Zakary Strange (zak@handmade.network && @strangezak)
+  Written by Zakary Strange (zak@strangedev.net && @strangezak)
   
   Functionality:
    Matt Mascarenhas (@miblo_)
