@@ -45,4 +45,4 @@ This library is in the public domain. You can do whatever you want with it.
 
 **Where can I contact you to ask questions?**
 
-You can email me at: Zak@Handmade.Network
+You can email me at: Zak@StrangeDev.net
