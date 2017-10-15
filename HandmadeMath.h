@@ -28,7 +28,6 @@
   include, like this:
   
      #define HANDMADE_MATH_IMPLEMENTATION
-     #define HANDMADE_MATH_CPP_MODE
      #define HANDMADE_MATH_NO_SSE
      #include "HandmadeMath.h"
      
@@ -48,7 +47,6 @@
   include, like this:
   
      #define HANDMADE_MATH_IMPLEMENTATION
-     #define HANDMADE_MATH_CPP_MODE
      #define HANDMADE_MATH_NO_INLINE
      #include "HandmadeMath.h"
      
@@ -82,7 +80,6 @@
      #define HMM_ATANF MyATanF
      #define HMM_ATAN2F MyATan2F
      #define HANDMADE_MATH_IMPLEMENTATION
-     #define HANDMADE_MATH_CPP_MODE
      #include "HandmadeMath.h"
      
   If you do not define all five of these, HandmadeMath.h will use the
