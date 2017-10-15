@@ -1,3 +1,9 @@
+# Understanding the structure of Handmade Math
+
+Most of the functions in Handmade Math are very short, and are the kind of functions you want to have inlined. Because of this, most functions in Handmade Math are defined with `HINLINE`, which is defined as `static inline`.
+
+The exceptions are functions like `HMM_Rotate`, which are long enough that it doesn't make sense to inline them. These functions are defined with an `HEXTERN` prototype, and implemented in the `#ifdef HANDMADE_MATH_IMPLEMENTATION` block.
+
 # Quick style guide
 
 * Put braces on a new line
@@ -12,23 +18,6 @@
   // Bad
   1.f
   .0f
-  ```
-* Put macros and return types on a separate line from the function definition:
-  ```cpp
-  HINLINE float
-  HMM_MyFunction()
-  {
-      // ...
-  }
-  ```
-* Explicitly initialize variables to zero:
-  ```cpp
-  HINLINE float
-  HMM_MyFunction()
-  {
-      float MyFloat = 0.0f;
-      hmm_vec3 MyVector = {0};
-  }
   ```
 * Put parentheses around the returned value:
   ```cpp

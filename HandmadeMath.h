@@ -1,8 +1,8 @@
 /*
-  HandmadeMath.h v1.4
+  HandmadeMath.h v1.5.0
   
-  This is a single header file with a bunch of useful functions for
-  basic game math operations.
+  This is a single header file with a bunch of useful functions for game and
+  graphics math operations.
   
   =============================================================================
   
@@ -26,31 +26,10 @@
   
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:
-  
-     #define HANDMADE_MATH_IMPLEMENTATION
-     #define HANDMADE_MATH_NO_SSE
-     #include "HandmadeMath.h"
-     
-     or
      
      #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_NO_SSE
      #include "HandmadeMath.h"
-     
-  =============================================================================
-  
-  To disable inlining functions, you MUST
-  
-  #define HANDMADE_MATH_NO_INLINE
-  
-  in EXACTLY one C or C++ file that includes this header, BEFORE the
-  include, like this:
-  
-     #define HANDMADE_MATH_IMPLEMENTATION
-     #define HANDMADE_MATH_NO_INLINE
-     #include "HandmadeMath.h"
-     
-  All other files should just #include "HandmadeMath.h" without the #define.
   
   =============================================================================
   
@@ -82,7 +61,7 @@
      #define HANDMADE_MATH_IMPLEMENTATION
      #include "HandmadeMath.h"
      
-  If you do not define all five of these, HandmadeMath.h will use the
+  If you do not define all of these, HandmadeMath.h will use the
   versions of these functions that are provided by the CRT.
   
   =============================================================================
@@ -183,6 +162,10 @@
           (*) Fixed bug when using HandmadeMath in C mode
           (*) SSEd all vec4 operations          
           (*) Removed all zero-ing
+     1.5.0
+          (*) Changed internal structure for better performance and inlining.
+          (*) As a result, HANDMADE_MATH_NO_INLINE has been removed and no
+              longer has any effect.
           
           
   LICENSE
@@ -558,24 +541,7 @@ HINLINE float HMM_RSquareRootF(float Float)
     return(Result);
 }
 
-HINLINE float HMM_Power(float Base, int Exponent)
-{
-    float Result = 1.0f;
-    float Mul = Exponent < 0 ? 1.f / Base : Base;
-    unsigned int X = Exponent < 0 ? -Exponent : Exponent;
-    while (X)
-    {
-        if (X & 1)
-        {
-            Result *= Mul;
-        }
-        
-        Mul *= Mul;
-        X >>= 1;
-    }
-    
-    return (Result);
-}
+HEXTERN float HMM_Power(float Base, int Exponent);
 
 HINLINE float HMM_PowerF(float Base, float Exponent)
 {
@@ -1154,181 +1120,88 @@ HINLINE hmm_mat4 HMM_Mat4d(float Diagonal)
     return (Result);
 }
 
+#ifdef HANDMADE_MATH__USE_SSE
 HINLINE hmm_mat4 HMM_Transpose(hmm_mat4 Matrix)
 {
-    hmm_mat4 Result;
-
-#ifdef HANDMADE_MATH__USE_SSE
-    Result = Matrix;
+    hmm_mat4 Result = Matrix;
     
     _MM_TRANSPOSE4_PS(Result.Rows[0], Result.Rows[1], Result.Rows[2], Result.Rows[3]);
-#else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
-        }
-    }
-#endif
 
     return (Result);
 }
+#else
+HEXTERN hmm_mat4 HMM_Transpose(hmm_mat4 Matrix);
+#endif
 
+#ifdef HANDMADE_MATH__USE_SSE
 HINLINE hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result;
 
-#ifdef HANDMADE_MATH__USE_SSE    
     Result.Rows[0] = _mm_add_ps(Left.Rows[0], Right.Rows[0]);
     Result.Rows[1] = _mm_add_ps(Left.Rows[1], Right.Rows[1]);
     Result.Rows[2] = _mm_add_ps(Left.Rows[2], Right.Rows[2]);
     Result.Rows[3] = _mm_add_ps(Left.Rows[3], Right.Rows[3]);    
-#else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
-        }
-    }
-#endif
 
     return (Result);
 }
+#else
+HEXTERN hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right);
+#endif
 
+#ifdef HANDMADE_MATH__USE_SSE
 HINLINE hmm_mat4 HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result;
 
-#ifdef HANDMADE_MATH__USE_SSE
     Result.Rows[0] = _mm_sub_ps(Left.Rows[0], Right.Rows[0]);
     Result.Rows[1] = _mm_sub_ps(Left.Rows[1], Right.Rows[1]);
     Result.Rows[2] = _mm_sub_ps(Left.Rows[2], Right.Rows[2]);
     Result.Rows[3] = _mm_sub_ps(Left.Rows[3], Right.Rows[3]);
-#else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
-        }
-    }
-#endif
 
     return (Result);
 }
+#else
+HEXTERN hmm_mat4 HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right);
+#endif
 
-HINLINE hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
-{
-    hmm_mat4 Result;
+HEXTERN hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right);
 
 #ifdef HANDMADE_MATH__USE_SSE
-    hmm_mat4 TransposedLeft = HMM_Transpose(Left);
-    hmm_mat4 TransposedRight = HMM_Transpose(Right);
-
-    Result.Rows[0] = HMM_LinearCombineSSE(TransposedLeft.Rows[0], TransposedRight);
-    Result.Rows[1] = HMM_LinearCombineSSE(TransposedLeft.Rows[1], TransposedRight);
-    Result.Rows[2] = HMM_LinearCombineSSE(TransposedLeft.Rows[2], TransposedRight);
-    Result.Rows[3] = HMM_LinearCombineSSE(TransposedLeft.Rows[3], TransposedRight);       
-    
-    Result = HMM_Transpose(Result);
-#else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            float Sum = 0;
-            int CurrentMatrice;
-            for(CurrentMatrice = 0; CurrentMatrice < 4; ++CurrentMatrice)
-            {
-                Sum += Left.Elements[CurrentMatrice][Rows] * Right.Elements[Columns][CurrentMatrice];
-            }
-
-            Result.Elements[Columns][Rows] = Sum;
-        }
-    }
-#endif
-
-    return (Result);
-}
-
 HINLINE hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
 {
     hmm_mat4 Result;
-    
-#ifdef HANDMADE_MATH__USE_SSE
+
     __m128 SSEScalar = _mm_set1_ps(Scalar);
     Result.Rows[0] = _mm_mul_ps(Matrix.Rows[0], SSEScalar);
     Result.Rows[1] = _mm_mul_ps(Matrix.Rows[1], SSEScalar);
     Result.Rows[2] = _mm_mul_ps(Matrix.Rows[2], SSEScalar);
     Result.Rows[3] = _mm_mul_ps(Matrix.Rows[3], SSEScalar);
+
+    return (Result);
+}
 #else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
-        }
-    }
+HEXTERN hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar);
 #endif
 
-    return (Result);
-}
+HEXTERN hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector);
 
-HINLINE hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
-{
-    hmm_vec4 Result;
-    
-    int Columns, Rows;
-    for(Rows = 0; Rows < 4; ++Rows)
-    {
-        float Sum = 0;
-        for(Columns = 0; Columns < 4; ++Columns)
-        {
-            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
-        }
-        
-        Result.Elements[Rows] = Sum;
-    }
-    
-    return (Result);
-}
-
+#ifdef HANDMADE_MATH__USE_SSE
 HINLINE hmm_mat4 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
 {
     hmm_mat4 Result;
     
-#ifdef HANDMADE_MATH__USE_SSE
     __m128 SSEScalar = _mm_set1_ps(Scalar);
     Result.Rows[0] = _mm_div_ps(Matrix.Rows[0], SSEScalar);
     Result.Rows[1] = _mm_div_ps(Matrix.Rows[1], SSEScalar);
     Result.Rows[2] = _mm_div_ps(Matrix.Rows[2], SSEScalar);
     Result.Rows[3] = _mm_div_ps(Matrix.Rows[3], SSEScalar);    
-#else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
-        }
-    }
-#endif
 
     return (Result);
 }
+#else
+HEXTERN hmm_mat4 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar);
+#endif
 
 
 /*
@@ -2254,6 +2127,175 @@ HINLINE hmm_bool operator!=(hmm_vec4 Left, hmm_vec4 Right)
 #endif /* HANDMADE_MATH_H */
 
 #ifdef HANDMADE_MATH_IMPLEMENTATION
+
+float HMM_Power(float Base, int Exponent)
+{
+    float Result = 1.0f;
+    float Mul = Exponent < 0 ? 1.f / Base : Base;
+    unsigned int X = Exponent < 0 ? -Exponent : Exponent;
+    while (X)
+    {
+        if (X & 1)
+        {
+            Result *= Mul;
+        }
+        
+        Mul *= Mul;
+        X >>= 1;
+    }
+    
+    return (Result);
+}
+
+#ifndef HANDMADE_MATH__USE_SSE
+hmm_mat4 HMM_Transpose(hmm_mat4 Matrix)
+{
+    hmm_mat4 Result;
+
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
+        {
+            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
+        }
+    }
+
+    return (Result);
+}
+#endif
+
+#ifndef HANDMADE_MATH__USE_SSE
+hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
+{
+    hmm_mat4 Result;
+
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
+        }
+    }
+
+    return (Result);
+}
+#endif
+
+#ifndef HANDMADE_MATH__USE_SSE
+hmm_mat4 HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
+{
+    hmm_mat4 Result;
+
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
+        }
+    }
+
+    return (Result);
+}
+#endif
+
+hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
+{
+    hmm_mat4 Result;
+
+#ifdef HANDMADE_MATH__USE_SSE
+    hmm_mat4 TransposedLeft = HMM_Transpose(Left);
+    hmm_mat4 TransposedRight = HMM_Transpose(Right);
+
+    Result.Rows[0] = HMM_LinearCombineSSE(TransposedLeft.Rows[0], TransposedRight);
+    Result.Rows[1] = HMM_LinearCombineSSE(TransposedLeft.Rows[1], TransposedRight);
+    Result.Rows[2] = HMM_LinearCombineSSE(TransposedLeft.Rows[2], TransposedRight);
+    Result.Rows[3] = HMM_LinearCombineSSE(TransposedLeft.Rows[3], TransposedRight);       
+    
+    Result = HMM_Transpose(Result);
+#else
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
+        {
+            float Sum = 0;
+            int CurrentMatrice;
+            for(CurrentMatrice = 0; CurrentMatrice < 4; ++CurrentMatrice)
+            {
+                Sum += Left.Elements[CurrentMatrice][Rows] * Right.Elements[Columns][CurrentMatrice];
+            }
+
+            Result.Elements[Columns][Rows] = Sum;
+        }
+    }
+#endif
+
+    return (Result);
+}
+
+#ifndef HANDMADE_MATH__USE_SSE
+hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
+{
+    hmm_mat4 Result;
+
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
+        }
+    }
+
+    return (Result);
+}
+#endif
+
+hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
+{
+    hmm_vec4 Result;
+    
+    int Columns, Rows;
+    for(Rows = 0; Rows < 4; ++Rows)
+    {
+        float Sum = 0;
+        for(Columns = 0; Columns < 4; ++Columns)
+        {
+            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
+        }
+        
+        Result.Elements[Rows] = Sum;
+    }
+    
+    return (Result);
+}
+
+#ifndef HANDMADE_MATH__USE_SSE
+hmm_mat4 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
+{
+    hmm_mat4 Result;
+    
+    int Columns;
+    for(Columns = 0; Columns < 4; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 4; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
+        }
+    }
+
+    return (Result);
+}
+#endif
 
 hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis)
 {
