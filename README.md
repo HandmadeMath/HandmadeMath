@@ -3,7 +3,9 @@
 
 [![Build Status](https://travis-ci.org/StrangeZak/Handmade-Math.svg?branch=master)](https://travis-ci.org/StrangeZak/Handmade-Math)
 
-Single-file cross-platform public domain game math library for C/C++
+A single-file, cross-platform, public domain game math library for C/C++.
+
+To get started, go download [the latest release](https://github.com/HandmadeMath/Handmade-Math/releases).
 
 _This library is free and will stay free, but if you would like to support development, or you are a company using HandmadeMath, please consider financial support._
 
@@ -45,4 +47,4 @@ This library is in the public domain. You can do whatever you want with it.
 
 **Where can I contact you to ask questions?**
 
-You can email me at: Zak@StrangeDev.net
+Feel free to make Github issues for any questions, concerns, or problems you encounter.
