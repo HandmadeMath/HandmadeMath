@@ -7,10 +7,6 @@ A single-file, cross-platform, public domain game math library for C/C++.
 
 To get started, go download [the latest release](https://github.com/HandmadeMath/Handmade-Math/releases).
 
-_This library is free and will stay free, but if you would like to support development, or you are a company using HandmadeMath, please consider financial support._
-
-[![Patreon](https://cloud.githubusercontent.com/assets/8225057/5990484/70413560-a9ab-11e4-8942-1a63607c0b00.png)](http://www.patreon.com/strangezak) [![PayPal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif)](https://www.paypal.me/zakarystrange)
-
 
 Version         | Changes        | 
 ----------------|----------------|
@@ -38,7 +34,6 @@ Version         | Changes        |
 **0.1**     | Initial Version | 
 
 -----
-_This library is free and will stay free, but if you would like to support development, or you are a company using HandmadeMath, please consider financial support._
 
 ## FAQ
 
