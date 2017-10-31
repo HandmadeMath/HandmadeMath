@@ -40,7 +40,7 @@
   ```
 
 
-# Other notes
+## Other style notes
 
 * If a new function is defined with different names for different datatypes, also add C++ overloaded versions of the functions. For example, if you have `HMM_LengthVec2(hmm_vec2)` and `HMM_LengthVec3(hmm_vec3)`, also provide `HMM_Length(hmm_vec2)` and `HMM_Length(hmm_vec3)`.
 
@@ -49,3 +49,6 @@
 * Try to define functions in the same order as the prototypes.
 * Don't forget that Handmade Math uses column-major order for matrices!
 
+# Versioning
+
+We use [semantic versioning](http://semver.org/) because it's reasonable.
