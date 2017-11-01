@@ -1,6 +1,6 @@
 # Handmade Math
 
-[![Build Status](https://travis-ci.org/StrangeZak/Handmade-Math.svg?branch=master)](https://travis-ci.org/StrangeZak/Handmade-Math)
+[![Build Status](https://travis-ci.org/HandmadeMath/Handmade-Math.svg?branch=master)](https://travis-ci.org/StrangeZak/Handmade-Math)
 
 A single-file, cross-platform, public domain game math library for C/C++.
 
