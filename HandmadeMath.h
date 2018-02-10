@@ -2209,15 +2209,12 @@ hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
     hmm_mat4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    hmm_mat4 TransposedLeft = HMM_Transpose(Left);
-    hmm_mat4 TransposedRight = HMM_Transpose(Right);
 
-    Result.Rows[0] = HMM_LinearCombineSSE(TransposedLeft.Rows[0], TransposedRight);
-    Result.Rows[1] = HMM_LinearCombineSSE(TransposedLeft.Rows[1], TransposedRight);
-    Result.Rows[2] = HMM_LinearCombineSSE(TransposedLeft.Rows[2], TransposedRight);
-    Result.Rows[3] = HMM_LinearCombineSSE(TransposedLeft.Rows[3], TransposedRight);       
+    Result.Rows[0] = HMM_LinearCombineSSE(Right.Rows[0], Left);
+    Result.Rows[1] = HMM_LinearCombineSSE(Right.Rows[1], Left);
+    Result.Rows[2] = HMM_LinearCombineSSE(Right.Rows[2], Left);
+    Result.Rows[3] = HMM_LinearCombineSSE(Right.Rows[3], Left);     
     
-    Result = HMM_Transpose(Result);
 #else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
