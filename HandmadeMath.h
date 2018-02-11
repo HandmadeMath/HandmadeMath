@@ -2259,7 +2259,10 @@ hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
 hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
 {
     hmm_vec4 Result;
-    
+   
+#ifdef HANDMADE_MATH__USE_SSE
+	Result.InternalElementsSSE = HMM_LinearCombineSSE(Vector.InternalElementsSSE, Matrix);
+#else
     int Columns, Rows;
     for(Rows = 0; Rows < 4; ++Rows)
     {
@@ -2271,7 +2274,8 @@ hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
         
         Result.Elements[Rows] = Sum;
     }
-    
+#endif
+
     return (Result);
 }
 
