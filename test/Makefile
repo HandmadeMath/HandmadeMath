@@ -35,3 +35,14 @@ cpp_no_sse: $(ROOT_DIR)/test/HandmadeMath.cpp test_impl
 		$(ROOT_DIR)/test/HandmadeMath.cpp $(ROOT_DIR)/test/hmm_test.cpp
 
 test_impl: $(ROOT_DIR)/test/hmm_test.cpp $(ROOT_DIR)/test/hmm_test.c
+
+benchmark_c: $(ROOT_DIR)/test/benchmark.c
+	$(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 -D_POSIX_C_SOURCE=199309L \
+		-c $(ROOT_DIR)/test/benchmark.c \
+		-lm
+	$(CC) -obenchmark_c benchmark.o -lm
+
+benchmark_cpp: $(ROOT_DIR)/test/benchmark.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -obenchmark_cpp -O3 \
+		-DHANDMADE_MATH_CPP_MODE \
+		$(ROOT_DIR)/test/benchmark.cpp

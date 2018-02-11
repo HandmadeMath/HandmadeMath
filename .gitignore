@@ -33,3 +33,6 @@
 *.app
 hmm_test
 hmm_test*
+benchmark_c
+benchmark_cpp
+test/glm
