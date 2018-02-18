@@ -84,7 +84,8 @@ int hmt_register_test(const char* category, const char* name, hmt_test_func func
 
     // Expand the array of categories if necessary
     if (cat_index >= category_capacity) {
-        // reallocate the category array
+        // TODO: If/when we ever split HandmadeTest off into its own package,
+        // we should start with a smaller initial capacity and dynamically expand.
     }
 
     // Add a new category if necessary
@@ -97,7 +98,8 @@ int hmt_register_test(const char* category, const char* name, hmt_test_func func
 
     // Add the test to the category
     if (cat->num_tests >= cat->tests_capacity) {
-        // expand the category tests array if necessary
+        // TODO: If/when we ever split HandmadeTest off into its own package,
+        // we should start with a smaller initial capacity and dynamically expand.
     }
     cat->tests[cat->num_tests] = new_test(name, func);
     cat->num_tests++;
