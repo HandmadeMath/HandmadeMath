@@ -1,37 +1,45 @@
-ROOT_DIR=..
+BUILD_DIR=build
 
 CXXFLAGS+=-g -Wall -Wextra -pthread -Wno-missing-braces -Wno-missing-field-initializers
 
 all: c c_no_sse cpp cpp_no_sse
 
 clean:
-	rm -f hmm_test_c hmm_test_cpp hmm_test_c_no_sse hmm_test_cpp_no_sse *.o
+	rm -rf $(BUILD_DIR)
 
-c: $(ROOT_DIR)/test/HandmadeMath.c test_impl
+c: HandmadeMath.c test_impl
 	@echo "\nCompiling in C mode"
-	$(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 \
-		-c $(ROOT_DIR)/test/HandmadeMath.c $(ROOT_DIR)/test/hmm_test.c \
-		-lm
-	$(CC) -ohmm_test_c HandmadeMath.o hmm_test.o -lm
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR)\
+		&& $(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 \
+			-c ../HandmadeMath.c ../hmm_test.c \
+			-lm \
+		&& $(CC) -ohmm_test_c HandmadeMath.o hmm_test.o -lm
 
-c_no_sse: $(ROOT_DIR)/test/HandmadeMath.c test_impl
+c_no_sse: HandmadeMath.c test_impl
 	@echo "\nCompiling in C mode (no SSE)"
-	$(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 \
-	    -DHANDMADE_MATH_NO_SSE \
-	    -c $(ROOT_DIR)/test/HandmadeMath.c $(ROOT_DIR)/test/hmm_test.c \
-	    -lm
-	$(CC) -ohmm_test_c_no_sse HandmadeMath.o hmm_test.o -lm
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 \
+			-DHANDMADE_MATH_NO_SSE \
+			-c ../HandmadeMath.c ../hmm_test.c \
+			-lm \
+		&& $(CC) -ohmm_test_c_no_sse HandmadeMath.o hmm_test.o -lm
 
-cpp: $(ROOT_DIR)/test/HandmadeMath.cpp test_impl
+cpp: HandmadeMath.cpp test_impl
 	@echo "\nCompiling in C++ mode"
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp \
-		-DHANDMADE_MATH_CPP_MODE \
-		$(ROOT_DIR)/test/HandmadeMath.cpp $(ROOT_DIR)/test/hmm_test.cpp
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp \
+			-DHANDMADE_MATH_CPP_MODE \
+			../HandmadeMath.cpp ../hmm_test.cpp
 
-cpp_no_sse: $(ROOT_DIR)/test/HandmadeMath.cpp test_impl
+cpp_no_sse: HandmadeMath.cpp test_impl
 	@echo "\nCompiling in C++ mode (no SSE)"
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp_no_sse \
-		-DHANDMADE_MATH_CPP_MODE -DHANDMADE_MATH_NO_SSE \
-		$(ROOT_DIR)/test/HandmadeMath.cpp $(ROOT_DIR)/test/hmm_test.cpp
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp_no_sse \
+			-DHANDMADE_MATH_CPP_MODE -DHANDMADE_MATH_NO_SSE \
+			../HandmadeMath.cpp ../hmm_test.cpp
 
-test_impl: $(ROOT_DIR)/test/hmm_test.cpp $(ROOT_DIR)/test/hmm_test.c
+test_impl: hmm_test.cpp hmm_test.c
