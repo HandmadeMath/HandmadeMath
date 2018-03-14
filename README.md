@@ -10,6 +10,7 @@ To get started, go download [the latest release](https://github.com/HandmadeMath
 
 Version         | Changes        | 
 ----------------|----------------|
+**1.5.1** | Fixed a bug with uninitialized elements in HMM_LookAt.
 **1.5.0** | Changed internal structure for better performance and inlining. As a result, `HANDMADE_MATH_NO_INLINE` has been removed and no longer has any effect.
 **1.4.0** | Fixed bug when using C mode. SSE'd all vec4 operations. Removed zeroing for better performance.
 **1.3.0** | Removed need to `#define HANDMADE_MATH_CPP_MODE`. C++ definitions are now included automatically in C++ environments.

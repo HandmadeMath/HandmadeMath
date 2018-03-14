@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.5.0
+  HandmadeMath.h v1.5.1
   
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
@@ -166,6 +166,8 @@
           (*) Changed internal structure for better performance and inlining.
           (*) As a result, HANDMADE_MATH_NO_INLINE has been removed and no
               longer has any effect.
+     1.5.1
+          (*) Fixed a bug with uninitialized elements in HMM_LookAt.
           
           
   LICENSE
