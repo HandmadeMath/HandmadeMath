@@ -17,4 +17,4 @@ example:
 			-L../glfw/src \
 			-lglew -lglfw3 \
 			-framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo \
-			../../main.cpp
+			../../src/main.cpp
