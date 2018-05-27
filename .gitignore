@@ -31,4 +31,6 @@
 *.exe
 *.out
 *.app
+
 test/build
+example/build
