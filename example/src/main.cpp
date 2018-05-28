@@ -85,6 +85,7 @@ int main()
         hmm_mat4 view = HMM_LookAt(HMM_Vec3(3.0f, 3.0f, 4.0f), HMM_Vec3(0.0f, 0.0f, 0.0f), HMM_Vec3(0.0f, 1.0f, 0.0f));
         hmm_mat4 vp = projection * view;
 
+        // Tick
         auto now = high_resolution_clock::now();
         if (hasTicked) {
             auto elapsedNanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastTickTime).count();
@@ -94,58 +95,23 @@ int main()
         lastTickTime = now;
         hasTicked = true;
 
+        // Compute model positions for rendering
         ComputeModelMatrices(&root, HMM_Mat4d(1.0f));
 
+        // Render!
         auto it = EntityIterator(&root);
-
         while (it.HasNext()) {
             Entity *e = it.Next();
 
-            if (!e->renderComponent.vaoID) {
-                continue;
+            if (e->renderComponent) {
+                // Use our shader
+                glUseProgram(programID);
+
+                hmm_mat4 mvp = vp * e->modelMatrix;
+                glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp.Elements[0][0]);
+
+                e->renderComponent->Draw();
             }
-
-            Entity::RenderComponent rc = e->renderComponent;
-
-            glBindVertexArray(rc.vaoID);
-
-            // 1st attribute buffer : vertices
-            glEnableVertexAttribArray(0);
-            glBindBuffer(GL_ARRAY_BUFFER, rc.vertexBufferID);
-            glVertexAttribPointer(
-               0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-               3,                  // size
-               GL_FLOAT,           // type
-               GL_FALSE,           // normalized?
-               0,                  // stride
-               (void*)0            // array buffer offset
-            );
-
-            // 2nd attribute buffer : colors
-            glEnableVertexAttribArray(1);
-            glBindBuffer(GL_ARRAY_BUFFER, rc.colorBufferID);
-            glVertexAttribPointer(
-                1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-                3,                                // size
-                GL_FLOAT,                         // type
-                GL_FALSE,                         // normalized?
-                0,                                // stride
-                (void*)0                          // array buffer offset
-            );
-            
-            // Use our shader
-            glUseProgram(programID);
-
-            hmm_mat4 mvp = vp * e->modelMatrix;
-
-            // Send our transformation to the currently bound shader, in the "MVP" uniform
-            // This is done in the main loop since each model will have a different MVP matrix (At least for the M part)
-            glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp.Elements[0][0]);
-
-            // Draw the triangle!
-            glDrawArrays(GL_TRIANGLES, 0, 36); // Starting from vertex 0; 3 vertices total -> 1 triangle
-            glDisableVertexAttribArray(0);
-            glDisableVertexAttribArray(1);
         }
 
         // Swap buffers

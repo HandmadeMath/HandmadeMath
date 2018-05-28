@@ -5,6 +5,8 @@
 #ifndef HMME_ENTITY_H
 #define HMME_ENTITY_H
 
+#include "RenderComponent.h"
+
 class Entity {
 public:
     hmm_vec3 position = HMM_Vec3(0.0f, 0.0f, 0.0f);
@@ -19,12 +21,7 @@ public:
 
     virtual void Tick(float deltaSeconds) {}
 
-    struct RenderComponent {
-        GLuint vaoID;
-        GLuint vertexBufferID;
-        GLuint colorBufferID;
-    };
-    RenderComponent renderComponent;
+    RenderComponent *renderComponent = NULL;
 
     // Context for rendering and stuff
     hmm_mat4 modelMatrix;
