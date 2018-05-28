@@ -10,6 +10,7 @@
 
 #include "Entity.h"
 #include "Cube.h"
+#include "MeshRenderComponent.h"
 
 void TickTree(Entity *e, float deltaSeconds);
 void ComputeModelMatrices(Entity *ep, hmm_mat4 parentModelMatrix);
@@ -57,7 +58,9 @@ int main()
 
     // Get a handle for our "MVP" uniform
     // Only during the initialisation
-    GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+    GLuint uniformID_M = glGetUniformLocation(programID, "M");
+    GLuint uniformID_V = glGetUniformLocation(programID, "V");
+    GLuint uniformID_MVP = glGetUniformLocation(programID, "MVP");
 
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
@@ -66,13 +69,14 @@ int main()
 
     Cube root = Cube();
 
-    Cube child = Cube();
+    Entity child = Entity();
     child.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
+    child.renderComponent = new MeshRenderComponent("MonkeySmooth.obj");
 
-    Cube c = Cube();
-    child.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
+    // Cube c = Cube();
+    // child.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
 
-    child.AddChild(&c);
+    // child.AddChild(&c);
     root.AddChild(&child);
 
     bool hasTicked = false;
@@ -107,8 +111,13 @@ int main()
                 // Use our shader
                 glUseProgram(programID);
 
+                // Send uniforms
+                glUniformMatrix4fv(uniformID_M, 1, GL_FALSE, &e->modelMatrix.Elements[0][0]);
+
+                glUniformMatrix4fv(uniformID_V, 1, GL_FALSE, &view.Elements[0][0]);
+
                 hmm_mat4 mvp = vp * e->modelMatrix;
-                glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &mvp.Elements[0][0]);
+                glUniformMatrix4fv(uniformID_MVP, 1, GL_FALSE, &mvp.Elements[0][0]);
 
                 e->renderComponent->Draw();
             }
