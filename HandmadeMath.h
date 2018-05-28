@@ -2043,6 +2043,11 @@ HMM_INLINE hmm_mat4 &operator*=(hmm_mat4 &Left, float Right)
     return (Left = Left * Right);
 }
 
+HMM_INLINE hmm_quaternion &operator*=(hmm_quaternion &Left, hmm_quaternion Right)
+{
+    return (Left = Left * Right);
+}
+
 HMM_INLINE hmm_quaternion &operator*=(hmm_quaternion &Left, float Right)
 {
     return (Left = Left * Right);

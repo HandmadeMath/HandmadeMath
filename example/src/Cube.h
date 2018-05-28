@@ -106,9 +106,11 @@ public:
         renderComponent = c;
     }
 
-    void Tick(float deltaTime) override {
-        x += 0.1f;
-        position.X = HMM_SINF(x);
+    void Tick(float deltaSeconds) override {
+        x += deltaSeconds;
+        position.X = 2.0f * HMM_SINF(x);
+
+        rotation *= HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), deltaSeconds * HMM_ToRadians(45.0f));
     }
 };
 

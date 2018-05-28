@@ -17,7 +17,7 @@ public:
         children.push_back(e);
     }
 
-    virtual void Tick(float deltaTime) {}
+    virtual void Tick(float deltaSeconds) {}
 
     struct RenderComponent {
         GLuint vaoID;

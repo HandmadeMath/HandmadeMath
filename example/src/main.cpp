@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <chrono>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -10,8 +11,10 @@
 #include "Entity.h"
 #include "Cube.h"
 
-void TickTree(Entity *e);
+void TickTree(Entity *e, float deltaSeconds);
 void ComputeModelMatrices(Entity *ep, hmm_mat4 parentModelMatrix);
+
+using std::chrono::high_resolution_clock;
 
 int main()
 {
@@ -66,7 +69,14 @@ int main()
     Cube child = Cube();
     child.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
 
+    Cube c = Cube();
+    child.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
+
+    child.AddChild(&c);
     root.AddChild(&child);
+
+    bool hasTicked = false;
+    high_resolution_clock::time_point lastTickTime;
 
     do {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -75,7 +85,15 @@ int main()
         hmm_mat4 view = HMM_LookAt(HMM_Vec3(3.0f, 3.0f, 4.0f), HMM_Vec3(0.0f, 0.0f, 0.0f), HMM_Vec3(0.0f, 1.0f, 0.0f));
         hmm_mat4 vp = projection * view;
 
-        TickTree(&root);
+        auto now = high_resolution_clock::now();
+        if (hasTicked) {
+            auto elapsedNanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastTickTime).count();
+            float elapsedSeconds = elapsedNanoseconds / 1000000000.0f;
+            TickTree(&root, elapsedSeconds);
+        }
+        lastTickTime = now;
+        hasTicked = true;
+
         ComputeModelMatrices(&root, HMM_Mat4d(1.0f));
 
         auto it = EntityIterator(&root);
@@ -140,11 +158,11 @@ int main()
     );
 }
 
-void TickTree(Entity *e) {
-    e->Tick(0);
+void TickTree(Entity *e, float deltaSeconds) {
+    e->Tick(deltaSeconds);
 
     for (auto child : e->children) {
-        TickTree(child);
+        TickTree(child, deltaSeconds);
     }
 }
 
