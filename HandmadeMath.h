@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.5.0
+  HandmadeMath.h v1.5.1
   
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
@@ -166,6 +166,8 @@
           (*) Changed internal structure for better performance and inlining.
           (*) As a result, HANDMADE_MATH_NO_INLINE has been removed and no
               longer has any effect.
+     1.5.1
+          (*) Fixed a bug with uninitialized elements in HMM_LookAt.
           
           
   LICENSE
@@ -2339,14 +2341,17 @@ hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
     Result.Elements[0][0] = S.X;
     Result.Elements[0][1] = U.X;
     Result.Elements[0][2] = -F.X;
+    Result.Elements[0][3] = 0.0f;
 
     Result.Elements[1][0] = S.Y;
     Result.Elements[1][1] = U.Y;
     Result.Elements[1][2] = -F.Y;
+    Result.Elements[1][3] = 0.0f;
 
     Result.Elements[2][0] = S.Z;
     Result.Elements[2][1] = U.Z;
     Result.Elements[2][2] = -F.Z;
+    Result.Elements[2][3] = 0.0f;
 
     Result.Elements[3][0] = -HMM_DotVec3(S, Eye);
     Result.Elements[3][1] = -HMM_DotVec3(U, Eye);
