@@ -51,3 +51,27 @@ TEST(Transformations, Scale)
     EXPECT_FLOAT_EQ(scaled.Z, 1.5f);
     EXPECT_FLOAT_EQ(scaled.W, 1.0f);
 }
+
+TEST(Transformations, LookAt)
+{
+    const float abs_error = 0.0001f;
+
+    hmm_mat4 result = HMM_LookAt(HMM_Vec3(1.0f, 0.0f, 0.0f), HMM_Vec3(0.0f, 2.0f, 1.0f), HMM_Vec3(2.0f, 1.0f, 1.0f));
+
+    EXPECT_NEAR(result.Elements[0][0], 0.169031f, abs_error);
+    EXPECT_NEAR(result.Elements[0][1], 0.897085f, abs_error);
+    EXPECT_NEAR(result.Elements[0][2], 0.408248f, abs_error);
+    EXPECT_FLOAT_EQ(result.Elements[0][3], 0.0f);
+    EXPECT_NEAR(result.Elements[1][0], 0.507093f, abs_error);
+    EXPECT_NEAR(result.Elements[1][1], 0.276026f, abs_error);
+    EXPECT_NEAR(result.Elements[1][2], -0.816497f, abs_error);
+    EXPECT_FLOAT_EQ(result.Elements[1][3], 0.0f);
+    EXPECT_NEAR(result.Elements[2][0], -0.845154f, abs_error);
+    EXPECT_NEAR(result.Elements[2][1], 0.345033f, abs_error);
+    EXPECT_NEAR(result.Elements[2][2], -0.408248f, abs_error);
+    EXPECT_FLOAT_EQ(result.Elements[2][3], 0.0f);
+    EXPECT_NEAR(result.Elements[3][0], -0.169031f, abs_error);
+    EXPECT_NEAR(result.Elements[3][1], -0.897085f, abs_error);
+    EXPECT_NEAR(result.Elements[3][2], -0.408248f, abs_error);
+    EXPECT_FLOAT_EQ(result.Elements[3][3], 1.0f);
+}
