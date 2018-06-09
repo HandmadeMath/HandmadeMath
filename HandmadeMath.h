@@ -314,6 +314,13 @@ typedef union hmm_vec2
     };
 
     float Elements[2];
+
+#ifdef __cplusplus
+    inline float &operator[](int i)
+    {
+        return Elements[i];
+    }
+#endif
 } hmm_vec2;
 
 typedef union hmm_vec3
@@ -358,6 +365,13 @@ typedef union hmm_vec3
     };
 
     float Elements[3];
+
+#ifdef __cplusplus
+    inline float &operator[](int i)
+    {
+        return Elements[i];
+    }
+#endif
 } hmm_vec3;
 
 typedef union hmm_vec4
@@ -415,6 +429,13 @@ typedef union hmm_vec4
 #ifdef HANDMADE_MATH__USE_SSE    
     __m128 InternalElementsSSE;
 #endif
+
+#ifdef __cplusplus
+    inline float &operator[](int i)
+    {
+        return Elements[i];
+    }
+#endif
 } hmm_vec4;
 
 typedef union hmm_mat4
@@ -423,6 +444,21 @@ typedef union hmm_mat4
         
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Rows[4];
+#endif
+
+#ifdef __cplusplus
+    inline hmm_vec4 operator[](int i)
+    {
+        float* col = Elements[i];
+
+        hmm_vec4 result;
+        result.Elements[0] = col[0];
+        result.Elements[1] = col[1];
+        result.Elements[2] = col[2];
+        result.Elements[3] = col[3];
+
+        return result;
+    }
 #endif
 } hmm_mat4;
 
