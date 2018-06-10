@@ -18,6 +18,10 @@ TEST(Initialization, Vectors)
     EXPECT_FLOAT_EQ(v2.Height, 2.0f);
     EXPECT_FLOAT_EQ(v2.Elements[0], 1.0f);
     EXPECT_FLOAT_EQ(v2.Elements[1], 2.0f);
+#ifdef __cplusplus
+    EXPECT_FLOAT_EQ(v2[0], 1.0f);
+    EXPECT_FLOAT_EQ(v2[1], 2.0f);
+#endif
 
     EXPECT_FLOAT_EQ(v2i.X, 1.0f);
     EXPECT_FLOAT_EQ(v2i.Y, 2.0f);
@@ -29,6 +33,10 @@ TEST(Initialization, Vectors)
     EXPECT_FLOAT_EQ(v2i.Height, 2.0f);
     EXPECT_FLOAT_EQ(v2i.Elements[0], 1.0f);
     EXPECT_FLOAT_EQ(v2i.Elements[1], 2.0f);
+#ifdef __cplusplus
+    EXPECT_FLOAT_EQ(v2i[0], 1.0f);
+    EXPECT_FLOAT_EQ(v2i[1], 2.0f);
+#endif
 
     //
     // Test vec3
@@ -56,6 +64,11 @@ TEST(Initialization, Vectors)
     EXPECT_FLOAT_EQ(v3.UV.Elements[1], 2.0f);
     EXPECT_FLOAT_EQ(v3.VW.Elements[0], 2.0f);
     EXPECT_FLOAT_EQ(v3.VW.Elements[1], 3.0f);
+#ifdef __cplusplus
+    EXPECT_FLOAT_EQ(v3[0], 1.0f);
+    EXPECT_FLOAT_EQ(v3[1], 2.0f);
+    EXPECT_FLOAT_EQ(v3[2], 3.0f);
+#endif
 
     EXPECT_FLOAT_EQ(v3i.X, 1.0f);
     EXPECT_FLOAT_EQ(v3i.Y, 2.0f);
@@ -77,6 +90,11 @@ TEST(Initialization, Vectors)
     EXPECT_FLOAT_EQ(v3i.UV.Elements[1], 2.0f);
     EXPECT_FLOAT_EQ(v3i.VW.Elements[0], 2.0f);
     EXPECT_FLOAT_EQ(v3i.VW.Elements[1], 3.0f);
+#ifdef __cplusplus
+    EXPECT_FLOAT_EQ(v3i[0], 1.0f);
+    EXPECT_FLOAT_EQ(v3i[1], 2.0f);
+    EXPECT_FLOAT_EQ(v3i[2], 3.0f);
+#endif
 
     //
     // Test vec4
@@ -107,6 +125,12 @@ TEST(Initialization, Vectors)
     EXPECT_FLOAT_EQ(v4.RGB.Elements[0], 1.0f);
     EXPECT_FLOAT_EQ(v4.RGB.Elements[1], 2.0f);
     EXPECT_FLOAT_EQ(v4.RGB.Elements[2], 3.0f);
+#ifdef __cplusplus
+    EXPECT_FLOAT_EQ(v4[0], 1.0f);
+    EXPECT_FLOAT_EQ(v4[1], 2.0f);
+    EXPECT_FLOAT_EQ(v4[2], 3.0f);
+    EXPECT_FLOAT_EQ(v4[3], 4.0f);
+#endif
 
     EXPECT_FLOAT_EQ(v4i.X, 1.0f);
     EXPECT_FLOAT_EQ(v4i.Y, 2.0f);
@@ -130,6 +154,12 @@ TEST(Initialization, Vectors)
     EXPECT_FLOAT_EQ(v4i.RGB.Elements[0], 1.0f);
     EXPECT_FLOAT_EQ(v4i.RGB.Elements[1], 2.0f);
     EXPECT_FLOAT_EQ(v4i.RGB.Elements[2], 3.0f);
+#ifdef __cplusplus
+    EXPECT_FLOAT_EQ(v4i[0], 1.0f);
+    EXPECT_FLOAT_EQ(v4i[1], 2.0f);
+    EXPECT_FLOAT_EQ(v4i[2], 3.0f);
+    EXPECT_FLOAT_EQ(v4i[3], 4.0f);
+#endif
 
     EXPECT_FLOAT_EQ(v4v.X, 1.0f);
     EXPECT_FLOAT_EQ(v4v.Y, 2.0f);
@@ -153,6 +183,12 @@ TEST(Initialization, Vectors)
     EXPECT_FLOAT_EQ(v4v.RGB.Elements[0], 1.0f);
     EXPECT_FLOAT_EQ(v4v.RGB.Elements[1], 2.0f);
     EXPECT_FLOAT_EQ(v4v.RGB.Elements[2], 3.0f);
+#ifdef __cplusplus
+    EXPECT_FLOAT_EQ(v4v[0], 1.0f);
+    EXPECT_FLOAT_EQ(v4v[1], 2.0f);
+    EXPECT_FLOAT_EQ(v4v[2], 3.0f);
+    EXPECT_FLOAT_EQ(v4v[3], 4.0f);
+#endif
 }
 
 TEST(Initialization, MatrixEmpty)
@@ -163,6 +199,9 @@ TEST(Initialization, MatrixEmpty)
         for (int Row = 0; Row < 4; ++Row)
         {
             EXPECT_FLOAT_EQ(m4.Elements[Column][Row], 0.0f);
+#ifdef __cplusplus
+            EXPECT_FLOAT_EQ(m4[Column][Row], 0.0f);
+#endif
         }
     }
 }

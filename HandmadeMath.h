@@ -168,8 +168,12 @@
               longer has any effect.
      1.5.1
           (*) Fixed a bug with uninitialized elements in HMM_LookAt.
-          
-          
+     1.6.0
+          (*) Added array subscript operators for vector and matrix types in
+              C++. This is provided as a convenience, but be aware that it may
+              incur an extra function call in unoptimized builds.
+
+
   LICENSE
   
   This software is in the public domain. Where that dedication is not
@@ -314,6 +318,13 @@ typedef union hmm_vec2
     };
 
     float Elements[2];
+
+#ifdef __cplusplus
+    inline float &operator[](int Index)
+    {
+        return Elements[Index];
+    }
+#endif
 } hmm_vec2;
 
 typedef union hmm_vec3
@@ -358,6 +369,13 @@ typedef union hmm_vec3
     };
 
     float Elements[3];
+
+#ifdef __cplusplus
+    inline float &operator[](int Index)
+    {
+        return Elements[Index];
+    }
+#endif
 } hmm_vec3;
 
 typedef union hmm_vec4
@@ -415,6 +433,13 @@ typedef union hmm_vec4
 #ifdef HANDMADE_MATH__USE_SSE    
     __m128 InternalElementsSSE;
 #endif
+
+#ifdef __cplusplus
+    inline float &operator[](int Index)
+    {
+        return Elements[Index];
+    }
+#endif
 } hmm_vec4;
 
 typedef union hmm_mat4
@@ -423,6 +448,21 @@ typedef union hmm_mat4
         
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Rows[4];
+#endif
+
+#ifdef __cplusplus
+    inline hmm_vec4 operator[](const int Index)
+    {
+        float* col = Elements[Index];
+
+        hmm_vec4 result;
+        result.Elements[0] = col[0];
+        result.Elements[1] = col[1];
+        result.Elements[2] = col[2];
+        result.Elements[3] = col[3];
+
+        return result;
+    }
 #endif
 } hmm_mat4;
 
