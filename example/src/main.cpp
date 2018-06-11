@@ -11,6 +11,7 @@
 #include "Entity.h"
 #include "Cube.h"
 #include "MeshRenderComponent.h"
+#include "FollowCam.h"
 
 void TickTree(Entity *e, float deltaSeconds);
 void ComputeModelMatrices(Entity *ep, hmm_mat4 parentModelMatrix);
@@ -67,27 +68,33 @@ int main()
     // Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
 
-    Cube root = Cube();
+    Cube c1 = Cube();
 
-    Entity child = Entity();
-    child.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
-    child.renderComponent = new MeshRenderComponent("MonkeySmooth.obj");
+    Entity monkey = Entity();
+    monkey.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
+    monkey.renderComponent = new MeshRenderComponent("MonkeySmooth.obj");
+
+    FollowCam cam = FollowCam(&monkey);
+    // cam.position = HMM_Vec3(3.0f, 3.0f, 4.0f);
+    cam.position = HMM_Vec3(3.0f, 3.0f, 5.0f);
+    // cam.rotation = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), HMM_ToRadians(90.0f));
 
     // Cube c = Cube();
-    // child.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
+    // monkey.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
 
-    // child.AddChild(&c);
-    root.AddChild(&child);
+    // monkey.AddChild(&c);
+    
+    c1.AddChild(&monkey);
+
+    Entity root = Entity();
+    root.AddChild(&c1);
+    root.AddChild(&cam);
 
     bool hasTicked = false;
     high_resolution_clock::time_point lastTickTime;
 
     do {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        hmm_mat4 projection = HMM_Perspective(90.0f, 1024.0f / 768.0f, 0.1f, 100.0f);
-        hmm_mat4 view = HMM_LookAt(HMM_Vec3(3.0f, 3.0f, 4.0f), HMM_Vec3(0.0f, 0.0f, 0.0f), HMM_Vec3(0.0f, 1.0f, 0.0f));
-        hmm_mat4 vp = projection * view;
 
         // Tick
         auto now = high_resolution_clock::now();
@@ -103,6 +110,10 @@ int main()
         ComputeModelMatrices(&root, HMM_Mat4d(1.0f));
 
         // Render!
+        hmm_mat4 projection = cam.projectionMatrix();
+        hmm_mat4 view = cam.viewMatrix();
+        hmm_mat4 vp = projection * view;
+
         auto it = EntityIterator(&root);
         while (it.HasNext()) {
             Entity *e = it.Next();
@@ -142,6 +153,7 @@ void TickTree(Entity *e, float deltaSeconds) {
 }
 
 void ComputeModelMatrices(Entity *e, hmm_mat4 parentModelMatrix) {
+    e->parentModelMatrix = parentModelMatrix;
     e->modelMatrix = parentModelMatrix * HMM_Translate(e->position) * HMM_QuaternionToMat4(e->rotation) * HMM_Scale(e->scale);
 
     for (int i = 0; i < e->children.size(); i++) {

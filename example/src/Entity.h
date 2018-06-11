@@ -23,7 +23,40 @@ public:
 
     RenderComponent *renderComponent = NULL;
 
+    struct CameraInfo {
+        float fov = 90.0f;
+        float aspect = 1024.0f / 768.0f;
+        float near = 0.1f;
+        float far = 100.0f;
+    };
+    CameraInfo camera;
+
+    hmm_mat4 projectionMatrix() {
+        return HMM_Perspective(camera.fov, camera.aspect, camera.near, camera.far);
+    }
+
+    hmm_mat4 viewMatrix() {
+        return HMM_LookAt(worldPosition(), worldPosition() + forward(), up());
+    }
+
+    hmm_vec3 worldPosition() {
+        return (modelMatrix * HMM_Vec4(0.0f, 0.0f, 0.0f, 1.0f)).XYZ;
+    }
+
+    hmm_vec3 up() {
+        return (modelMatrix * HMM_Vec4(0.0f, 1.0f, 0.0f, 1.0f)).XYZ - worldPosition();
+    }
+
+    hmm_vec3 forward() {
+        return (modelMatrix * HMM_Vec4(1.0f, 0.0f, 0.0f, 1.0f)).XYZ - worldPosition();
+    }
+
+    hmm_vec3 right() {
+        return (modelMatrix * HMM_Vec4(0.0f, 0.0f, 1.0f, 1.0f)).XYZ - worldPosition();
+    }
+
     // Context for rendering and stuff
+    hmm_mat4 parentModelMatrix;
     hmm_mat4 modelMatrix;
 };
 
