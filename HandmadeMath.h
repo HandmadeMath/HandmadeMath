@@ -1357,11 +1357,14 @@ HMM_INLINE hmm_quaternion HMM_AddQuaternion(hmm_quaternion Left, hmm_quaternion 
 {
     hmm_quaternion Result;
 
+#if HANDMADE_MATH__USE_SSE        
+    Result.InternalElementsSSE = _mm_add_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);        
+#else         
     Result.X = Left.X + Right.X;
     Result.Y = Left.Y + Right.Y;
     Result.Z = Left.Z + Right.Z;
     Result.W = Left.W + Right.W;
-
+#endif
     return (Result);
 }
 
@@ -1369,11 +1372,15 @@ HMM_INLINE hmm_quaternion HMM_SubtractQuaternion(hmm_quaternion Left, hmm_quater
 {
     hmm_quaternion Result;
 
+#if HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_sub_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+#else
     Result.X = Left.X - Right.X;
     Result.Y = Left.Y - Right.Y;
     Result.Z = Left.Z - Right.Z;
     Result.W = Left.W - Right.W;
-
+#endif
+        
     return (Result);
 }
 
