@@ -481,8 +481,17 @@ typedef union hmm_quaternion
         
         float W;
     };
+        
+    struct
+    {
+        hmm_vec4 XYZW;
+    };
     
     float Elements[4];
+        
+#if HANDMADE_MATH__USE_SSE
+    _m128 InternalElementsSSE;
+#endif        
 } hmm_quaternion;
 
 typedef int32_t hmm_bool;
@@ -1317,11 +1326,14 @@ HMM_INLINE hmm_quaternion HMM_Quaternion(float X, float Y, float Z, float W)
 {
     hmm_quaternion Result;
 
+#if HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_setr_ps(X, Y, Z, W);
+#else 
     Result.X = X;
     Result.Y = Y;
     Result.Z = Z;
     Result.W = W;
-
+#endif
     return (Result);
 }
 
@@ -1329,11 +1341,15 @@ HMM_INLINE hmm_quaternion HMM_QuaternionV4(hmm_vec4 Vector)
 {
     hmm_quaternion Result;
 
+#if HANDMADE_MATH__USE_SSE        
+    Result.InternalElementsSSE = _mm_setr_ps(Vector.X, Vector.Y, Vector.Z, Vector.W);    
+#else
     Result.X = Vector.X;
     Result.Y = Vector.Y;
     Result.Z = Vector.Z;
-    Result.W = Vector.W;
-
+    Result.W = Vector.W;    
+#endif        
+        
     return (Result);
 }
 
