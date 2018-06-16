@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.5.1
+  HandmadeMath.h v1.6.0
   
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
@@ -168,8 +168,12 @@
               longer has any effect.
      1.5.1
           (*) Fixed a bug with uninitialized elements in HMM_LookAt.
-          
-          
+     1.6.0
+          (*) Added array subscript operators for vector and matrix types in
+              C++. This is provided as a convenience, but be aware that it may
+              incur an extra function call in unoptimized builds.
+
+
   LICENSE
   
   This software is in the public domain. Where that dedication is not
