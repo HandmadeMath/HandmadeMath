@@ -48,7 +48,7 @@ TEST(MatrixOps, ToQuaternion)
             0.0f, -1.0f, 0.0f, 0.0f, // third column (Z)
             0.0f, 0.0f, 0.0f, 0.0f
         };
-        
+
         hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(1.0f, 0.0f, 0.0f), HMM_ToRadians(90.0f));
         hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
 
@@ -65,7 +65,7 @@ TEST(MatrixOps, ToQuaternion)
             1.0f, 0.0f, 0.0f, 0.0f, // third column (Z)
             0.0f, 0.0f, 0.0f, 0.0f
         };
-        
+
         hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), HMM_ToRadians(90.0f));
         hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
 
@@ -82,7 +82,7 @@ TEST(MatrixOps, ToQuaternion)
             0.0f, 0.0f, 1.0f, 0.0f, // third column (Z)
             0.0f, 0.0f, 0.0f, 0.0f
         };
-        
+
         hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 0.0f, 1.0f), HMM_ToRadians(90.0f));
         hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
 
@@ -91,7 +91,7 @@ TEST(MatrixOps, ToQuaternion)
         EXPECT_FLOAT_EQ(actualResult.Z, expected.Z);
         EXPECT_FLOAT_EQ(actualResult.W, expected.W);
     }
-    
+
     { // Test 180 degree rotation about X axis
         hmm_mat4 rot = {
             1.0f, 0.0f, 0.0f, 0.0f, // first column (X)
@@ -99,7 +99,7 @@ TEST(MatrixOps, ToQuaternion)
             0.0f, 0.0f, -1.0f, 0.0f, // third column (Z)
             0.0f, 0.0f, 0.0f, 0.0f
         };
-        
+
         hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(1.0f, 0.0f, 0.0f), HMM_ToRadians(180.0f));
         hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
 
@@ -119,7 +119,7 @@ TEST(MatrixOps, ToQuaternion)
             0.0f, 0.0f, -1.0f, 0.0f, // third column (Z)
             0.0f, 0.0f, 0.0f, 0.0f
         };
-        
+
         hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), HMM_ToRadians(180.0f));
         hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
 
@@ -139,7 +139,7 @@ TEST(MatrixOps, ToQuaternion)
             0.0f, 0.0f, 1.0f, 0.0f, // third column (Z)
             0.0f, 0.0f, 0.0f, 0.0f
         };
-        
+
         hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 0.0f, 1.0f), HMM_ToRadians(180.0f));
         hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
 
