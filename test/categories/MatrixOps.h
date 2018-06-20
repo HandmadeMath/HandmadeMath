@@ -1,5 +1,9 @@
 #include "../HandmadeTest.h"
 
+void printQuat(hmm_quaternion quat) {
+    printf("\n%f %f %f %f", quat.X, quat.Y, quat.Z, quat.W);
+}
+
 TEST(MatrixOps, Transpose)
 {
     hmm_mat4 m4 = HMM_Mat4(); // will have 1 - 16
@@ -37,20 +41,114 @@ TEST(MatrixOps, Transpose)
 
 TEST(MatrixOps, ToQuaternion)
 {
-    hmm_mat4 rotateY = {
-        0.0f, 0.0f, -1.0f, 0.0f, // first column (X)
-        0.0f, 1.0f, 0.0f, 0.0f, // second column (Y)
-        1.0f, 0.0f, 0.0f, 0.0f, // third column (Z)
-        0.0f, 0.0f, 0.0f, 1.0f
-    };
+    { // Test 90 degree rotation about X axis
+        hmm_mat4 rot = {
+            1.0f, 0.0f, 0.0f, 0.0f, // first column (X)
+            0.0f, 0.0f, 1.0f, 0.0f, // second column (Y)
+            0.0f, -1.0f, 0.0f, 0.0f, // third column (Z)
+            0.0f, 0.0f, 0.0f, 0.0f
+        };
+        
+        hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(1.0f, 0.0f, 0.0f), HMM_ToRadians(90.0f));
+        hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
+
+        EXPECT_FLOAT_EQ(actualResult.X, expected.X);
+        EXPECT_FLOAT_EQ(actualResult.Y, expected.Y);
+        EXPECT_FLOAT_EQ(actualResult.Z, expected.Z);
+        EXPECT_FLOAT_EQ(actualResult.W, expected.W);
+    }
+
+    { // Test 90 degree rotation about Y axis
+        hmm_mat4 rot = {
+            0.0f, 0.0f, -1.0f, 0.0f, // first column (X)
+            0.0f, 1.0f, 0.0f, 0.0f, // second column (Y)
+            1.0f, 0.0f, 0.0f, 0.0f, // third column (Z)
+            0.0f, 0.0f, 0.0f, 0.0f
+        };
+        
+        hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), HMM_ToRadians(90.0f));
+        hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
+
+        EXPECT_FLOAT_EQ(actualResult.X, expected.X);
+        EXPECT_FLOAT_EQ(actualResult.Y, expected.Y);
+        EXPECT_FLOAT_EQ(actualResult.Z, expected.Z);
+        EXPECT_FLOAT_EQ(actualResult.W, expected.W);
+    }
+
+    { // Test 90 degree rotation about Z axis
+        hmm_mat4 rot = {
+            0.0f, 1.0f, 0.0f, 0.0f, // first column (X)
+            -1.0f, 0.0f, 0.0f, 0.0f, // second column (Y)
+            0.0f, 0.0f, 1.0f, 0.0f, // third column (Z)
+            0.0f, 0.0f, 0.0f, 0.0f
+        };
+        
+        hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 0.0f, 1.0f), HMM_ToRadians(90.0f));
+        hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
+
+        EXPECT_FLOAT_EQ(actualResult.X, expected.X);
+        EXPECT_FLOAT_EQ(actualResult.Y, expected.Y);
+        EXPECT_FLOAT_EQ(actualResult.Z, expected.Z);
+        EXPECT_FLOAT_EQ(actualResult.W, expected.W);
+    }
     
-    hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), HMM_ToRadians(90.0f));
-    hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rotateY);
+    { // Test 180 degree rotation about X axis
+        hmm_mat4 rot = {
+            1.0f, 0.0f, 0.0f, 0.0f, // first column (X)
+            0.0f, -1.0f, 1.0f, 0.0f, // second column (Y)
+            0.0f, 0.0f, -1.0f, 0.0f, // third column (Z)
+            0.0f, 0.0f, 0.0f, 0.0f
+        };
+        
+        hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(1.0f, 0.0f, 0.0f), HMM_ToRadians(180.0f));
+        hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
 
-    printf("%f %f %f %f\n", expected.X, expected.Y, expected.Z, expected.W);
+        printQuat(expected);
+        printQuat(actualResult);
 
-    EXPECT_FLOAT_EQ(actualResult.X, expected.X);
-    EXPECT_FLOAT_EQ(actualResult.Y, expected.Y);
-    EXPECT_FLOAT_EQ(actualResult.Z, expected.Z);
-    EXPECT_FLOAT_EQ(actualResult.W, expected.W);
+        EXPECT_FLOAT_EQ(actualResult.X, expected.X);
+        EXPECT_FLOAT_EQ(actualResult.Y, expected.Y);
+        EXPECT_FLOAT_EQ(actualResult.Z, expected.Z);
+        EXPECT_FLOAT_EQ(actualResult.W, expected.W);
+    }
+
+    { // Test 180 degree rotation about Y axis
+        hmm_mat4 rot = {
+            -1.0f, 0.0f, 0.0f, 0.0f, // first column (X)
+            0.0f, 1.0f, 1.0f, 0.0f, // second column (Y)
+            0.0f, 0.0f, -1.0f, 0.0f, // third column (Z)
+            0.0f, 0.0f, 0.0f, 0.0f
+        };
+        
+        hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), HMM_ToRadians(180.0f));
+        hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
+
+        printQuat(expected);
+        printQuat(actualResult);
+
+        EXPECT_FLOAT_EQ(actualResult.X, expected.X);
+        EXPECT_FLOAT_EQ(actualResult.Y, expected.Y);
+        EXPECT_FLOAT_EQ(actualResult.Z, expected.Z);
+        EXPECT_FLOAT_EQ(actualResult.W, expected.W);
+    }
+
+    { // Test 180 degree rotation about Z axis
+        hmm_mat4 rot = {
+            -1.0f, 0.0f, 0.0f, 0.0f, // first column (X)
+            0.0f, -1.0f, 1.0f, 0.0f, // second column (Y)
+            0.0f, 0.0f, 1.0f, 0.0f, // third column (Z)
+            0.0f, 0.0f, 0.0f, 0.0f
+        };
+        
+        hmm_quaternion expected = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 0.0f, 1.0f), HMM_ToRadians(180.0f));
+        hmm_quaternion actualResult = HMM_Mat4ToQuaternion(rot);
+
+        printQuat(expected);
+        printQuat(actualResult);
+
+        EXPECT_FLOAT_EQ(actualResult.X, expected.X);
+        EXPECT_FLOAT_EQ(actualResult.Y, expected.Y);
+        EXPECT_FLOAT_EQ(actualResult.Z, expected.Z);
+        EXPECT_FLOAT_EQ(actualResult.W, expected.W);
+    }
 }

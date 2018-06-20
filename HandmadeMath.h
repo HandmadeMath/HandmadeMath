@@ -2354,29 +2354,29 @@ hmm_quaternion HMM_Mat4ToQuaternion(hmm_mat4 m)
     float trace = m.Elements[0][0] + m.Elements[1][1] + m.Elements[2][2];
     if (trace > 0) {
         float s = 0.5f / HMM_SquareRootF(trace + 1.0f);
-        q.X = (m.Elements[2][1] - m.Elements[1][2] ) * s;
-        q.Y = (m.Elements[0][2] - m.Elements[2][0] ) * s;
-        q.Z = (m.Elements[1][0] - m.Elements[0][1] ) * s;
+        q.X = (m.Elements[1][2] - m.Elements[2][1] ) * s;
+        q.Y = (m.Elements[2][0] - m.Elements[0][2] ) * s;
+        q.Z = (m.Elements[0][1] - m.Elements[1][0] ) * s;
         q.W = 0.25f / s;
     } else {
         if (m.Elements[0][0] > m.Elements[1][1] && m.Elements[0][0] > m.Elements[2][2]) {
             float s = 2.0f * HMM_SquareRootF(1.0f + m.Elements[0][0] - m.Elements[1][1] - m.Elements[2][2]);
             q.X = 0.25f * s;
-            q.Y = (m.Elements[0][1] + m.Elements[1][0] ) / s;
-            q.Z = (m.Elements[0][2] + m.Elements[2][0] ) / s;
-            q.W = (m.Elements[2][1] - m.Elements[1][2] ) / s;
+            q.Y = (m.Elements[1][0] + m.Elements[0][1]) / s;
+            q.Z = (m.Elements[2][0] + m.Elements[0][2]) / s;
+            q.W = (m.Elements[1][2] - m.Elements[2][1]) / s;
         } else if (m.Elements[1][1] > m.Elements[2][2]) {
-            float s = 2.0f * HMM_SquareRootF( 1.0f + m.Elements[1][1] - m.Elements[0][0] - m.Elements[2][2]);
-            q.X = (m.Elements[0][1] + m.Elements[1][0] ) / s;
+            float s = 2.0f * HMM_SquareRootF(1.0f + m.Elements[1][1] - m.Elements[0][0] - m.Elements[2][2]);
+            q.X = (m.Elements[1][0] + m.Elements[0][1]) / s;
             q.Y = 0.25f * s;
-            q.Z = (m.Elements[1][2] + m.Elements[2][1] ) / s;
-            q.W = (m.Elements[0][2] - m.Elements[2][0] ) / s;
+            q.Z = (m.Elements[2][1] + m.Elements[1][2]) / s;
+            q.W = (m.Elements[2][0] - m.Elements[0][2]) / s;
         } else {
-            float s = 2.0f * HMM_SquareRootF( 1.0f + m.Elements[2][2] - m.Elements[0][0] - m.Elements[1][1] );
-            q.X = (m.Elements[0][2] + m.Elements[2][0] ) / s;
-            q.Y = (m.Elements[1][2] + m.Elements[2][1] ) / s;
+            float s = 2.0f * HMM_SquareRootF(1.0f + m.Elements[2][2] - m.Elements[0][0] - m.Elements[1][1]);
+            q.X = (m.Elements[2][0] + m.Elements[0][2]) / s;
+            q.Y = (m.Elements[2][1] + m.Elements[1][2]) / s;
             q.Z = 0.25f * s;
-            q.W = (m.Elements[1][0] - m.Elements[0][1] ) / s;
+            q.W = (m.Elements[0][1] - m.Elements[1][0]) / s;
         }
     }
 
