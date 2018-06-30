@@ -29,73 +29,10 @@ public:
     // LookAt thing, you can just always pass world up to it.
 
     void Tick(float deltaSeconds) override {
-        // rotation = HMM_QuaternionFromAxisAngle(target->worldPosition() - worldPosition(), 0.0f);
-        // rotation = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), HMM_ToRadians(0.0f));
-        // rotation = HMM_Qu
-        
         hmm_vec3 fwd = (parentModelMatrix * HMM_Vec4(1.0f, 0.0f, 0.0f, 0.0f)).XYZ;
         hmm_vec3 up = (parentModelMatrix * HMM_Vec4(0.0f, 1.0f, 0.0f, 0.0f)).XYZ;
         hmm_vec3 to = target->worldPosition() - worldPosition();
-        float dot = HMM_DotVec3(fwd, HMM_NormalizeVec3(to));
-
-        if (HMM_ABS(dot - 1.0f) < 0.000001f) {
-            // do nothing to the rotation
-        } else if (HMM_ABS(dot + 1.0f) < 0.000001f) {
-            // rotate 180 I guess but for now do nothing
-        } else {
-            hmm_vec3 cross = HMM_Normalize(HMM_Cross(fwd, to));
-
-            rotation = HMM_QuaternionFromAxisAngle(    
-                cross,
-                HMM_ACOSF(dot)
-            );
-            rotation *= HMM_QuaternionFromAxisAngle(
-                HMM_Vec3(1.0f, 0.0f, 0.0f),
-                -HMM_ACOSF(HMM_DotVec3(cross, up))
-            );
-        }
-
-        printf("Sort of working:\n");
-        printQuaternion(rotation);
-        printVec4(HMM_QuaternionToMat4(rotation) * HMM_Vec4(1.0f, 0.0f, 0.0f, 0.0f));
-        printMat4(HMM_QuaternionToMat4(rotation));
-        // return;
-
-        hmm_mat4 look = HMM_LookAt(HMM_Vec3(0.0f, 0.0f, 0.0f), HMM_Normalize(target->worldPosition() - worldPosition()), HMM_Vec3(0.0f, 1.0f, 0.0f));
-        rotation = HMM_Mat4ToQuaternion(look);
-        printf("New stuff:\n");
-        printQuaternion(rotation);
-        printVec4(HMM_QuaternionToMat4(rotation) * HMM_Vec4(1.0f, 0.0f, 0.0f, 0.0f));
-        printMat4(HMM_QuaternionToMat4(rotation));
-        // return;
-
-        rotation = HMM_QuaternionFromVectors(HMM_Vec3(0.001462f, -0.449079f, -0.893491f), HMM_Vec3(0.0f, 1.0f, 0.0f));
-        printf("Newer stuff:\n");
-        printQuaternion(rotation);
-        printVec4(HMM_QuaternionToMat4(rotation) * HMM_Vec4(1.0f, 0.0f, 0.0f, 0.0f));
-        printMat4(HMM_QuaternionToMat4(rotation));
-        // return;
         
-        printf("nighttime genius:\n");
-        hmm_vec3 right = HMM_Cross(to, up);
-        hmm_quaternion tiltUp = HMM_QuaternionFromAxisAngle(
-            right,
-            HMM_PI / 2 - HMM_ACosF(HMM_Dot(HMM_Normalize(to), HMM_Normalize(up)))
-        );
-        hmm_vec3 tiltedFwd = (HMM_QuaternionToMat4(tiltUp) * HMM_Vec4v(fwd, 0.0f)).XYZ;
-        hmm_quaternion pointAt = HMM_QuaternionFromAxisAngle(
-            HMM_Cross(right, to),
-            HMM_ACosF(HMM_Dot(HMM_Normalize(tiltedFwd), HMM_Normalize(to)))
-        );
-        rotation = tiltUp * pointAt;
-        printQuaternion(rotation);
-        printVec4(HMM_QuaternionToMat4(rotation) * HMM_Vec4(1.0f, 0.0f, 0.0f, 0.0f));
-        printMat4(HMM_QuaternionToMat4(rotation));
-        // dot products make this bad :(
-        
-        // rotate around up vector first?
-        
-        // just look, forget the up direction for a bit
         hmm_quaternion justPointAt = HMM_QuaternionFromAxisAngle(
             HMM_Cross(fwd, to),
             HMM_ACosF(HMM_Dot(HMM_Normalize(fwd), HMM_Normalize(to)))
@@ -103,6 +40,13 @@ public:
         hmm_vec3 newUp = (HMM_QuaternionToMat4(justPointAt) * HMM_Vec4v(up, 0.0f)).XYZ;
         hmm_quaternion backUpright = HMM_QuaternionFromAxisAngle(
             to,
+            // TODO: This angle is not quite right! After this corrective rotation,
+            // the new up vector will *not* necessarily align with world up! So this
+            // will overshoot a little bit.
+            // 
+            // You should probably project the world up vector onto the plane of the
+            // to vector before you do the dot product. This is a good opportunity to
+            // add the vector projection stuff that we somehow have left out!
             -HMM_ACosF(HMM_Dot(HMM_Normalize(newUp), HMM_Vec3(0.0f, 1.0f, 0.0f)))
         );
         rotation = backUpright * justPointAt;

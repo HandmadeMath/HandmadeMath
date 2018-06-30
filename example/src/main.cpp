@@ -75,8 +75,8 @@ int main()
     monkey.renderComponent = new MeshRenderComponent("MonkeySmooth.obj");
 
     FollowCam cam = FollowCam(&monkey);
-    // cam.position = HMM_Vec3(-3.0f, -1.0f, 0.0f);
-    cam.position = HMM_Vec3(3.0f, 3.0f, 5.0f);
+    cam.position = HMM_Vec3(-3.0f, -1.0f, 0.0f);
+    // cam.position = HMM_Vec3(3.0f, 3.0f, 5.0f);
     // cam.rotation = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), HMM_ToRadians(90.0f));
 
     // Cube c = Cube();
