@@ -75,7 +75,7 @@ int main()
     monkey.renderComponent = new MeshRenderComponent("MonkeySmooth.obj");
 
     FollowCam cam = FollowCam(&monkey);
-    // cam.position = HMM_Vec3(3.0f, 3.0f, 4.0f);
+    // cam.position = HMM_Vec3(-3.0f, -1.0f, 0.0f);
     cam.position = HMM_Vec3(3.0f, 3.0f, 5.0f);
     // cam.rotation = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), HMM_ToRadians(90.0f));
 
@@ -89,6 +89,10 @@ int main()
     Entity root = Entity();
     root.AddChild(&c1);
     root.AddChild(&cam);
+
+    Entity axes = Entity();
+    axes.renderComponent = new MeshRenderComponent("Axes.obj");
+    root.AddChild(&axes);
 
     bool hasTicked = false;
     high_resolution_clock::time_point lastTickTime;

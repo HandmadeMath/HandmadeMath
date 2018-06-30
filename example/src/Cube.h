@@ -147,12 +147,12 @@ public:
     CubeRenderComponent rc = CubeRenderComponent();
 
     Cube() {
-        renderComponent = &rc;
+        // renderComponent = &rc;
     }
 
     void Tick(float deltaSeconds) override {
         x += deltaSeconds;
-        position.X = 2.0f * HMM_SINF(x);
+        // position.X = 2.0f * HMM_SINF(x);
 
         rotation *= HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), deltaSeconds * HMM_ToRadians(45.0f));
     }

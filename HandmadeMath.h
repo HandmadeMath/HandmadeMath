@@ -1436,6 +1436,12 @@ HMM_EXTERN hmm_quaternion HMM_Slerp(hmm_quaternion Left, float Time, hmm_quatern
 HMM_EXTERN hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left);
 HMM_EXTERN hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation);
 
+HMM_INLINE hmm_quaternion HMM_QuaternionFromVectors(hmm_vec3 Normal, hmm_vec3 Up)
+{
+    // TODO: zero cases
+    return HMM_QuaternionFromAxisAngle(HMM_Cross(Up, Normal), HMM_ACosF(HMM_DotVec3(Normal, Up)));
+}
+
 #ifdef __cplusplus
 }
 #endif
