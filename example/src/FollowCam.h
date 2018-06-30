@@ -50,6 +50,13 @@ public:
             -HMM_ACosF(HMM_Dot(HMM_Normalize(newUp), HMM_Vec3(0.0f, 1.0f, 0.0f)))
         );
         rotation = backUpright * justPointAt;
+
+        // BEN
+        // 
+        // YOU MUST ALWAYS REMEMBER THAT QUATERNION MULTIPLICATION IS NOT COMMUTATIVE
+        // AND THAT IT GOES RIGHT TO LEFT
+        // 
+        // NEVER FORGET THIS LEST YOU SUFFER THROUGH THIS MESS AGAIN
     }
 };
 
