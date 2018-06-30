@@ -11,7 +11,7 @@
 #include "Entity.h"
 #include "Cube.h"
 #include "MeshRenderComponent.h"
-#include "FollowCam.h"
+#include "FPSCam.h"
 
 void TickTree(Entity *e, float deltaSeconds);
 void ComputeModelMatrices(Entity *ep, hmm_mat4 parentModelMatrix);
@@ -74,10 +74,10 @@ int main()
     monkey.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
     monkey.renderComponent = new MeshRenderComponent("MonkeySmooth.obj");
 
-    FollowCam cam = FollowCam(&monkey);
-    cam.position = HMM_Vec3(-3.0f, -1.0f, 0.0f);
-    // cam.position = HMM_Vec3(3.0f, 3.0f, 5.0f);
-    // cam.rotation = HMM_QuaternionFromAxisAngle(HMM_Vec3(0.0f, 1.0f, 0.0f), HMM_ToRadians(90.0f));
+    FPSCam fpsCam = FPSCam();
+    fpsCam.position = HMM_Vec3(-3.0f, 1.0f, 1.0f);
+
+    Entity *cam = &fpsCam.cam;
 
     // Cube c = Cube();
     // monkey.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
@@ -88,7 +88,7 @@ int main()
 
     Entity root = Entity();
     root.AddChild(&c1);
-    root.AddChild(&cam);
+    root.AddChild(&fpsCam);
 
     Entity axes = Entity();
     axes.renderComponent = new MeshRenderComponent("Axes.obj");
@@ -114,8 +114,8 @@ int main()
         ComputeModelMatrices(&root, HMM_Mat4d(1.0f));
 
         // Render!
-        hmm_mat4 projection = cam.projectionMatrix();
-        hmm_mat4 view = cam.viewMatrix();
+        hmm_mat4 projection = cam->projectionMatrix();
+        hmm_mat4 view = cam->viewMatrix();
         hmm_mat4 vp = projection * view;
 
         auto it = EntityIterator(&root);
@@ -143,7 +143,7 @@ int main()
         glfwPollEvents();
     } while (
         // Check if the ESC key was pressed or the window was closed
-        glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS
+        glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS
         && glfwWindowShouldClose(window) == 0
     );
 }

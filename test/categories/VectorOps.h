@@ -136,14 +136,28 @@ TEST(VectorOps, NormalizeZero)
 
 TEST(VectorOps, Cross)
 {
-    hmm_vec3 v1 = HMM_Vec3(1.0f, 2.0f, 3.0f);
-    hmm_vec3 v2 = HMM_Vec3(4.0f, 5.0f, 6.0f);
+    {
+        // Normal cross
+        hmm_vec3 v1 = HMM_Vec3(1.0f, 2.0f, 3.0f);
+        hmm_vec3 v2 = HMM_Vec3(4.0f, 5.0f, 6.0f);
 
-    hmm_vec3 result = HMM_Cross(v1, v2);
+        hmm_vec3 result = HMM_Cross(v1, v2);
 
-    EXPECT_FLOAT_EQ(result.X, -3.0f);
-    EXPECT_FLOAT_EQ(result.Y, 6.0f);
-    EXPECT_FLOAT_EQ(result.Z, -3.0f);
+        EXPECT_FLOAT_EQ(result.X, -3.0f);
+        EXPECT_FLOAT_EQ(result.Y, 6.0f);
+        EXPECT_FLOAT_EQ(result.Z, -3.0f);
+    }
+
+    {
+        // Vector with itself
+        hmm_vec3 v = HMM_Vec3(1.0f, 2.0f, 3.0f);
+
+        hmm_vec3 result = HMM_Cross(v, v);
+
+        EXPECT_FLOAT_EQ(result.X, 0.0f);
+        EXPECT_FLOAT_EQ(result.Y, 0.0f);
+        EXPECT_FLOAT_EQ(result.Z, 0.0f);
+    }
 }
 
 TEST(VectorOps, DotVec2)

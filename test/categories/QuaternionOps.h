@@ -80,29 +80,59 @@ TEST(QuaternionOps, ToMat4)
 {
     const float abs_error = 0.0001f;
 
-    hmm_quaternion rot = HMM_Quaternion(0.707107f, 0.0f, 0.0f, 0.707107f);
+    {
+        // Identity quaternion
+        hmm_quaternion rot = HMM_Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
 
-    hmm_mat4 result = HMM_QuaternionToMat4(rot);
+        hmm_mat4 result = HMM_QuaternionToMat4(rot);
 
-    EXPECT_NEAR(result.Elements[0][0], 1.0f, abs_error);
-    EXPECT_NEAR(result.Elements[0][1], 0.0f, abs_error);
-    EXPECT_NEAR(result.Elements[0][2], 0.0f, abs_error);
-    EXPECT_NEAR(result.Elements[0][3], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[0][0], 1.0f, abs_error);
+        EXPECT_NEAR(result.Elements[0][1], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[0][2], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[0][3], 0.0f, abs_error);
 
-    EXPECT_NEAR(result.Elements[1][0], 0.0f, abs_error);
-    EXPECT_NEAR(result.Elements[1][1], 0.0f, abs_error);
-    EXPECT_NEAR(result.Elements[1][2], 1.0f, abs_error);
-    EXPECT_NEAR(result.Elements[1][3], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[1][0], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[1][1], 1.0f, abs_error);
+        EXPECT_NEAR(result.Elements[1][2], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[1][3], 0.0f, abs_error);
 
-    EXPECT_NEAR(result.Elements[2][0], 0.0f, abs_error);
-    EXPECT_NEAR(result.Elements[2][1], -1.0f, abs_error);
-    EXPECT_NEAR(result.Elements[2][2], 0.0f, abs_error);
-    EXPECT_NEAR(result.Elements[2][3], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[2][0], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[2][1], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[2][2], 1.0f, abs_error);
+        EXPECT_NEAR(result.Elements[2][3], 0.0f, abs_error);
 
-    EXPECT_NEAR(result.Elements[3][0], 0.0f, abs_error);
-    EXPECT_NEAR(result.Elements[3][1], 0.0f, abs_error);
-    EXPECT_NEAR(result.Elements[3][2], 0.0f, abs_error);
-    EXPECT_NEAR(result.Elements[3][3], 1.0f, abs_error);
+        EXPECT_NEAR(result.Elements[3][0], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[3][1], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[3][2], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[3][3], 1.0f, abs_error);
+    }
+
+    {
+        // Straightforward 90 degree rotation
+        hmm_quaternion rot = HMM_Quaternion(0.707107f, 0.0f, 0.0f, 0.707107f);
+
+        hmm_mat4 result = HMM_QuaternionToMat4(rot);
+
+        EXPECT_NEAR(result.Elements[0][0], 1.0f, abs_error);
+        EXPECT_NEAR(result.Elements[0][1], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[0][2], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[0][3], 0.0f, abs_error);
+
+        EXPECT_NEAR(result.Elements[1][0], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[1][1], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[1][2], 1.0f, abs_error);
+        EXPECT_NEAR(result.Elements[1][3], 0.0f, abs_error);
+
+        EXPECT_NEAR(result.Elements[2][0], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[2][1], -1.0f, abs_error);
+        EXPECT_NEAR(result.Elements[2][2], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[2][3], 0.0f, abs_error);
+
+        EXPECT_NEAR(result.Elements[3][0], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[3][1], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[3][2], 0.0f, abs_error);
+        EXPECT_NEAR(result.Elements[3][3], 1.0f, abs_error);
+    }
 }
 
 TEST(QuaternionOps, FromAxisAngle)

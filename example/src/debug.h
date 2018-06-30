@@ -18,9 +18,11 @@ void printQuaternion(hmm_quaternion q) {
 }
 
 void printMat4(hmm_mat4 m) {
+    printf("/\n");
     for (int r = 0; r < 4; r++) {
         printf("| %f\t%f\t%f\t%f |\n", m[0][r], m[1][r], m[2][r], m[3][r]);
     }
+    printf("\\\n");
 }
 
 #endif

@@ -16,27 +16,34 @@ public:
         target = t;
     }
 
-    // HI BEN HERE IS YOUR STREAM OF CONSCIOUSNESS
-    // 
-    // Up is wonky. Really this whole thing is a little wonky, although it's
-    // gotten pretty close. You need to figure out how to directly calculate the
-    // axis and angle so you don't have to do this in two steps. Then it should
-    // Just Work.
-    // 
-    // Although you may have to figure out how to make the camera keep a consistent up vector.
-    // 
-    // Actually that shouldn't be too hard, because once you have a quaternion
-    // LookAt thing, you can just always pass world up to it.
-
     void Tick(float deltaSeconds) override {
+        // TODO: Find a way to do this rotation routine in a single quaternion. Maybe that
+        // just means finding a correct method, then doing some quaternion multiplication
+        // on paper to see how the axis and angle shake out.
+
+        rotation = GetLookAtRotation();
+    }
+
+    hmm_quaternion GetLookAtRotation() {
         hmm_vec3 fwd = (parentModelMatrix * HMM_Vec4(1.0f, 0.0f, 0.0f, 0.0f)).XYZ;
         hmm_vec3 up = (parentModelMatrix * HMM_Vec4(0.0f, 1.0f, 0.0f, 0.0f)).XYZ;
         hmm_vec3 to = target->worldPosition() - worldPosition();
         
-        hmm_quaternion justPointAt = HMM_QuaternionFromAxisAngle(
-            HMM_Cross(fwd, to),
-            HMM_ACosF(HMM_Dot(HMM_Normalize(fwd), HMM_Normalize(to)))
-        );
+        hmm_vec3 pointAxis = HMM_Cross(fwd, to);
+        hmm_quaternion justPointAt;
+
+        // TODO: proper epsilon! and probably implement some kind of nan
+        // protection because a single nan ruins everything.
+        if (HMM_ABS(HMM_Length(pointAxis)) < 0.0001f) {
+            // Already pointing at the thing!
+            justPointAt = HMM_Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+        } else {
+            justPointAt = HMM_QuaternionFromAxisAngle(
+                pointAxis,
+                HMM_ACosF(HMM_Dot(HMM_Normalize(fwd), HMM_Normalize(to)))
+            );
+        }
+        
         hmm_vec3 newUp = (HMM_QuaternionToMat4(justPointAt) * HMM_Vec4v(up, 0.0f)).XYZ;
         hmm_quaternion backUpright = HMM_QuaternionFromAxisAngle(
             to,
@@ -49,7 +56,8 @@ public:
             // add the vector projection stuff that we somehow have left out!
             -HMM_ACosF(HMM_Dot(HMM_Normalize(newUp), HMM_Vec3(0.0f, 1.0f, 0.0f)))
         );
-        rotation = backUpright * justPointAt;
+
+        return backUpright * justPointAt;
 
         // BEN
         // 
