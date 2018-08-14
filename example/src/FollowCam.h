@@ -16,7 +16,7 @@ public:
         target = t;
     }
 
-    void Tick(float deltaSeconds) override {
+    void Tick(float deltaSeconds, Input previousInput, Input input) override {
         // TODO: Find a way to do this rotation routine in a single quaternion. Maybe that
         // just means finding a correct method, then doing some quaternion multiplication
         // on paper to see how the axis and angle shake out.

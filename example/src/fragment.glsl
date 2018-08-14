@@ -8,9 +8,11 @@ in vec2 fragmentUV;
 out vec3 color;
 
 void main() {
+    vec3 ambient = vec3(0.1, 0.1, 0.1);
+
     vec3 toLight_world = normalize(vec3(1, 1, 1));
 
     float cosTheta = clamp(dot(normalize(fragmentNormal_world), toLight_world), 0.1, 1);
 
-    color = cosTheta * fragmentColor;
+    color = cosTheta * fragmentColor + ambient;
 }

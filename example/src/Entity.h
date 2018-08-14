@@ -19,7 +19,7 @@ public:
         children.push_back(e);
     }
 
-    virtual void Tick(float deltaSeconds) {}
+    virtual void Tick(float deltaSeconds, Input previousInput, Input input) {}
 
     RenderComponent *renderComponent = NULL;
 

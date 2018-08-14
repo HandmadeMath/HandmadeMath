@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <chrono>
+#include <unistd.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <HandmadeMath.h>
 
+#include "input.h"
 #include "shaders.h"
 
 #include "Entity.h"
@@ -13,13 +15,16 @@
 #include "MeshRenderComponent.h"
 #include "FPSCam.h"
 
-void TickTree(Entity *e, float deltaSeconds);
+void TickTree(Entity *e, float deltaSeconds, Input previousInput, Input input);
 void ComputeModelMatrices(Entity *ep, hmm_mat4 parentModelMatrix);
+void HandleMouseMove(GLFWwindow *window, double mouseX, double mouseY);
 
 using std::chrono::high_resolution_clock;
 
-int main()
-{
+#define WIDTH 1024
+#define HEIGHT 768
+
+int main() {
     // Initialise GLFW
     glewExperimental = true; // Needed for core profile
     if (!glfwInit()) {
@@ -35,7 +40,7 @@ int main()
 
     // Open a window and create its OpenGL context
     GLFWwindow* window; // (In the accompanying source code, this variable is global for simplicity)
-    window = glfwCreateWindow( 1024, 768, "Tutorial 01", NULL, NULL);
+    window = glfwCreateWindow(WIDTH, HEIGHT, "Handmade Math Example", NULL, NULL);
     if (window == NULL) {
         fprintf( stderr, "Failed to open GLFW window. If you have an Intel GPU, they are not 3.3 compatible. Try the 2.1 version of the tutorials.\n" );
         glfwTerminate();
@@ -50,6 +55,14 @@ int main()
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
+    // Hide the mouse cursor
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
+    // glfwSetCursorPosCallback(window, [](GLFWwindow *window, double mouseX, double mouseY) {
+    //     printf("%f\t%f\n", mouseX, mouseY);
+    //     // glfwSetCursorPos(window, WIDTH / 2, HEIGHT / 2);
+    // });
 
     // Create and compile our GLSL program from the shaders
     GLuint programID = LoadShaders("src/vertex.glsl", "src/fragment.glsl");
@@ -74,8 +87,12 @@ int main()
     monkey.position = HMM_Vec3(2.1f, 0.0f, 0.0f);
     monkey.renderComponent = new MeshRenderComponent("MonkeySmooth.obj");
 
+    Entity backmonkey = Entity();
+    backmonkey.position = HMM_Vec3(0.0f, 0.0f, 5.0f);
+    backmonkey.renderComponent = new MeshRenderComponent("MonkeySmooth.obj");
+
     FPSCam fpsCam = FPSCam();
-    fpsCam.position = HMM_Vec3(-3.0f, 1.0f, 1.0f);
+    fpsCam.position = HMM_Vec3(-1.0f, 1.0f, 3.0f);
 
     Entity *cam = &fpsCam.cam;
 
@@ -89,6 +106,7 @@ int main()
     Entity root = Entity();
     root.AddChild(&c1);
     root.AddChild(&fpsCam);
+    root.AddChild(&backmonkey);
 
     Entity axes = Entity();
     axes.renderComponent = new MeshRenderComponent("Axes.obj");
@@ -97,18 +115,24 @@ int main()
     bool hasTicked = false;
     high_resolution_clock::time_point lastTickTime;
 
+    Input previousInput = GetInput(window);
+
     do {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Get inputs
+        Input input = GetInput(window);
 
         // Tick
         auto now = high_resolution_clock::now();
         if (hasTicked) {
             auto elapsedNanoseconds = std::chrono::duration_cast<std::chrono::nanoseconds>(now - lastTickTime).count();
             float elapsedSeconds = elapsedNanoseconds / 1000000000.0f;
-            TickTree(&root, elapsedSeconds);
+            TickTree(&root, elapsedSeconds, previousInput, input);
         }
         lastTickTime = now;
         hasTicked = true;
+        previousInput = input;
 
         // Compute model positions for rendering
         ComputeModelMatrices(&root, HMM_Mat4d(1.0f));
@@ -148,11 +172,11 @@ int main()
     );
 }
 
-void TickTree(Entity *e, float deltaSeconds) {
-    e->Tick(deltaSeconds);
+void TickTree(Entity *e, float deltaSeconds, Input previousInput, Input input) {
+    e->Tick(deltaSeconds, previousInput, input);
 
     for (auto child : e->children) {
-        TickTree(child, deltaSeconds);
+        TickTree(child, deltaSeconds, previousInput, input);
     }
 }
 

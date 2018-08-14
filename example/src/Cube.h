@@ -150,7 +150,7 @@ public:
         // renderComponent = &rc;
     }
 
-    void Tick(float deltaSeconds) override {
+    void Tick(float deltaSeconds, Input previousInput, Input input) override {
         x += deltaSeconds;
         // position.X = 2.0f * HMM_SINF(x);
 
