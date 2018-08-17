@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.6.0
+  HandmadeMath.h v1.7.0
   
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
@@ -172,6 +172,10 @@
           (*) Added array subscript operators for vector and matrix types in
               C++. This is provided as a convenience, but be aware that it may
               incur an extra function call in unoptimized builds.
+     1.7.0
+          (*) Renamed the 'Rows' member of hmm_mat4 to 'Columns'. Since our
+              matrices are column-major, this should have been named 'Columns'
+              from the start. 'Rows' is still present, but has been deprecated.
 
 
   LICENSE
@@ -447,6 +451,10 @@ typedef union hmm_mat4
     float Elements[4][4];
         
 #ifdef HANDMADE_MATH__USE_SSE
+    __m128 Columns[4];
+
+    // DEPRECATED. Our matrices are column-major, so this was named
+    // incorrectly. Use Columns instead.
     __m128 Rows[4];
 #endif
 
@@ -1129,10 +1137,10 @@ HMM_INLINE hmm_vec4 HMM_NormalizeVec4(hmm_vec4 A)
 HMM_INLINE __m128 HMM_LinearCombineSSE(__m128 Left, hmm_mat4 Right)
 {
     __m128 Result;
-    Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Rows[0]);
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x55), Right.Rows[1]));
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xaa), Right.Rows[2]));
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xff), Right.Rows[3]));
+    Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Columns[0]);
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x55), Right.Columns[1]));
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xaa), Right.Columns[2]));
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xff), Right.Columns[3]));
     
     return (Result);
 }
@@ -1167,7 +1175,7 @@ HMM_INLINE hmm_mat4 HMM_Transpose(hmm_mat4 Matrix)
 {
     hmm_mat4 Result = Matrix;
     
-    _MM_TRANSPOSE4_PS(Result.Rows[0], Result.Rows[1], Result.Rows[2], Result.Rows[3]);
+    _MM_TRANSPOSE4_PS(Result.Columns[0], Result.Columns[1], Result.Columns[2], Result.Columns[3]);
 
     return (Result);
 }
@@ -1180,10 +1188,10 @@ HMM_INLINE hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result;
 
-    Result.Rows[0] = _mm_add_ps(Left.Rows[0], Right.Rows[0]);
-    Result.Rows[1] = _mm_add_ps(Left.Rows[1], Right.Rows[1]);
-    Result.Rows[2] = _mm_add_ps(Left.Rows[2], Right.Rows[2]);
-    Result.Rows[3] = _mm_add_ps(Left.Rows[3], Right.Rows[3]);    
+    Result.Columns[0] = _mm_add_ps(Left.Columns[0], Right.Columns[0]);
+    Result.Columns[1] = _mm_add_ps(Left.Columns[1], Right.Columns[1]);
+    Result.Columns[2] = _mm_add_ps(Left.Columns[2], Right.Columns[2]);
+    Result.Columns[3] = _mm_add_ps(Left.Columns[3], Right.Columns[3]);    
 
     return (Result);
 }
@@ -1196,10 +1204,10 @@ HMM_INLINE hmm_mat4 HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
 {
     hmm_mat4 Result;
 
-    Result.Rows[0] = _mm_sub_ps(Left.Rows[0], Right.Rows[0]);
-    Result.Rows[1] = _mm_sub_ps(Left.Rows[1], Right.Rows[1]);
-    Result.Rows[2] = _mm_sub_ps(Left.Rows[2], Right.Rows[2]);
-    Result.Rows[3] = _mm_sub_ps(Left.Rows[3], Right.Rows[3]);
+    Result.Columns[0] = _mm_sub_ps(Left.Columns[0], Right.Columns[0]);
+    Result.Columns[1] = _mm_sub_ps(Left.Columns[1], Right.Columns[1]);
+    Result.Columns[2] = _mm_sub_ps(Left.Columns[2], Right.Columns[2]);
+    Result.Columns[3] = _mm_sub_ps(Left.Columns[3], Right.Columns[3]);
 
     return (Result);
 }
@@ -1215,10 +1223,10 @@ HMM_INLINE hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
     hmm_mat4 Result;
 
     __m128 SSEScalar = _mm_set1_ps(Scalar);
-    Result.Rows[0] = _mm_mul_ps(Matrix.Rows[0], SSEScalar);
-    Result.Rows[1] = _mm_mul_ps(Matrix.Rows[1], SSEScalar);
-    Result.Rows[2] = _mm_mul_ps(Matrix.Rows[2], SSEScalar);
-    Result.Rows[3] = _mm_mul_ps(Matrix.Rows[3], SSEScalar);
+    Result.Columns[0] = _mm_mul_ps(Matrix.Columns[0], SSEScalar);
+    Result.Columns[1] = _mm_mul_ps(Matrix.Columns[1], SSEScalar);
+    Result.Columns[2] = _mm_mul_ps(Matrix.Columns[2], SSEScalar);
+    Result.Columns[3] = _mm_mul_ps(Matrix.Columns[3], SSEScalar);
 
     return (Result);
 }
@@ -1234,10 +1242,10 @@ HMM_INLINE hmm_mat4 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
     hmm_mat4 Result;
     
     __m128 SSEScalar = _mm_set1_ps(Scalar);
-    Result.Rows[0] = _mm_div_ps(Matrix.Rows[0], SSEScalar);
-    Result.Rows[1] = _mm_div_ps(Matrix.Rows[1], SSEScalar);
-    Result.Rows[2] = _mm_div_ps(Matrix.Rows[2], SSEScalar);
-    Result.Rows[3] = _mm_div_ps(Matrix.Rows[3], SSEScalar);    
+    Result.Columns[0] = _mm_div_ps(Matrix.Columns[0], SSEScalar);
+    Result.Columns[1] = _mm_div_ps(Matrix.Columns[1], SSEScalar);
+    Result.Columns[2] = _mm_div_ps(Matrix.Columns[2], SSEScalar);
+    Result.Columns[3] = _mm_div_ps(Matrix.Columns[3], SSEScalar);    
 
     return (Result);
 }
@@ -2252,10 +2260,10 @@ hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
 
 #ifdef HANDMADE_MATH__USE_SSE
 
-    Result.Rows[0] = HMM_LinearCombineSSE(Right.Rows[0], Left);
-    Result.Rows[1] = HMM_LinearCombineSSE(Right.Rows[1], Left);
-    Result.Rows[2] = HMM_LinearCombineSSE(Right.Rows[2], Left);
-    Result.Rows[3] = HMM_LinearCombineSSE(Right.Rows[3], Left);     
+    Result.Columns[0] = HMM_LinearCombineSSE(Right.Columns[0], Left);
+    Result.Columns[1] = HMM_LinearCombineSSE(Right.Columns[1], Left);
+    Result.Columns[2] = HMM_LinearCombineSSE(Right.Columns[2], Left);
+    Result.Columns[3] = HMM_LinearCombineSSE(Right.Columns[3], Left);     
     
 #else
     int Columns;
