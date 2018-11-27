@@ -324,7 +324,7 @@ typedef union hmm_vec2
     float Elements[2];
 
 #ifdef __cplusplus
-    inline float &operator[](int Index)
+    inline float &operator[](const int &Index)
     {
         return Elements[Index];
     }
@@ -375,7 +375,7 @@ typedef union hmm_vec3
     float Elements[3];
 
 #ifdef __cplusplus
-    inline float &operator[](int Index)
+    inline float &operator[](const int &Index)
     {
         return Elements[Index];
     }
@@ -439,7 +439,7 @@ typedef union hmm_vec4
 #endif
 
 #ifdef __cplusplus
-    inline float &operator[](int Index)
+    inline float &operator[](const int &Index)
     {
         return Elements[Index];
     }
@@ -459,7 +459,7 @@ typedef union hmm_mat4
 #endif
 
 #ifdef __cplusplus
-    inline hmm_vec4 operator[](const int Index)
+    inline hmm_vec4 operator[](const int &Index)
     {
         float* col = Elements[Index];
 
