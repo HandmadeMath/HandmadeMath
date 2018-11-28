@@ -10,6 +10,7 @@ To get started, go download [the latest release](https://github.com/HandmadeMath
 
 Version         | Changes        |
 ----------------|----------------|
+**1.7.1** | Changed operator[] to take in a const ref int instead of a int. Simple mistake
 **1.7.0** | Renamed the 'Rows' member of hmm_mat4 to 'Columns'. Since our matrices are column-major, this should have been named 'Columns' from the start. 'Rows' is still present, but has been deprecated.
 **1.6.0** | Added array subscript operators for vector and matrix types in C++. This is provided as a convenience, but be aware that it may incur an extra function call in unoptimized builds.
 **1.5.1** | Fixed a bug with uninitialized elements in HMM_LookAt.
