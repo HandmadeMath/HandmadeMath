@@ -1129,6 +1129,21 @@ HMM_INLINE hmm_vec4 HMM_NormalizeVec4(hmm_vec4 A)
     return (Result);
 }
 
+HMM_INLINE hmm_vec2 HMM_FastNormalizeVec2(hmm_vec2 A)
+{
+    return HMM_MultiplyVec2f(A, HMM_RSquareRootF(HMM_DotVec2(A, A)));
+}
+
+HMM_INLINE hmm_vec3 HMM_FastNormalizeVec3(hmm_vec3 A)
+{
+    return HMM_MultiplyVec3f(A, HMM_RSquareRootF(HMM_DotVec3(A, A)));
+}
+
+HMM_INLINE hmm_vec4 HMM_FastNormalizeVec4(hmm_vec4 A)
+{
+    return HMM_MultiplyVec4f(A, HMM_RSquareRootF(HMM_DotVec4(A, A)));
+}
+
 
 /*
  * SSE stuff
@@ -1509,6 +1524,27 @@ HMM_INLINE hmm_vec4 HMM_Normalize(hmm_vec4 A)
 {
     hmm_vec4 Result = HMM_NormalizeVec4(A);
     
+    return (Result);
+}
+
+HMM_INLINE hmm_vec2 HMM_FastNormalize(hmm_vec2 A)
+{
+    hmm_vec2 Result = HMM_FastNormalizeVec2(A);
+
+    return (Result);
+}
+
+HMM_INLINE hmm_vec3 HMM_FastNormalize(hmm_vec3 A)
+{
+    hmm_vec3 Result = HMM_FastNormalizeVec3(A);
+
+    return (Result);
+}
+
+HMM_INLINE hmm_vec4 HMM_FastNormalize(hmm_vec4 A)
+{
+    hmm_vec4 Result = HMM_FastNormalizeVec4(A);
+
     return (Result);
 }
 
