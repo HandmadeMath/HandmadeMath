@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.7.0
+  HandmadeMath.h v1.7.1
   
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
@@ -176,7 +176,10 @@
           (*) Renamed the 'Rows' member of hmm_mat4 to 'Columns'. Since our
               matrices are column-major, this should have been named 'Columns'
               from the start. 'Rows' is still present, but has been deprecated.
-
+     1.7.1
+          (*) Changed operator[] to take in a const ref int instead of a int. 
+              Simple dumb mistake. NOTE: The compiler still wont inline operator[]
+              for some reason 
 
   LICENSE
   
@@ -324,7 +327,7 @@ typedef union hmm_vec2
     float Elements[2];
 
 #ifdef __cplusplus
-    inline float &operator[](int Index)
+    inline float &operator[](const int &Index)
     {
         return Elements[Index];
     }
@@ -375,7 +378,7 @@ typedef union hmm_vec3
     float Elements[3];
 
 #ifdef __cplusplus
-    inline float &operator[](int Index)
+    inline float &operator[](const int &Index)
     {
         return Elements[Index];
     }
@@ -439,7 +442,7 @@ typedef union hmm_vec4
 #endif
 
 #ifdef __cplusplus
-    inline float &operator[](int Index)
+    inline float &operator[](const int &Index)
     {
         return Elements[Index];
     }
@@ -459,7 +462,7 @@ typedef union hmm_mat4
 #endif
 
 #ifdef __cplusplus
-    inline hmm_vec4 operator[](const int Index)
+    inline hmm_vec4 operator[](const int &Index)
     {
         float* col = Elements[Index];
 
