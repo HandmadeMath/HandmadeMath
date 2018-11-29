@@ -177,9 +177,7 @@
               matrices are column-major, this should have been named 'Columns'
               from the start. 'Rows' is still present, but has been deprecated.
      1.7.1
-          (*) Changed operator[] to take in a const ref int instead of a int. 
-              Simple dumb mistake. NOTE: The compiler still wont inline operator[]
-              for some reason 
+          (*) Changed operator[] to take a const ref int instead of an int. 
 
   LICENSE
   
