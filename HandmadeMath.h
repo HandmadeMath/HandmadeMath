@@ -379,6 +379,10 @@ typedef union hmm_quaternion
     };
     
     float Elements[4];
+
+#ifdef HANDMADE_MATH__USE_SSE    
+    __m128 InternalElementsSSE;
+#endif
 } hmm_quaternion;
 
 typedef int32_t hmm_bool;
@@ -1228,10 +1232,14 @@ HMM_INLINE hmm_quaternion HMM_Quaternion(float X, float Y, float Z, float W)
 {
     hmm_quaternion Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_setr_ps(X, Y, Z, W);
+#else
     Result.X = X;
     Result.Y = Y;
     Result.Z = Z;
     Result.W = W;
+#endif
 
     return (Result);
 }
@@ -1240,10 +1248,14 @@ HMM_INLINE hmm_quaternion HMM_QuaternionV4(hmm_vec4 Vector)
 {
     hmm_quaternion Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = Vector.InternalElementsSSE;
+#else
     Result.X = Vector.X;
     Result.Y = Vector.Y;
     Result.Z = Vector.Z;
     Result.W = Vector.W;
+#endif
 
     return (Result);
 }
@@ -1252,10 +1264,15 @@ HMM_INLINE hmm_quaternion HMM_AddQuaternion(hmm_quaternion Left, hmm_quaternion 
 {
     hmm_quaternion Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_add_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+#else
+
     Result.X = Left.X + Right.X;
     Result.Y = Left.Y + Right.Y;
     Result.Z = Left.Z + Right.Z;
     Result.W = Left.W + Right.W;
+#endif
 
     return (Result);
 }
@@ -1264,10 +1281,15 @@ HMM_INLINE hmm_quaternion HMM_SubtractQuaternion(hmm_quaternion Left, hmm_quater
 {
     hmm_quaternion Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_sub_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+#else
+
     Result.X = Left.X - Right.X;
     Result.Y = Left.Y - Right.Y;
     Result.Z = Left.Z - Right.Z;
     Result.W = Left.W - Right.W;
+#endif
 
     return (Result);
 }
@@ -1276,10 +1298,22 @@ HMM_INLINE hmm_quaternion HMM_MultiplyQuaternion(hmm_quaternion Left, hmm_quater
 {
     hmm_quaternion Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
+    __m128 SSEResultOne = _mm_mul_ps(_mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, _MM_SHUFFLE(1, 1, 2, 3)), _mm_shuffle_ps(Right.InternalElementsSSE, Right.InternalElementsSSE, _MM_SHUFFLE(1, 0, 0, 0)));
+    __m128 SSEResultTwo = _mm_mul_ps(_mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, _MM_SHUFFLE(2, 2, 3, 1)), _mm_shuffle_ps(Right.InternalElementsSSE, Right.InternalElementsSSE, _MM_SHUFFLE(2, 3, 1, 2)));
+    __m128 SSEResultThree = _mm_add_ps(SSEResultOne, SSEResultTwo);
+
+    __m128 a3312 = _mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, _MM_SHUFFLE(3, 3, 1, 2));
+    __m128 b3231 = _mm_shuffle_ps(Right.InternalElementsSSE, Right.InternalElementsSSE, _MM_SHUFFLE(3, 2, 3, 1));
+    __m128 a0000 = _mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, _MM_SHUFFLE(0, 0, 0, 0));
+
+    Result.InternalElementsSSE = _mm_add_ps(_mm_sub_ps(_mm_mul_ps(a0000, Right.InternalElementsSSE), _mm_mul_ps(a3312, b3231)), _mm_xor_ps(SSEResultThree, _mm_castsi128_ps(_mm_set_epi32(0, 0, 0, 0x80000000))));
+#else
     Result.X = (Left.X * Right.W) + (Left.Y * Right.Z) - (Left.Z * Right.Y) + (Left.W * Right.X);
     Result.Y = (-Left.X * Right.Z) + (Left.Y * Right.W) + (Left.Z * Right.X) + (Left.W * Right.Y);
     Result.Z = (Left.X * Right.Y) - (Left.Y * Right.X) + (Left.Z * Right.W) + (Left.W * Right.Z);
     Result.W = (-Left.X * Right.X) - (Left.Y * Right.Y) - (Left.Z * Right.Z) + (Left.W * Right.W);
+#endif
 
     return (Result);
 }
@@ -1288,10 +1322,15 @@ HMM_INLINE hmm_quaternion HMM_MultiplyQuaternionF(hmm_quaternion Left, float Mul
 {
     hmm_quaternion Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
+    __m128 Scalar = _mm_set1_ps(Multiplicative);
+    Result.InternalElementsSSE = _mm_mul_ps(Left.InternalElementsSSE, Scalar);
+#else
     Result.X = Left.X * Multiplicative;
     Result.Y = Left.Y * Multiplicative;
     Result.Z = Left.Z * Multiplicative;
     Result.W = Left.W * Multiplicative;
+#endif
 
     return (Result);
 }
@@ -1300,10 +1339,15 @@ HMM_INLINE hmm_quaternion HMM_DivideQuaternionF(hmm_quaternion Left, float Divid
 {
     hmm_quaternion Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
+    __m128 Scalar = _mm_set1_ps(Dividend);
+    Result.InternalElementsSSE = _mm_div_ps(Left.InternalElementsSSE, Scalar);
+#else
     Result.X = Left.X / Dividend;
     Result.Y = Left.Y / Dividend;
     Result.Z = Left.Z / Dividend;
     Result.W = Left.W / Dividend;
+#endif
 
     return (Result);
 }
@@ -1312,7 +1356,18 @@ HMM_EXTERN hmm_quaternion HMM_InverseQuaternion(hmm_quaternion Left);
 
 HMM_INLINE float HMM_DotQuaternion(hmm_quaternion Left, hmm_quaternion Right)
 {
-    float Result = (Left.X * Right.X) + (Left.Y * Right.Y) + (Left.Z * Right.Z) + (Left.W * Right.W);
+    float Result;
+
+#ifdef HANDMADE_MATH__USE_SSE
+    __m128 SSEResultOne = _mm_mul_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+    __m128 SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(2, 3, 0, 1));
+    SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
+    SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(0, 1, 2, 3));
+    SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
+    _mm_store_ss(&Result, SSEResultOne);
+#else
+    Result = (Left.X * Right.X) + (Left.Y * Right.Y) + (Left.Z * Right.Z) + (Left.W * Right.W);
+#endif
 
     return (Result);
 }
@@ -1331,11 +1386,18 @@ HMM_INLINE hmm_quaternion HMM_NLerp(hmm_quaternion Left, float Time, hmm_quatern
 {
     hmm_quaternion Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
+    __m128 ScalarLeft = _mm_set1_ps(1.0f - Time);
+    __m128 ScalarRight = _mm_set1_ps(Time);
+    __m128 SSEResultOne = _mm_mul_ps(Left.InternalElementsSSE, ScalarLeft);
+    __m128 SSEResultTwo = _mm_mul_ps(Right.InternalElementsSSE, ScalarRight);
+    Result.InternalElementsSSE = _mm_add_ps(SSEResultOne, SSEResultTwo);
+#else
     Result.X = HMM_Lerp(Left.X, Time, Right.X);
     Result.Y = HMM_Lerp(Left.Y, Time, Right.Y);
     Result.Z = HMM_Lerp(Left.Z, Time, Right.Z);
     Result.W = HMM_Lerp(Left.W, Time, Right.W);
-
+#endif
     Result = HMM_NormalizeQuaternion(Result);
 
     return (Result);
@@ -2343,10 +2405,7 @@ hmm_quaternion HMM_InverseQuaternion(hmm_quaternion Left)
     Norm = HMM_SquareRootF(HMM_DotQuaternion(Left, Left));
     NormSquared = Norm * Norm;
 
-    Result.X = Conjugate.X / NormSquared;
-    Result.Y = Conjugate.Y / NormSquared;
-    Result.Z = Conjugate.Z / NormSquared;
-    Result.W = Conjugate.W / NormSquared;
+    Result = HMM_DivideQuaternionF(Conjugate, NormSquared);
 
     return (Result);
 }
