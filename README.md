@@ -10,6 +10,7 @@ To get started, go download [the latest release](https://github.com/HandmadeMath
 
 Version         | Changes        |
 ----------------|----------------|
+**1.9.0** | Added SSE versions of quaternion operations. |
 **1.8.0** | Added fast vector normalization routines that use fast inverse square roots.
 **1.7.1** | Changed operator[] to take a const ref int instead of an int.
 **1.7.0** | Renamed the 'Rows' member of hmm_mat4 to 'Columns'. Since our matrices are column-major, this should have been named 'Columns' from the start. 'Rows' is still present, but has been deprecated.
