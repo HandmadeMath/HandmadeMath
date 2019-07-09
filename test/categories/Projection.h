@@ -20,16 +20,16 @@ TEST(Projection, Perspective)
     {
         hmm_vec3 original = HMM_Vec3(5.0f, 5.0f, -15.0f);
         hmm_vec4 projected = HMM_MultiplyMat4ByVec4(projection, HMM_Vec4v(original, 1));
-        EXPECT_FLOAT_EQ(projected.X, 5.0f);
-        EXPECT_FLOAT_EQ(projected.Y, 10.0f);
+        EXPECT_FLOAT_EQ(projected.X, 2.5f);
+        EXPECT_FLOAT_EQ(projected.Y, 5.0f);
         EXPECT_FLOAT_EQ(projected.Z, 15.0f);
         EXPECT_FLOAT_EQ(projected.W, 15.0f);
     }
     {
         hmm_vec3 original = HMM_Vec3(5.0f, 5.0f, -5.0f);
         hmm_vec4 projected = HMM_MultiplyMat4ByVec4(projection, HMM_Vec4v(original, 1));
-        EXPECT_FLOAT_EQ(projected.X, 5.0f);
-        EXPECT_FLOAT_EQ(projected.Y, 10.0f);
+        EXPECT_FLOAT_EQ(projected.X, 2.5f);
+        EXPECT_FLOAT_EQ(projected.Y, 5.0f);
         EXPECT_FLOAT_EQ(projected.Z, -5.0f);
         EXPECT_FLOAT_EQ(projected.W, 5.0f);
     }
