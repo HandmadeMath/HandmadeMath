@@ -1186,10 +1186,12 @@ HMM_INLINE hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, fl
 {
     hmm_mat4 Result = HMM_Mat4();
 
-    float TanThetaOver2 = HMM_TanF(FOV * (HMM_PI32 / 360.0f));
+    // See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+
+    float Cotangent = 1.0f / HMM_TanF(FOV * (HMM_PI32 / 360.0f));
     
-    Result.Elements[0][0] = 1.0f / TanThetaOver2;
-    Result.Elements[1][1] = AspectRatio / TanThetaOver2;
+    Result.Elements[0][0] = Cotangent / AspectRatio;
+    Result.Elements[1][1] = Cotangent;
     Result.Elements[2][3] = -1.0f;
     Result.Elements[2][2] = (Near + Far) / (Near - Far);
     Result.Elements[3][2] = (2.0f * Near * Far) / (Near - Far);
