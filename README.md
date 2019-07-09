@@ -10,6 +10,7 @@ To get started, go download [the latest release](https://github.com/HandmadeMath
 
 Version         | Changes        |
 ----------------|----------------|
+**1.10.0** | Made HMM_Perspective use vertical FOV instead of horizontal FOV for consistency with other graphics APIs. |
 **1.9.0** | Added SSE versions of quaternion operations. |
 **1.8.0** | Added fast vector normalization routines that use fast inverse square roots.
 **1.7.1** | Changed operator[] to take a const ref int instead of an int.
