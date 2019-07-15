@@ -2175,7 +2175,7 @@ float HMM_Power(float Base, int Exponent)
 {
     float Result = 1.0f;
     float Mul = Exponent < 0 ? 1.f / Base : Base;
-    unsigned int X = Exponent < 0 ? -Exponent : Exponent;
+    int X = Exponent < 0 ? -Exponent : Exponent;
     while (X)
     {
         if (X & 1)
