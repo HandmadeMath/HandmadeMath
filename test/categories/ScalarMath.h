@@ -48,7 +48,7 @@ TEST(ScalarMath, RSquareRootF)
 TEST(ScalarMath, Power)
 {
     EXPECT_FLOAT_EQ(HMM_Power(2.0f, 0), 1.0f);
-    EXPECT_FLOAT_EQ(HMM_Power(2.0f, 4), 16.0f);       
+    EXPECT_FLOAT_EQ(HMM_Power(2.0f, 4), 16.0f);
     EXPECT_FLOAT_EQ(HMM_Power(2.0f, -2), 0.25f);
 }
 
@@ -61,14 +61,14 @@ TEST(ScalarMath, PowerF)
 
 TEST(ScalarMath, Lerp)
 {
-    EXPECT_FLOAT_EQ(HMM_Lerp(-2.0f, 0.0f, 2.0f), -2.0f);        
-    EXPECT_FLOAT_EQ(HMM_Lerp(-2.0f, 0.5f, 2.0f), 0.0f);        
+    EXPECT_FLOAT_EQ(HMM_Lerp(-2.0f, 0.0f, 2.0f), -2.0f);
+    EXPECT_FLOAT_EQ(HMM_Lerp(-2.0f, 0.5f, 2.0f), 0.0f);
     EXPECT_FLOAT_EQ(HMM_Lerp(-2.0f, 1.0f, 2.0f), 2.0f);
 }
 
 TEST(ScalarMath, Clamp)
 {
-    EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, 0.0f, 2.0f), 0.0f);        
-    EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, -3.0f, 2.0f), -2.0f);        
+    EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, 0.0f, 2.0f), 0.0f);
+    EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, -3.0f, 2.0f), -2.0f);
     EXPECT_FLOAT_EQ(HMM_Clamp(-2.0f, 3.0f, 2.0f), 2.0f);
 }

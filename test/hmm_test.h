@@ -1,6 +1,8 @@
 #include <float.h>
 
+#define HANDMADE_TEST_IMPLEMENTATION
 #include "HandmadeTest.h"
+
 #include "../HandmadeMath.h"
 
 #include "categories/ScalarMath.h"
