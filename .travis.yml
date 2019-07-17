@@ -5,4 +5,7 @@ compiler:
 install:
   - cd test
 script:
-  - make all
+  - make c
+  - make c_no_sse
+  - make cpp
+  - make cpp_no_sse

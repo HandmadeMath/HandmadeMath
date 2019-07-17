@@ -90,7 +90,7 @@ void _HMT_TEST_FUNCNAME(category, name)(hmt_testresult* _result)
 
 #define _HMT_CASE_FAIL() \
     _result->count_failures++; \
-    printf("\n      - " HMT_RED "[FAIL] (%d) " HMT_RESET, __LINE__);
+    printf("\n      - " HMT_RED "[FAIL] (line %d) " HMT_RESET, __LINE__);
 
 #define HMT_COVERAGE(name, num_asserts) \
 INITIALIZER(_HMT_COVERCASE_FUNCNAME_INIT(name)) { \
@@ -347,17 +347,21 @@ int hmt_check_all_coverage() {
     for (int i = 0; i < hmt_num_covercases; i++) {
         hmt_covercase covercase = hmt_covercases[i];
 
-        printf("%s: ", covercase.name);
-
-        if (covercase.expected_asserts == covercase.actual_asserts) {
-            printf(HMT_GREEN "OK" HMT_RESET);
-        } else {
+        if (covercase.expected_asserts != covercase.actual_asserts) {
             count_failures++;
-            printf(HMT_RED "FAIL (expected %d asserts, got %d)" HMT_RESET, covercase.expected_asserts, covercase.actual_asserts);
+            printf("%s: " HMT_RED "FAIL (expected %d asserts, got %d)\n" HMT_RESET, covercase.name, covercase.expected_asserts, covercase.actual_asserts);
         }
-
-        printf("\n");
     }
+
+    printf("\n");
+
+    if (count_failures > 0) {
+        printf(HMT_RED);
+    } else {
+        printf(HMT_GREEN);
+    }
+    printf("%d coverage cases tested, %d failures\n", hmt_num_covercases, count_failures);
+    printf(HMT_RESET);
 
     return (count_failures > 0);
 }

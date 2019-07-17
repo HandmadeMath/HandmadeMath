@@ -4,9 +4,9 @@ TEST(Initialization, Vectors)
 {
     //
     // Test vec2
-    // 
+    //
     hmm_vec2 v2 = HMM_Vec2(1.0f, 2.0f);
-    hmm_vec2 v2i = HMM_Vec2(1, 2);
+    hmm_vec2 v2i = HMM_Vec2i(1, 2);
 
     EXPECT_FLOAT_EQ(v2.X, 1.0f);
     EXPECT_FLOAT_EQ(v2.Y, 2.0f);
