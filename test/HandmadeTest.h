@@ -4,19 +4,46 @@
   This is Handmade Math's test framework. It is fully compatible with both C
   and C++, although it requires some compiler-specific features.
 
+  To use Handmade Test, you must #define HANDMADE_TEST_IMPLEMENTATION in
+  exactly one C or C++ file that includes the header, like this:
+
+    #define HANDMADE_TEST_IMPLEMENTATION
+    #include "HandmadeTest.h"
+
   The basic way of creating a test is using the TEST macro, which registers a
   single test to be run:
 
-     TEST(MyCategory, MyTestName) {
+    TEST(MyCategory, MyTestName) {
         // test code, including asserts/expects
-     }
+    }
 
-  The main function of your test code should then call hmt_run_all_tests and
-  return the result:
+  Handmade Test also provides macros you can use to check the coverage of
+  important parts of your code. Define a coverage case by using the COVERAGE
+  macro outside the function you wish to test, providing both a name and the
+  number of asserts you expect to see covered over the course of your test.
+  Then use the ASSERT_COVERED macro in every part of the function you wish to
+  check coverage on. For example:
 
-     int main() {
-        return hmt_run_all_tests();
-     }
+    COVERAGE(MyCoverageCase, 3)
+    void MyFunction(int a, int b) {
+        if (a > b) {
+            ASSERT_COVERED(MyCoverageCase);
+            return 10;
+        } else if (a < b) {
+            ASSERT_COVERED(MyCoverageCase);
+            return -10;
+        }
+
+        ASSERT_COVERED(MyCoverageCase);
+        return 0;
+    }
+
+  The main function of your test code should then call hmt_run_all_tests (and
+  optionally hmt_check_all_coverage) and return the result:
+
+    int main() {
+        return hmt_run_all_tests() || hmt_check_all_coverage();
+    }
 
   =============================================================================
 
