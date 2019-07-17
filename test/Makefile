@@ -1,8 +1,14 @@
-BUILD_DIR=build
+BUILD_DIR=./build
 
 CXXFLAGS+=-g -Wall -Wextra -pthread -Wno-missing-braces -Wno-missing-field-initializers
 
-all: c c_no_sse cpp cpp_no_sse
+all: build_all
+	$(BUILD_DIR)/hmm_test_c
+	$(BUILD_DIR)/hmm_test_c_no_sse
+	$(BUILD_DIR)/hmm_test_cpp
+	$(BUILD_DIR)/hmm_test_cpp_no_sse
+
+build_all: c c_no_sse cpp cpp_no_sse
 
 clean:
 	rm -rf $(BUILD_DIR)
