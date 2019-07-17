@@ -129,6 +129,11 @@
 #pragma GCC diagnostic ignored "-Wgnu-anonymous-struct"
 #endif
 
+#if defined(__GNUC__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 8)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-braces"
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -2169,6 +2174,10 @@ HMM_INLINE hmm_bool operator!=(hmm_vec4 Left, hmm_vec4 Right)
 #pragma GCC diagnostic pop
 #endif
 
+#if defined(__GNUC__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 8)
+#pragma GCC diagnostic pop
+#endif
+
 #endif /* HANDMADE_MATH_H */
 
 #ifdef HANDMADE_MATH_IMPLEMENTATION
@@ -2177,7 +2186,7 @@ float HMM_Power(float Base, int Exponent)
 {
     float Result = 1.0f;
     float Mul = Exponent < 0 ? 1.f / Base : Base;
-    unsigned int X = Exponent < 0 ? -Exponent : Exponent;
+    int X = Exponent < 0 ? -Exponent : Exponent;
     while (X)
     {
         if (X & 1)
