@@ -105,23 +105,23 @@ INITIALIZER(_HMT_COVERCASE_FUNCNAME_INIT(name)) { \
 /*
  * Asserts and expects
  */
-#define HMT_EXPECT_TRUE(_actual) do { \
+#define HMT_EXPECT_TRUE(_actual) { \
     _HMT_CASE_START(); \
     if (!(_actual)) { \
         _HMT_CASE_FAIL(); \
         printf("Expected true but got something false"); \
     } \
-} while (0)
+} \
 
-#define HMT_EXPECT_FALSE(_actual) do { \
+#define HMT_EXPECT_FALSE(_actual) { \
     _HMT_CASE_START(); \
     if (_actual) { \
         _HMT_CASE_FAIL(); \
         printf("Expected false but got something true"); \
     } \
-} while (0)
+} \
 
-#define HMT_EXPECT_FLOAT_EQ(_actual, _expected) do { \
+#define HMT_EXPECT_FLOAT_EQ(_actual, _expected) { \
     _HMT_CASE_START(); \
     float actual = (_actual); \
     float diff = actual - (_expected); \
@@ -129,9 +129,9 @@ INITIALIZER(_HMT_COVERCASE_FUNCNAME_INIT(name)) { \
         _HMT_CASE_FAIL(); \
         printf("Expected %f, got %f", (_expected), actual); \
     } \
-} while (0)
+} \
 
-#define HMT_EXPECT_NEAR(_actual, _expected, _epsilon) do { \
+#define HMT_EXPECT_NEAR(_actual, _expected, _epsilon) { \
     _HMT_CASE_START(); \
     float actual = (_actual); \
     float diff = actual - (_expected); \
@@ -139,23 +139,23 @@ INITIALIZER(_HMT_COVERCASE_FUNCNAME_INIT(name)) { \
         _HMT_CASE_FAIL(); \
         printf("Expected %f, got %f", (_expected), actual); \
     } \
-} while (0)
+} \
 
-#define HMT_EXPECT_LT(_actual, _expected) do { \
+#define HMT_EXPECT_LT(_actual, _expected) { \
     _HMT_CASE_START(); \
     if ((_actual) >= (_expected)) { \
         _HMT_CASE_FAIL(); \
         printf("Expected %f to be less than %f", (_actual), (_expected)); \
     } \
-} while (0)
+} \
 
-#define HMT_EXPECT_GT(_actual, _expected) do { \
+#define HMT_EXPECT_GT(_actual, _expected) { \
     _HMT_CASE_START(); \
     if ((_actual) <= (_expected)) { \
         _HMT_CASE_FAIL(); \
         printf("Expected %f to be greater than %f", (_actual), (_expected)); \
     } \
-} while (0)
+} \
 
 #ifndef HMT_SAFE_MACROS
 // Friendly defines
@@ -177,11 +177,11 @@ INITIALIZER(_HMT_COVERCASE_FUNCNAME_INIT(name)) { \
 #ifndef HANDMADE_TEST_IMPLEMENTATION_GUARD
 #define HANDMADE_TEST_IMPLEMENTATION_GUARD
 
-int hmt_num_categories = 0;
-hmt_category* hmt_categories = 0;
+int _hmt_num_categories = 0;
+hmt_category* _hmt_categories = 0;
 
-int hmt_num_covercases = 0;
-hmt_covercase* hmt_covercases = 0;
+int _hmt_num_covercases = 0;
+hmt_covercase* _hmt_covercases = 0;
 
 hmt_category _hmt_new_category(const char* name) {
     hmt_category cat = {
@@ -215,25 +215,25 @@ hmt_covercase _hmt_new_covercase(const char* name, int expected) {
 
 void _hmt_register_test(const char* category, const char* name, hmt_test_func func) {
     // initialize categories array if not initialized
-    if (!hmt_categories) {
-        hmt_categories = (hmt_category*) malloc(HMT_ARRAY_SIZE * sizeof(hmt_category));
+    if (!_hmt_categories) {
+        _hmt_categories = (hmt_category*) malloc(HMT_ARRAY_SIZE * sizeof(hmt_category));
     }
 
     // Find the matching category, if possible
     int cat_index;
-    for (cat_index = 0; cat_index < hmt_num_categories; cat_index++) {
-        if (strcmp(hmt_categories[cat_index].name, category) == 0) {
+    for (cat_index = 0; cat_index < _hmt_num_categories; cat_index++) {
+        if (strcmp(_hmt_categories[cat_index].name, category) == 0) {
             break;
         }
     }
 
     // Add a new category if necessary
-    if (cat_index >= hmt_num_categories) {
-        hmt_categories[cat_index] = _hmt_new_category(category);
-        hmt_num_categories++;
+    if (cat_index >= _hmt_num_categories) {
+        _hmt_categories[cat_index] = _hmt_new_category(category);
+        _hmt_num_categories++;
     }
 
-    hmt_category* cat = &hmt_categories[cat_index];
+    hmt_category* cat = &_hmt_categories[cat_index];
 
     // Add the test to the category
     cat->tests[cat->num_tests] = _hmt_new_test(name, func);
@@ -242,26 +242,26 @@ void _hmt_register_test(const char* category, const char* name, hmt_test_func fu
 
 void _hmt_register_covercase(const char* name, const char* expected_asserts) {
     // initialize cases array if not initialized
-    if (!hmt_covercases) {
-        hmt_covercases = (hmt_covercase*) malloc(HMT_ARRAY_SIZE * sizeof(hmt_covercase));
+    if (!_hmt_covercases) {
+        _hmt_covercases = (hmt_covercase*) malloc(HMT_ARRAY_SIZE * sizeof(hmt_covercase));
     }
 
     // check for existing case with that name, because the macro can run multiple
     // times in different translation units
-    for (int i = 0; i < hmt_num_covercases; i++) {
-        if (strcmp(hmt_covercases[i].name, name) == 0) {
+    for (int i = 0; i < _hmt_num_covercases; i++) {
+        if (strcmp(_hmt_covercases[i].name, name) == 0) {
             return;
         }
     }
 
-    hmt_covercases[hmt_num_covercases] = _hmt_new_covercase(name, atoi(expected_asserts));
-    hmt_num_covercases++;
+    _hmt_covercases[_hmt_num_covercases] = _hmt_new_covercase(name, atoi(expected_asserts));
+    _hmt_num_covercases++;
 }
 
 hmt_covercase* _hmt_find_covercase(const char* name) {
-    for (int i = 0; i < hmt_num_covercases; i++) {
-        if (strcmp(hmt_covercases[i].name, name) == 0) {
-            return &hmt_covercases[i];
+    for (int i = 0; i < _hmt_num_covercases; i++) {
+        if (strcmp(_hmt_covercases[i].name, name) == 0) {
+            return &_hmt_covercases[i];
         }
     }
 
@@ -291,8 +291,8 @@ int hmt_run_all_tests() {
     int count_allfailedtests = 0; // failed test cases
     int count_allfailures = 0; // failed asserts
 
-    for (int i = 0; i < hmt_num_categories; i++) {
-        hmt_category cat = hmt_categories[i];
+    for (int i = 0; i < _hmt_num_categories; i++) {
+        hmt_category cat = _hmt_categories[i];
         int count_catfailedtests = 0;
         int count_catfailures = 0;
 
@@ -344,8 +344,8 @@ int hmt_check_all_coverage() {
 
     int count_failures = 0;
 
-    for (int i = 0; i < hmt_num_covercases; i++) {
-        hmt_covercase covercase = hmt_covercases[i];
+    for (int i = 0; i < _hmt_num_covercases; i++) {
+        hmt_covercase covercase = _hmt_covercases[i];
 
         if (covercase.expected_asserts != covercase.actual_asserts) {
             count_failures++;
@@ -360,7 +360,7 @@ int hmt_check_all_coverage() {
     } else {
         printf(HMT_GREEN);
     }
-    printf("%d coverage cases tested, %d failures\n", hmt_num_covercases, count_failures);
+    printf("%d coverage cases tested, %d failures\n", _hmt_num_covercases, count_failures);
     printf(HMT_RESET);
 
     return (count_failures > 0);
