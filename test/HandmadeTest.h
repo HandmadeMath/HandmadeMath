@@ -380,15 +380,16 @@ int hmt_check_all_coverage() {
         }
     }
 
-    printf("\n");
-
     if (count_failures > 0) {
+        printf("\n");
         printf(HMT_RED);
     } else {
         printf(HMT_GREEN);
     }
     printf("%d coverage cases tested, %d failures\n", _hmt_num_covercases, count_failures);
     printf(HMT_RESET);
+
+    printf("\n");
 
     return (count_failures > 0);
 }
