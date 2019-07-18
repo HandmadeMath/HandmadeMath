@@ -3,7 +3,7 @@
 TEST(VectorOps, LengthSquared)
 {
     hmm_vec2 v2 = HMM_Vec2(1.0f, -2.0f);
-    hmm_vec3 v3 = HMM_Vec3(1.0f, -2.0f, 3.0f); 
+    hmm_vec3 v3 = HMM_Vec3(1.0f, -2.0f, 3.0f);
     hmm_vec4 v4 = HMM_Vec4(1.0f, -2.0f, 3.0f, 1.0f);
 
     EXPECT_FLOAT_EQ(HMM_LengthSquaredVec2(v2), 5.0f);
@@ -37,7 +37,7 @@ TEST(VectorOps, Length)
 TEST(VectorOps, Normalize)
 {
     hmm_vec2 v2 = HMM_Vec2(1.0f, -2.0f);
-    hmm_vec3 v3 = HMM_Vec3(1.0f, -2.0f, 3.0f); 
+    hmm_vec3 v3 = HMM_Vec3(1.0f, -2.0f, 3.0f);
     hmm_vec4 v4 = HMM_Vec4(1.0f, -2.0f, 3.0f, -1.0f);
 
     {
