@@ -2,5 +2,8 @@
 
 int main()
 {
-    return hmt_run_all_tests() || hmt_check_all_coverage();
+    int tests_failed = hmt_run_all_tests();
+    int coverage_failed = hmt_check_all_coverage();
+
+    return tests_failed || coverage_failed;
 }

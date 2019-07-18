@@ -151,16 +151,16 @@ TEST(QuaternionOps, Mat4ToQuat)
         EXPECT_NEAR(result.W, cosf, abs_error);
     }
 
-    // Rotate 135 degrees on the Y axis (this hits case 4)
+    // Rotate 45 degrees on the X axis (this hits case 4)
     {
-        hmm_mat4 m = HMM_Rotate(135, HMM_Vec3(0, 1, 0));
+        hmm_mat4 m = HMM_Rotate(45, HMM_Vec3(1, 0, 0));
         hmm_quaternion result = HMM_Mat4ToQuaternion(m);
 
-        float cosf = 0.3826834324f; // cos(135/2 degrees)
-        float sinf = 0.9238795325f; // sin(135/2 degrees)
+        float cosf = 0.9238795325f; // cos(90/2 degrees)
+        float sinf = 0.3826834324f; // sin(90/2 degrees)
 
-        EXPECT_NEAR(result.X, 0.0f, abs_error);
-        EXPECT_NEAR(result.Y, sinf, abs_error);
+        EXPECT_NEAR(result.X, sinf, abs_error);
+        EXPECT_NEAR(result.Y, 0.0f, abs_error);
         EXPECT_NEAR(result.Z, 0.0f, abs_error);
         EXPECT_NEAR(result.W, cosf, abs_error);
     }
