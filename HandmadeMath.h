@@ -2501,50 +2501,50 @@ hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left)
 // comment. :)
 hmm_quaternion HMM_Mat4ToQuaternion(hmm_mat4 M)
 {
-    float t;
-    hmm_quaternion q;
+    float T;
+    hmm_quaternion Q;
 
     if (M.Elements[2][2] < 0.0f) {
         if (M.Elements[0][0] > M.Elements[1][1]) {
-            t = 1 + M.Elements[0][0] - M.Elements[1][1] - M.Elements[2][2];
-            q = HMM_Quaternion(
-                t,
+            T = 1 + M.Elements[0][0] - M.Elements[1][1] - M.Elements[2][2];
+            Q = HMM_Quaternion(
+                T,
                 M.Elements[0][1] + M.Elements[1][0],
                 M.Elements[2][0] + M.Elements[0][2],
                 M.Elements[1][2] - M.Elements[2][1]
             );
         } else {
-            t = 1 - M.Elements[0][0] + M.Elements[1][1] - M.Elements[2][2];
-            q = HMM_Quaternion(
+            T = 1 - M.Elements[0][0] + M.Elements[1][1] - M.Elements[2][2];
+            Q = HMM_Quaternion(
                 M.Elements[0][1] + M.Elements[1][0],
-                t,
+                T,
                 M.Elements[1][2] + M.Elements[2][1],
                 M.Elements[2][0] - M.Elements[0][2]
             );
         }
     } else {
         if (M.Elements[0][0] < -M.Elements[1][1]) {
-            t = 1 - M.Elements[0][0] - M.Elements[1][1] + M.Elements[2][2];
-            q = HMM_Quaternion(
+            T = 1 - M.Elements[0][0] - M.Elements[1][1] + M.Elements[2][2];
+            Q = HMM_Quaternion(
                 M.Elements[2][0] + M.Elements[0][2],
                 M.Elements[1][2] + M.Elements[2][1],
-                t,
+                T,
                 M.Elements[0][1] - M.Elements[1][0]
             );
         } else {
-            t = 1 + M.Elements[0][0] + M.Elements[1][1] + M.Elements[2][2];
-            q = HMM_Quaternion(
+            T = 1 + M.Elements[0][0] + M.Elements[1][1] + M.Elements[2][2];
+            Q = HMM_Quaternion(
                 M.Elements[1][2] - M.Elements[2][1],
                 M.Elements[2][0] - M.Elements[0][2],
                 M.Elements[0][1] - M.Elements[1][0],
-                t
+                T
             );
         }
     }
 
-    q = HMM_MultiplyQuaternionF(q, 0.5f / HMM_SquareRootF(t));
+    Q = HMM_MultiplyQuaternionF(Q, 0.5f / HMM_SquareRootF(T));
 
-    return q;
+    return Q;
 }
 
 hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation)
