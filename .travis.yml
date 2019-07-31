@@ -9,9 +9,6 @@ matrix:
   include:
     # Windows x64 builds (MSVC)
     - os: windows
-      before_install:
-        - export CC=CL.exe
-        - export CXX=CL.exe
       script:
         - ./test.bat travis
         - build/hmm_test_c
