@@ -3,6 +3,7 @@
 #define HANDMADE_TEST_IMPLEMENTATION
 #include "HandmadeTest.h"
 
+#undef COVERAGE // Make sure we don't double-define initializers from the header part
 #include "../HandmadeMath.h"
 
 #include "categories/ScalarMath.h"

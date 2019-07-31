@@ -212,9 +212,9 @@ hmt_covercase* _hmt_covercases = 0;
 
 hmt_category _hmt_new_category(const char* name) {
     hmt_category cat = {
-        .name = name,
-        .num_tests = 0,
-        .tests = (hmt_test*) malloc(HMT_ARRAY_SIZE * sizeof(hmt_test))
+        name, // name
+        0, // num_tests
+        (hmt_test*) malloc(HMT_ARRAY_SIZE * sizeof(hmt_test)), // tests
     };
 
     return cat;
@@ -222,8 +222,8 @@ hmt_category _hmt_new_category(const char* name) {
 
 hmt_test _hmt_new_test(const char* name, hmt_test_func func) {
     hmt_test test = {
-        .name = name,
-        .func = func
+        name, // name
+        func, // func
     };
 
     return test;
@@ -231,10 +231,10 @@ hmt_test _hmt_new_test(const char* name, hmt_test_func func) {
 
 hmt_covercase _hmt_new_covercase(const char* name, int expected) {
     hmt_covercase covercase = {
-        .name = name,
-        .expected_asserts = expected,
-        .actual_asserts = 0,
-        .asserted_lines = (int*) malloc(HMT_ARRAY_SIZE * sizeof(int)),
+        name, // name
+        expected, // expected_asserts
+        0, // actual_asserts
+        (int*) malloc(HMT_ARRAY_SIZE * sizeof(int)), // asserted_lines
     };
 
     return covercase;
@@ -331,8 +331,8 @@ int hmt_run_all_tests() {
             printf("    %s:", test.name);
 
             hmt_testresult result = {
-                .count_cases = 0,
-                .count_failures = 0
+                0, // count_cases
+                0, // count_failures
             };
             test.func(&result);
 
