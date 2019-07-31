@@ -1419,6 +1419,7 @@ HMM_INLINE hmm_quaternion HMM_NLerp(hmm_quaternion Left, float Time, hmm_quatern
 
 HMM_EXTERN hmm_quaternion HMM_Slerp(hmm_quaternion Left, float Time, hmm_quaternion Right);
 HMM_EXTERN hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left);
+HMM_EXTERN hmm_quaternion HMM_Mat4ToQuaternion(hmm_mat4 Left);
 HMM_EXTERN hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation);
 
 #ifdef __cplusplus
@@ -2453,7 +2454,6 @@ hmm_quaternion HMM_Slerp(hmm_quaternion Left, float Time, hmm_quaternion Right)
 hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left)
 {
     hmm_mat4 Result;
-    Result = HMM_Mat4d(1);
 
     hmm_quaternion NormalizedQuaternion = HMM_NormalizeQuaternion(Left);
     
@@ -2474,33 +2474,97 @@ hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left)
     Result.Elements[0][0] = 1.0f - 2.0f * (YY + ZZ);
     Result.Elements[0][1] = 2.0f * (XY + WZ);
     Result.Elements[0][2] = 2.0f * (XZ - WY);
+    Result.Elements[0][3] = 0.0f;
 
     Result.Elements[1][0] = 2.0f * (XY - WZ);
     Result.Elements[1][1] = 1.0f - 2.0f * (XX + ZZ);
     Result.Elements[1][2] = 2.0f * (YZ + WX);
+    Result.Elements[1][3] = 0.0f;
 
     Result.Elements[2][0] = 2.0f * (XZ + WY);
     Result.Elements[2][1] = 2.0f * (YZ - WX);
     Result.Elements[2][2] = 1.0f - 2.0f * (XX + YY);
+    Result.Elements[2][3] = 0.0f;
+
+    Result.Elements[3][0] = 0.0f;
+    Result.Elements[3][1] = 0.0f;
+    Result.Elements[3][2] = 0.0f;
+    Result.Elements[3][3] = 1.0f;
 
     return (Result);
+}
+
+// This method taken from Mike Day at Insomniac Games.
+// https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2015/01/matrix-to-quat.pdf
+//
+// Note that as mentioned at the top of the paper, the paper assumes the matrix
+// would be *post*-multiplied to a vector to rotate it, meaning the matrix is
+// the transpose of what we're dealing with. But, because our matrices are
+// stored in column-major order, the indices *appear* to match the paper.
+//
+// For example, m12 in the paper is row 1, column 2. We need to transpose it to
+// row 2, column 1. But, because the column comes first when referencing
+// elements, it looks like M.Elements[1][2].
+//
+// Don't be confused! Or if you must be confused, at least trust this
+// comment. :)
+hmm_quaternion HMM_Mat4ToQuaternion(hmm_mat4 M)
+{
+    float T;
+    hmm_quaternion Q;
+
+    if (M.Elements[2][2] < 0.0f) {
+        if (M.Elements[0][0] > M.Elements[1][1]) {
+            T = 1 + M.Elements[0][0] - M.Elements[1][1] - M.Elements[2][2];
+            Q = HMM_Quaternion(
+                T,
+                M.Elements[0][1] + M.Elements[1][0],
+                M.Elements[2][0] + M.Elements[0][2],
+                M.Elements[1][2] - M.Elements[2][1]
+            );
+        } else {
+            T = 1 - M.Elements[0][0] + M.Elements[1][1] - M.Elements[2][2];
+            Q = HMM_Quaternion(
+                M.Elements[0][1] + M.Elements[1][0],
+                T,
+                M.Elements[1][2] + M.Elements[2][1],
+                M.Elements[2][0] - M.Elements[0][2]
+            );
+        }
+    } else {
+        if (M.Elements[0][0] < -M.Elements[1][1]) {
+            T = 1 - M.Elements[0][0] - M.Elements[1][1] + M.Elements[2][2];
+            Q = HMM_Quaternion(
+                M.Elements[2][0] + M.Elements[0][2],
+                M.Elements[1][2] + M.Elements[2][1],
+                T,
+                M.Elements[0][1] - M.Elements[1][0]
+            );
+        } else {
+            T = 1 + M.Elements[0][0] + M.Elements[1][1] + M.Elements[2][2];
+            Q = HMM_Quaternion(
+                M.Elements[1][2] - M.Elements[2][1],
+                M.Elements[2][0] - M.Elements[0][2],
+                M.Elements[0][1] - M.Elements[1][0],
+                T
+            );
+        }
+    }
+
+    Q = HMM_MultiplyQuaternionF(Q, 0.5f / HMM_SquareRootF(T));
+
+    return Q;
 }
 
 hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation)
 {
     hmm_quaternion Result;
-    
-    hmm_vec3 RotatedVector;
-    
-    float AxisNorm = 0;
-    float SineOfRotation = 0;
 
-    AxisNorm = HMM_SquareRootF(HMM_DotVec3(Axis, Axis));
-    SineOfRotation = HMM_SinF(AngleOfRotation / 2.0f);
-    RotatedVector = HMM_MultiplyVec3f(Axis, SineOfRotation);
+    hmm_vec3 AxisNormalized = HMM_NormalizeVec3(Axis);
+    float SineOfRotation = HMM_SinF(AngleOfRotation / 2.0f);
 
+    Result.XYZ = HMM_MultiplyVec3f(AxisNormalized, SineOfRotation);
     Result.W = HMM_CosF(AngleOfRotation / 2.0f);
-    Result.XYZ = HMM_DivideVec3f(RotatedVector, AxisNorm);
 
     return (Result);
 }

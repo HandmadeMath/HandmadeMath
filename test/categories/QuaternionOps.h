@@ -76,7 +76,7 @@ TEST(QuaternionOps, Slerp)
     EXPECT_FLOAT_EQ(result.W, 0.86602540f);
 }
 
-TEST(QuaternionOps, ToMat4)
+TEST(QuaternionOps, QuatToMat4)
 {
     const float abs_error = 0.0001f;
 
@@ -103,6 +103,67 @@ TEST(QuaternionOps, ToMat4)
     EXPECT_NEAR(result.Elements[3][1], 0.0f, abs_error);
     EXPECT_NEAR(result.Elements[3][2], 0.0f, abs_error);
     EXPECT_NEAR(result.Elements[3][3], 1.0f, abs_error);
+}
+
+TEST(QuaternionOps, Mat4ToQuat)
+{
+    const float abs_error = 0.0001f;
+
+    // Rotate 90 degrees on the X axis
+    {
+        hmm_mat4 m = HMM_Rotate(90, HMM_Vec3(1, 0, 0));
+        hmm_quaternion result = HMM_Mat4ToQuaternion(m);
+
+        float cosf = 0.707107f; // cos(90/2 degrees)
+        float sinf = 0.707107f; // sin(90/2 degrees)
+
+        EXPECT_NEAR(result.X, sinf, abs_error);
+        EXPECT_NEAR(result.Y, 0.0f, abs_error);
+        EXPECT_NEAR(result.Z, 0.0f, abs_error);
+        EXPECT_NEAR(result.W, cosf, abs_error);
+    }
+
+    // Rotate 90 degrees on the Y axis (axis not normalized, just for fun)
+    {
+        hmm_mat4 m = HMM_Rotate(90, HMM_Vec3(0, 2, 0));
+        hmm_quaternion result = HMM_Mat4ToQuaternion(m);
+
+        float cosf = 0.707107f; // cos(90/2 degrees)
+        float sinf = 0.707107f; // sin(90/2 degrees)
+
+        EXPECT_NEAR(result.X, 0.0f, abs_error);
+        EXPECT_NEAR(result.Y, sinf, abs_error);
+        EXPECT_NEAR(result.Z, 0.0f, abs_error);
+        EXPECT_NEAR(result.W, cosf, abs_error);
+    }
+
+    // Rotate 90 degrees on the Z axis
+    {
+        hmm_mat4 m = HMM_Rotate(90, HMM_Vec3(0, 0, 1));
+        hmm_quaternion result = HMM_Mat4ToQuaternion(m);
+
+        float cosf = 0.707107f; // cos(90/2 degrees)
+        float sinf = 0.707107f; // sin(90/2 degrees)
+
+        EXPECT_NEAR(result.X, 0.0f, abs_error);
+        EXPECT_NEAR(result.Y, 0.0f, abs_error);
+        EXPECT_NEAR(result.Z, sinf, abs_error);
+        EXPECT_NEAR(result.W, cosf, abs_error);
+    }
+
+    // Rotate 135 degrees on the Y axis (this hits case 4)
+    {
+        hmm_mat4 m = HMM_Rotate(135, HMM_Vec3(0, 1, 0));
+        hmm_quaternion result = HMM_Mat4ToQuaternion(m);
+
+        float cosf = 0.3826834324f; // cos(135/2 degrees)
+        float sinf = 0.9238795325f; // sin(135/2 degrees)
+
+        EXPECT_NEAR(result.X, 0.0f, abs_error);
+        EXPECT_NEAR(result.Y, sinf, abs_error);
+        EXPECT_NEAR(result.Z, 0.0f, abs_error);
+        EXPECT_NEAR(result.W, cosf, abs_error);
+    }
 }
 
 TEST(QuaternionOps, FromAxisAngle)
