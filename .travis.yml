@@ -2,7 +2,6 @@ language: cpp
 os:
   - linux
   - osx
-  - windows
 compiler:
   - clang
   - gcc
@@ -10,8 +9,15 @@ matrix:
   include:
     # Windows x64 builds (MSVC)
     - os: windows
-      env:
-        - MATRIX_EVAL="CC=CL.exe && CXX=CL.exe"
+      before_install:
+        - export CC=CL.exe
+        - export CXX=CL.exe
+      script:
+        - test.bat
+        - build/hmm_test_c
+        - build/hmm_test_c_no_sse
+        - build/hmm_test_cpp
+        - build/hmm_test_cpp_no_sse
 
 before_install:
   - eval "${MATRIX_EVAL}"
