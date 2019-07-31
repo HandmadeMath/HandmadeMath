@@ -1,7 +1,19 @@
 language: cpp
+os:
+  - linux
+  - osx
 compiler:
   - clang
   - gcc
+matrix:
+  include:
+    # Windows x64 builds (MSVC)
+    - os: windows
+      script:
+        - ./test.bat travis
+
+before_install:
+  - eval "${MATRIX_EVAL}"
 install:
   - cd test
 script:
