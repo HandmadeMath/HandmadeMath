@@ -13,7 +13,7 @@ matrix:
         - export CC=CL.exe
         - export CXX=CL.exe
       script:
-        - test.bat
+        - ./test.bat
         - build/hmm_test_c
         - build/hmm_test_c_no_sse
         - build/hmm_test_cpp
