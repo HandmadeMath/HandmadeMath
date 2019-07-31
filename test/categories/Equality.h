@@ -15,6 +15,9 @@ TEST(Equality, Vec2)
 
     EXPECT_TRUE(a == b);
     EXPECT_FALSE(a == c);
+
+    EXPECT_FALSE(a != b);
+    EXPECT_TRUE(a != c);
 #endif
 }
 
@@ -33,6 +36,9 @@ TEST(Equality, Vec3)
 
     EXPECT_TRUE(a == b);
     EXPECT_FALSE(a == c);
+
+    EXPECT_FALSE(a != b);
+    EXPECT_TRUE(a != c);
 #endif
 }
 
@@ -51,5 +57,8 @@ TEST(Equality, Vec4)
 
     EXPECT_TRUE(a == b);
     EXPECT_FALSE(a == c);
+
+    EXPECT_FALSE(a != b);
+    EXPECT_TRUE(a != c);
 #endif
 }

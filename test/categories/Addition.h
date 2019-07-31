@@ -37,7 +37,7 @@ TEST(Addition, Vec3)
         hmm_vec3 result = HMM_AddVec3(v3_1, v3_2);
         EXPECT_FLOAT_EQ(result.X, 5.0f);
         EXPECT_FLOAT_EQ(result.Y, 7.0f);
-        EXPECT_FLOAT_EQ(result.Z, 9.0f);    
+        EXPECT_FLOAT_EQ(result.Z, 9.0f);
     }
 #ifdef __cplusplus
     {
@@ -64,7 +64,7 @@ TEST(Addition, Vec4)
 {
     hmm_vec4 v4_1 = HMM_Vec4(1.0f, 2.0f, 3.0f, 4.0f);
     hmm_vec4 v4_2 = HMM_Vec4(5.0f, 6.0f, 7.0f, 8.0f);
-    
+
     {
         hmm_vec4 result = HMM_AddVec4(v4_1, v4_2);
         EXPECT_FLOAT_EQ(result.X, 6.0f);
