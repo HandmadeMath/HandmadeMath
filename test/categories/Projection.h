@@ -15,7 +15,7 @@ TEST(Projection, Orthographic)
 
 TEST(Projection, Perspective)
 {
-    hmm_mat4 projection = HMM_Perspective(90.0f, 2.0f, 5.0f, 15.0f);
+    hmm_mat4 projection = HMM_Perspective(HMM_ToRadians(90.0f), 2.0f, 5.0f, 15.0f);
 
     {
         hmm_vec3 original = HMM_Vec3(5.0f, 5.0f, -15.0f);
