@@ -111,7 +111,12 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the X axis
     {
-        hmm_mat4 m = HMM_Rotate(HMM_ToRadians(90.0f), HMM_Vec3(1, 0, 0));
+#ifdef HANDMADE_MATH_USE_DEGREES
+        float angle = 90.0f;
+#else
+        float angle = HMM_ToRadians(90.0f);
+#endif
+        hmm_mat4 m = HMM_Rotate(angle, HMM_Vec3(1, 0, 0));
         hmm_quaternion result = HMM_Mat4ToQuaternion(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
@@ -125,7 +130,12 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the Y axis (axis not normalized, just for fun)
     {
-        hmm_mat4 m = HMM_Rotate(HMM_ToRadians(90.0f), HMM_Vec3(0, 2, 0));
+#ifdef HANDMADE_MATH_USE_DEGREES
+        float angle = 90.0f;
+#else
+        float angle = HMM_ToRadians(90.0f);
+#endif
+        hmm_mat4 m = HMM_Rotate(angle, HMM_Vec3(0, 2, 0));
         hmm_quaternion result = HMM_Mat4ToQuaternion(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
@@ -139,7 +149,12 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the Z axis
     {
-        hmm_mat4 m = HMM_Rotate(HMM_ToRadians(90.0f), HMM_Vec3(0, 0, 1));
+#ifdef HANDMADE_MATH_USE_DEGREES
+        float angle = 90.0f;
+#else
+        float angle = HMM_ToRadians(90.0f);
+#endif
+        hmm_mat4 m = HMM_Rotate(angle, HMM_Vec3(0, 0, 1));
         hmm_quaternion result = HMM_Mat4ToQuaternion(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
@@ -153,7 +168,12 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 45 degrees on the X axis (this hits case 4)
     {
-        hmm_mat4 m = HMM_Rotate(HMM_ToRadians(45.0f), HMM_Vec3(1, 0, 0));
+#ifdef HANDMADE_MATH_USE_DEGREES
+        float angle = 45.0f;
+#else
+        float angle = HMM_ToRadians(45.0f);
+#endif
+        hmm_mat4 m = HMM_Rotate(angle, HMM_Vec3(1, 0, 0));
         hmm_quaternion result = HMM_Mat4ToQuaternion(m);
 
         float cosf = 0.9238795325f; // cos(90/2 degrees)
@@ -169,7 +189,11 @@ TEST(QuaternionOps, Mat4ToQuat)
 TEST(QuaternionOps, FromAxisAngle)
 {
     hmm_vec3 axis = HMM_Vec3(1.0f, 0.0f, 0.0f);
+#ifdef HANDMADE_MATH_USE_DEGREES
+    float angle = 90.0f;
+#else
     float angle = HMM_PI32 / 2.0f;
+#endif
 
     hmm_quaternion result = HMM_QuaternionFromAxisAngle(axis, angle);
     EXPECT_NEAR(result.X, 0.707107f, FLT_EPSILON * 2);

@@ -2,7 +2,7 @@ BUILD_DIR=./build
 
 CXXFLAGS+=-g -Wall -Wextra -pthread -Wno-missing-braces -Wno-missing-field-initializers
 
-all: c c_no_sse cpp cpp_no_sse build_c_without_coverage build_cpp_without_coverage
+all: c c_degrees c_no_sse cpp cpp_degrees cpp_no_sse build_c_without_coverage build_cpp_without_coverage
 
 build_all: build_c build_c_no_sse build_cpp build_cpp_no_sse
 
@@ -20,6 +20,19 @@ build_c: HandmadeMath.c test_impl
 			-c ../HandmadeMath.c ../hmm_test.c \
 			-lm \
 		&& $(CC) -ohmm_test_c HandmadeMath.o hmm_test.o -lm
+
+c_degrees: build_c_degrees
+	$(BUILD_DIR)/hmm_test_c_degrees
+
+build_c_degrees: HandmadeMath.c test_impl
+	@echo "\nCompiling in C mode (degrees)"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR)\
+		&& $(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 \
+			-DHANDMADE_MATH_USE_DEGREES \
+			-c ../HandmadeMath.c ../hmm_test.c \
+			-lm \
+		&& $(CC) -ohmm_test_c_degrees HandmadeMath.o hmm_test.o -lm
 
 c_no_sse: build_c_no_sse
 	$(BUILD_DIR)/hmm_test_c_no_sse
@@ -43,6 +56,18 @@ build_cpp: HandmadeMath.cpp test_impl
 	cd $(BUILD_DIR) \
 		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp \
 			-DHANDMADE_MATH_CPP_MODE \
+			../HandmadeMath.cpp ../hmm_test.cpp
+
+cpp_degrees: build_cpp_degrees
+	$(BUILD_DIR)/hmm_test_cpp_degrees
+
+build_cpp_degrees: HandmadeMath.cpp test_impl
+	@echo "\nCompiling in C++ mode (degrees)"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp_degrees \
+			-DHANDMADE_MATH_CPP_MODE \
+			-DHANDMADE_MATH_USE_DEGREES \
 			../HandmadeMath.cpp ../hmm_test.cpp
 
 cpp_no_sse: build_cpp_no_sse

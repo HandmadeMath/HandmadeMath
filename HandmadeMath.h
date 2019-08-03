@@ -3221,7 +3221,7 @@ hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation)
     float SineOfRotation = HMM_SinF(HMM_CONVERTANGLE(AngleOfRotation) / 2.0f);
 
     Result.XYZ = HMM_MultiplyVec3f(AxisNormalized, SineOfRotation);
-    Result.W = HMM_CosF(AngleOfRotation / 2.0f);
+    Result.W = HMM_CosF(HMM_CONVERTANGLE(AngleOfRotation) / 2.0f);
 
     return (Result);
 }
