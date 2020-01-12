@@ -150,7 +150,7 @@ extern "C"
 
 #if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
     !defined(HMM_SQRTF) || !defined(HMM_EXPF) || !defined(HMM_LOGF) || \
-    !defined(HMM_ACOSF) || !defined(HMM_ATANF)|| !defined(HMM_ATAN2F)
+    !defined(HMM_ACOSF) || !defined(HMM_ATANF)|| !defined(HMM_ATAN2F) || !defined(HMM_FABS)
 #include <math.h>
 #endif
 
@@ -190,8 +190,13 @@ extern "C"
 #define HMM_ATAN2F atan2f
 #endif
 
+#ifndef HMM_FABS
+#define HMM_FABS fabs
+#endif
+
 #define HMM_PI32 3.14159265359f
 #define HMM_PI 3.14159265358979323846
+#define HMM_FLOAT_EPSILON 1.19209290E-07F 
 
 #define HMM_MIN(a, b) (a) > (b) ? (b) : (a)
 #define HMM_MAX(a, b) (a) < (b) ? (b) : (a)
@@ -487,6 +492,12 @@ HMM_INLINE float HMM_LogF(float Float)
     float Result = HMM_LOGF(Float);
 
     return (Result);
+}
+
+HMM_INLINE float HMM_FAbs(float Float)
+{
+    float Result = HMM_FABS(Float);
+    return(Result);
 }
 
 COVERAGE(HMM_SquareRootF, 1)
@@ -978,12 +989,17 @@ HMM_INLINE hmm_vec4 HMM_DivideVec4f(hmm_vec4 Left, float Right)
     return (Result);
 }
 
+HMM_INLINE hmm_bool HMM_AreFloatsSame(float InputOne, float InputTwo)
+{
+    return(HMM_FAbs(InputOne - InputTwo) < HMM_FLOAT_EPSILON);
+}
+
 COVERAGE(HMM_EqualsVec2, 1)
 HMM_INLINE hmm_bool HMM_EqualsVec2(hmm_vec2 Left, hmm_vec2 Right)
 {
     ASSERT_COVERED(HMM_EqualsVec2);
 
-    hmm_bool Result = (Left.X == Right.X && Left.Y == Right.Y);
+    hmm_bool Result = (HMM_AreFloatsSame(Left.X, Right.X) && HMM_AreFloatsSame(Left.Y, Right.Y));
 
     return (Result);
 }
@@ -993,7 +1009,7 @@ HMM_INLINE hmm_bool HMM_EqualsVec3(hmm_vec3 Left, hmm_vec3 Right)
 {
     ASSERT_COVERED(HMM_EqualsVec3);
 
-    hmm_bool Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z);
+    hmm_bool Result = (HMM_AreFloatsSame(Left.X, Right.X) && HMM_AreFloatsSame(Left.Y, Right.Y) && HMM_AreFloatsSame(Left.Z, Right.Z));
 
     return (Result);
 }
