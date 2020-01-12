@@ -44,6 +44,7 @@
      #define HMM_ACOSF MyACosF
      #define HMM_ATANF MyATanF
      #define HMM_ATAN2F MYATan2F
+     #define HMM_FABS MyFAbs
 
   Provide your own implementations of SinF, CosF, TanF, ACosF, ATanF, ATan2F,
   ExpF, and LogF in EXACTLY one C or C++ file that includes this header,
@@ -58,6 +59,7 @@
      #define HMM_ACOSF MyACosF
      #define HMM_ATANF MyATanF
      #define HMM_ATAN2F MyATan2F
+     #define HMM_FABS MyFAbs
      #define HANDMADE_MATH_IMPLEMENTATION
      #include "HandmadeMath.h"
 
@@ -1024,7 +1026,7 @@ HMM_INLINE hmm_bool HMM_EqualsVec4(hmm_vec4 Left, hmm_vec4 Right)
 #if HANDMADE_MATH__USE_SSE
     Result = _mm_movemask_ps(_mm_cmpeq_ps(Left.InternalElementsSSE, Right.InternalElementsSSE)) == 0xF ? 1 : 0;
 #else
-    Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z && Left.W == Right.W);
+    Result = (HMM_AreFloatsSame(Left.X, Right.X) && HMM_AreFloatsSame(Left.Y, Right.Y) && HMM_AreFloatsSame(Left.Z, Right.Z) && HMM_AreFloatsSame(Left.W, Right.W));
 #endif
 
     return (Result);
