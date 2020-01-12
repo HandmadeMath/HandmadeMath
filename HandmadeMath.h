@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.10.1
+  HandmadeMath.h v1.10.3
 
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
@@ -76,7 +76,7 @@
 
   CREDITS
 
-  Written by Zakary Strange (zak@strangedev.net && @strangezak)
+  Written by Zakary Strange (zakarystrange@gmail.net && @strangezak)
 
   Functionality:
    Matt Mascarenhas (@miblo_)
@@ -368,15 +368,15 @@ typedef union hmm_mat4
 #ifdef __cplusplus
     inline hmm_vec4 operator[](const int &Index)
     {
-        float* col = Elements[Index];
+        float* Column = Elements[Index];
 
-        hmm_vec4 result;
-        result.Elements[0] = col[0];
-        result.Elements[1] = col[1];
-        result.Elements[2] = col[2];
-        result.Elements[3] = col[3];
+        hmm_vec4 Result;
+        Result.Elements[0] = Column[0];
+        Result.Elements[1] = Column[1];
+        Result.Elements[2] = Column[2];
+        Result.Elements[3] = Column[3];
 
-        return result;
+        return Result;
     }
 #endif
 } hmm_mat4;
