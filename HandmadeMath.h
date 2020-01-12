@@ -1002,8 +1002,14 @@ COVERAGE(HMM_EqualsVec4, 1)
 HMM_INLINE hmm_bool HMM_EqualsVec4(hmm_vec4 Left, hmm_vec4 Right)
 {
     ASSERT_COVERED(HMM_EqualsVec4);
+    
+    hmm_bool Result;
 
-    hmm_bool Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z && Left.W == Right.W);
+#if HANDMADE_MATH__USE_SSE
+    Result = _mm_movemask_ps(_mm_cmpeq_ps(Left.InternalElementsSSE, Right.InternalElementsSSE)) == 0xF ? 1 : 0;
+#else
+    Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z && Left.W == Right.W);
+#endif
 
     return (Result);
 }
