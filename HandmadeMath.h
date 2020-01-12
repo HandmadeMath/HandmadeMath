@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.9.0
+  HandmadeMath.h v1.10.1
 
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
@@ -118,8 +118,6 @@
 # endif /* not _MSC_VER */
 
 #endif /* #ifndef HANDMADE_MATH_NO_SSE */
-
-#include <stdint.h> // This is for types
 
 #ifdef HANDMADE_MATH__USE_SSE
 #include <xmmintrin.h>
@@ -399,7 +397,7 @@ typedef union hmm_quaternion
 #endif
 } hmm_quaternion;
 
-typedef int32_t hmm_bool;
+typedef signed int hmm_bool;
 
 typedef hmm_vec2 hmm_v2;
 typedef hmm_vec3 hmm_v3;
