@@ -10,7 +10,7 @@ To get started, go download [the latest release](https://github.com/HandmadeMath
 
 Version         | Changes        |
 ----------------|----------------|
-**1.10.2** | Introduced safe floating point comparrision in HMM_EqualsVec2, HMM_EqualsVec3, HMM_EqualsVec4. |
+**1.10.2** | Introduced safe floating point comparison in HMM_EqualsVec2, HMM_EqualsVec3, HMM_EqualsVec4. SIMD'd HMM_EqualsVec4 comparison |
 **1.10.1** | Removed use of stdint.h, this doesn't exist on some really old compilers and we didn't really use it anyways. |
 **1.10.0** | Made HMM_Perspective use vertical FOV instead of horizontal FOV for consistency with other graphics APIs. |
 **1.9.0** | Added SSE versions of quaternion operations. |
