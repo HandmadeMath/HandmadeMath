@@ -33,6 +33,16 @@
 
   =============================================================================
 
+  If you would prefer not to use the HMM_ prefix on function names, you can
+
+  #define HMM_PREFIX
+
+  To use a custom prefix instead, you can
+
+  #define HMM_PREFIX(name) YOUR_PREFIX_##name
+
+  =============================================================================
+
   To use HandmadeMath without the CRT, you MUST
 
      #define HMM_SINF MySinF
