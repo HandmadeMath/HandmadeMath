@@ -1,6 +1,6 @@
 BUILD_DIR=./build
 
-CXXFLAGS+=-g -Wall -Wextra -pthread -Wno-missing-braces -Wno-missing-field-initializers
+CXXFLAGS+=-g -Wall -Wextra -pthread -Wno-missing-braces -Wno-missing-field-initializers -Wfloat-equal
 
 all: c c_no_sse cpp cpp_no_sse build_c_without_coverage build_cpp_without_coverage
 
