@@ -2984,9 +2984,9 @@ hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis)
 {
     ASSERT_COVERED(HMM_Rotate);
 
-    hmm_mat4 Result = HMM_Mat4d(1.0f);
+    hmm_mat4 Result = HMM_PREFIX(Mat4d)(1.0f);
 
-    Axis = HMM_NormalizeVec3(Axis);
+    Axis = HMM_PREFIX(NormalizeVec3)(Axis);
 
     float SinTheta = HMM_PREFIX(SinF)(HMM_PREFIX(ToRadians)(Angle));
     float CosTheta = HMM_PREFIX(CosF)(HMM_PREFIX(ToRadians)(Angle));
