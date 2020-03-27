@@ -15,11 +15,7 @@ TEST(Projection, Orthographic)
 
 TEST(Projection, Perspective)
 {
-#ifdef HANDMADE_MATH_USE_DEGREES
-    float angle = 90.0f;
-#else
     float angle = HMM_ToRadians(90.0f);
-#endif
     hmm_mat4 projection = HMM_Perspective(angle, 2.0f, 5.0f, 15.0f);
 
     {

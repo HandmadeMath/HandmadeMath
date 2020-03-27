@@ -156,12 +156,6 @@ extern "C"
 #include <math.h>
 #endif
 
-#ifdef HANDMADE_MATH_USE_DEGREES
-#define HMM_CONVERTANGLE(v) (v * (HMM_PI32 / 180.0f))
-#else
-#define HMM_CONVERTANGLE(v) (v)
-#endif
-
 #ifndef HMM_SINF
 #define HMM_SINF sinf
 #endif
@@ -549,6 +543,16 @@ HMM_INLINE float HMM_PowerF(float Base, float Exponent)
 /*
  * Utility functions
  */
+
+COVERAGE(HMM_ToDegrees, 1)
+HMM_INLINE float HMM_ToDegrees(float Radians)
+{
+    ASSERT_COVERED(HMM_ToDegrees);
+
+    float Result = Radians * (180.0f / HMM_PI32);
+
+    return (Result);
+}
 
 COVERAGE(HMM_ToRadians, 1)
 HMM_INLINE float HMM_ToRadians(float Degrees)
@@ -1410,7 +1414,7 @@ HMM_INLINE hmm_mat4 HMM_Orthographic(float Left, float Right, float Bottom, floa
 }
 
 COVERAGE(HMM_Perspective, 1)
-HMM_INLINE hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far)
+HMM_INLINE hmm_mat4 HMM_Perspective(float FOVRadians, float AspectRatio, float Near, float Far)
 {
     ASSERT_COVERED(HMM_Perspective);
 
@@ -1418,7 +1422,7 @@ HMM_INLINE hmm_mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, fl
 
     // See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
 
-    float Cotangent = 1.0f / HMM_TanF(HMM_CONVERTANGLE(FOV) / 2.0f);
+    float Cotangent = 1.0f / HMM_TanF(FOVRadians / 2.0f);
 
     Result.Elements[0][0] = Cotangent / AspectRatio;
     Result.Elements[1][1] = Cotangent;
@@ -2984,7 +2988,7 @@ hmm_mat4 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
 #endif
 
 COVERAGE(HMM_Rotate, 1)
-hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis)
+hmm_mat4 HMM_Rotate(float AngleRadians, hmm_vec3 Axis)
 {
     ASSERT_COVERED(HMM_Rotate);
 
@@ -2992,8 +2996,8 @@ hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis)
 
     Axis = HMM_NormalizeVec3(Axis);
 
-    float SinTheta = HMM_SinF(HMM_CONVERTANGLE(Angle));
-    float CosTheta = HMM_CosF(HMM_CONVERTANGLE(Angle));
+    float SinTheta = HMM_SinF(AngleRadians);
+    float CosTheta = HMM_CosF(AngleRadians);
     float CosValue = 1.0f - CosTheta;
 
     Result.Elements[0][0] = (Axis.X * Axis.X * CosValue) + CosTheta;
@@ -3211,17 +3215,17 @@ hmm_quaternion HMM_Mat4ToQuaternion(hmm_mat4 M)
 }
 
 COVERAGE(HMM_QuaternionFromAxisAngle, 1)
-hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation)
+hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotationRadians)
 {
     ASSERT_COVERED(HMM_QuaternionFromAxisAngle);
 
     hmm_quaternion Result;
 
     hmm_vec3 AxisNormalized = HMM_NormalizeVec3(Axis);
-    float SineOfRotation = HMM_SinF(HMM_CONVERTANGLE(AngleOfRotation) / 2.0f);
+    float SineOfRotation = HMM_SinF(AngleOfRotationRadians / 2.0f);
 
     Result.XYZ = HMM_MultiplyVec3f(AxisNormalized, SineOfRotation);
-    Result.W = HMM_CosF(HMM_CONVERTANGLE(AngleOfRotation) / 2.0f);
+    Result.W = HMM_CosF(AngleOfRotationRadians / 2.0f);
 
     return (Result);
 }

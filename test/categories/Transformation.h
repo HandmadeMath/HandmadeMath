@@ -17,11 +17,7 @@ TEST(Transformations, Rotate)
 {
     hmm_vec3 original = HMM_Vec3(1.0f, 1.0f, 1.0f);
 
-#ifdef HANDMADE_MATH_USE_DEGREES
-    float angle = 90.0f;
-#else
     float angle = HMM_ToRadians(90.0f);
-#endif
 
     hmm_mat4 rotateX = HMM_Rotate(angle, HMM_Vec3(1, 0, 0));
     hmm_vec4 rotatedX = HMM_MultiplyMat4ByVec4(rotateX, HMM_Vec4v(original, 1));
