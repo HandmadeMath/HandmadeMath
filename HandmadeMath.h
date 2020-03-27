@@ -140,6 +140,14 @@
 #pragma GCC diagnostic ignored "-Wmissing-braces"
 #endif
 
+#if defined(__GNUC__) || defined(__clang__)
+#define HMM_DEPRECATED(msg) __attribute__((deprecated(msg)))
+#elif defined(_MSC_VER)
+#define HMM_DEPRECATED(msg) __declspec(deprecated(msg))
+#else
+#define HMM_DEPRECATED(msg)
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -353,8 +361,7 @@ typedef union hmm_mat4
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Columns[4];
 
-    // DEPRECATED. Our matrices are column-major, so this was named
-    // incorrectly. Use Columns instead.
+    HMM_DEPRECATED("Our matrices are column-major, so this was named incorrectly. Use Columns instead.")
     __m128 Rows[4];
 #endif
 
