@@ -1448,7 +1448,7 @@ HMM_INLINE hmm_mat4 HMM_Translate(hmm_vec3 Translation)
     return (Result);
 }
 
-HMM_EXTERN hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis);
+HMM_EXTERN hmm_mat4 HMM_Rotate(float AngleRadians, hmm_vec3 Axis);
 
 COVERAGE(HMM_Scale, 1)
 HMM_INLINE hmm_mat4 HMM_Scale(hmm_vec3 Scale)
@@ -1685,7 +1685,7 @@ HMM_INLINE hmm_quaternion HMM_NLerp(hmm_quaternion Left, float Time, hmm_quatern
 HMM_EXTERN hmm_quaternion HMM_Slerp(hmm_quaternion Left, float Time, hmm_quaternion Right);
 HMM_EXTERN hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left);
 HMM_EXTERN hmm_quaternion HMM_Mat4ToQuaternion(hmm_mat4 Left);
-HMM_EXTERN hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation);
+HMM_EXTERN hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotationRadians);
 
 #ifdef __cplusplus
 }
