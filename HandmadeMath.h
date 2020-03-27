@@ -4,6 +4,8 @@
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
 
+  All angles are in radians.
+
   =============================================================================
 
   You MUST
