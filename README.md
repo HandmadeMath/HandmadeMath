@@ -10,6 +10,7 @@ To get started, go download [the latest release](https://github.com/HandmadeMath
 
 Version         | Changes        |
 ----------------|----------------|
+**1.11.0** | Added ability to customize or remove the default `HMM_` prefix on function names by defining a macro called `HMM_PREFIX(name)`. |
 **1.10.1** | Removed stdint.h, this doesn't exist on some really old compilers and we didn't really use it anyways. |
 **1.10.0** | Made HMM_Perspective use vertical FOV instead of horizontal FOV for consistency with other graphics APIs. |
 **1.9.0** | Added SSE versions of quaternion operations. |
