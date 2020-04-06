@@ -115,14 +115,23 @@
 #pragma warning(disable:4201)
 #endif
 
-#ifdef __clang__
+#if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
+#if defined(__GNUC__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 8)
+#pragma GCC diagnostic ignored "-Wmissing-braces"
+#endif
+#ifdef __clang__
 #pragma GCC diagnostic ignored "-Wgnu-anonymous-struct"
 #endif
+#endif
 
-#if defined(__GNUC__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 8)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmissing-braces"
+#if defined(__GNUC__) || defined(__clang__)
+#define HMM_DEPRECATED(msg) __attribute__((deprecated(msg)))
+#elif defined(_MSC_VER)
+#define HMM_DEPRECATED(msg) __declspec(deprecated(msg))
+#else
+#define HMM_DEPRECATED(msg)
 #endif
 
 #ifdef __cplusplus
@@ -337,8 +346,7 @@ typedef union hmm_mat4
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Columns[4];
 
-    // DEPRECATED. Our matrices are column-major, so this was named
-    // incorrectly. Use Columns instead.
+    HMM_DEPRECATED("Our matrices are column-major, so this was named incorrectly. Use Columns instead.")
     __m128 Rows[4];
 #endif
 
@@ -3133,11 +3141,7 @@ HMM_INLINE hmm_bool operator!=(hmm_vec4 Left, hmm_vec4 Right)
 
 #endif /* __cplusplus */
 
-#ifdef __clang__
-#pragma GCC diagnostic pop
-#endif
-
-#if defined(__GNUC__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 8)
+#if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
 
