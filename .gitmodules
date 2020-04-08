@@ -1,0 +1,9 @@
+[submodule "example/lib/glfw"]
+	path = example/lib/glfw
+	url = git@github.com:glfw/glfw.git
+[submodule "example/lib/flextgl-gen"]
+	path = example/lib/flextgl-gen
+	url = git@github.com:mosra/flextgl.git
+[submodule "example/lib/EGL-Registry"]
+	path = example/lib/EGL-Registry
+	url = git@github.com:KhronosGroup/EGL-Registry.git
