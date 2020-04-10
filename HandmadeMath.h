@@ -59,7 +59,7 @@
   CREDITS
 
   Written by:
-   Zakary Strange (zak@strangedev.net && @strangezak)
+   Zakary Strange (zakarystrange@gmail.com && @strangezak)
    Ben Visness (ben@bvisness.me && @its_bvisness)
 
   Functionality:
