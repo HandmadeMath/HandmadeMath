@@ -5,6 +5,12 @@
 #define SOKOL_GLCORE33
 #include "sokol_gfx.h"
 
+#include "../../HandmadeMath.h"
+
+typedef struct {
+    hmm_mat4 mvp;
+} uniforms_t;
+
 int main() {
     /* create window and GL context via GLFW */
     glfwInit();
@@ -34,15 +40,24 @@ int main() {
 
     /* a shader */
     sg_shader shd = sg_make_shader(&(sg_shader_desc){
-        .vs.source =
-            "#version 330\n"
-            "layout(location=0) in vec4 position;\n"
-            "layout(location=1) in vec4 color0;\n"
-            "out vec4 color;\n"
-            "void main() {\n"
-            "  gl_Position = position;\n"
-            "  color = color0;\n"
-            "}\n",
+        .vs = {
+            .source =
+                "#version 330\n"
+                "layout(location=0) in vec4 position;\n"
+                "layout(location=1) in vec4 color0;\n"
+                "out vec4 color;\n"
+                "uniform mat4 mvp;"
+                "void main() {\n"
+                "  gl_Position = mvp * position;\n"
+                "  color = color0;\n"
+                "}\n",
+            .uniform_blocks[0] = {
+                .size = sizeof(uniforms_t),
+                .uniforms = {
+                    [0] = { .name="mvp", .type=SG_UNIFORMTYPE_MAT4 }
+                }
+            }
+        },
         .fs.source =
             "#version 330\n"
             "in vec4 color;\n"
@@ -73,11 +88,16 @@ int main() {
 
     /* draw loop */
     while (!glfwWindowShouldClose(w)) {
+        uniforms_t uniforms = {
+            .mvp = HMM_Scale(HMM_Vec3(0.5f, 0.5f, 0.5f))
+        };
+
         int cur_width, cur_height;
         glfwGetFramebufferSize(w, &cur_width, &cur_height);
         sg_begin_default_pass(&pass_action, cur_width, cur_height);
         sg_apply_pipeline(pip);
         sg_apply_bindings(&binds);
+        sg_apply_uniforms(SG_SHADERSTAGE_VS, 0, &uniforms, sizeof(uniforms));
         sg_draw(0, 3, 1);
         sg_end_pass();
         sg_commit();
