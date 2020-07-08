@@ -2800,7 +2800,7 @@ HMM_INLINE hmm_bool operator!=(hmm_vec4 Left, hmm_vec4 Right)
 #ifdef HANDMADE_MATH_IMPLEMENTATION
 
 COVERAGE(HMM_Power, 2)
-float HMM_Power(float Base, int Exponent)
+float HMM_PREFIX(Power)(float Base, int Exponent)
 {
     ASSERT_COVERED(HMM_Power);
 
@@ -2825,7 +2825,7 @@ float HMM_Power(float Base, int Exponent)
 
 #ifndef HANDMADE_MATH__USE_SSE
 COVERAGE(HMM_Transpose, 1)
-hmm_mat4 HMM_Transpose(hmm_mat4 Matrix)
+hmm_mat4 HMM_PREFIX(Transpose)(hmm_mat4 Matrix)
 {
     ASSERT_COVERED(HMM_Transpose);
 
@@ -2847,7 +2847,7 @@ hmm_mat4 HMM_Transpose(hmm_mat4 Matrix)
 
 #ifndef HANDMADE_MATH__USE_SSE
 COVERAGE(HMM_AddMat4, 1)
-hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
+hmm_mat4 HMM_PREFIX(AddMat4)(hmm_mat4 Left, hmm_mat4 Right)
 {
     ASSERT_COVERED(HMM_AddMat4);
 
@@ -2869,7 +2869,7 @@ hmm_mat4 HMM_AddMat4(hmm_mat4 Left, hmm_mat4 Right)
 
 #ifndef HANDMADE_MATH__USE_SSE
 COVERAGE(HMM_SubtractMat4, 1)
-hmm_mat4 HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
+hmm_mat4 HMM_PREFIX(SubtractMat4)(hmm_mat4 Left, hmm_mat4 Right)
 {
     ASSERT_COVERED(HMM_SubtractMat4);
 
@@ -2890,7 +2890,7 @@ hmm_mat4 HMM_SubtractMat4(hmm_mat4 Left, hmm_mat4 Right)
 #endif
 
 COVERAGE(HMM_MultiplyMat4, 1)
-hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
+hmm_mat4 HMM_PREFIX(MultiplyMat4)(hmm_mat4 Left, hmm_mat4 Right)
 {
     ASSERT_COVERED(HMM_MultiplyMat4);
 
@@ -2925,7 +2925,7 @@ hmm_mat4 HMM_MultiplyMat4(hmm_mat4 Left, hmm_mat4 Right)
 
 #ifndef HANDMADE_MATH__USE_SSE
 COVERAGE(HMM_MultiplyMat4f, 1)
-hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
+hmm_mat4 HMM_PREFIX(MultiplyMat4f)(hmm_mat4 Matrix, float Scalar)
 {
     ASSERT_COVERED(HMM_MultiplyMat4f);
 
@@ -2946,7 +2946,7 @@ hmm_mat4 HMM_MultiplyMat4f(hmm_mat4 Matrix, float Scalar)
 #endif
 
 COVERAGE(HMM_MultiplyMat4ByVec4, 1)
-hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
+hmm_vec4 HMM_PREFIX(MultiplyMat4ByVec4)(hmm_mat4 Matrix, hmm_vec4 Vector)
 {
     ASSERT_COVERED(HMM_MultiplyMat4ByVec4);
 
@@ -2973,7 +2973,7 @@ hmm_vec4 HMM_MultiplyMat4ByVec4(hmm_mat4 Matrix, hmm_vec4 Vector)
 
 #ifndef HANDMADE_MATH__USE_SSE
 COVERAGE(HMM_DivideMat4f, 1);
-hmm_mat4 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
+hmm_mat4 HMM_PREFIX(DivideMat4f)(hmm_mat4 Matrix, float Scalar)
 {
     ASSERT_COVERED(HMM_DivideMat4f);
 
@@ -2994,7 +2994,7 @@ hmm_mat4 HMM_DivideMat4f(hmm_mat4 Matrix, float Scalar)
 #endif
 
 COVERAGE(HMM_Rotate, 1)
-hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis)
+hmm_mat4 HMM_PREFIX(Rotate)(float Angle, hmm_vec3 Axis)
 {
     ASSERT_COVERED(HMM_Rotate);
 
@@ -3022,7 +3022,7 @@ hmm_mat4 HMM_Rotate(float Angle, hmm_vec3 Axis)
 }
 
 COVERAGE(HMM_LookAt, 1)
-hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
+hmm_mat4 HMM_PREFIX(LookAt)(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
 {
     ASSERT_COVERED(HMM_LookAt);
 
@@ -3056,7 +3056,7 @@ hmm_mat4 HMM_LookAt(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
 }
 
 COVERAGE(HMM_InverseQuaternion, 1)
-hmm_quaternion HMM_InverseQuaternion(hmm_quaternion Left)
+hmm_quaternion HMM_PREFIX(InverseQuaternion)(hmm_quaternion Left)
 {
     ASSERT_COVERED(HMM_InverseQuaternion);
 
@@ -3079,7 +3079,7 @@ hmm_quaternion HMM_InverseQuaternion(hmm_quaternion Left)
 }
 
 COVERAGE(HMM_Slerp, 1)
-hmm_quaternion HMM_Slerp(hmm_quaternion Left, float Time, hmm_quaternion Right)
+hmm_quaternion HMM_PREFIX(Slerp)(hmm_quaternion Left, float Time, hmm_quaternion Right)
 {
     ASSERT_COVERED(HMM_Slerp);
 
@@ -3104,7 +3104,7 @@ hmm_quaternion HMM_Slerp(hmm_quaternion Left, float Time, hmm_quaternion Right)
 }
 
 COVERAGE(HMM_QuaternionToMat4, 1)
-hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left)
+hmm_mat4 HMM_PREFIX(QuaternionToMat4)(hmm_quaternion Left)
 {
     ASSERT_COVERED(HMM_QuaternionToMat4);
 
@@ -3164,7 +3164,7 @@ hmm_mat4 HMM_QuaternionToMat4(hmm_quaternion Left)
 // Don't be confused! Or if you must be confused, at least trust this
 // comment. :)
 COVERAGE(HMM_Mat4ToQuaternion, 4)
-hmm_quaternion HMM_Mat4ToQuaternion(hmm_mat4 M)
+hmm_quaternion HMM_PREFIX(Mat4ToQuaternion)(hmm_mat4 M)
 {
     float T;
     hmm_quaternion Q;
@@ -3221,7 +3221,7 @@ hmm_quaternion HMM_Mat4ToQuaternion(hmm_mat4 M)
 }
 
 COVERAGE(HMM_QuaternionFromAxisAngle, 1)
-hmm_quaternion HMM_QuaternionFromAxisAngle(hmm_vec3 Axis, float AngleOfRotation)
+hmm_quaternion HMM_PREFIX(QuaternionFromAxisAngle)(hmm_vec3 Axis, float AngleOfRotation)
 {
     ASSERT_COVERED(HMM_QuaternionFromAxisAngle);
 
