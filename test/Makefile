@@ -1,8 +1,8 @@
 BUILD_DIR=./build
 
-CXXFLAGS+=-g -Wall -Wextra -pthread -Wno-missing-braces -Wno-missing-field-initializers
+CXXFLAGS+=-g -Wall -Wextra -pthread -Wno-missing-braces -Wno-missing-field-initializers -Wfloat-equal
 
-all: c c_no_sse cpp cpp_no_sse build_c_without_coverage build_cpp_without_coverage
+all: c c_no_sse cpp cpp_no_sse build_c_without_coverage build_cpp_without_coverage build_cpp_different_prefix
 
 build_all: build_c build_c_no_sse build_cpp build_cpp_no_sse
 
@@ -58,7 +58,7 @@ build_cpp_no_sse: HandmadeMath.cpp test_impl
 
 test_impl: hmm_test.cpp hmm_test.c
 
-build_c_without_coverage: HandmadeMath.c
+build_c_without_coverage: HandmadeMath.c test_impl
 	@echo "\nCompiling in C mode"
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR)\
@@ -75,3 +75,11 @@ build_cpp_without_coverage: HandmadeMath.cpp test_impl
 		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp_no_sse \
 			-DHANDMADE_MATH_CPP_MODE -DWITHOUT_COVERAGE \
 			../HandmadeMath.cpp ../hmm_test.cpp
+
+build_cpp_different_prefix: HandmadeMath.cpp
+	@echo "\nCompiling C++ with different prefix"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp_different_prefix \
+			-DHANDMADE_MATH_CPP_MODE -DDIFFERENT_PREFIX \
+			../HandmadeMathDifferentPrefix.cpp
