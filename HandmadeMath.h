@@ -589,8 +589,17 @@ HMM_INLINE float HMM_PREFIX(Clamp)(float Min, float Value, float Max)
 {
     ASSERT_COVERED(HMM_Clamp);
 
-    float Result = Value;
+    float Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
+    __m128 Mins = _mm_set_ss(Min);
+    __m128 Maxs = _mm_set_ss(Max);
+    __m128 Values = _mm_set_ss(Value);
+    Values = _mm_min_ps(Values, Maxs);
+    Values = _mm_max_ps(Values, Mins);
+    Result = _mm_cvtss_f32(Values);
+#else
+	Result = Value;
     if(Result < Min)
     {
         Result = Min;
@@ -599,6 +608,7 @@ HMM_INLINE float HMM_PREFIX(Clamp)(float Min, float Value, float Max)
     {
         Result = Max;
     }
+#endif
 
     return (Result);
 }
