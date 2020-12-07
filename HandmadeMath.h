@@ -595,7 +595,8 @@ HMM_INLINE float HMM_PREFIX(Clamp)(float Min, float Value, float Max)
     {
         Result = Min;
     }
-    else if(Result > Max)
+
+    if(Result > Max)
     {
         Result = Max;
     }
