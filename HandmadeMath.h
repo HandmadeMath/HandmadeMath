@@ -2841,10 +2841,10 @@ hmm_mat4 HMM_PREFIX(Transpose)(hmm_mat4 Matrix)
     int Vectors;
     for(Vectors = 0; Vectors < 4; ++Vectors)
     {
-        int Coordinates;
-        for(Coordinates = 0; Coordinates < 4; ++Coordinates)
+        int Axis;
+        for(Axis = 0; Axis < 4; ++Axis)
         {
-            Result.Elements[Coordinates][Vectors] = Matrix.Elements[Vectors][Coordinates];
+            Result.Elements[Axis][Vectors] = Matrix.Elements[Vectors][Axis];
         }
     }
 
@@ -2863,10 +2863,10 @@ hmm_mat4 HMM_PREFIX(AddMat4)(hmm_mat4 Left, hmm_mat4 Right)
     int Vectors;
     for(Vectors = 0; Vectors < 4; ++Vectors)
     {
-        int Coordinates;
-        for(Coordinates = 0; Coordinates < 4; ++Coordinates)
+        int Axis;
+        for(Axis = 0; Axis < 4; ++Axis)
         {
-            Result.Elements[Vectors][Coordinates] = Left.Elements[Vectors][Coordinates] + Right.Elements[Vectors][Coordinates];
+            Result.Elements[Vectors][Axis] = Left.Elements[Vectors][Axis] + Right.Elements[Vectors][Axis];
         }
     }
 
@@ -2885,10 +2885,10 @@ hmm_mat4 HMM_PREFIX(SubtractMat4)(hmm_mat4 Left, hmm_mat4 Right)
     int Vectors;
     for(Vectors = 0; Vectors < 4; ++Vectors)
     {
-        int Coordinates;
-        for(Coordinates = 0; Coordinates < 4; ++Coordinates)
+        int Axis;
+        for(Axis = 0; Axis < 4; ++Axis)
         {
-            Result.Elements[Vectors][Coordinates] = Left.Elements[Vectors][Coordinates] - Right.Elements[Vectors][Coordinates];
+            Result.Elements[Vectors][Axis] = Left.Elements[Vectors][Axis] - Right.Elements[Vectors][Axis];
         }
     }
 
@@ -2912,17 +2912,17 @@ hmm_mat4 HMM_PREFIX(MultiplyMat4)(hmm_mat4 Left, hmm_mat4 Right)
     int Vectors;
     for(Vectors = 0; Vectors < 4; ++Vectors)
     {
-        int Coordinates;
-        for(Coordinates = 0; Coordinates < 4; ++Coordinates)
+        int Axis;
+        for(Axis = 0; Axis < 4; ++Axis)
         {
             float Sum = 0;
             int CurrentMatrice;
             for(CurrentMatrice = 0; CurrentMatrice < 4; ++CurrentMatrice)
             {
-                Sum += Left.Elements[CurrentMatrice][Coordinates] * Right.Elements[Vectors][CurrentMatrice];
+                Sum += Left.Elements[CurrentMatrice][Axis] * Right.Elements[Vectors][CurrentMatrice];
             }
 
-            Result.Elements[Vectors][Coordinates] = Sum;
+            Result.Elements[Vectors][Axis] = Sum;
         }
     }
 #endif
@@ -2941,10 +2941,10 @@ hmm_mat4 HMM_PREFIX(MultiplyMat4f)(hmm_mat4 Matrix, float Scalar)
     int Vectors;
     for(Vectors = 0; Vectors < 4; ++Vectors)
     {
-        int Coordinates;
-        for(Coordinates = 0; Coordinates < 4; ++Coordinates)
+        int Axis;
+        for(Axis = 0; Axis < 4; ++Axis)
         {
-            Result.Elements[Vectors][Coordinates] = Matrix.Elements[Vectors][Coordinates] * Scalar;
+            Result.Elements[Vectors][Axis] = Matrix.Elements[Vectors][Axis] * Scalar;
         }
     }
 
@@ -2962,16 +2962,16 @@ hmm_vec4 HMM_PREFIX(MultiplyMat4ByVec4)(hmm_mat4 Matrix, hmm_vec4 Vector)
 #ifdef HANDMADE_MATH__USE_SSE
 	Result.InternalElementsSSE = HMM_PREFIX(LinearCombineSSE)(Vector.InternalElementsSSE, Matrix);
 #else
-    int Vectors, Coordinates;
-    for(Coordinates = 0; Coordinates < 4; ++Coordinates)
+    int Vectors, Axis;
+    for(Axis = 0; Axis < 4; ++Axis)
     {
         float Sum = 0;
         for(Vectors = 0; Vectors < 4; ++Vectors)
         {
-            Sum += Matrix.Elements[Vectors][Coordinates] * Vector.Elements[Vectors];
+            Sum += Matrix.Elements[Vectors][Axis] * Vector.Elements[Vectors];
         }
 
-        Result.Elements[Coordinates] = Sum;
+        Result.Elements[Axis] = Sum;
     }
 #endif
 
@@ -2989,10 +2989,10 @@ hmm_mat4 HMM_PREFIX(DivideMat4f)(hmm_mat4 Matrix, float Scalar)
     int Vectors;
     for(Vectors = 0; Vectors < 4; ++Vectors)
     {
-        int Coordinates;
-        for(Coordinates = 0; Coordinates < 4; ++Coordinates)
+        int Axis;
+        for(Axis = 0; Axis < 4; ++Axis)
         {
-            Result.Elements[Vectors][Coordinates] = Matrix.Elements[Vectors][Coordinates] / Scalar;
+            Result.Elements[Vectors][Axis] = Matrix.Elements[Vectors][Axis] / Scalar;
         }
     }
 
