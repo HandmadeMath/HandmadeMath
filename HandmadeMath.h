@@ -371,12 +371,18 @@ typedef union hmm_vec4
 
 typedef union hmm_mat4
 {
+    // Vector coordinates are stored contiguously, making hmm_mat4 row-major *in
+    // memory*, but you can think of/print them as column-major notationally if you
+    // prefer. The unambiguous term is row-vector, where access in C is matrix[row][column]
     float Elements[4][4];
 
 #ifdef HANDMADE_MATH__USE_SSE
+    __m128 Vectors[4];
+
+    HMM_DEPRECATED("Our matrices are row-vector, so this was named ambiguously. Use Vectors instead.")
     __m128 Columns[4];
 
-    HMM_DEPRECATED("Our matrices are column-major, so this was named incorrectly. Use Columns instead.")
+    HMM_DEPRECATED("Our matrices are row-vector, so this was named ambiguously. Use Vectors instead.")
     __m128 Rows[4];
 #endif
 
@@ -1263,10 +1269,10 @@ HMM_INLINE __m128 HMM_PREFIX(LinearCombineSSE)(__m128 Left, hmm_mat4 Right)
     ASSERT_COVERED(HMM_LinearCombineSSE);
 
     __m128 Result;
-    Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Columns[0]);
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x55), Right.Columns[1]));
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xaa), Right.Columns[2]));
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xff), Right.Columns[3]));
+    Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Vectors[0]);
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x55), Right.Vectors[1]));
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xaa), Right.Vectors[2]));
+    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xff), Right.Vectors[3]));
 
     return (Result);
 }
@@ -1310,7 +1316,7 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(Transpose)(hmm_mat4 Matrix)
 
     hmm_mat4 Result = Matrix;
 
-    _MM_TRANSPOSE4_PS(Result.Columns[0], Result.Columns[1], Result.Columns[2], Result.Columns[3]);
+    _MM_TRANSPOSE4_PS(Result.Vectors[0], Result.Vectors[1], Result.Vectors[2], Result.Vectors[3]);
 
     return (Result);
 }
@@ -1326,10 +1332,10 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(AddMat4)(hmm_mat4 Left, hmm_mat4 Right)
 
     hmm_mat4 Result;
 
-    Result.Columns[0] = _mm_add_ps(Left.Columns[0], Right.Columns[0]);
-    Result.Columns[1] = _mm_add_ps(Left.Columns[1], Right.Columns[1]);
-    Result.Columns[2] = _mm_add_ps(Left.Columns[2], Right.Columns[2]);
-    Result.Columns[3] = _mm_add_ps(Left.Columns[3], Right.Columns[3]);
+    Result.Vectors[0] = _mm_add_ps(Left.Vectors[0], Right.Vectors[0]);
+    Result.Vectors[1] = _mm_add_ps(Left.Vectors[1], Right.Vectors[1]);
+    Result.Vectors[2] = _mm_add_ps(Left.Vectors[2], Right.Vectors[2]);
+    Result.Vectors[3] = _mm_add_ps(Left.Vectors[3], Right.Vectors[3]);
 
     return (Result);
 }
@@ -1345,10 +1351,10 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(SubtractMat4)(hmm_mat4 Left, hmm_mat4 Right)
 
     hmm_mat4 Result;
 
-    Result.Columns[0] = _mm_sub_ps(Left.Columns[0], Right.Columns[0]);
-    Result.Columns[1] = _mm_sub_ps(Left.Columns[1], Right.Columns[1]);
-    Result.Columns[2] = _mm_sub_ps(Left.Columns[2], Right.Columns[2]);
-    Result.Columns[3] = _mm_sub_ps(Left.Columns[3], Right.Columns[3]);
+    Result.Vectors[0] = _mm_sub_ps(Left.Vectors[0], Right.Vectors[0]);
+    Result.Vectors[1] = _mm_sub_ps(Left.Vectors[1], Right.Vectors[1]);
+    Result.Vectors[2] = _mm_sub_ps(Left.Vectors[2], Right.Vectors[2]);
+    Result.Vectors[3] = _mm_sub_ps(Left.Vectors[3], Right.Vectors[3]);
 
     return (Result);
 }
@@ -1367,10 +1373,10 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(MultiplyMat4f)(hmm_mat4 Matrix, float Scalar)
     hmm_mat4 Result;
 
     __m128 SSEScalar = _mm_set1_ps(Scalar);
-    Result.Columns[0] = _mm_mul_ps(Matrix.Columns[0], SSEScalar);
-    Result.Columns[1] = _mm_mul_ps(Matrix.Columns[1], SSEScalar);
-    Result.Columns[2] = _mm_mul_ps(Matrix.Columns[2], SSEScalar);
-    Result.Columns[3] = _mm_mul_ps(Matrix.Columns[3], SSEScalar);
+    Result.Vectors[0] = _mm_mul_ps(Matrix.Vectors[0], SSEScalar);
+    Result.Vectors[1] = _mm_mul_ps(Matrix.Vectors[1], SSEScalar);
+    Result.Vectors[2] = _mm_mul_ps(Matrix.Vectors[2], SSEScalar);
+    Result.Vectors[3] = _mm_mul_ps(Matrix.Vectors[3], SSEScalar);
 
     return (Result);
 }
@@ -1389,10 +1395,10 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(DivideMat4f)(hmm_mat4 Matrix, float Scalar)
     hmm_mat4 Result;
 
     __m128 SSEScalar = _mm_set1_ps(Scalar);
-    Result.Columns[0] = _mm_div_ps(Matrix.Columns[0], SSEScalar);
-    Result.Columns[1] = _mm_div_ps(Matrix.Columns[1], SSEScalar);
-    Result.Columns[2] = _mm_div_ps(Matrix.Columns[2], SSEScalar);
-    Result.Columns[3] = _mm_div_ps(Matrix.Columns[3], SSEScalar);
+    Result.Vectors[0] = _mm_div_ps(Matrix.Vectors[0], SSEScalar);
+    Result.Vectors[1] = _mm_div_ps(Matrix.Vectors[1], SSEScalar);
+    Result.Vectors[2] = _mm_div_ps(Matrix.Vectors[2], SSEScalar);
+    Result.Vectors[3] = _mm_div_ps(Matrix.Vectors[3], SSEScalar);
 
     return (Result);
 }
@@ -2832,13 +2838,13 @@ hmm_mat4 HMM_PREFIX(Transpose)(hmm_mat4 Matrix)
 
     hmm_mat4 Result;
 
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
+    int Vectors;
+    for(Vectors = 0; Vectors < 4; ++Vectors)
     {
         int Rows;
         for(Rows = 0; Rows < 4; ++Rows)
         {
-            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
+            Result.Elements[Rows][Vectors] = Matrix.Elements[Vectors][Rows];
         }
     }
 
@@ -2854,13 +2860,13 @@ hmm_mat4 HMM_PREFIX(AddMat4)(hmm_mat4 Left, hmm_mat4 Right)
 
     hmm_mat4 Result;
 
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
+    int Vectors;
+    for(Vectors = 0; Vectors < 4; ++Vectors)
     {
         int Rows;
         for(Rows = 0; Rows < 4; ++Rows)
         {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
+            Result.Elements[Vectors][Rows] = Left.Elements[Vectors][Rows] + Right.Elements[Vectors][Rows];
         }
     }
 
@@ -2876,13 +2882,13 @@ hmm_mat4 HMM_PREFIX(SubtractMat4)(hmm_mat4 Left, hmm_mat4 Right)
 
     hmm_mat4 Result;
 
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
+    int Vectors;
+    for(Vectors = 0; Vectors < 4; ++Vectors)
     {
         int Rows;
         for(Rows = 0; Rows < 4; ++Rows)
         {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
+            Result.Elements[Vectors][Rows] = Left.Elements[Vectors][Rows] - Right.Elements[Vectors][Rows];
         }
     }
 
@@ -2898,13 +2904,13 @@ hmm_mat4 HMM_PREFIX(MultiplyMat4)(hmm_mat4 Left, hmm_mat4 Right)
     hmm_mat4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.Columns[0] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[0], Left);
-    Result.Columns[1] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[1], Left);
-    Result.Columns[2] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[2], Left);
-    Result.Columns[3] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[3], Left);
+    Result.Vectors[0] = HMM_PREFIX(LinearCombineSSE)(Right.Vectors[0], Left);
+    Result.Vectors[1] = HMM_PREFIX(LinearCombineSSE)(Right.Vectors[1], Left);
+    Result.Vectors[2] = HMM_PREFIX(LinearCombineSSE)(Right.Vectors[2], Left);
+    Result.Vectors[3] = HMM_PREFIX(LinearCombineSSE)(Right.Vectors[3], Left);
 #else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
+    int Vectors;
+    for(Vectors = 0; Vectors < 4; ++Vectors)
     {
         int Rows;
         for(Rows = 0; Rows < 4; ++Rows)
@@ -2913,10 +2919,10 @@ hmm_mat4 HMM_PREFIX(MultiplyMat4)(hmm_mat4 Left, hmm_mat4 Right)
             int CurrentMatrice;
             for(CurrentMatrice = 0; CurrentMatrice < 4; ++CurrentMatrice)
             {
-                Sum += Left.Elements[CurrentMatrice][Rows] * Right.Elements[Columns][CurrentMatrice];
+                Sum += Left.Elements[CurrentMatrice][Rows] * Right.Elements[Vectors][CurrentMatrice];
             }
 
-            Result.Elements[Columns][Rows] = Sum;
+            Result.Elements[Vectors][Rows] = Sum;
         }
     }
 #endif
@@ -2932,13 +2938,13 @@ hmm_mat4 HMM_PREFIX(MultiplyMat4f)(hmm_mat4 Matrix, float Scalar)
 
     hmm_mat4 Result;
 
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
+    int Vectors;
+    for(Vectors = 0; Vectors < 4; ++Vectors)
     {
         int Rows;
         for(Rows = 0; Rows < 4; ++Rows)
         {
-            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
+            Result.Elements[Vectors][Rows] = Matrix.Elements[Vectors][Rows] * Scalar;
         }
     }
 
@@ -2956,13 +2962,13 @@ hmm_vec4 HMM_PREFIX(MultiplyMat4ByVec4)(hmm_mat4 Matrix, hmm_vec4 Vector)
 #ifdef HANDMADE_MATH__USE_SSE
 	Result.InternalElementsSSE = HMM_PREFIX(LinearCombineSSE)(Vector.InternalElementsSSE, Matrix);
 #else
-    int Columns, Rows;
+    int Vectors, Rows;
     for(Rows = 0; Rows < 4; ++Rows)
     {
         float Sum = 0;
-        for(Columns = 0; Columns < 4; ++Columns)
+        for(Vectors = 0; Vectors < 4; ++Vectors)
         {
-            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
+            Sum += Matrix.Elements[Vectors][Rows] * Vector.Elements[Vectors];
         }
 
         Result.Elements[Rows] = Sum;
@@ -2980,13 +2986,13 @@ hmm_mat4 HMM_PREFIX(DivideMat4f)(hmm_mat4 Matrix, float Scalar)
 
     hmm_mat4 Result;
 
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
+    int Vectors;
+    for(Vectors = 0; Vectors < 4; ++Vectors)
     {
         int Rows;
         for(Rows = 0; Rows < 4; ++Rows)
         {
-            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
+            Result.Elements[Vectors][Rows] = Matrix.Elements[Vectors][Rows] / Scalar;
         }
     }
 

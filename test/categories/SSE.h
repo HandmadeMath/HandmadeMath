@@ -8,10 +8,10 @@ TEST(SSE, LinearCombine)
     hmm_mat4 MatrixTwo = HMM_Mat4d(4.0f);
     hmm_mat4 Result;
 
-    Result.Columns[0] = HMM_LinearCombineSSE(MatrixOne.Columns[0], MatrixTwo);
-    Result.Columns[1] = HMM_LinearCombineSSE(MatrixOne.Columns[1], MatrixTwo);
-    Result.Columns[2] = HMM_LinearCombineSSE(MatrixOne.Columns[2], MatrixTwo);
-    Result.Columns[3] = HMM_LinearCombineSSE(MatrixOne.Columns[3], MatrixTwo);
+    Result.Vectors[0] = HMM_LinearCombineSSE(MatrixOne.Vectors[0], MatrixTwo);
+    Result.Vectors[1] = HMM_LinearCombineSSE(MatrixOne.Vectors[1], MatrixTwo);
+    Result.Vectors[2] = HMM_LinearCombineSSE(MatrixOne.Vectors[2], MatrixTwo);
+    Result.Vectors[3] = HMM_LinearCombineSSE(MatrixOne.Vectors[3], MatrixTwo);
 
     {
         EXPECT_FLOAT_EQ(Result.Elements[0][0], 8.0f);
