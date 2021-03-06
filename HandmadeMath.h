@@ -2795,6 +2795,46 @@ HMM_INLINE hmm_bool operator!=(hmm_vec4 Left, hmm_vec4 Right)
     return !HMM_PREFIX(EqualsVec4)(Left, Right);
 }
 
+COVERAGE(HMM_UnaryMinusVec2, 1)
+HMM_INLINE hmm_vec2 operator-(hmm_vec2 In)
+{
+    ASSERT_COVERED(HMM_UnaryMinusVec2);
+    
+    hmm_vec2 Result;
+    Result.X = -In.X;
+    Result.Y = -In.Y;
+    return(Result);
+}
+
+COVERAGE(HMM_UnaryMinusVec3, 1)
+HMM_INLINE hmm_vec3 operator-(hmm_vec3 In)
+{
+    ASSERT_COVERED(HMM_UnaryMinusVec3);
+
+    hmm_vec3 Result;
+    Result.X = -In.X;
+    Result.Y = -In.Y;
+    Result.Z = -In.Z;
+    return(Result);
+}
+
+COVERAGE(HMM_UnaryMinusVec4, 1)
+HMM_INLINE hmm_vec4 operator-(hmm_vec4 In)
+{
+    ASSERT_COVERED(HMM_UnaryMinusVec4);
+    
+    hmm_vec4 Result;
+#if HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_xor_ps(In.InternalElementsSSE, _mm_set1_ps(-0.0f));
+#else
+    Result.X = -In.X;
+    Result.Y = -In.Y;
+    Result.Z = -In.Z;
+    Result.W = -In.W;
+#endif
+    return(Result);
+}
+
 #endif /* __cplusplus */
 
 #if defined(__GNUC__) || defined(__clang__)
