@@ -199,3 +199,32 @@ TEST(Subtraction, Quaternion)
     EXPECT_FLOAT_EQ(q1.W, -4.0f);
 #endif
 }
+
+#ifdef __cplusplus
+TEST(UnaryMinus, Vec2)
+{
+    hmm_vec2 VectorOne = {1.0f, 2.0f};
+    hmm_vec2 Result = -VectorOne;
+    EXPECT_FLOAT_EQ(Result.X, -1.0f);
+    EXPECT_FLOAT_EQ(Result.Y, -2.0f);
+}
+
+TEST(UnaryMinus, Vec3)
+{
+    hmm_vec3 VectorOne = {1.0f, 2.0f, 3.0f};
+    hmm_vec3 Result = -VectorOne;
+    EXPECT_FLOAT_EQ(Result.X, -1.0f);
+    EXPECT_FLOAT_EQ(Result.Y, -2.0f);
+    EXPECT_FLOAT_EQ(Result.Z, -3.0f);
+}
+
+TEST(UnaryMinus, Vec4)
+{
+    hmm_vec4 VectorOne = {1.0f, 2.0f, 3.0f, 4.0f};
+    hmm_vec4 Result = -VectorOne;
+    EXPECT_FLOAT_EQ(Result.X, -1.0f);
+    EXPECT_FLOAT_EQ(Result.Y, -2.0f);
+    EXPECT_FLOAT_EQ(Result.Z, -3.0f);
+    EXPECT_FLOAT_EQ(Result.W, -4.0f);
+}
+#endif
