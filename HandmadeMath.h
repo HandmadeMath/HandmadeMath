@@ -84,7 +84,7 @@
 
   CREDITS
 
-  Written by Zakary Strange (strangezak@gmail.com && @strangezak)
+  Written by Zakary Strange (strangezak@protonmail.com && @strangezak)
 
   Functionality:
    Matt Mascarenhas (@miblo_)
