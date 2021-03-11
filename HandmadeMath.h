@@ -1974,6 +1974,20 @@ HMM_DEF hmm_mat4 HMM_PREFIX(QuaternionToMat4)(hmm_quaternion Left)
     return (Result);
 }
 
+// This method taken from Mike Day at Insomniac Games.
+// https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2015/01/matrix-to-quat.pdf
+//
+// Note that as mentioned at the top of the paper, the paper assumes the matrix
+// would be *post*-multiplied to a vector to rotate it, meaning the matrix is
+// the transpose of what we're dealing with. But, because our matrices are
+// stored in column-major order, the indices *appear* to match the paper.
+//
+// For example, m12 in the paper is row 1, column 2. We need to transpose it to
+// row 2, column 1. But, because the column comes first when referencing
+// elements, it looks like M.Elements[1][2].
+//
+// Don't be confused! Or if you must be confused, at least trust this
+// comment. :)
 COVERAGE(HMM_Mat4ToQuaternion, 4)
 HMM_DEF hmm_quaternion HMM_PREFIX(Mat4ToQuaternion)(hmm_mat4 M)
 {
@@ -3168,18 +3182,4 @@ HMM_DEF hmm_vec4 operator-(hmm_vec4 In)
 #endif /* HANDMADE_MATH_H */
 
 
-// This method taken from Mike Day at Insomniac Games.
-// https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2015/01/matrix-to-quat.pdf
-//
-// Note that as mentioned at the top of the paper, the paper assumes the matrix
-// would be *post*-multiplied to a vector to rotate it, meaning the matrix is
-// the transpose of what we're dealing with. But, because our matrices are
-// stored in column-major order, the indices *appear* to match the paper.
-//
-// For example, m12 in the paper is row 1, column 2. We need to transpose it to
-// row 2, column 1. But, because the column comes first when referencing
-// elements, it looks like M.Elements[1][2].
-//
-// Don't be confused! Or if you must be confused, at least trust this
-// comment. :)
 
