@@ -10,7 +10,8 @@ To get started, go download [the latest release](https://github.com/HandmadeMath
 
 Version         | Changes        |
 ----------------|----------------|
-**1.12.0** | Added Unary Minus operator for `HMM_Vec2`, `HMM_Vec3`, and `HMM_Vec4`. |
+
+**1.13.0** | Inline all Handmade Math functions. Remove need for HANDMADE_MATH_IMPLEMENTATION | 
 **1.11.1** | Added HMM_PREFIX macro to a few functions that were missing it. |
 **1.11.0** | Added ability to customize or remove the default `HMM_` prefix on function names by defining a macro called `HMM_PREFIX(name)`. |
 **1.10.1** | Removed stdint.h, this doesn't exist on some really old compilers and we didn't really use it anyways. |

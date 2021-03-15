@@ -1,22 +1,8 @@
 /*
-  HandmadeMath.h v1.11.0
+  HandmadeMath.h v1.13.0
 
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
-
-  =============================================================================
-
-  You MUST
-
-     #define HANDMADE_MATH_IMPLEMENTATION
-
-  in EXACTLY one C or C++ file that includes this header, BEFORE the
-  include, like this:
-
-     #define HANDMADE_MATH_IMPLEMENTATION
-     #include "HandmadeMath.h"
-
-  All other files should just #include "HandmadeMath.h" without the #define.
 
   =============================================================================
 
@@ -27,7 +13,6 @@
   in EXACTLY one C or C++ file that includes this header, BEFORE the
   include, like this:
 
-     #define HANDMADE_MATH_IMPLEMENTATION
      #define HANDMADE_MATH_NO_SSE
      #include "HandmadeMath.h"
 
@@ -68,7 +53,6 @@
      #define HMM_ACOSF MyACosF
      #define HMM_ATANF MyATanF
      #define HMM_ATAN2F MyATan2F
-     #define HANDMADE_MATH_IMPLEMENTATION
      #include "HandmadeMath.h"
 
   If you do not define all of these, HandmadeMath.h will use the
