@@ -10,7 +10,7 @@ To get started, go download [the latest release](https://github.com/HandmadeMath
 
 Version         | Changes        |
 ----------------|----------------|
-**1.12.1** | Added extra parentheses around some macros (#133) |
+**1.12.1** | Added extra parentheses around some macros |
 **1.12.0** | Added Unary Minus operator for `HMM_Vec2`, `HMM_Vec3`, and `HMM_Vec4`. |
 **1.11.1** | Added HMM_PREFIX macro to a few functions that were missing it. |
 **1.11.0** | Added ability to customize or remove the default `HMM_` prefix on function names by defining a macro called `HMM_PREFIX(name)`. |
