@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.11.0
+  HandmadeMath.h v1.12.1
 
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
@@ -2799,7 +2799,7 @@ COVERAGE(HMM_UnaryMinusVec2, 1)
 HMM_INLINE hmm_vec2 operator-(hmm_vec2 In)
 {
     ASSERT_COVERED(HMM_UnaryMinusVec2);
-    
+
     hmm_vec2 Result;
     Result.X = -In.X;
     Result.Y = -In.Y;
@@ -2822,7 +2822,7 @@ COVERAGE(HMM_UnaryMinusVec4, 1)
 HMM_INLINE hmm_vec4 operator-(hmm_vec4 In)
 {
     ASSERT_COVERED(HMM_UnaryMinusVec4);
-    
+
     hmm_vec4 Result;
 #if HANDMADE_MATH__USE_SSE
     Result.InternalElementsSSE = _mm_xor_ps(In.InternalElementsSSE, _mm_set1_ps(-0.0f));
