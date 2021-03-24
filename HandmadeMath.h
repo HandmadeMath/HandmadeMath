@@ -217,8 +217,8 @@ extern "C"
 #define HMM_PI32 3.14159265359f
 #define HMM_PI 3.14159265358979323846
 
-#define HMM_MIN(a, b) (a) > (b) ? (b) : (a)
-#define HMM_MAX(a, b) (a) < (b) ? (b) : (a)
+#define HMM_MIN(a, b) ((a) > (b) ? (b) : (a))
+#define HMM_MAX(a, b) ((a) < (b) ? (b) : (a))
 #define HMM_ABS(a) ((a) > 0 ? (a) : -(a))
 #define HMM_MOD(a, m) ((a) % (m)) >= 0 ? ((a) % (m)) : (((a) % (m)) + (m))
 #define HMM_SQUARE(x) ((x) * (x))
