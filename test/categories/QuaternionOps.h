@@ -66,14 +66,39 @@ TEST(QuaternionOps, NLerp)
 
 TEST(QuaternionOps, Slerp)
 {
-    hmm_quaternion from = HMM_Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
-    hmm_quaternion to = HMM_Quaternion(0.5f, 0.5f, -0.5f, 0.5f);
+    // Normal operation
+    {
+        hmm_quaternion from = HMM_Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+        hmm_quaternion to = HMM_Quaternion(0.5f, 0.5f, -0.5f, 0.5f);
 
-    hmm_quaternion result = HMM_Slerp(from, 0.5f, to);
-    EXPECT_FLOAT_EQ(result.X, 0.28867513f);
-    EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
-    EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
-    EXPECT_FLOAT_EQ(result.W, 0.86602540f);
+        hmm_quaternion result = HMM_Slerp(from, 0.5f, to);
+        EXPECT_FLOAT_EQ(result.X, 0.28867513f);
+        EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
+        EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
+        EXPECT_FLOAT_EQ(result.W, 0.86602540f);
+    }
+
+    // Same quat twice
+    {
+        hmm_quaternion q = HMM_Quaternion(0.5f, 0.5f, 0.5f, 1.0f);
+
+        hmm_quaternion result = HMM_Slerp(q, 0.5f, q);
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 0.5f);
+        EXPECT_FLOAT_EQ(result.Z, 0.5f);
+        EXPECT_FLOAT_EQ(result.W, 1.0f);
+    }
+
+    // Identity quat twice
+    {
+        hmm_quaternion q = HMM_Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
+
+        hmm_quaternion result = HMM_Slerp(q, 0.5f, q);
+        EXPECT_FLOAT_EQ(result.X, 0.0f);
+        EXPECT_FLOAT_EQ(result.Y, 1.0f);
+        EXPECT_FLOAT_EQ(result.Z, 0.0f);
+        EXPECT_FLOAT_EQ(result.W, 1.0f);
+    }
 }
 
 TEST(QuaternionOps, QuatToMat4)

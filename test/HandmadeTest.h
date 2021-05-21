@@ -58,6 +58,7 @@
 #define HANDMADETEST_H
 
 #include <float.h>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -152,7 +153,7 @@ INITIALIZER(_HMT_COVERCASE_FUNCNAME_INIT(name)) { \
     _HMT_CASE_START(); \
     float actual = (_actual); \
     float diff = actual - (_expected); \
-    if (diff < -FLT_EPSILON || FLT_EPSILON < diff) { \
+    if (isnan(actual) || diff < -FLT_EPSILON || FLT_EPSILON < diff) { \
         _HMT_CASE_FAIL(); \
         printf("Expected %f, got %f", (_expected), actual); \
     } \
@@ -162,7 +163,7 @@ INITIALIZER(_HMT_COVERCASE_FUNCNAME_INIT(name)) { \
     _HMT_CASE_START(); \
     float actual = (_actual); \
     float diff = actual - (_expected); \
-    if (diff < -(_epsilon) || (_epsilon) < diff) { \
+    if (isnan(actual) || diff < -(_epsilon) || (_epsilon) < diff) { \
         _HMT_CASE_FAIL(); \
         printf("Expected %f, got %f", (_expected), actual); \
     } \
