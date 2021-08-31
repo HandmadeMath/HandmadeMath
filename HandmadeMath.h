@@ -3106,21 +3106,15 @@ COVERAGE(HMM_InverseQuaternion, 1)
 hmm_quaternion HMM_PREFIX(InverseQuaternion)(hmm_quaternion Left)
 {
     ASSERT_COVERED(HMM_InverseQuaternion);
-
-    hmm_quaternion Conjugate;
+    
     hmm_quaternion Result;
-    float Norm = 0;
-    float NormSquared = 0;
 
-    Conjugate.X = -Left.X;
-    Conjugate.Y = -Left.Y;
-    Conjugate.Z = -Left.Z;
-    Conjugate.W = Left.W;
+    Result.X = -Left.X;
+    Result.Y = -Left.Y;
+    Result.Z = -Left.Z;
+    Result.W = Left.W;
 
-    Norm = HMM_PREFIX(SquareRootF)(HMM_PREFIX(DotQuaternion)(Left, Left));
-    NormSquared = Norm * Norm;
-
-    Result = HMM_PREFIX(DivideQuaternionF)(Conjugate, NormSquared);
+    Result = HMM_PREFIX(DivideQuaternionF)(Result, (HMM_PREFIX(DotQuaternion)(Left, Left)));
 
     return (Result);
 }
