@@ -1309,7 +1309,6 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(Mat4d)(float Diagonal)
     return (Result);
 }
 
-#ifdef HANDMADE_MATH__USE_SSE
 COVERAGE(HMM_Transpose, 1)
 HMM_INLINE hmm_mat4 HMM_PREFIX(Transpose)(hmm_mat4 Matrix)
 {
@@ -1317,18 +1316,9 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(Transpose)(hmm_mat4 Matrix)
 
     hmm_mat4 Result = Matrix;
 
+#ifdef HANDMADE_MATH__USE_SSE
     _MM_TRANSPOSE4_PS(Result.Columns[0], Result.Columns[1], Result.Columns[2], Result.Columns[3]);
-
-    return (Result);
-}
 #else
-COVERAGE(HMM_Transpose, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Transpose)(hmm_mat4 Matrix)
-{
-    ASSERT_COVERED(HMM_Transpose);
-
-    hmm_mat4 Result;
-
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1338,12 +1328,12 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(Transpose)(hmm_mat4 Matrix)
             Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
         }
     }
+#endif
+
 
     return (Result);
 }
-#endif
 
-#ifdef HANDMADE_MATH__USE_SSE
 COVERAGE(HMM_AddMat4, 1)
 HMM_INLINE hmm_mat4 HMM_PREFIX(AddMat4)(hmm_mat4 Left, hmm_mat4 Right)
 {
@@ -1351,22 +1341,13 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(AddMat4)(hmm_mat4 Left, hmm_mat4 Right)
 
     hmm_mat4 Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
     Result.Columns[0] = _mm_add_ps(Left.Columns[0], Right.Columns[0]);
     Result.Columns[1] = _mm_add_ps(Left.Columns[1], Right.Columns[1]);
     Result.Columns[2] = _mm_add_ps(Left.Columns[2], Right.Columns[2]);
     Result.Columns[3] = _mm_add_ps(Left.Columns[3], Right.Columns[3]);
-
-    return (Result);
-}
 #else
-COVERAGE(HMM_AddMat4, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(AddMat4)(hmm_mat4 Left, hmm_mat4 Right)
-{
-    ASSERT_COVERED(HMM_AddMat4);
-
-    hmm_mat4 Result;
-
-    int Columns;
+     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
         int Rows;
@@ -1375,12 +1356,12 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(AddMat4)(hmm_mat4 Left, hmm_mat4 Right)
             Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
         }
     }
-
-    return (Result);
-}
 #endif
 
-#ifdef HANDMADE_MATH__USE_SSE
+   
+    return (Result);
+}
+
 COVERAGE(HMM_SubtractMat4, 1)
 HMM_INLINE hmm_mat4 HMM_PREFIX(SubtractMat4)(hmm_mat4 Left, hmm_mat4 Right)
 {
@@ -1388,21 +1369,12 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(SubtractMat4)(hmm_mat4 Left, hmm_mat4 Right)
 
     hmm_mat4 Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
     Result.Columns[0] = _mm_sub_ps(Left.Columns[0], Right.Columns[0]);
     Result.Columns[1] = _mm_sub_ps(Left.Columns[1], Right.Columns[1]);
     Result.Columns[2] = _mm_sub_ps(Left.Columns[2], Right.Columns[2]);
     Result.Columns[3] = _mm_sub_ps(Left.Columns[3], Right.Columns[3]);
-
-    return (Result);
-}
 #else
-COVERAGE(HMM_SubtractMat4, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(SubtractMat4)(hmm_mat4 Left, hmm_mat4 Right)
-{
-    ASSERT_COVERED(HMM_SubtractMat4);
-
-    hmm_mat4 Result;
-
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1412,10 +1384,10 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(SubtractMat4)(hmm_mat4 Left, hmm_mat4 Right)
             Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
         }
     }
-
+#endif
+ 
     return (Result);
 }
-#endif
 
 COVERAGE(HMM_MultiplyMat4, 1)
 HMM_INLINE hmm_mat4 HMM_PREFIX(MultiplyMat4)(hmm_mat4 Left, hmm_mat4 Right)
@@ -1452,7 +1424,6 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(MultiplyMat4)(hmm_mat4 Left, hmm_mat4 Right)
 }
 
 
-#ifdef HANDMADE_MATH__USE_SSE
 COVERAGE(HMM_MultiplyMat4f, 1)
 HMM_INLINE hmm_mat4 HMM_PREFIX(MultiplyMat4f)(hmm_mat4 Matrix, float Scalar)
 {
@@ -1460,22 +1431,13 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(MultiplyMat4f)(hmm_mat4 Matrix, float Scalar)
 
     hmm_mat4 Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
     __m128 SSEScalar = _mm_set1_ps(Scalar);
     Result.Columns[0] = _mm_mul_ps(Matrix.Columns[0], SSEScalar);
     Result.Columns[1] = _mm_mul_ps(Matrix.Columns[1], SSEScalar);
     Result.Columns[2] = _mm_mul_ps(Matrix.Columns[2], SSEScalar);
     Result.Columns[3] = _mm_mul_ps(Matrix.Columns[3], SSEScalar);
-
-    return (Result);
-}
 #else
-COVERAGE(HMM_MultiplyMat4f, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(MultiplyMat4f)(hmm_mat4 Matrix, float Scalar)
-{
-    ASSERT_COVERED(HMM_MultiplyMat4f);
-
-    hmm_mat4 Result;
-
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1485,11 +1447,10 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(MultiplyMat4f)(hmm_mat4 Matrix, float Scalar)
             Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
         }
     }
+#endif
 
     return (Result);
 }
-
-#endif
 
 COVERAGE(HMM_MultiplyMat4ByVec4, 1)
 HMM_INLINE hmm_vec4 HMM_PREFIX(MultiplyMat4ByVec4)(hmm_mat4 Matrix, hmm_vec4 Vector)
@@ -1499,7 +1460,7 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(MultiplyMat4ByVec4)(hmm_mat4 Matrix, hmm_vec4 Vec
     hmm_vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-	Result.InternalElementsSSE = HMM_PREFIX(LinearCombineSSE)(Vector.InternalElementsSSE, Matrix);
+    Result.InternalElementsSSE = HMM_PREFIX(LinearCombineSSE)(Vector.InternalElementsSSE, Matrix);
 #else
     int Columns, Rows;
     for(Rows = 0; Rows < 4; ++Rows)
@@ -1518,7 +1479,6 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(MultiplyMat4ByVec4)(hmm_mat4 Matrix, hmm_vec4 Vec
 }
 
 
-#ifdef HANDMADE_MATH__USE_SSE
 COVERAGE(HMM_DivideMat4f, 1)
 HMM_INLINE hmm_mat4 HMM_PREFIX(DivideMat4f)(hmm_mat4 Matrix, float Scalar)
 {
@@ -1526,22 +1486,13 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(DivideMat4f)(hmm_mat4 Matrix, float Scalar)
 
     hmm_mat4 Result;
 
+#ifdef HANDMADE_MATH__USE_SSE
     __m128 SSEScalar = _mm_set1_ps(Scalar);
     Result.Columns[0] = _mm_div_ps(Matrix.Columns[0], SSEScalar);
     Result.Columns[1] = _mm_div_ps(Matrix.Columns[1], SSEScalar);
     Result.Columns[2] = _mm_div_ps(Matrix.Columns[2], SSEScalar);
     Result.Columns[3] = _mm_div_ps(Matrix.Columns[3], SSEScalar);
-
-    return (Result);
-}
 #else
-COVERAGE(HMM_DivideMat4f, 1);
-HMM_INLINE hmm_mat4 HMM_PREFIX(DivideMat4f)(hmm_mat4 Matrix, float Scalar)
-{
-    ASSERT_COVERED(HMM_DivideMat4f);
-
-    hmm_mat4 Result;
-
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
@@ -1551,11 +1502,10 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(DivideMat4f)(hmm_mat4 Matrix, float Scalar)
             Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
         }
     }
+#endif
 
     return (Result);
 }
-#endif
-
 
 /*
  * Common graphics transformations
