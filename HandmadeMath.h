@@ -1542,7 +1542,7 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(Perspective)(float FOV, float AspectRatio, float 
     float Cotangent = 1.0f / HMM_PREFIX(TanF)(FOV * (HMM_PI32 / 360.0f));
 
     Result.Elements[0][0] = Cotangent / AspectRatio;
-    Result.Elements[1][1] = Cotangent;
+    Result.Elements[1][1] = -Cotangent;
     Result.Elements[2][3] = -1.0f;
     Result.Elements[2][2] = (Near + Far) / (Near - Far);
     Result.Elements[3][2] = (2.0f * Near * Far) / (Near - Far);
