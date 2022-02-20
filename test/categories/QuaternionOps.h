@@ -177,3 +177,24 @@ TEST(QuaternionOps, FromAxisAngle)
     EXPECT_FLOAT_EQ(result.Z, 0.0f);
     EXPECT_NEAR(result.W, 0.707107f, FLT_EPSILON * 2);
 }
+
+TEST(QuaternionOps, MultiplyVec3)
+{
+    hmm_quaternion expected = HMM_Quaternion(286.0f, 572.0f, 198.0f, -506.0f);
+    hmm_quaternion q = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    hmm_vec3 v = HMM_Vec3(99.0f, 88.0f, 77.0f);
+
+    hmm_quaternion result = HMM_QuaternionMultiplyVec3(q, v);
+    EXPECT_FLOAT_EQ(result.X, expected.X);
+    EXPECT_FLOAT_EQ(result.Y, expected.Y);
+    EXPECT_FLOAT_EQ(result.Z, expected.Z);
+    EXPECT_FLOAT_EQ(result.W, expected.W);
+#ifdef __cplusplus
+    result = q * v;
+    EXPECT_FLOAT_EQ(result.X, expected.X);
+    EXPECT_FLOAT_EQ(result.Y, expected.Y);
+    EXPECT_FLOAT_EQ(result.Z, expected.Z);
+    EXPECT_FLOAT_EQ(result.W, expected.W);
+#endif
+}
+

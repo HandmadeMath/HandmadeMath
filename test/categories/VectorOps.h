@@ -279,6 +279,23 @@ TEST(VectorOps, DotVec4)
 #endif
 }
 
+TEST(VectorOps, RotateVec3)
+{
+    hmm_vec3 expected = HMM_Vec3(60.249512f, 722.993713f, 421.746338f);
+    hmm_quaternion q = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    hmm_vec3 v = HMM_Vec3(99.0f, 88.0f, 77.0f);
+
+    hmm_vec3 result = HMM_RotateVec3(v, q);
+    EXPECT_FLOAT_EQ(result.X, expected.X);
+    EXPECT_FLOAT_EQ(result.Y, expected.Y);
+    EXPECT_FLOAT_EQ(result.Z, expected.Z);
+#ifdef __cplusplus
+    result = HMM_Rotate(v, q);
+    EXPECT_FLOAT_EQ(result.X, expected.X);
+    EXPECT_FLOAT_EQ(result.Y, expected.Y);
+    EXPECT_FLOAT_EQ(result.Z, expected.Z);
+#endif
+}
 
 /*
  * MatrixOps tests

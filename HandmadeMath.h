@@ -2033,6 +2033,39 @@ HMM_INLINE hmm_quaternion HMM_PREFIX(QuaternionFromAxisAngle)(hmm_vec3 Axis, flo
     return (Result);
 }
 
+COVERAGE(HMM_QuaternionMultiplyVec3, 1)
+HMM_INLINE hmm_quaternion HMM_PREFIX(QuaternionMultiplyVec3)(hmm_quaternion q, hmm_vec3 v)
+{
+    ASSERT_COVERED(HMM_QuaternionMultiplyVec3);
+
+    hmm_quaternion Result;
+
+    Result.W = - (q.X * v.X) - (q.Y * v.Y) - (q.Z * v.Z);
+    Result.X =   (q.W * v.X) + (q.Y * v.Z) - (q.Z * v.Y);
+    Result.Y =   (q.W * v.Y) + (q.Z * v.X) - (q.X * v.Z);
+    Result.Z =   (q.W * v.Z) + (q.X * v.Y) - (q.Y * v.X);
+
+    return Result;
+}
+
+COVERAGE(HMM_RotateVec3, 1)
+HMM_INLINE hmm_vec3 HMM_PREFIX(RotateVec3)(hmm_vec3 v, hmm_quaternion q)
+{
+    ASSERT_COVERED(HMM_RotateVec3);
+
+    hmm_quaternion inverted;
+    inverted.X = -q.X;
+    inverted.Y = -q.Y;
+    inverted.Z = -q.Z;
+    inverted.W =  q.W;
+
+    inverted = HMM_PREFIX(NormalizeQuaternion)(inverted);
+    hmm_quaternion tmp = HMM_PREFIX(QuaternionMultiplyVec3)(q, v);
+    hmm_quaternion Result = HMM_PREFIX(MultiplyQuaternion)(tmp, inverted);
+
+    return HMM_PREFIX(Vec3)(Result.X, Result.Y, Result.Z);
+}
+
 #ifdef __cplusplus
 }
 #endif
@@ -2528,6 +2561,16 @@ HMM_INLINE hmm_bool HMM_PREFIX(Equals)(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
+COVERAGE(HMM_RotateVec3CPP, 1)
+HMM_INLINE hmm_vec3 HMM_PREFIX(Rotate)(hmm_vec3 Left, hmm_quaternion Right)
+{
+    ASSERT_COVERED(HMM_RotateVec3CPP);
+
+    hmm_vec3 Result = HMM_PREFIX(RotateVec3)(Left, Right);
+
+    return (Result);
+}
+
 COVERAGE(HMM_AddVec2Op, 1)
 HMM_INLINE hmm_vec2 operator+(hmm_vec2 Left, hmm_vec2 Right)
 {
@@ -2864,6 +2907,16 @@ HMM_INLINE hmm_quaternion operator/(hmm_quaternion Left, float Right)
     ASSERT_COVERED(HMM_DivideQuaternionFOp);
 
     hmm_quaternion Result = HMM_PREFIX(DivideQuaternionF)(Left, Right);
+
+    return (Result);
+}
+
+COVERAGE(HMM_QuaternionMultiplyVec3Op, 1)
+HMM_INLINE hmm_quaternion operator*(hmm_quaternion Left, hmm_vec3 Right)
+{
+    ASSERT_COVERED(HMM_QuaternionMultiplyVec3Op);
+
+    hmm_quaternion Result = HMM_PREFIX(QuaternionMultiplyVec3)(Left, Right);
 
     return (Result);
 }
