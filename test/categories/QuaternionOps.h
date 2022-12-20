@@ -2,10 +2,10 @@
 
 TEST(QuaternionOps, Inverse)
 {
-    hmm_quaternion q1 = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
-    hmm_quaternion inverse = HMM_InverseQuaternion(q1);
+    HMM_Quat q1 = HMM_Q(1.0f, 2.0f, 3.0f, 4.0f);
+    HMM_Quat inverse = HMM_InvQ(q1);
 
-    hmm_quaternion result = HMM_MultiplyQuaternion(q1, inverse);
+    HMM_Quat result = HMM_MulQ(q1, inverse);
 
     EXPECT_FLOAT_EQ(result.X, 0.0f);
     EXPECT_FLOAT_EQ(result.Y, 0.0f);
@@ -15,11 +15,11 @@ TEST(QuaternionOps, Inverse)
 
 TEST(QuaternionOps, Dot)
 {
-    hmm_quaternion q1 = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
-    hmm_quaternion q2 = HMM_Quaternion(5.0f, 6.0f, 7.0f, 8.0f);
+    HMM_Quat q1 = HMM_Q(1.0f, 2.0f, 3.0f, 4.0f);
+    HMM_Quat q2 = HMM_Q(5.0f, 6.0f, 7.0f, 8.0f);
 
     {
-        float result = HMM_DotQuaternion(q1, q2);
+        float result = HMM_DotQ(q1, q2);
         EXPECT_FLOAT_EQ(result, 70.0f);
     }
 #ifdef __cplusplus
@@ -32,10 +32,10 @@ TEST(QuaternionOps, Dot)
 
 TEST(QuaternionOps, Normalize)
 {
-    hmm_quaternion q = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    HMM_Quat q = HMM_Q(1.0f, 2.0f, 3.0f, 4.0f);
 
     {
-        hmm_quaternion result = HMM_NormalizeQuaternion(q);
+        HMM_Quat result = HMM_NormQ(q);
         EXPECT_FLOAT_EQ(result.X, 0.1825741858f);
         EXPECT_FLOAT_EQ(result.Y, 0.3651483717f);
         EXPECT_FLOAT_EQ(result.Z, 0.5477225575f);
@@ -43,7 +43,7 @@ TEST(QuaternionOps, Normalize)
     }
 #ifdef __cplusplus
     {
-        hmm_quaternion result = HMM_Normalize(q);
+        HMM_Quat result = HMM_Norm(q);
         EXPECT_FLOAT_EQ(result.X, 0.1825741858f);
         EXPECT_FLOAT_EQ(result.Y, 0.3651483717f);
         EXPECT_FLOAT_EQ(result.Z, 0.5477225575f);
@@ -54,10 +54,10 @@ TEST(QuaternionOps, Normalize)
 
 TEST(QuaternionOps, NLerp)
 {
-    hmm_quaternion from = HMM_Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
-    hmm_quaternion to = HMM_Quaternion(0.5f, 0.5f, -0.5f, 0.5f);
+    HMM_Quat from = HMM_Q(0.0f, 0.0f, 0.0f, 1.0f);
+    HMM_Quat to = HMM_Q(0.5f, 0.5f, -0.5f, 0.5f);
 
-    hmm_quaternion result = HMM_NLerp(from, 0.5f, to);
+    HMM_Quat result = HMM_NLerp(from, 0.5f, to);
     EXPECT_FLOAT_EQ(result.X, 0.28867513f);
     EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
     EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
@@ -66,10 +66,10 @@ TEST(QuaternionOps, NLerp)
 
 TEST(QuaternionOps, Slerp)
 {
-    hmm_quaternion from = HMM_Quaternion(0.0f, 0.0f, 0.0f, 1.0f);
-    hmm_quaternion to = HMM_Quaternion(0.5f, 0.5f, -0.5f, 0.5f);
+    HMM_Quat from = HMM_Q(0.0f, 0.0f, 0.0f, 1.0f);
+    HMM_Quat to = HMM_Q(0.5f, 0.5f, -0.5f, 0.5f);
 
-    hmm_quaternion result = HMM_Slerp(from, 0.5f, to);
+    HMM_Quat result = HMM_Slerp(from, 0.5f, to);
     EXPECT_FLOAT_EQ(result.X, 0.28867513f);
     EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
     EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
@@ -80,9 +80,9 @@ TEST(QuaternionOps, QuatToMat4)
 {
     const float abs_error = 0.0001f;
 
-    hmm_quaternion rot = HMM_Quaternion(0.707107f, 0.0f, 0.0f, 0.707107f);
+    HMM_Quat rot = HMM_Q(0.707107f, 0.0f, 0.0f, 0.707107f);
 
-    hmm_mat4 result = HMM_QuaternionToMat4(rot);
+    HMM_Mat4 result = HMM_QToM4(rot);
 
     EXPECT_NEAR(result.Elements[0][0], 1.0f, abs_error);
     EXPECT_NEAR(result.Elements[0][1], 0.0f, abs_error);
@@ -111,8 +111,8 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the X axis
     {
-        hmm_mat4 m = HMM_Rotate(90, HMM_Vec3(1, 0, 0));
-        hmm_quaternion result = HMM_Mat4ToQuaternion(m);
+        HMM_Mat4 m = HMM_Rotate(90, HMM_V3(1, 0, 0));
+        HMM_Quat result = HMM_M4ToQ(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
         float sinf = 0.707107f; // sin(90/2 degrees)
@@ -125,8 +125,8 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the Y axis (axis not normalized, just for fun)
     {
-        hmm_mat4 m = HMM_Rotate(90, HMM_Vec3(0, 2, 0));
-        hmm_quaternion result = HMM_Mat4ToQuaternion(m);
+        HMM_Mat4 m = HMM_Rotate(90, HMM_V3(0, 2, 0));
+        HMM_Quat result = HMM_M4ToQ(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
         float sinf = 0.707107f; // sin(90/2 degrees)
@@ -139,8 +139,8 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the Z axis
     {
-        hmm_mat4 m = HMM_Rotate(90, HMM_Vec3(0, 0, 1));
-        hmm_quaternion result = HMM_Mat4ToQuaternion(m);
+        HMM_Mat4 m = HMM_Rotate(90, HMM_V3(0, 0, 1));
+        HMM_Quat result = HMM_M4ToQ(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
         float sinf = 0.707107f; // sin(90/2 degrees)
@@ -153,8 +153,8 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 45 degrees on the X axis (this hits case 4)
     {
-        hmm_mat4 m = HMM_Rotate(45, HMM_Vec3(1, 0, 0));
-        hmm_quaternion result = HMM_Mat4ToQuaternion(m);
+        HMM_Mat4 m = HMM_Rotate(45, HMM_V3(1, 0, 0));
+        HMM_Quat result = HMM_M4ToQ(m);
 
         float cosf = 0.9238795325f; // cos(90/2 degrees)
         float sinf = 0.3826834324f; // sin(90/2 degrees)
@@ -168,10 +168,10 @@ TEST(QuaternionOps, Mat4ToQuat)
 
 TEST(QuaternionOps, FromAxisAngle)
 {
-    hmm_vec3 axis = HMM_Vec3(1.0f, 0.0f, 0.0f);
+    HMM_Vec3 axis = HMM_V3(1.0f, 0.0f, 0.0f);
     float angle = HMM_PI32 / 2.0f;
 
-    hmm_quaternion result = HMM_QuaternionFromAxisAngle(axis, angle);
+    HMM_Quat result = HMM_QFromAxisAngle(axis, angle);
     EXPECT_NEAR(result.X, 0.707107f, FLT_EPSILON * 2);
     EXPECT_FLOAT_EQ(result.Y, 0.0f);
     EXPECT_FLOAT_EQ(result.Z, 0.0f);

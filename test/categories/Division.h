@@ -2,22 +2,22 @@
 
 TEST(Division, Vec2Vec2)
 {
-    hmm_vec2 v2_1 = HMM_Vec2(1.0f, 3.0f);
-    hmm_vec2 v2_2 = HMM_Vec2(2.0f, 4.0f);
+    HMM_Vec2 v2_1 = HMM_V2(1.0f, 3.0f);
+    HMM_Vec2 v2_2 = HMM_V2(2.0f, 4.0f);
 
     {
-        hmm_vec2 result = HMM_DivideVec2(v2_1, v2_2);
+        HMM_Vec2 result = HMM_DivV2(v2_1, v2_2);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 0.75f);
     }
 #ifdef __cplusplus
     {
-        hmm_vec2 result = HMM_Divide(v2_1, v2_2);
+        HMM_Vec2 result = HMM_Div(v2_1, v2_2);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 0.75f);
     }
     {
-        hmm_vec2 result = v2_1 / v2_2;
+        HMM_Vec2 result = v2_1 / v2_2;
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 0.75f);
     }
@@ -30,22 +30,22 @@ TEST(Division, Vec2Vec2)
 
 TEST(Division, Vec2Scalar)
 {
-    hmm_vec2 v2 = HMM_Vec2(1.0f, 2.0f);
+    HMM_Vec2 v2 = HMM_V2(1.0f, 2.0f);
     float s = 2;
 
     {
-        hmm_vec2 result = HMM_DivideVec2f(v2, s);
+        HMM_Vec2 result = HMM_DivV2F(v2, s);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
     }
 #ifdef __cplusplus
     {
-        hmm_vec2 result = HMM_Divide(v2, s);
+        HMM_Vec2 result = HMM_Div(v2, s);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
     }
     {
-        hmm_vec2 result = v2 / s;
+        HMM_Vec2 result = v2 / s;
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
     }
@@ -58,24 +58,24 @@ TEST(Division, Vec2Scalar)
 
 TEST(Division, Vec3Vec3)
 {
-    hmm_vec3 v3_1 = HMM_Vec3(1.0f, 3.0f, 5.0f);
-    hmm_vec3 v3_2 = HMM_Vec3(2.0f, 4.0f, 0.5f);
+    HMM_Vec3 v3_1 = HMM_V3(1.0f, 3.0f, 5.0f);
+    HMM_Vec3 v3_2 = HMM_V3(2.0f, 4.0f, 0.5f);
 
     {
-        hmm_vec3 result = HMM_DivideVec3(v3_1, v3_2);
+        HMM_Vec3 result = HMM_DivV3(v3_1, v3_2);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 0.75f);
         EXPECT_FLOAT_EQ(result.Z, 10.0f);
     }
 #ifdef __cplusplus
     {
-        hmm_vec3 result = HMM_Divide(v3_1, v3_2);
+        HMM_Vec3 result = HMM_Div(v3_1, v3_2);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 0.75f);
         EXPECT_FLOAT_EQ(result.Z, 10.0f);
     }
     {
-        hmm_vec3 result = v3_1 / v3_2;
+        HMM_Vec3 result = v3_1 / v3_2;
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 0.75f);
         EXPECT_FLOAT_EQ(result.Z, 10.0f);
@@ -90,24 +90,24 @@ TEST(Division, Vec3Vec3)
 
 TEST(Division, Vec3Scalar)
 {
-    hmm_vec3 v3 = HMM_Vec3(1.0f, 2.0f, 3.0f);
+    HMM_Vec3 v3 = HMM_V3(1.0f, 2.0f, 3.0f);
     float s = 2;
 
     {
-        hmm_vec3 result = HMM_DivideVec3f(v3, s);
+        HMM_Vec3 result = HMM_DivV3F(v3, s);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
         EXPECT_FLOAT_EQ(result.Z, 1.5f);
     }
 #ifdef __cplusplus
     {
-        hmm_vec3 result = HMM_Divide(v3, s);
+        HMM_Vec3 result = HMM_Div(v3, s);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
         EXPECT_FLOAT_EQ(result.Z, 1.5f);
     }
     {
-        hmm_vec3 result = v3 / s;
+        HMM_Vec3 result = v3 / s;
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
         EXPECT_FLOAT_EQ(result.Z, 1.5f);
@@ -122,11 +122,11 @@ TEST(Division, Vec3Scalar)
 
 TEST(Division, Vec4Vec4)
 {
-    hmm_vec4 v4_1 = HMM_Vec4(1.0f, 3.0f, 5.0f, 1.0f);
-    hmm_vec4 v4_2 = HMM_Vec4(2.0f, 4.0f, 0.5f, 4.0f);
+    HMM_Vec4 v4_1 = HMM_V4(1.0f, 3.0f, 5.0f, 1.0f);
+    HMM_Vec4 v4_2 = HMM_V4(2.0f, 4.0f, 0.5f, 4.0f);
 
     {
-        hmm_vec4 result = HMM_DivideVec4(v4_1, v4_2);
+        HMM_Vec4 result = HMM_DivV4(v4_1, v4_2);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 0.75f);
         EXPECT_FLOAT_EQ(result.Z, 10.0f);
@@ -134,14 +134,14 @@ TEST(Division, Vec4Vec4)
     }
 #ifdef __cplusplus
     {
-        hmm_vec4 result = HMM_Divide(v4_1, v4_2);
+        HMM_Vec4 result = HMM_Div(v4_1, v4_2);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 0.75f);
         EXPECT_FLOAT_EQ(result.Z, 10.0f);
         EXPECT_FLOAT_EQ(result.W, 0.25f);
     }
     {
-        hmm_vec4 result = v4_1 / v4_2;
+        HMM_Vec4 result = v4_1 / v4_2;
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 0.75f);
         EXPECT_FLOAT_EQ(result.Z, 10.0f);
@@ -158,11 +158,11 @@ TEST(Division, Vec4Vec4)
 
 TEST(Division, Vec4Scalar)
 {
-    hmm_vec4 v4 = HMM_Vec4(1.0f, 2.0f, 3.0f, 4.0f);
+    HMM_Vec4 v4 = HMM_V4(1.0f, 2.0f, 3.0f, 4.0f);
     float s = 2;
 
     {
-        hmm_vec4 result = HMM_DivideVec4f(v4, s);
+        HMM_Vec4 result = HMM_DivV4F(v4, s);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
         EXPECT_FLOAT_EQ(result.Z, 1.5f);
@@ -170,14 +170,14 @@ TEST(Division, Vec4Scalar)
     }
 #ifdef __cplusplus
     {
-        hmm_vec4 result = HMM_Divide(v4, s);
+        HMM_Vec4 result = HMM_Div(v4, s);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
         EXPECT_FLOAT_EQ(result.Z, 1.5f);
         EXPECT_FLOAT_EQ(result.W, 2.0f);
     }
     {
-        hmm_vec4 result = v4 / s;
+        HMM_Vec4 result = v4 / s;
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
         EXPECT_FLOAT_EQ(result.Z, 1.5f);
@@ -194,7 +194,7 @@ TEST(Division, Vec4Scalar)
 
 TEST(Division, Mat4Scalar)
 {
-    hmm_mat4 m4 = HMM_Mat4(); // will have 1 - 16
+    HMM_Mat4 m4 = HMM_M4(); // will have 1 - 16
     float s = 2;
 
     // Fill the matrix
@@ -210,7 +210,7 @@ TEST(Division, Mat4Scalar)
 
     // Test the results
     {
-        hmm_mat4 result = HMM_DivideMat4f(m4, s);
+        HMM_Mat4 result = HMM_DivM4f(m4, s);
         EXPECT_FLOAT_EQ(result.Elements[0][0], 0.5f);
         EXPECT_FLOAT_EQ(result.Elements[0][1], 1.0f);
         EXPECT_FLOAT_EQ(result.Elements[0][2], 1.5f);
@@ -230,7 +230,7 @@ TEST(Division, Mat4Scalar)
     }
 #ifdef __cplusplus
     {
-        hmm_mat4 result = HMM_Divide(m4, s);
+        HMM_Mat4 result = HMM_Div(m4, s);
         EXPECT_FLOAT_EQ(result.Elements[0][0], 0.5f);
         EXPECT_FLOAT_EQ(result.Elements[0][1], 1.0f);
         EXPECT_FLOAT_EQ(result.Elements[0][2], 1.5f);
@@ -249,7 +249,7 @@ TEST(Division, Mat4Scalar)
         EXPECT_FLOAT_EQ(result.Elements[3][3], 8.0f);
     }
     {
-        hmm_mat4 result = m4 / s;
+        HMM_Mat4 result = m4 / s;
         EXPECT_FLOAT_EQ(result.Elements[0][0], 0.5f);
         EXPECT_FLOAT_EQ(result.Elements[0][1], 1.0f);
         EXPECT_FLOAT_EQ(result.Elements[0][2], 1.5f);
@@ -290,11 +290,11 @@ TEST(Division, Mat4Scalar)
 
 TEST(Division, QuaternionScalar)
 {
-    hmm_quaternion q = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    HMM_Quat q = HMM_Q(1.0f, 2.0f, 3.0f, 4.0f);
     float f = 2.0f;
 
     {
-        hmm_quaternion result = HMM_DivideQuaternionF(q, f);
+        HMM_Quat result = HMM_DivQF(q, f);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
         EXPECT_FLOAT_EQ(result.Z, 1.5f);
@@ -302,14 +302,14 @@ TEST(Division, QuaternionScalar)
     }
 #ifdef __cplusplus
     {
-        hmm_quaternion result = HMM_Divide(q, f);
+        HMM_Quat result = HMM_Div(q, f);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
         EXPECT_FLOAT_EQ(result.Z, 1.5f);
         EXPECT_FLOAT_EQ(result.W, 2.0f);
     }
     {
-        hmm_quaternion result = q / f;
+        HMM_Quat result = q / f;
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
         EXPECT_FLOAT_EQ(result.Z, 1.5f);

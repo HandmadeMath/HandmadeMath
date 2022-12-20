@@ -674,7 +674,7 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(V3I)(int X, int Y, int Z)
 COVERAGE(HMM_V4, 1)
 HMM_INLINE HMM_Vec4 HMM_PREFIX(V4)(float X, float Y, float Z, float W)
 {
-    ASSERT_COVERED(HMM_Vec4);
+    ASSERT_COVERED(HMM_V4);
 
     HMM_Vec4 Result;
 
@@ -2069,32 +2069,32 @@ HMM_INLINE float HMM_PREFIX(Len)(HMM_Vec4 A)
     return (Result);
 }
 
-COVERAGE(HMM_SqrLenV2CPP, 1)
-HMM_INLINE float HMM_PREFIX(SqrLen)(HMM_Vec2 A)
+COVERAGE(HMM_LenSqrV2CPP, 1)
+HMM_INLINE float HMM_PREFIX(LenSqr)(HMM_Vec2 A)
 {
-    ASSERT_COVERED(HMM_SqrLenV2CPP);
+    ASSERT_COVERED(HMM_LenSqrV2CPP);
 
-    float Result = HMM_PREFIX(SqrLenV2)(A);
+    float Result = HMM_PREFIX(LenSqrV2)(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_SqrLenV3CPP, 1)
-HMM_INLINE float HMM_PREFIX(SqrLen)(HMM_Vec3 A)
+COVERAGE(HMM_LenSqrV3CPP, 1)
+HMM_INLINE float HMM_PREFIX(LenSqr)(HMM_Vec3 A)
 {
-    ASSERT_COVERED(HMM_SqrLenV3CPP);
+    ASSERT_COVERED(HMM_LenSqrV3CPP);
 
-    float Result = HMM_PREFIX(SqrLenV3)(A);
+    float Result = HMM_PREFIX(LenSqrV3)(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_SqrLenV4CPP, 1)
-HMM_INLINE float HMM_PREFIX(SqrLen)(HMM_Vec4 A)
+COVERAGE(HMM_LenSqrV4CPP, 1)
+HMM_INLINE float HMM_PREFIX(LenSqr)(HMM_Vec4 A)
 {
-    ASSERT_COVERED(HMM_SqrLenV4CPP);
+    ASSERT_COVERED(HMM_LenSqrV4CPP);
 
-    float Result = HMM_PREFIX(SqrLenV4)(A);
+    float Result = HMM_PREFIX(LenSqrV4)(A);
 
     return (Result);
 }
@@ -3025,7 +3025,7 @@ COVERAGE(HMM_DivV3Assign, 1)
 HMM_INLINE HMM_Vec3 &operator/=(HMM_Vec3 &Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_DivV3Assign);
-w
+
     return (Left = Left / Right);
 }
 

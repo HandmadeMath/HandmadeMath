@@ -57,12 +57,12 @@ TEST(ScalarMath, LogF)
 
 TEST(ScalarMath, SquareRoot)
 {
-    EXPECT_FLOAT_EQ(HMM_SquareRootF(16.0f), 4.0f);
+    EXPECT_FLOAT_EQ(HMM_SqrtF(16.0f), 4.0f);
 }
 
 TEST(ScalarMath, RSquareRootF)
 {
-    EXPECT_NEAR(HMM_RSquareRootF(10.0f), 0.31616211f, 0.0001f);
+    EXPECT_NEAR(HMM_InvSqrtF(10.0f), 0.31616211f, 0.0001f);
 }
 
 TEST(ScalarMath, Power)

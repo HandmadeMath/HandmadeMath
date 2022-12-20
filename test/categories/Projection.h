@@ -2,10 +2,10 @@
 
 TEST(Projection, Orthographic)
 {
-    hmm_mat4 projection = HMM_Orthographic(-10.0f, 10.0f, -5.0f, 5.0f, 0.0f, -10.0f);
+    HMM_Mat4 projection = HMM_Orthographic(-10.0f, 10.0f, -5.0f, 5.0f, 0.0f, -10.0f);
 
-    hmm_vec3 original = HMM_Vec3(5.0f, 5.0f, -5.0f);
-    hmm_vec4 projected = HMM_MultiplyMat4ByVec4(projection, HMM_Vec4v(original, 1));
+    HMM_Vec3 original = HMM_V3(5.0f, 5.0f, -5.0f);
+    HMM_Vec4 projected = HMM_MulM4ByV4(projection, HMM_V4V(original, 1));
 
     EXPECT_FLOAT_EQ(projected.X, 0.5f);
     EXPECT_FLOAT_EQ(projected.Y, 1.0f);
@@ -15,19 +15,19 @@ TEST(Projection, Orthographic)
 
 TEST(Projection, Perspective)
 {
-    hmm_mat4 projection = HMM_Perspective(90.0f, 2.0f, 5.0f, 15.0f);
+    HMM_Mat4 projection = HMM_Perspective(90.0f, 2.0f, 5.0f, 15.0f);
 
     {
-        hmm_vec3 original = HMM_Vec3(5.0f, 5.0f, -15.0f);
-        hmm_vec4 projected = HMM_MultiplyMat4ByVec4(projection, HMM_Vec4v(original, 1));
+        HMM_Vec3 original = HMM_V3(5.0f, 5.0f, -15.0f);
+        HMM_Vec4 projected = HMM_MulM4ByV4(projection, HMM_V4V(original, 1));
         EXPECT_FLOAT_EQ(projected.X, 2.5f);
         EXPECT_FLOAT_EQ(projected.Y, 5.0f);
         EXPECT_FLOAT_EQ(projected.Z, 15.0f);
         EXPECT_FLOAT_EQ(projected.W, 15.0f);
     }
     {
-        hmm_vec3 original = HMM_Vec3(5.0f, 5.0f, -5.0f);
-        hmm_vec4 projected = HMM_MultiplyMat4ByVec4(projection, HMM_Vec4v(original, 1));
+        HMM_Vec3 original = HMM_V3(5.0f, 5.0f, -5.0f);
+        HMM_Vec4 projected = HMM_MulM4ByV4(projection, HMM_V4V(original, 1));
         EXPECT_FLOAT_EQ(projected.X, 2.5f);
         EXPECT_FLOAT_EQ(projected.Y, 5.0f);
         EXPECT_FLOAT_EQ(projected.Z, -5.0f);
