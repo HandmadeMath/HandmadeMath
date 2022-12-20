@@ -2,6 +2,7 @@
 #include "../lcf/lcf.c"
 /* TODO: why does scalar math get fucked
    TODO: what is wrong with tests */
+
 enum Targets {
     PREFIX_TYPE, PREFIX_FUNCTION,
     PREFIXES_Size,
@@ -72,7 +73,6 @@ Str8List update_file_content(Arena* arena, str8 file_content, str8 function_pref
     u64 MatchProgress[FUNCTIONS_Size] = {0};
     b32 FoundTypePrefix = false;
     b32 FoundFunctionPrefix = false;
-
     str8_iter(file_content) {
         if (FoundTypePrefix || FoundFunctionPrefix) {
             if (chr8_is_whitespace(c)
@@ -81,7 +81,6 @@ Str8List update_file_content(Arena* arena, str8 file_content, str8 function_pref
                 FoundFunctionPrefix = false;
             }
         }
-        
         for (u32 t = 0; t < PREFIXES_Size; t++) {  
             if (c == Find[t].str[MatchProgress[t]]) {  
                 MatchProgress[t]++;  
