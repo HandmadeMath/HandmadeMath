@@ -169,13 +169,14 @@ Str8List update_file_content(Arena* arena, str8 file_content, str8 function_pref
                         chr8 check = file_content.str[i+1];
                         ASSERT(check == '('); /* TODO: fail gracefully */
 
+                        /* TODO: emit warning for special cases */
                         Str8List_add(arena, &out, str8_first(file_content, i + 2));
                         file_content = str8_skip(file_content, i+2);
                         i = -1;
                         
                         u64 end_arg = str8_char_location(file_content, ',');
                         ASSERT(end_arg != LCF_STRING_NO_MATCH);
-                        Str8List_add(arena, &out, str8_lit("HMM_AngleRad("));
+                        Str8List_add(arena, &out, str8_lit("HMM_AngleDeg("));
                         Str8List_add(arena, &out, str8_first(file_content, end_arg));
                         Str8List_add(arena, &out, str8_lit(")"));
                         file_content = str8_skip(file_content, end_arg);
