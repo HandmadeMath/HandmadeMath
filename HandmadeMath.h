@@ -37,8 +37,6 @@
   BEFORE the include, like this (assuming your functions take radians):
 
      #define HMM_PROVIDE_MATH_FUNCTIONS
-     #define HMM_ANGLE_USER_TO_INTERNAL(a) (HMM_PREFIX(ToRadians)(a))
-     #define HMM_ANGLE_INTERNAL_TO_USER(a) (a)
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
      #define HMM_TANF MyTanF
@@ -197,6 +195,11 @@ extern "C"
 #define HMM_ANGLE_INTERNAL_TO_USER(a) ((a)*HMM_RadToDeg)
 #elif defined(HMM_USE_TURN_INPUT)
 #define HMM_ANGLE_INTERNAL_TO_USER(a) ((a)*HMM_RadToTurn)
+#endif
+
+#if !defined(HMM_ANGLE_USER_TO_INTERNAL)
+#define HMM_ANGLE_USER_TO_INTERNAL(a) (a)
+#define HMM_ANGLE_INTERNAL_TO_USER(a) (a)
 #endif
     
 #define HMM_SINF sinf
