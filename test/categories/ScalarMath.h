@@ -36,13 +36,6 @@ TEST(ScalarMath, Trigonometry)
     // checking that things work by default.
 }
 
-TEST(ScalarMath, ToRadians)
-{
-    EXPECT_FLOAT_EQ(HMM_ToRadians(0.0f), 0.0f);
-    EXPECT_FLOAT_EQ(HMM_ToRadians(180.0f), HMM_PI32);
-    EXPECT_FLOAT_EQ(HMM_ToRadians(-180.0f), -HMM_PI32);
-}
-
 TEST(ScalarMath, ExpF)
 {
     EXPECT_NEAR(HMM_ExpF(0.0f), 1.0f, 0.0001f);

@@ -157,44 +157,62 @@ extern "C"
 #include <math.h>
 #endif
 
-#ifndef HMM_SINF
+#if !defined(HMM_USE_DEGREE_INPUT) \
+    && !defined(HMM_USE_TURN_INPUT) \
+    && !defined(HMM_USE_RADIAN_INPUT)
+#define HMM_USE_RADIAN_INPUT
+#endif
+    
+#define HMM_PI 3.14159265358979323846
+#define HMM_DEG180 180.0
+#define HMM_TURNHALF 0.5
+#define HMM_RadToDeg (HMM_DEG180/HMM_PI)
+#define HMM_RadToTurn (HMM_TURNHALF/HMM_PI)
+#define HMM_DegToRad (HMM_PI/HMM_DEG180)
+#define HMM_DegToTurn (HMM_TURNHALF/HMM_DEG180)
+#define HMM_TurnToRad (HMM_PI/HMM_TURNHALF)
+#define HMM_TurnToDeg (HMM_DEG180/HMM_TURNHALF)
+
+#if defined(HMM_USE_RADIAN_INPUT)
+#define HMM_AngleRad(a) (a)
+#define HMM_AngleDeg(a) ((a)*HMM_DegToRad)
+#define HMM_AngleTurn(a) ((a)*HMM_TurnToRad)
+#elif defined(HMM_USE_DEGREE_INPUT) 
+#define HMM_AngleRad(a) ((a)*HMM_RadToDeg)
+#define HMM_AngleDeg(a) (a)
+#define HMM_AngleTurn(a) ((a)*HMM_TurnToDeg)
+#elif defined(HMM_USE_TURN_INPUT)
+#define HMM_AngleRad(a) ((a)*HMM_RadToTurn)
+#define HMM_AngleDeg(a) ((a)*HMM_DegToTurn)
+#define HMM_AngleTurn(a) (a)
+#endif
+
+#if !defined(HMM_PROVIDE_MATH_FUNCTIONS)
+/* Conversion function to the unit the trig functions need angles in.
+   Define as one of HMM_ToRadians, HMM_ToDegrees, or HMM_ToTurns. */
+#define HMM_ANGLE_USER_TO_INTERNAL HMM_PREFIX(ToRadians)
+/* Conversion function to the User's input angle unit from the internal unit.
+   If your internal and input angle units are the same simply define:
+#define HMM_ANGLE_INTERNAL_TO_USER(a) (a) 
+   Default internal angle unit is radians. */
+#if defined(HMM_USE_RADIAN_INPUT)
+#define HMM_ANGLE_INTERNAL_TO_USER(a) (a) 
+#elif defined(HMM_USE_DEGREE_INPUT)
+#define HMM_ANGLE_INTERNAL_TO_USER(a) ((a)*HMM_RadToDeg)
+#elif defined(HMM_USE_TURN_INPUT)
+#define HMM_ANGLE_INTERNAL_TO_USER(a) ((a)*HMM_RadToTurn)
+#endif
+    
 #define HMM_SINF sinf
-#endif
-
-#ifndef HMM_COSF
 #define HMM_COSF cosf
-#endif
-
-#ifndef HMM_TANF
 #define HMM_TANF tanf
-#endif
-
-#ifndef HMM_SQRTF
 #define HMM_SQRTF sqrtf
-#endif
-
-#ifndef HMM_EXPF
 #define HMM_EXPF expf
-#endif
-
-#ifndef HMM_LOGF
 #define HMM_LOGF logf
-#endif
-
-#ifndef HMM_ACOSF
 #define HMM_ACOSF acosf
-#endif
-
-#ifndef HMM_ATANF
 #define HMM_ATANF atanf
-#endif
-
-#ifndef HMM_ATAN2F
 #define HMM_ATAN2F atan2f
 #endif
-
-#define HMM_PI32 3.14159265359f
-#define HMM_PI 3.14159265358979323846
 
 #define HMM_MIN(a, b) ((a) > (b) ? (b) : (a))
 #define HMM_MAX(a, b) ((a) < (b) ? (b) : (a))
@@ -418,61 +436,61 @@ typedef HMM_Bool HMM_PREFIX(Bool); /* TODO(lcf): seems kinda silly */
  */
 
 COVERAGE(HMM_SinF, 1)
-HMM_INLINE float HMM_PREFIX(SinF)(float Radians)
+HMM_INLINE float HMM_PREFIX(SinF)(float Angle)
 {
     ASSERT_COVERED(HMM_SinF);
 
-    float Result = HMM_SINF(Radians);
+    float Result = HMM_SINF(HMM_ANGLE_USER_TO_INTERNAL(Angle));
 
     return (Result);
 }
 
 COVERAGE(HMM_CosF, 1)
-HMM_INLINE float HMM_PREFIX(CosF)(float Radians)
+HMM_INLINE float HMM_PREFIX(CosF)(float Angle)
 {
     ASSERT_COVERED(HMM_CosF);
 
-    float Result = HMM_COSF(Radians);
+    float Result = HMM_COSF(HMM_ANGLE_USER_TO_INTERNAL(Angle));
 
     return (Result);
 }
 
 COVERAGE(HMM_TanF, 1)
-HMM_INLINE float HMM_PREFIX(TanF)(float Radians)
+HMM_INLINE float HMM_PREFIX(TanF)(float Angle)
 {
     ASSERT_COVERED(HMM_TanF);
 
-    float Result = HMM_TANF(Radians);
+    float Result = HMM_TANF(HMM_ANGLE_USER_TO_INTERNAL(Angle));
 
     return (Result);
 }
 
 COVERAGE(HMM_ACosF, 1)
-HMM_INLINE float HMM_PREFIX(ACosF)(float Radians)
+HMM_INLINE float HMM_PREFIX(ACosF)(float Angle)
 {
     ASSERT_COVERED(HMM_ACosF);
 
-    float Result = HMM_ACOSF(Radians);
+    float Result = HMM_ANGLE_INTERNAL_TO_USER(HMM_ACOSF(Angle));
 
     return (Result);
 }
 
 COVERAGE(HMM_ATanF, 1)
-HMM_INLINE float HMM_PREFIX(ATanF)(float Radians)
+HMM_INLINE float HMM_PREFIX(ATanF)(float LenRatio)
 {
     ASSERT_COVERED(HMM_ATanF);
 
-    float Result = HMM_ATANF(Radians);
+    float Result = HMM_ANGLE_INTERNAL_TO_USER(HMM_ATANF(LenRatio));
 
     return (Result);
 }
 
 COVERAGE(HMM_ATan2F, 1)
-HMM_INLINE float HMM_PREFIX(ATan2F)(float Left, float Right)
+HMM_INLINE float HMM_PREFIX(ATan2F)(float Numerator, float Denominator)
 {
     ASSERT_COVERED(HMM_ATan2F);
 
-    float Result = HMM_ATAN2F(Left, Right);
+    float Result = HMM_ANGLE_INTERNAL_TO_USER(HMM_ATAN2F(Numerator, Denominator));
 
     return (Result);
 }
@@ -573,14 +591,53 @@ HMM_INLINE float HMM_PREFIX(PowerF)(float Base, float Exponent)
  */
 
 COVERAGE(HMM_ToRadians, 1)
-HMM_INLINE float HMM_PREFIX(ToRadians)(float Degrees)
+HMM_INLINE float HMM_PREFIX(ToRadians)(float Angle)
 {
     ASSERT_COVERED(HMM_ToRadians);
 
-    float Result = Degrees * (HMM_PI32 / 180.0f);
-
+#if defined(HMM_USE_RADIAN_INPUT)
+    float Result = Angle;
+#elif defined(HMM_USE_DEGREE_INPUT) 
+    float Result = Angle * HMM_DegToRad;
+#elif defined(HMM_USE_TURN_INPUT)
+    float Result = Angle * HMM_TurnToRad;
+#endif
+    
     return (Result);
 }
+
+COVERAGE(HMM_ToDegrees, 1)
+HMM_INLINE float HMM_PREFIX(ToDegrees)(float Angle)
+{
+    ASSERT_COVERED(HMM_ToDegrees);
+
+#if defined(HMM_USE_RADIAN_INPUT)
+    float Result = Angle * HMM_RadToDeg;
+#if defined(HMM_USE_DEGREE_INPUT) 
+    float Result = Angle;
+#elif defined(HMM_USE_TURN_INPUT)
+    float Result = Angle * HMM_TurnToDeg;
+#endif
+    
+    return (Result);
+}
+
+COVERAGE(HMM_ToTurns, 1)
+HMM_INLINE float HMM_PREFIX(ToTurns)(float Angle)
+{
+    ASSERT_COVERED(HMM_ToTurns);
+
+#if defined(HMM_USE_RADIAN_INPUT)
+    float Result = Angle * HMM_RadToTurn;
+#if defined(HMM_USE_DEGREE_INPUT) 
+    float Result = Angle * HMM_DegToTurn;
+#elif defined(HMM_USE_TURN_INPUT)
+    float Result = Angle;
+#endif
+    
+    return (Result);
+}
+
 
 COVERAGE(HMM_Lerp, 1)
 HMM_INLINE float HMM_PREFIX(Lerp)(float A, float Time, float B)
@@ -1540,8 +1597,11 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(Perspective)(float FOV, float AspectRatio, float 
 
     // See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
 
-    float Cotangent = 1.0f / HMM_PREFIX(TanF)(FOV * (HMM_PI32 / 360.0f));
-
+    /* TODO(lcf): Is this new formula correct. Previous was hardcoded for degrees -> radians.
+     * New version takes FOV in whatever HMM_USE_***_INPUT is set to, default radians. */
+    /* REF: float Cotangent = 1.0f / HMM_PREFIX(TanF)(FOV * (HMM_PI32 / 360.0f)); */
+    float Cotangent = 1.0f / HMM_PREFIX(TanF)(FOV / 2.0);
+    
     Result.Elements[0][0] = Cotangent / AspectRatio;
     Result.Elements[1][1] = Cotangent;
     Result.Elements[2][3] = -1.0f;
@@ -1575,8 +1635,8 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(Rotate)(float Angle, HMM_Vec3 Axis)
 
     Axis = HMM_PREFIX(NormV3)(Axis);
 
-    float SinTheta = HMM_PREFIX(SinF)(HMM_PREFIX(ToRadians)(Angle));
-    float CosTheta = HMM_PREFIX(CosF)(HMM_PREFIX(ToRadians)(Angle));
+    float SinTheta = HMM_PREFIX(SinF)(Angle);
+    float CosTheta = HMM_PREFIX(CosF)(Angle);
     float CosValue = 1.0f - CosTheta;
 
     Result.Elements[0][0] = (Axis.X * Axis.X * CosValue) + CosTheta;
