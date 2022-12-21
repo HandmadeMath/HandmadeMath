@@ -30,6 +30,15 @@
 
   To use HandmadeMath without the CRT, you MUST
 
+     #define HMM_PROVIDE_MATH_FUNCTIONS
+
+  Provide your own implementations of SinF, CosF, ACosF, ExpF, and LogF
+  in EXACTLY one C or C++ file that includes this header,
+  BEFORE the include, like this (assuming your functions take radians):
+
+     #define HMM_PROVIDE_MATH_FUNCTIONS
+     #define HMM_ANGLE_USER_TO_INTERNAL(a) (HMM_PREFIX(ToRadians)(a))
+     #define HMM_ANGLE_INTERNAL_TO_USER(a) (a)
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
      #define HMM_TANF MyTanF
@@ -37,22 +46,6 @@
      #define HMM_EXPF MyExpF
      #define HMM_LOGF MyLogF
      #define HMM_ACOSF MyACosF
-     #define HMM_ATANF MyATanF
-     #define HMM_ATAN2F MYATan2F
-
-  Provide your own implementations of SinF, CosF, TanF, ACosF, ATanF, ATan2F,
-  ExpF, and LogF in EXACTLY one C or C++ file that includes this header,
-  BEFORE the include, like this:
-
-     #define HMM_SINF MySinF
-     #define HMM_COSF MyCosF
-     #define HMM_TANF MyTanF
-     #define HMM_SQRTF MySqrtF
-     #define HMM_EXPF MyExpF
-     #define HMM_LOGF MyLogF
-     #define HMM_ACOSF MyACosF
-     #define HMM_ATANF MyATanF
-     #define HMM_ATAN2F MyATan2F
      #include "HandmadeMath.h"
 
   If you do not define all of these, HandmadeMath.h will use the
@@ -500,16 +493,6 @@ HMM_INLINE float HMM_PREFIX(CosF)(float Angle)
     return (Result);
 }
 
-COVERAGE(HMM_TanF, 1)
-HMM_INLINE float HMM_PREFIX(TanF)(float Angle)
-{
-    ASSERT_COVERED(HMM_TanF);
-
-    float Result = HMM_TANF(HMM_ANGLE_USER_TO_INTERNAL(Angle));
-
-    return (Result);
-}
-
 COVERAGE(HMM_ACosF, 1)
 HMM_INLINE float HMM_PREFIX(ACosF)(float Angle)
 {
@@ -520,23 +503,11 @@ HMM_INLINE float HMM_PREFIX(ACosF)(float Angle)
     return (Result);
 }
 
-COVERAGE(HMM_ATanF, 1)
-HMM_INLINE float HMM_PREFIX(ATanF)(float LenRatio)
+COVERAGE(HMM_TanF, 1)
+HMM_INLINE float HMM_PREFIX(TanF)(float Angle)
 {
-    ASSERT_COVERED(HMM_ATanF);
-
-    float Result = HMM_ANGLE_INTERNAL_TO_USER(HMM_ATANF(LenRatio));
-
-    return (Result);
-}
-
-COVERAGE(HMM_ATan2F, 1)
-HMM_INLINE float HMM_PREFIX(ATan2F)(float Numerator, float Denominator)
-{
-    ASSERT_COVERED(HMM_ATan2F);
-
-    float Result = HMM_ANGLE_INTERNAL_TO_USER(HMM_ATAN2F(Numerator, Denominator));
-
+    ASSERT_COVERED(HMM_TanF);
+    float Result = HMM_TANF(HMM_ANGLE_USER_TO_INTERNAL(Angle));
     return (Result);
 }
 

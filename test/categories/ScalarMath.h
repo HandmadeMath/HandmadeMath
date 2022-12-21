@@ -24,14 +24,6 @@ TEST(ScalarMath, Trigonometry)
     EXPECT_NEAR(HMM_TanF(HMM_PI32), 0.0f, trigAbsError);
     EXPECT_NEAR(HMM_TanF(-HMM_PI32 / 4), -1.0f, trigAbsError);
 
-    EXPECT_NEAR(HMM_ATanF(0.0f), 0.0f, trigAbsError);
-    EXPECT_NEAR(HMM_ATanF(HMM_PI32), 1.2626272557f, trigAbsError);
-    EXPECT_NEAR(HMM_ATanF(-HMM_PI32), -1.2626272557f, trigAbsError);
-
-    EXPECT_NEAR(HMM_ATan2F(0.0f, 1.0f), 0.0f, trigAbsError);
-    EXPECT_NEAR(HMM_ATan2F(1.0f, 1.0f), HMM_PI32 / 4.0f, trigAbsError);
-    EXPECT_NEAR(HMM_ATan2F(1.0f, 0.0f), HMM_PI32 / 2.0f, trigAbsError);
-
     // This isn't the most rigorous because we're really just sanity-
     // checking that things work by default.
 }
