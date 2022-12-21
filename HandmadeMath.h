@@ -18,16 +18,6 @@
 
   =============================================================================
 
-  If you would prefer not to use the HMM_ prefix on function names, you can
-
-  #define HMM_PREFIX
-
-  To use a custom prefix instead, you can
-
-  #define HMM_PREFIX(name) YOUR_PREFIX_##name
-
-  =============================================================================
-
   To use HandmadeMath without the CRT, you MUST
 
      #define HMM_PROVIDE_MATH_FUNCTIONS
@@ -184,7 +174,7 @@ extern "C"
 #if !defined(HMM_PROVIDE_MATH_FUNCTIONS)
 /* Conversion function to the unit the trig functions need angles in.
    Define as one of HMM_ToRadians, HMM_ToDegrees, or HMM_ToTurns. */
-#define HMM_ANGLE_USER_TO_INTERNAL(a) (HMM_PREFIX(ToRadians)(a))
+#define HMM_ANGLE_USER_TO_INTERNAL(a) (HMM_ToRadians(a))
 /* Conversion function to the User's input angle unit from the internal unit.
    If your internal and input angle units are the same simply define:
 #define HMM_ANGLE_INTERNAL_TO_USER(a) (a) 
@@ -219,10 +209,6 @@ extern "C"
 #define HMM_MOD(a, m) (((a) % (m)) >= 0 ? ((a) % (m)) : (((a) % (m)) + (m)))
 #define HMM_SQUARE(x) ((x) * (x))
 
-#ifndef HMM_PREFIX
-#define HMM_PREFIX(name) HMM_##name
-#endif
-
 typedef union HMM_Vec2
 {
     struct
@@ -254,7 +240,7 @@ typedef union HMM_Vec2
     }
 #endif
 } HMM_Vec2;
-typedef HMM_Vec2 HMM_PREFIX(Vec2);
+typedef HMM_Vec2 HMM_Vec2;
 
 typedef union HMM_Vec3
 {
@@ -306,7 +292,7 @@ typedef union HMM_Vec3
     }
 #endif
 } HMM_Vec3;
-typedef HMM_Vec3 HMM_PREFIX(Vec3);
+typedef HMM_Vec3 HMM_Vec3;
 
 typedef union HMM_Vec4
 {
@@ -371,7 +357,7 @@ typedef union HMM_Vec4
     }
 #endif
 } HMM_Vec4;
-typedef HMM_Vec4 HMM_PREFIX(Vec4);
+typedef HMM_Vec4 HMM_Vec4;
 
 typedef union HMM_Mat4
 {
@@ -400,7 +386,7 @@ typedef union HMM_Mat4
     }
 #endif
 } HMM_Mat4;
-typedef HMM_Mat4 HMM_PREFIX(Mat4);
+typedef HMM_Mat4 HMM_Mat4;
 
 typedef union HMM_Quat
 {
@@ -424,16 +410,16 @@ typedef union HMM_Quat
     __m128 InternalElementsSSE;
 #endif
 } HMM_Quat;
-typedef HMM_Quat HMM_PREFIX(Quat);
+typedef HMM_Quat HMM_Quat;
 
 typedef signed int HMM_Bool;
-typedef HMM_Bool HMM_PREFIX(Bool); /* TODO(lcf): seems kinda silly */
+typedef HMM_Bool HMM_Bool; /* TODO(lcf): seems kinda silly */
 
 
 /*
  * Angle unit conversion functions
  */
-HMM_INLINE float HMM_PREFIX(ToRadians)(float Angle)
+HMM_INLINE float HMM_ToRadians(float Angle)
 {
 #if defined(HMM_USE_RADIAN_INPUT)
     float Result = Angle;
@@ -446,7 +432,7 @@ HMM_INLINE float HMM_PREFIX(ToRadians)(float Angle)
     return (Result);
 }
 
-HMM_INLINE float HMM_PREFIX(ToDegrees)(float Angle)
+HMM_INLINE float HMM_ToDegrees(float Angle)
 {
 #if defined(HMM_USE_RADIAN_INPUT)
     float Result = Angle * HMM_RadToDeg;
@@ -459,7 +445,7 @@ HMM_INLINE float HMM_PREFIX(ToDegrees)(float Angle)
     return (Result);
 }
 
-HMM_INLINE float HMM_PREFIX(ToTurns)(float Angle)
+HMM_INLINE float HMM_ToTurns(float Angle)
 {
 #if defined(HMM_USE_RADIAN_INPUT)
     float Result = Angle * HMM_RadToTurn;
@@ -477,7 +463,7 @@ HMM_INLINE float HMM_PREFIX(ToTurns)(float Angle)
  */
 
 COVERAGE(HMM_SinF, 1)
-HMM_INLINE float HMM_PREFIX(SinF)(float Angle)
+HMM_INLINE float HMM_SinF(float Angle)
 {
     ASSERT_COVERED(HMM_SinF);
 
@@ -487,7 +473,7 @@ HMM_INLINE float HMM_PREFIX(SinF)(float Angle)
 }
 
 COVERAGE(HMM_CosF, 1)
-HMM_INLINE float HMM_PREFIX(CosF)(float Angle)
+HMM_INLINE float HMM_CosF(float Angle)
 {
     ASSERT_COVERED(HMM_CosF);
 
@@ -497,7 +483,7 @@ HMM_INLINE float HMM_PREFIX(CosF)(float Angle)
 }
 
 COVERAGE(HMM_ACosF, 1)
-HMM_INLINE float HMM_PREFIX(ACosF)(float Angle)
+HMM_INLINE float HMM_ACosF(float Angle)
 {
     ASSERT_COVERED(HMM_ACosF);
 
@@ -507,7 +493,7 @@ HMM_INLINE float HMM_PREFIX(ACosF)(float Angle)
 }
 
 COVERAGE(HMM_TanF, 1)
-HMM_INLINE float HMM_PREFIX(TanF)(float Angle)
+HMM_INLINE float HMM_TanF(float Angle)
 {
     ASSERT_COVERED(HMM_TanF);
     float Result = HMM_TANF(HMM_ANGLE_USER_TO_INTERNAL(Angle));
@@ -515,7 +501,7 @@ HMM_INLINE float HMM_PREFIX(TanF)(float Angle)
 }
 
 COVERAGE(HMM_ExpF, 1)
-HMM_INLINE float HMM_PREFIX(ExpF)(float Float)
+HMM_INLINE float HMM_ExpF(float Float)
 {
     ASSERT_COVERED(HMM_ExpF);
 
@@ -525,7 +511,7 @@ HMM_INLINE float HMM_PREFIX(ExpF)(float Float)
 }
 
 COVERAGE(HMM_LogF, 1)
-HMM_INLINE float HMM_PREFIX(LogF)(float Float)
+HMM_INLINE float HMM_LogF(float Float)
 {
     ASSERT_COVERED(HMM_LogF);
 
@@ -535,7 +521,7 @@ HMM_INLINE float HMM_PREFIX(LogF)(float Float)
 }
 
 COVERAGE(HMM_SqrtF, 1)
-HMM_INLINE float HMM_PREFIX(SqrtF)(float Float)
+HMM_INLINE float HMM_SqrtF(float Float)
 {
     ASSERT_COVERED(HMM_SqrtF);
 
@@ -553,7 +539,7 @@ HMM_INLINE float HMM_PREFIX(SqrtF)(float Float)
 }
 
 COVERAGE(HMM_InvSqrtF, 1)
-HMM_INLINE float HMM_PREFIX(InvSqrtF)(float Float)
+HMM_INLINE float HMM_InvSqrtF(float Float)
 {
     ASSERT_COVERED(HMM_InvSqrtF);
 
@@ -564,14 +550,14 @@ HMM_INLINE float HMM_PREFIX(InvSqrtF)(float Float)
     __m128 Out = _mm_rsqrt_ss(In);
     Result = _mm_cvtss_f32(Out);
 #else
-    Result = 1.0f/HMM_PREFIX(SqrtF)(Float);
+    Result = 1.0f/HMM_SqrtF(Float);
 #endif
 
     return(Result);
 }
 
 COVERAGE(HMM_Power, 2)
-HMM_INLINE float HMM_PREFIX(Power)(float Base, int Exponent)
+HMM_INLINE float HMM_Power(float Base, int Exponent)
 {
     ASSERT_COVERED(HMM_Power);
 
@@ -595,7 +581,7 @@ HMM_INLINE float HMM_PREFIX(Power)(float Base, int Exponent)
 }
 
 COVERAGE(HMM_PowerF, 1)
-HMM_INLINE float HMM_PREFIX(PowerF)(float Base, float Exponent)
+HMM_INLINE float HMM_PowerF(float Base, float Exponent)
 {
     ASSERT_COVERED(HMM_PowerF);
 
@@ -610,7 +596,7 @@ HMM_INLINE float HMM_PREFIX(PowerF)(float Base, float Exponent)
  */
 
 COVERAGE(HMM_Lerp, 1)
-HMM_INLINE float HMM_PREFIX(Lerp)(float A, float Time, float B)
+HMM_INLINE float HMM_Lerp(float A, float Time, float B)
 {
     ASSERT_COVERED(HMM_Lerp);
 
@@ -620,7 +606,7 @@ HMM_INLINE float HMM_PREFIX(Lerp)(float A, float Time, float B)
 }
 
 COVERAGE(HMM_Clamp, 1)
-HMM_INLINE float HMM_PREFIX(Clamp)(float Min, float Value, float Max)
+HMM_INLINE float HMM_Clamp(float Min, float Value, float Max)
 {
     ASSERT_COVERED(HMM_Clamp);
 
@@ -645,7 +631,7 @@ HMM_INLINE float HMM_PREFIX(Clamp)(float Min, float Value, float Max)
  */
 
 COVERAGE(HMM_V2, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(V2)(float X, float Y)
+HMM_INLINE HMM_Vec2 HMM_V2(float X, float Y)
 {
     ASSERT_COVERED(HMM_V2);
 
@@ -658,7 +644,7 @@ HMM_INLINE HMM_Vec2 HMM_PREFIX(V2)(float X, float Y)
 }
 
 COVERAGE(HMM_V2I, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(V2I)(int X, int Y)
+HMM_INLINE HMM_Vec2 HMM_V2I(int X, int Y)
 {
     ASSERT_COVERED(HMM_V2I);
 
@@ -671,7 +657,7 @@ HMM_INLINE HMM_Vec2 HMM_PREFIX(V2I)(int X, int Y)
 }
 
 COVERAGE(HMM_V3, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(V3)(float X, float Y, float Z)
+HMM_INLINE HMM_Vec3 HMM_V3(float X, float Y, float Z)
 {
     ASSERT_COVERED(HMM_V3);
 
@@ -685,7 +671,7 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(V3)(float X, float Y, float Z)
 }
 
 COVERAGE(HMM_V3I, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(V3I)(int X, int Y, int Z)
+HMM_INLINE HMM_Vec3 HMM_V3I(int X, int Y, int Z)
 {
     ASSERT_COVERED(HMM_V3I);
 
@@ -699,7 +685,7 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(V3I)(int X, int Y, int Z)
 }
 
 COVERAGE(HMM_V4, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(V4)(float X, float Y, float Z, float W)
+HMM_INLINE HMM_Vec4 HMM_V4(float X, float Y, float Z, float W)
 {
     ASSERT_COVERED(HMM_V4);
 
@@ -718,7 +704,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(V4)(float X, float Y, float Z, float W)
 }
 
 COVERAGE(HMM_V4I, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(V4I)(int X, int Y, int Z, int W)
+HMM_INLINE HMM_Vec4 HMM_V4I(int X, int Y, int Z, int W)
 {
     ASSERT_COVERED(HMM_V4I);
 
@@ -737,7 +723,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(V4I)(int X, int Y, int Z, int W)
 }
 
 COVERAGE(HMM_V4V, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(V4V)(HMM_Vec3 Vector, float W)
+HMM_INLINE HMM_Vec4 HMM_V4V(HMM_Vec3 Vector, float W)
 {
     ASSERT_COVERED(HMM_V4V);
 
@@ -759,7 +745,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(V4V)(HMM_Vec3 Vector, float W)
  */
 
 COVERAGE(HMM_AddV2, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(AddV2)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE HMM_Vec2 HMM_AddV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_AddV2);
 
@@ -772,7 +758,7 @@ HMM_INLINE HMM_Vec2 HMM_PREFIX(AddV2)(HMM_Vec2 Left, HMM_Vec2 Right)
 }
 
 COVERAGE(HMM_AddV3, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(AddV3)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Vec3 HMM_AddV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_AddV3);
 
@@ -786,7 +772,7 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(AddV3)(HMM_Vec3 Left, HMM_Vec3 Right)
 }
 
 COVERAGE(HMM_AddV4, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(AddV4)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE HMM_Vec4 HMM_AddV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_AddV4);
 
@@ -805,7 +791,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(AddV4)(HMM_Vec4 Left, HMM_Vec4 Right)
 }
 
 COVERAGE(HMM_SubV2, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(SubV2)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE HMM_Vec2 HMM_SubV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_SubV2);
 
@@ -818,7 +804,7 @@ HMM_INLINE HMM_Vec2 HMM_PREFIX(SubV2)(HMM_Vec2 Left, HMM_Vec2 Right)
 }
 
 COVERAGE(HMM_SubV3, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(SubV3)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Vec3 HMM_SubV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_SubV3);
 
@@ -832,7 +818,7 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(SubV3)(HMM_Vec3 Left, HMM_Vec3 Right)
 }
 
 COVERAGE(HMM_SubV4, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(SubV4)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE HMM_Vec4 HMM_SubV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_SubV4);
 
@@ -851,7 +837,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(SubV4)(HMM_Vec4 Left, HMM_Vec4 Right)
 }
 
 COVERAGE(HMM_MulV2, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(MulV2)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE HMM_Vec2 HMM_MulV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_MulV2);
 
@@ -864,7 +850,7 @@ HMM_INLINE HMM_Vec2 HMM_PREFIX(MulV2)(HMM_Vec2 Left, HMM_Vec2 Right)
 }
 
 COVERAGE(HMM_MulV2F, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(MulV2F)(HMM_Vec2 Left, float Right)
+HMM_INLINE HMM_Vec2 HMM_MulV2F(HMM_Vec2 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulV2F);
 
@@ -877,7 +863,7 @@ HMM_INLINE HMM_Vec2 HMM_PREFIX(MulV2F)(HMM_Vec2 Left, float Right)
 }
 
 COVERAGE(HMM_MulV3, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(MulV3)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Vec3 HMM_MulV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_MulV3);
 
@@ -891,7 +877,7 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(MulV3)(HMM_Vec3 Left, HMM_Vec3 Right)
 }
 
 COVERAGE(HMM_MulV3F, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(MulV3F)(HMM_Vec3 Left, float Right)
+HMM_INLINE HMM_Vec3 HMM_MulV3F(HMM_Vec3 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulV3F);
 
@@ -905,7 +891,7 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(MulV3F)(HMM_Vec3 Left, float Right)
 }
 
 COVERAGE(HMM_MulV4, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(MulV4)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE HMM_Vec4 HMM_MulV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_MulV4);
 
@@ -924,7 +910,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(MulV4)(HMM_Vec4 Left, HMM_Vec4 Right)
 }
 
 COVERAGE(HMM_MulV4F, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(MulV4F)(HMM_Vec4 Left, float Right)
+HMM_INLINE HMM_Vec4 HMM_MulV4F(HMM_Vec4 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulV4F);
 
@@ -944,7 +930,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(MulV4F)(HMM_Vec4 Left, float Right)
 }
 
 COVERAGE(HMM_DivV2, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(DivV2)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE HMM_Vec2 HMM_DivV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_DivV2);
 
@@ -957,7 +943,7 @@ HMM_INLINE HMM_Vec2 HMM_PREFIX(DivV2)(HMM_Vec2 Left, HMM_Vec2 Right)
 }
 
 COVERAGE(HMM_DivV2F, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(DivV2F)(HMM_Vec2 Left, float Right)
+HMM_INLINE HMM_Vec2 HMM_DivV2F(HMM_Vec2 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivV2F);
 
@@ -970,7 +956,7 @@ HMM_INLINE HMM_Vec2 HMM_PREFIX(DivV2F)(HMM_Vec2 Left, float Right)
 }
 
 COVERAGE(HMM_DivV3, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(DivV3)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Vec3 HMM_DivV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_DivV3);
 
@@ -984,7 +970,7 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(DivV3)(HMM_Vec3 Left, HMM_Vec3 Right)
 }
 
 COVERAGE(HMM_DivV3F, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(DivV3F)(HMM_Vec3 Left, float Right)
+HMM_INLINE HMM_Vec3 HMM_DivV3F(HMM_Vec3 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivV3F);
 
@@ -998,7 +984,7 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(DivV3F)(HMM_Vec3 Left, float Right)
 }
 
 COVERAGE(HMM_DivV4, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(DivV4)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE HMM_Vec4 HMM_DivV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_DivV4);
 
@@ -1017,7 +1003,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(DivV4)(HMM_Vec4 Left, HMM_Vec4 Right)
 }
 
 COVERAGE(HMM_DivV4F, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(DivV4F)(HMM_Vec4 Left, float Right)
+HMM_INLINE HMM_Vec4 HMM_DivV4F(HMM_Vec4 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivV4F);
 
@@ -1037,7 +1023,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(DivV4F)(HMM_Vec4 Left, float Right)
 }
 
 COVERAGE(HMM_EqV2, 1)
-HMM_INLINE HMM_Bool HMM_PREFIX(EqV2)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE HMM_Bool HMM_EqV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_EqV2);
 
@@ -1047,7 +1033,7 @@ HMM_INLINE HMM_Bool HMM_PREFIX(EqV2)(HMM_Vec2 Left, HMM_Vec2 Right)
 }
 
 COVERAGE(HMM_EqV3, 1)
-HMM_INLINE HMM_Bool HMM_PREFIX(EqV3)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Bool HMM_EqV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_EqV3);
 
@@ -1057,7 +1043,7 @@ HMM_INLINE HMM_Bool HMM_PREFIX(EqV3)(HMM_Vec3 Left, HMM_Vec3 Right)
 }
 
 COVERAGE(HMM_EqV4, 1)
-HMM_INLINE HMM_Bool HMM_PREFIX(EqV4)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE HMM_Bool HMM_EqV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_EqV4);
 
@@ -1067,7 +1053,7 @@ HMM_INLINE HMM_Bool HMM_PREFIX(EqV4)(HMM_Vec4 Left, HMM_Vec4 Right)
 }
 
 COVERAGE(HMM_DotV2, 1)
-HMM_INLINE float HMM_PREFIX(DotV2)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE float HMM_DotV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_DotV2);
 
@@ -1077,7 +1063,7 @@ HMM_INLINE float HMM_PREFIX(DotV2)(HMM_Vec2 Left, HMM_Vec2 Right)
 }
 
 COVERAGE(HMM_DotV3, 1)
-HMM_INLINE float HMM_PREFIX(DotV3)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE float HMM_DotV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_DotV3);
 
@@ -1087,7 +1073,7 @@ HMM_INLINE float HMM_PREFIX(DotV3)(HMM_Vec3 Left, HMM_Vec3 Right)
 }
 
 COVERAGE(HMM_DotV4, 1)
-HMM_INLINE float HMM_PREFIX(DotV4)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE float HMM_DotV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_DotV4);
 
@@ -1111,7 +1097,7 @@ HMM_INLINE float HMM_PREFIX(DotV4)(HMM_Vec4 Left, HMM_Vec4 Right)
 }
 
 COVERAGE(HMM_Cross, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(Cross)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Vec3 HMM_Cross(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_Cross);
 
@@ -1130,73 +1116,73 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(Cross)(HMM_Vec3 Left, HMM_Vec3 Right)
  */
 
 COVERAGE(HMM_LenSqrV2, 1)
-HMM_INLINE float HMM_PREFIX(LenSqrV2)(HMM_Vec2 A)
+HMM_INLINE float HMM_LenSqrV2(HMM_Vec2 A)
 {
     ASSERT_COVERED(HMM_LenSqrV2);
 
-    float Result = HMM_PREFIX(DotV2)(A, A);
+    float Result = HMM_DotV2(A, A);
 
     return (Result);
 }
 
 COVERAGE(HMM_LenSqrV3, 1)
-HMM_INLINE float HMM_PREFIX(LenSqrV3)(HMM_Vec3 A)
+HMM_INLINE float HMM_LenSqrV3(HMM_Vec3 A)
 {
     ASSERT_COVERED(HMM_LenSqrV3);
 
-    float Result = HMM_PREFIX(DotV3)(A, A);
+    float Result = HMM_DotV3(A, A);
 
     return (Result);
 }
 
 COVERAGE(HMM_LenSqrV4, 1)
-HMM_INLINE float HMM_PREFIX(LenSqrV4)(HMM_Vec4 A)
+HMM_INLINE float HMM_LenSqrV4(HMM_Vec4 A)
 {
     ASSERT_COVERED(HMM_LenSqrV4);
 
-    float Result = HMM_PREFIX(DotV4)(A, A);
+    float Result = HMM_DotV4(A, A);
 
     return (Result);
 }
 
 COVERAGE(HMM_LenV2, 1)
-HMM_INLINE float HMM_PREFIX(LenV2)(HMM_Vec2 A)
+HMM_INLINE float HMM_LenV2(HMM_Vec2 A)
 {
     ASSERT_COVERED(HMM_LenV2);
 
-    float Result = HMM_PREFIX(SqrtF)(HMM_PREFIX(LenSqrV2)(A));
+    float Result = HMM_SqrtF(HMM_LenSqrV2(A));
 
     return (Result);
 }
 
 COVERAGE(HMM_LenV3, 1)
-HMM_INLINE float HMM_PREFIX(LenV3)(HMM_Vec3 A)
+HMM_INLINE float HMM_LenV3(HMM_Vec3 A)
 {
     ASSERT_COVERED(HMM_LenV3);
 
-    float Result = HMM_PREFIX(SqrtF)(HMM_PREFIX(LenSqrV3)(A));
+    float Result = HMM_SqrtF(HMM_LenSqrV3(A));
 
     return (Result);
 }
 
 COVERAGE(HMM_LenV4, 1)
-HMM_INLINE float HMM_PREFIX(LenV4)(HMM_Vec4 A)
+HMM_INLINE float HMM_LenV4(HMM_Vec4 A)
 {
     ASSERT_COVERED(HMM_LenV4);
 
-    float Result = HMM_PREFIX(SqrtF)(HMM_PREFIX(LenSqrV4)(A));
+    float Result = HMM_SqrtF(HMM_LenSqrV4(A));
 
     return(Result);
 }
 
 COVERAGE(HMM_NormV2, 2)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(NormV2)(HMM_Vec2 A)
+HMM_INLINE HMM_Vec2 HMM_NormV2(HMM_Vec2 A)
 {
     ASSERT_COVERED(HMM_NormV2);
 
     HMM_Vec2 Result = {0};
 
-    float ALen = HMM_PREFIX(LenV2)(A);
+    float ALen = HMM_LenV2(A);
 
     /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
     if (ALen != 0.0f)
@@ -1211,13 +1197,13 @@ HMM_INLINE HMM_Vec2 HMM_PREFIX(NormV2)(HMM_Vec2 A)
 }
 
 COVERAGE(HMM_NormV3, 2)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(NormV3)(HMM_Vec3 A)
+HMM_INLINE HMM_Vec3 HMM_NormV3(HMM_Vec3 A)
 {
     ASSERT_COVERED(HMM_NormV3);
 
     HMM_Vec3 Result = {0};
 
-    float ALen = HMM_PREFIX(LenV3)(A);
+    float ALen = HMM_LenV3(A);
 
     /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
     if (ALen != 0.0f)
@@ -1233,13 +1219,13 @@ HMM_INLINE HMM_Vec3 HMM_PREFIX(NormV3)(HMM_Vec3 A)
 }
 
 COVERAGE(HMM_NormV4, 2)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(NormV4)(HMM_Vec4 A)
+HMM_INLINE HMM_Vec4 HMM_NormV4(HMM_Vec4 A)
 {
     ASSERT_COVERED(HMM_NormV4);
 
     HMM_Vec4 Result = {0};
 
-    float ALen = HMM_PREFIX(LenV4)(A);
+    float ALen = HMM_LenV4(A);
 
     /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
     if (ALen != 0.0f)
@@ -1263,27 +1249,27 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(NormV4)(HMM_Vec4 A)
 }
 
 COVERAGE(HMM_FastNormV2, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(FastNormV2)(HMM_Vec2 A)
+HMM_INLINE HMM_Vec2 HMM_FastNormV2(HMM_Vec2 A)
 {
     ASSERT_COVERED(HMM_FastNormV2);
 
-    return HMM_PREFIX(MulV2F)(A, HMM_PREFIX(InvSqrtF)(HMM_PREFIX(DotV2)(A, A)));
+    return HMM_MulV2F(A, HMM_InvSqrtF(HMM_DotV2(A, A)));
 }
 
 COVERAGE(HMM_FastNormV3, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(FastNormV3)(HMM_Vec3 A)
+HMM_INLINE HMM_Vec3 HMM_FastNormV3(HMM_Vec3 A)
 {
     ASSERT_COVERED(HMM_FastNormV3);
 
-    return HMM_PREFIX(MulV3F)(A, HMM_PREFIX(InvSqrtF)(HMM_PREFIX(DotV3)(A, A)));
+    return HMM_MulV3F(A, HMM_InvSqrtF(HMM_DotV3(A, A)));
 }
 
 COVERAGE(HMM_FastNormV4, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(FastNormV4)(HMM_Vec4 A)
+HMM_INLINE HMM_Vec4 HMM_FastNormV4(HMM_Vec4 A)
 {
     ASSERT_COVERED(HMM_FastNormV4);
 
-    return HMM_PREFIX(MulV4F)(A, HMM_PREFIX(InvSqrtF)(HMM_PREFIX(DotV4)(A, A)));
+    return HMM_MulV4F(A, HMM_InvSqrtF(HMM_DotV4(A, A)));
 }
 
 
@@ -1293,7 +1279,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(FastNormV4)(HMM_Vec4 A)
 
 #ifdef HANDMADE_MATH__USE_SSE
 COVERAGE(HMM_LinearCombineSSE, 1)
-HMM_INLINE __m128 HMM_PREFIX(LinearCombineSSE)(__m128 Left, HMM_Mat4 Right)
+HMM_INLINE __m128 HMM_LinearCombineSSE(__m128 Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_LinearCombineSSE);
 
@@ -1313,7 +1299,7 @@ HMM_INLINE __m128 HMM_PREFIX(LinearCombineSSE)(__m128 Left, HMM_Mat4 Right)
  */
 
 COVERAGE(HMM_M4, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(M4)(void)
+HMM_INLINE HMM_Mat4 HMM_M4(void)
 {
     ASSERT_COVERED(HMM_M4);
 
@@ -1323,11 +1309,11 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(M4)(void)
 }
 
 COVERAGE(HMM_M4d, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(M4d)(float Diagonal)
+HMM_INLINE HMM_Mat4 HMM_M4d(float Diagonal)
 {
     ASSERT_COVERED(HMM_M4d);
 
-    HMM_Mat4 Result = HMM_PREFIX(M4)();
+    HMM_Mat4 Result = HMM_M4();
 
     Result.Elements[0][0] = Diagonal;
     Result.Elements[1][1] = Diagonal;
@@ -1338,7 +1324,7 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(M4d)(float Diagonal)
 }
 
 COVERAGE(HMM_Transpose, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Transpose)(HMM_Mat4 Matrix)
+HMM_INLINE HMM_Mat4 HMM_Transpose(HMM_Mat4 Matrix)
 {
     ASSERT_COVERED(HMM_Transpose);
 
@@ -1363,7 +1349,7 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(Transpose)(HMM_Mat4 Matrix)
 }
 
 COVERAGE(HMM_AddM4, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(AddM4)(HMM_Mat4 Left, HMM_Mat4 Right)
+HMM_INLINE HMM_Mat4 HMM_AddM4(HMM_Mat4 Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_AddM4);
 
@@ -1391,7 +1377,7 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(AddM4)(HMM_Mat4 Left, HMM_Mat4 Right)
 }
 
 COVERAGE(HMM_SubM4, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(SubM4)(HMM_Mat4 Left, HMM_Mat4 Right)
+HMM_INLINE HMM_Mat4 HMM_SubM4(HMM_Mat4 Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_SubM4);
 
@@ -1418,17 +1404,17 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(SubM4)(HMM_Mat4 Left, HMM_Mat4 Right)
 }
 
 COVERAGE(HMM_MulM4, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(MulM4)(HMM_Mat4 Left, HMM_Mat4 Right)
+HMM_INLINE HMM_Mat4 HMM_MulM4(HMM_Mat4 Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_MulM4);
 
     HMM_Mat4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.Columns[0] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[0], Left);
-    Result.Columns[1] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[1], Left);
-    Result.Columns[2] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[2], Left);
-    Result.Columns[3] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[3], Left);
+    Result.Columns[0] = HMM_LinearCombineSSE(Right.Columns[0], Left);
+    Result.Columns[1] = HMM_LinearCombineSSE(Right.Columns[1], Left);
+    Result.Columns[2] = HMM_LinearCombineSSE(Right.Columns[2], Left);
+    Result.Columns[3] = HMM_LinearCombineSSE(Right.Columns[3], Left);
 #else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
@@ -1453,7 +1439,7 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(MulM4)(HMM_Mat4 Left, HMM_Mat4 Right)
 
 
 COVERAGE(HMM_MulM4f, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(MulM4f)(HMM_Mat4 Matrix, float Scalar)
+HMM_INLINE HMM_Mat4 HMM_MulM4f(HMM_Mat4 Matrix, float Scalar)
 {
     ASSERT_COVERED(HMM_MulM4f);
 
@@ -1481,14 +1467,14 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(MulM4f)(HMM_Mat4 Matrix, float Scalar)
 }
 
 COVERAGE(HMM_MulM4ByV4, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(MulM4ByV4)(HMM_Mat4 Matrix, HMM_Vec4 Vector)
+HMM_INLINE HMM_Vec4 HMM_MulM4ByV4(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 {
     ASSERT_COVERED(HMM_MulM4ByV4);
 
     HMM_Vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = HMM_PREFIX(LinearCombineSSE)(Vector.InternalElementsSSE, Matrix);
+    Result.InternalElementsSSE = HMM_LinearCombineSSE(Vector.InternalElementsSSE, Matrix);
 #else
     int Columns, Rows;
     for(Rows = 0; Rows < 4; ++Rows)
@@ -1508,7 +1494,7 @@ HMM_INLINE HMM_Vec4 HMM_PREFIX(MulM4ByV4)(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 
 
 COVERAGE(HMM_DivM4f, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(DivM4f)(HMM_Mat4 Matrix, float Scalar)
+HMM_INLINE HMM_Mat4 HMM_DivM4f(HMM_Mat4 Matrix, float Scalar)
 {
     ASSERT_COVERED(HMM_DivM4f);
 
@@ -1540,11 +1526,11 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(DivM4f)(HMM_Mat4 Matrix, float Scalar)
  */
 
 COVERAGE(HMM_Orthographic, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Orthographic)(float Left, float Right, float Bottom, float Top, float Near, float Far)
+HMM_INLINE HMM_Mat4 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
     ASSERT_COVERED(HMM_Orthographic);
 
-    HMM_Mat4 Result = HMM_PREFIX(M4)();
+    HMM_Mat4 Result = HMM_M4();
 
     Result.Elements[0][0] = 2.0f / (Right - Left);
     Result.Elements[1][1] = 2.0f / (Top - Bottom);
@@ -1559,15 +1545,15 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(Orthographic)(float Left, float Right, float Bott
 }
 
 COVERAGE(HMM_Perspective, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Perspective)(float FOV, float AspectRatio, float Near, float Far)
+HMM_INLINE HMM_Mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far)
 {
     ASSERT_COVERED(HMM_Perspective);
 
-    HMM_Mat4 Result = HMM_PREFIX(M4)();
+    HMM_Mat4 Result = HMM_M4();
 
     // See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
 
-    float Cotangent = 1.0f / HMM_PREFIX(TanF)(FOV / 2.0);
+    float Cotangent = 1.0f / HMM_TanF(FOV / 2.0);
     
     Result.Elements[0][0] = Cotangent / AspectRatio;
     Result.Elements[1][1] = Cotangent;
@@ -1580,11 +1566,11 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(Perspective)(float FOV, float AspectRatio, float 
 }
 
 COVERAGE(HMM_Translate, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Translate)(HMM_Vec3 Translation)
+HMM_INLINE HMM_Mat4 HMM_Translate(HMM_Vec3 Translation)
 {
     ASSERT_COVERED(HMM_Translate);
 
-    HMM_Mat4 Result = HMM_PREFIX(M4d)(1.0f);
+    HMM_Mat4 Result = HMM_M4d(1.0f);
 
     Result.Elements[3][0] = Translation.X;
     Result.Elements[3][1] = Translation.Y;
@@ -1594,16 +1580,16 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(Translate)(HMM_Vec3 Translation)
 }
 
 COVERAGE(HMM_Rotate, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Rotate)(float Angle, HMM_Vec3 Axis)
+HMM_INLINE HMM_Mat4 HMM_Rotate(float Angle, HMM_Vec3 Axis)
 {
     ASSERT_COVERED(HMM_Rotate);
 
-    HMM_Mat4 Result = HMM_PREFIX(M4d)(1.0f);
+    HMM_Mat4 Result = HMM_M4d(1.0f);
 
-    Axis = HMM_PREFIX(NormV3)(Axis);
+    Axis = HMM_NormV3(Axis);
 
-    float SinTheta = HMM_PREFIX(SinF)(Angle);
-    float CosTheta = HMM_PREFIX(CosF)(Angle);
+    float SinTheta = HMM_SinF(Angle);
+    float CosTheta = HMM_CosF(Angle);
     float CosValue = 1.0f - CosTheta;
 
     Result.Elements[0][0] = (Axis.X * Axis.X * CosValue) + CosTheta;
@@ -1624,11 +1610,11 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(Rotate)(float Angle, HMM_Vec3 Axis)
 
 
 COVERAGE(HMM_Scale, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Scale)(HMM_Vec3 Scale)
+HMM_INLINE HMM_Mat4 HMM_Scale(HMM_Vec3 Scale)
 {
     ASSERT_COVERED(HMM_Scale);
 
-    HMM_Mat4 Result = HMM_PREFIX(M4d)(1.0f);
+    HMM_Mat4 Result = HMM_M4d(1.0f);
 
     Result.Elements[0][0] = Scale.X;
     Result.Elements[1][1] = Scale.Y;
@@ -1638,15 +1624,15 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(Scale)(HMM_Vec3 Scale)
 }
 
 COVERAGE(HMM_LookAt, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(LookAt)(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
+HMM_INLINE HMM_Mat4 HMM_LookAt(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
 {
     ASSERT_COVERED(HMM_LookAt);
 
     HMM_Mat4 Result;
 
-    HMM_Vec3 F = HMM_PREFIX(NormV3)(HMM_PREFIX(SubV3)(Center, Eye));
-    HMM_Vec3 S = HMM_PREFIX(NormV3)(HMM_PREFIX(Cross)(F, Up));
-    HMM_Vec3 U = HMM_PREFIX(Cross)(S, F);
+    HMM_Vec3 F = HMM_NormV3(HMM_SubV3(Center, Eye));
+    HMM_Vec3 S = HMM_NormV3(HMM_Cross(F, Up));
+    HMM_Vec3 U = HMM_Cross(S, F);
 
     Result.Elements[0][0] = S.X;
     Result.Elements[0][1] = U.X;
@@ -1663,9 +1649,9 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(LookAt)(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 U
     Result.Elements[2][2] = -F.Z;
     Result.Elements[2][3] = 0.0f;
 
-    Result.Elements[3][0] = -HMM_PREFIX(DotV3)(S, Eye);
-    Result.Elements[3][1] = -HMM_PREFIX(DotV3)(U, Eye);
-    Result.Elements[3][2] = HMM_PREFIX(DotV3)(F, Eye);
+    Result.Elements[3][0] = -HMM_DotV3(S, Eye);
+    Result.Elements[3][1] = -HMM_DotV3(U, Eye);
+    Result.Elements[3][2] = HMM_DotV3(F, Eye);
     Result.Elements[3][3] = 1.0f;
 
     return (Result);
@@ -1676,7 +1662,7 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(LookAt)(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 U
  */
 
 COVERAGE(HMM_Q, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(Q)(float X, float Y, float Z, float W)
+HMM_INLINE HMM_Quat HMM_Q(float X, float Y, float Z, float W)
 {
     ASSERT_COVERED(HMM_Q);
 
@@ -1695,7 +1681,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(Q)(float X, float Y, float Z, float W)
 }
 
 COVERAGE(HMM_QV4, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(QV4)(HMM_Vec4 Vector)
+HMM_INLINE HMM_Quat HMM_QV4(HMM_Vec4 Vector)
 {
     ASSERT_COVERED(HMM_QV4);
 
@@ -1714,7 +1700,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(QV4)(HMM_Vec4 Vector)
 }
 
 COVERAGE(HMM_AddQ, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(AddQ)(HMM_Quat Left, HMM_Quat Right)
+HMM_INLINE HMM_Quat HMM_AddQ(HMM_Quat Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_AddQ);
 
@@ -1734,7 +1720,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(AddQ)(HMM_Quat Left, HMM_Quat Right)
 }
 
 COVERAGE(HMM_SubQ, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(SubQ)(HMM_Quat Left, HMM_Quat Right)
+HMM_INLINE HMM_Quat HMM_SubQ(HMM_Quat Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_SubQ);
 
@@ -1754,7 +1740,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(SubQ)(HMM_Quat Left, HMM_Quat Right)
 }
 
 COVERAGE(HMM_MulQ, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(MulQ)(HMM_Quat Left, HMM_Quat Right)
+HMM_INLINE HMM_Quat HMM_MulQ(HMM_Quat Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_MulQ);
 
@@ -1787,7 +1773,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(MulQ)(HMM_Quat Left, HMM_Quat Right)
 }
 
 COVERAGE(HMM_MulQF, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(MulQF)(HMM_Quat Left, float Multiplicative)
+HMM_INLINE HMM_Quat HMM_MulQF(HMM_Quat Left, float Multiplicative)
 {
     ASSERT_COVERED(HMM_MulQF);
 
@@ -1807,7 +1793,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(MulQF)(HMM_Quat Left, float Multiplicative)
 }
 
 COVERAGE(HMM_DivQF, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(DivQF)(HMM_Quat Left, float Divnd)
+HMM_INLINE HMM_Quat HMM_DivQF(HMM_Quat Left, float Divnd)
 {
     ASSERT_COVERED(HMM_DivQF);
 
@@ -1827,7 +1813,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(DivQF)(HMM_Quat Left, float Divnd)
 }
 
 COVERAGE(HMM_DotQ, 1)
-HMM_INLINE float HMM_PREFIX(DotQ)(HMM_Quat Left, HMM_Quat Right)
+HMM_INLINE float HMM_DotQ(HMM_Quat Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_DotQ);
 
@@ -1849,7 +1835,7 @@ HMM_INLINE float HMM_PREFIX(DotQ)(HMM_Quat Left, HMM_Quat Right)
 
 
 COVERAGE(HMM_InvQ, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(InvQ)(HMM_Quat Left)
+HMM_INLINE HMM_Quat HMM_InvQ(HMM_Quat Left)
 {
     ASSERT_COVERED(HMM_InvQ);
     
@@ -1860,27 +1846,27 @@ HMM_INLINE HMM_Quat HMM_PREFIX(InvQ)(HMM_Quat Left)
     Result.Z = -Left.Z;
     Result.W = Left.W;
 
-    Result = HMM_PREFIX(DivQF)(Result, (HMM_PREFIX(DotQ)(Left, Left)));
+    Result = HMM_DivQF(Result, (HMM_DotQ(Left, Left)));
 
     return (Result);
 }
 
 
 COVERAGE(HMM_NormQ, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(NormQ)(HMM_Quat Left)
+HMM_INLINE HMM_Quat HMM_NormQ(HMM_Quat Left)
 {
     ASSERT_COVERED(HMM_NormQ);
 
     HMM_Quat Result;
 
-    float Len = HMM_PREFIX(SqrtF)(HMM_PREFIX(DotQ)(Left, Left));
-    Result = HMM_PREFIX(DivQF)(Left, Len);
+    float Len = HMM_SqrtF(HMM_DotQ(Left, Left));
+    Result = HMM_DivQF(Left, Len);
 
     return (Result);
 }
 
 COVERAGE(HMM_NLerp, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(NLerp)(HMM_Quat Left, float Time, HMM_Quat Right)
+HMM_INLINE HMM_Quat HMM_NLerp(HMM_Quat Left, float Time, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_NLerp);
 
@@ -1893,18 +1879,18 @@ HMM_INLINE HMM_Quat HMM_PREFIX(NLerp)(HMM_Quat Left, float Time, HMM_Quat Right)
     __m128 SSEResultTwo = _mm_mul_ps(Right.InternalElementsSSE, ScalarRight);
     Result.InternalElementsSSE = _mm_add_ps(SSEResultOne, SSEResultTwo);
 #else
-    Result.X = HMM_PREFIX(Lerp)(Left.X, Time, Right.X);
-    Result.Y = HMM_PREFIX(Lerp)(Left.Y, Time, Right.Y);
-    Result.Z = HMM_PREFIX(Lerp)(Left.Z, Time, Right.Z);
-    Result.W = HMM_PREFIX(Lerp)(Left.W, Time, Right.W);
+    Result.X = HMM_Lerp(Left.X, Time, Right.X);
+    Result.Y = HMM_Lerp(Left.Y, Time, Right.Y);
+    Result.Z = HMM_Lerp(Left.Z, Time, Right.Z);
+    Result.W = HMM_Lerp(Left.W, Time, Right.W);
 #endif
-    Result = HMM_PREFIX(NormQ)(Result);
+    Result = HMM_NormQ(Result);
 
     return (Result);
 }
 
 COVERAGE(HMM_Slerp, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(Slerp)(HMM_Quat Left, float Time, HMM_Quat Right)
+HMM_INLINE HMM_Quat HMM_Slerp(HMM_Quat Left, float Time, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_Slerp);
 
@@ -1912,30 +1898,30 @@ HMM_INLINE HMM_Quat HMM_PREFIX(Slerp)(HMM_Quat Left, float Time, HMM_Quat Right)
     HMM_Quat QLeft;
     HMM_Quat QRight;
 
-    float Cos_Theta = HMM_PREFIX(DotQ)(Left, Right);
-    float Angle = HMM_PREFIX(ACosF)(Cos_Theta);
+    float Cos_Theta = HMM_DotQ(Left, Right);
+    float Angle = HMM_ACosF(Cos_Theta);
 
-    float S1 = HMM_PREFIX(SinF)((1.0f - Time) * Angle);
-    float S2 = HMM_PREFIX(SinF)(Time * Angle);
-    float Is = 1.0f / HMM_PREFIX(SinF)(Angle);
+    float S1 = HMM_SinF((1.0f - Time) * Angle);
+    float S2 = HMM_SinF(Time * Angle);
+    float Is = 1.0f / HMM_SinF(Angle);
 
-    QLeft = HMM_PREFIX(MulQF)(Left, S1);
-    QRight = HMM_PREFIX(MulQF)(Right, S2);
+    QLeft = HMM_MulQF(Left, S1);
+    QRight = HMM_MulQF(Right, S2);
 
-    Result = HMM_PREFIX(AddQ)(QLeft, QRight);
-    Result = HMM_PREFIX(MulQF)(Result, Is);
+    Result = HMM_AddQ(QLeft, QRight);
+    Result = HMM_MulQF(Result, Is);
 
     return (Result);
 }
 
 COVERAGE(HMM_QToM4, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(QToM4)(HMM_Quat Left)
+HMM_INLINE HMM_Mat4 HMM_QToM4(HMM_Quat Left)
 {
     ASSERT_COVERED(HMM_QToM4);
 
     HMM_Mat4 Result;
 
-    HMM_Quat NormalizedQ = HMM_PREFIX(NormQ)(Left);
+    HMM_Quat NormalizedQ = HMM_NormQ(Left);
 
     float XX, YY, ZZ,
           XY, XZ, YZ,
@@ -1989,7 +1975,7 @@ HMM_INLINE HMM_Mat4 HMM_PREFIX(QToM4)(HMM_Quat Left)
 // Don't be confused! Or if you must be confused, at least trust this
 // comment. :)
 COVERAGE(HMM_M4ToQ, 4)
-HMM_INLINE HMM_Quat HMM_PREFIX(M4ToQ)(HMM_Mat4 M)
+HMM_INLINE HMM_Quat HMM_M4ToQ(HMM_Mat4 M)
 {
     float T;
     HMM_Quat Q;
@@ -1999,7 +1985,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(M4ToQ)(HMM_Mat4 M)
             ASSERT_COVERED(HMM_M4ToQ);
 
             T = 1 + M.Elements[0][0] - M.Elements[1][1] - M.Elements[2][2];
-            Q = HMM_PREFIX(Q)(
+            Q = HMM_Q(
                 T,
                 M.Elements[0][1] + M.Elements[1][0],
                 M.Elements[2][0] + M.Elements[0][2],
@@ -2009,7 +1995,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(M4ToQ)(HMM_Mat4 M)
             ASSERT_COVERED(HMM_M4ToQ);
 
             T = 1 - M.Elements[0][0] + M.Elements[1][1] - M.Elements[2][2];
-            Q = HMM_PREFIX(Q)(
+            Q = HMM_Q(
                 M.Elements[0][1] + M.Elements[1][0],
                 T,
                 M.Elements[1][2] + M.Elements[2][1],
@@ -2021,7 +2007,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(M4ToQ)(HMM_Mat4 M)
             ASSERT_COVERED(HMM_M4ToQ);
 
             T = 1 - M.Elements[0][0] - M.Elements[1][1] + M.Elements[2][2];
-            Q = HMM_PREFIX(Q)(
+            Q = HMM_Q(
                 M.Elements[2][0] + M.Elements[0][2],
                 M.Elements[1][2] + M.Elements[2][1],
                 T,
@@ -2031,7 +2017,7 @@ HMM_INLINE HMM_Quat HMM_PREFIX(M4ToQ)(HMM_Mat4 M)
             ASSERT_COVERED(HMM_M4ToQ);
 
             T = 1 + M.Elements[0][0] + M.Elements[1][1] + M.Elements[2][2];
-            Q = HMM_PREFIX(Q)(
+            Q = HMM_Q(
                 M.Elements[1][2] - M.Elements[2][1],
                 M.Elements[2][0] - M.Elements[0][2],
                 M.Elements[0][1] - M.Elements[1][0],
@@ -2040,23 +2026,23 @@ HMM_INLINE HMM_Quat HMM_PREFIX(M4ToQ)(HMM_Mat4 M)
         }
     }
 
-    Q = HMM_PREFIX(MulQF)(Q, 0.5f / HMM_PREFIX(SqrtF)(T));
+    Q = HMM_MulQF(Q, 0.5f / HMM_SqrtF(T));
 
     return Q;
 }
 
 COVERAGE(HMM_QFromAxisAngle, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(QFromAxisAngle)(HMM_Vec3 Axis, float AngleOfRotation)
+HMM_INLINE HMM_Quat HMM_QFromAxisAngle(HMM_Vec3 Axis, float AngleOfRotation)
 {
     ASSERT_COVERED(HMM_QFromAxisAngle);
 
     HMM_Quat Result;
 
-    HMM_Vec3 AxisNormalized = HMM_PREFIX(NormV3)(Axis);
-    float SineOfRotation = HMM_PREFIX(SinF)(AngleOfRotation / 2.0f);
+    HMM_Vec3 AxisNormalized = HMM_NormV3(Axis);
+    float SineOfRotation = HMM_SinF(AngleOfRotation / 2.0f);
 
-    Result.XYZ = HMM_PREFIX(MulV3F)(AxisNormalized, SineOfRotation);
-    Result.W = HMM_PREFIX(CosF)(AngleOfRotation / 2.0f);
+    Result.XYZ = HMM_MulV3F(AxisNormalized, SineOfRotation);
+    Result.W = HMM_CosF(AngleOfRotation / 2.0f);
 
     return (Result);
 }
@@ -2068,490 +2054,490 @@ HMM_INLINE HMM_Quat HMM_PREFIX(QFromAxisAngle)(HMM_Vec3 Axis, float AngleOfRotat
 #ifdef __cplusplus
 
 COVERAGE(HMM_LenV2CPP, 1)
-HMM_INLINE float HMM_PREFIX(Len)(HMM_Vec2 A)
+HMM_INLINE float HMM_Len(HMM_Vec2 A)
 {
     ASSERT_COVERED(HMM_LenV2CPP);
 
-    float Result = HMM_PREFIX(LenV2)(A);
+    float Result = HMM_LenV2(A);
     return (Result);
 }
 
 COVERAGE(HMM_LenV3CPP, 1)
-HMM_INLINE float HMM_PREFIX(Len)(HMM_Vec3 A)
+HMM_INLINE float HMM_Len(HMM_Vec3 A)
 {
     ASSERT_COVERED(HMM_LenV3CPP);
 
-    float Result = HMM_PREFIX(LenV3)(A);
+    float Result = HMM_LenV3(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_LenV4CPP, 1)
-HMM_INLINE float HMM_PREFIX(Len)(HMM_Vec4 A)
+HMM_INLINE float HMM_Len(HMM_Vec4 A)
 {
     ASSERT_COVERED(HMM_LenV4CPP);
 
-    float Result = HMM_PREFIX(LenV4)(A);
+    float Result = HMM_LenV4(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_LenSqrV2CPP, 1)
-HMM_INLINE float HMM_PREFIX(LenSqr)(HMM_Vec2 A)
+HMM_INLINE float HMM_LenSqr(HMM_Vec2 A)
 {
     ASSERT_COVERED(HMM_LenSqrV2CPP);
 
-    float Result = HMM_PREFIX(LenSqrV2)(A);
+    float Result = HMM_LenSqrV2(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_LenSqrV3CPP, 1)
-HMM_INLINE float HMM_PREFIX(LenSqr)(HMM_Vec3 A)
+HMM_INLINE float HMM_LenSqr(HMM_Vec3 A)
 {
     ASSERT_COVERED(HMM_LenSqrV3CPP);
 
-    float Result = HMM_PREFIX(LenSqrV3)(A);
+    float Result = HMM_LenSqrV3(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_LenSqrV4CPP, 1)
-HMM_INLINE float HMM_PREFIX(LenSqr)(HMM_Vec4 A)
+HMM_INLINE float HMM_LenSqr(HMM_Vec4 A)
 {
     ASSERT_COVERED(HMM_LenSqrV4CPP);
 
-    float Result = HMM_PREFIX(LenSqrV4)(A);
+    float Result = HMM_LenSqrV4(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_NormV2CPP, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(Norm)(HMM_Vec2 A)
+HMM_INLINE HMM_Vec2 HMM_Norm(HMM_Vec2 A)
 {
     ASSERT_COVERED(HMM_NormV2CPP);
 
-    HMM_Vec2 Result = HMM_PREFIX(NormV2)(A);
+    HMM_Vec2 Result = HMM_NormV2(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_NormV3CPP, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(Norm)(HMM_Vec3 A)
+HMM_INLINE HMM_Vec3 HMM_Norm(HMM_Vec3 A)
 {
     ASSERT_COVERED(HMM_NormV3CPP);
 
-    HMM_Vec3 Result = HMM_PREFIX(NormV3)(A);
+    HMM_Vec3 Result = HMM_NormV3(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_NormV4CPP, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(Norm)(HMM_Vec4 A)
+HMM_INLINE HMM_Vec4 HMM_Norm(HMM_Vec4 A)
 {
     ASSERT_COVERED(HMM_NormV4CPP);
 
-    HMM_Vec4 Result = HMM_PREFIX(NormV4)(A);
+    HMM_Vec4 Result = HMM_NormV4(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_FastNormV2CPP, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(FastNorm)(HMM_Vec2 A)
+HMM_INLINE HMM_Vec2 HMM_FastNorm(HMM_Vec2 A)
 {
     ASSERT_COVERED(HMM_FastNormV2CPP);
 
-    HMM_Vec2 Result = HMM_PREFIX(FastNormV2)(A);
+    HMM_Vec2 Result = HMM_FastNormV2(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_FastNormV3CPP, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(FastNorm)(HMM_Vec3 A)
+HMM_INLINE HMM_Vec3 HMM_FastNorm(HMM_Vec3 A)
 {
     ASSERT_COVERED(HMM_FastNormV3CPP);
 
-    HMM_Vec3 Result = HMM_PREFIX(FastNormV3)(A);
+    HMM_Vec3 Result = HMM_FastNormV3(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_FastNormV4CPP, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(FastNorm)(HMM_Vec4 A)
+HMM_INLINE HMM_Vec4 HMM_FastNorm(HMM_Vec4 A)
 {
     ASSERT_COVERED(HMM_FastNormV4CPP);
 
-    HMM_Vec4 Result = HMM_PREFIX(FastNormV4)(A);
+    HMM_Vec4 Result = HMM_FastNormV4(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_NormQCPP, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(Norm)(HMM_Quat A)
+HMM_INLINE HMM_Quat HMM_Norm(HMM_Quat A)
 {
     ASSERT_COVERED(HMM_NormQCPP);
 
-    HMM_Quat Result = HMM_PREFIX(NormQ)(A);
+    HMM_Quat Result = HMM_NormQ(A);
 
     return (Result);
 }
 
 COVERAGE(HMM_DotV2CPP, 1)
-HMM_INLINE float HMM_PREFIX(Dot)(HMM_Vec2 Left, HMM_Vec2 VecTwo)
+HMM_INLINE float HMM_Dot(HMM_Vec2 Left, HMM_Vec2 VecTwo)
 {
     ASSERT_COVERED(HMM_DotV2CPP);
 
-    float Result = HMM_PREFIX(DotV2)(Left, VecTwo);
+    float Result = HMM_DotV2(Left, VecTwo);
 
     return (Result);
 }
 
 COVERAGE(HMM_DotV3CPP, 1)
-HMM_INLINE float HMM_PREFIX(Dot)(HMM_Vec3 Left, HMM_Vec3 VecTwo)
+HMM_INLINE float HMM_Dot(HMM_Vec3 Left, HMM_Vec3 VecTwo)
 {
     ASSERT_COVERED(HMM_DotV3CPP);
 
-    float Result = HMM_PREFIX(DotV3)(Left, VecTwo);
+    float Result = HMM_DotV3(Left, VecTwo);
 
     return (Result);
 }
 
 COVERAGE(HMM_DotV4CPP, 1)
-HMM_INLINE float HMM_PREFIX(Dot)(HMM_Vec4 Left, HMM_Vec4 VecTwo)
+HMM_INLINE float HMM_Dot(HMM_Vec4 Left, HMM_Vec4 VecTwo)
 {
     ASSERT_COVERED(HMM_DotV4CPP);
 
-    float Result = HMM_PREFIX(DotV4)(Left, VecTwo);
+    float Result = HMM_DotV4(Left, VecTwo);
 
     return (Result);
 }
 
 COVERAGE(HMM_DotQCPP, 1)
-HMM_INLINE float HMM_PREFIX(Dot)(HMM_Quat QuatOne, HMM_Quat QuatTwo)
+HMM_INLINE float HMM_Dot(HMM_Quat QuatOne, HMM_Quat QuatTwo)
 {
     ASSERT_COVERED(HMM_DotQCPP);
 
-    float Result = HMM_PREFIX(DotQ)(QuatOne, QuatTwo);
+    float Result = HMM_DotQ(QuatOne, QuatTwo);
 
     return (Result);
 }
 
 COVERAGE(HMM_AddV2CPP, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(Add)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE HMM_Vec2 HMM_Add(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_AddV2CPP);
 
-    HMM_Vec2 Result = HMM_PREFIX(AddV2)(Left, Right);
+    HMM_Vec2 Result = HMM_AddV2(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_AddV3CPP, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(Add)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Vec3 HMM_Add(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_AddV3CPP);
 
-    HMM_Vec3 Result = HMM_PREFIX(AddV3)(Left, Right);
+    HMM_Vec3 Result = HMM_AddV3(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_AddV4CPP, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(Add)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE HMM_Vec4 HMM_Add(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_AddV4CPP);
 
-    HMM_Vec4 Result = HMM_PREFIX(AddV4)(Left, Right);
+    HMM_Vec4 Result = HMM_AddV4(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_AddM4CPP, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Add)(HMM_Mat4 Left, HMM_Mat4 Right)
+HMM_INLINE HMM_Mat4 HMM_Add(HMM_Mat4 Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_AddM4CPP);
 
-    HMM_Mat4 Result = HMM_PREFIX(AddM4)(Left, Right);
+    HMM_Mat4 Result = HMM_AddM4(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_AddQCPP, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(Add)(HMM_Quat Left, HMM_Quat Right)
+HMM_INLINE HMM_Quat HMM_Add(HMM_Quat Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_AddQCPP);
 
-    HMM_Quat Result = HMM_PREFIX(AddQ)(Left, Right);
+    HMM_Quat Result = HMM_AddQ(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_SubV2CPP, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(Sub)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE HMM_Vec2 HMM_Sub(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_SubV2CPP);
 
-    HMM_Vec2 Result = HMM_PREFIX(SubV2)(Left, Right);
+    HMM_Vec2 Result = HMM_SubV2(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_SubV3CPP, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(Sub)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Vec3 HMM_Sub(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_SubV3CPP);
 
-    HMM_Vec3 Result = HMM_PREFIX(SubV3)(Left, Right);
+    HMM_Vec3 Result = HMM_SubV3(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_SubV4CPP, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(Sub)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE HMM_Vec4 HMM_Sub(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_SubV4CPP);
 
-    HMM_Vec4 Result = HMM_PREFIX(SubV4)(Left, Right);
+    HMM_Vec4 Result = HMM_SubV4(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_SubM4CPP, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Sub)(HMM_Mat4 Left, HMM_Mat4 Right)
+HMM_INLINE HMM_Mat4 HMM_Sub(HMM_Mat4 Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_SubM4CPP);
 
-    HMM_Mat4 Result = HMM_PREFIX(SubM4)(Left, Right);
+    HMM_Mat4 Result = HMM_SubM4(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_SubQCPP, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(Sub)(HMM_Quat Left, HMM_Quat Right)
+HMM_INLINE HMM_Quat HMM_Sub(HMM_Quat Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_SubQCPP);
 
-    HMM_Quat Result = HMM_PREFIX(SubQ)(Left, Right);
+    HMM_Quat Result = HMM_SubQ(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulV2CPP, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(Mul)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE HMM_Vec2 HMM_Mul(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_MulV2CPP);
 
-    HMM_Vec2 Result = HMM_PREFIX(MulV2)(Left, Right);
+    HMM_Vec2 Result = HMM_MulV2(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulV2FCPP, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(Mul)(HMM_Vec2 Left, float Right)
+HMM_INLINE HMM_Vec2 HMM_Mul(HMM_Vec2 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulV2FCPP);
 
-    HMM_Vec2 Result = HMM_PREFIX(MulV2F)(Left, Right);
+    HMM_Vec2 Result = HMM_MulV2F(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulV3CPP, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(Mul)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Vec3 HMM_Mul(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_MulV3CPP);
 
-    HMM_Vec3 Result = HMM_PREFIX(MulV3)(Left, Right);
+    HMM_Vec3 Result = HMM_MulV3(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulV3FCPP, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(Mul)(HMM_Vec3 Left, float Right)
+HMM_INLINE HMM_Vec3 HMM_Mul(HMM_Vec3 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulV3FCPP);
 
-    HMM_Vec3 Result = HMM_PREFIX(MulV3F)(Left, Right);
+    HMM_Vec3 Result = HMM_MulV3F(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulV4CPP, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(Mul)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE HMM_Vec4 HMM_Mul(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_MulV4CPP);
 
-    HMM_Vec4 Result = HMM_PREFIX(MulV4)(Left, Right);
+    HMM_Vec4 Result = HMM_MulV4(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulV4FCPP, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(Mul)(HMM_Vec4 Left, float Right)
+HMM_INLINE HMM_Vec4 HMM_Mul(HMM_Vec4 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulV4FCPP);
 
-    HMM_Vec4 Result = HMM_PREFIX(MulV4F)(Left, Right);
+    HMM_Vec4 Result = HMM_MulV4F(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulM4CPP, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Mul)(HMM_Mat4 Left, HMM_Mat4 Right)
+HMM_INLINE HMM_Mat4 HMM_Mul(HMM_Mat4 Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_MulM4CPP);
 
-    HMM_Mat4 Result = HMM_PREFIX(MulM4)(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulM4fCPP, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Mul)(HMM_Mat4 Left, float Right)
+HMM_INLINE HMM_Mat4 HMM_Mul(HMM_Mat4 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulM4fCPP);
 
-    HMM_Mat4 Result = HMM_PREFIX(MulM4f)(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4f(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulM4ByV4CPP, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(Mul)(HMM_Mat4 Matrix, HMM_Vec4 Vector)
+HMM_INLINE HMM_Vec4 HMM_Mul(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 {
     ASSERT_COVERED(HMM_MulM4ByV4CPP);
 
-    HMM_Vec4 Result = HMM_PREFIX(MulM4ByV4)(Matrix, Vector);
+    HMM_Vec4 Result = HMM_MulM4ByV4(Matrix, Vector);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulQCPP, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(Mul)(HMM_Quat Left, HMM_Quat Right)
+HMM_INLINE HMM_Quat HMM_Mul(HMM_Quat Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_MulQCPP);
 
-    HMM_Quat Result = HMM_PREFIX(MulQ)(Left, Right);
+    HMM_Quat Result = HMM_MulQ(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_MulQFCPP, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(Mul)(HMM_Quat Left, float Right)
+HMM_INLINE HMM_Quat HMM_Mul(HMM_Quat Left, float Right)
 {
     ASSERT_COVERED(HMM_MulQFCPP);
 
-    HMM_Quat Result = HMM_PREFIX(MulQF)(Left, Right);
+    HMM_Quat Result = HMM_MulQF(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_DivV2CPP, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(Div)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE HMM_Vec2 HMM_Div(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_DivV2CPP);
 
-    HMM_Vec2 Result = HMM_PREFIX(DivV2)(Left, Right);
+    HMM_Vec2 Result = HMM_DivV2(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_DivV2FCPP, 1)
-HMM_INLINE HMM_Vec2 HMM_PREFIX(Div)(HMM_Vec2 Left, float Right)
+HMM_INLINE HMM_Vec2 HMM_Div(HMM_Vec2 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivV2FCPP);
 
-    HMM_Vec2 Result = HMM_PREFIX(DivV2F)(Left, Right);
+    HMM_Vec2 Result = HMM_DivV2F(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_DivV3CPP, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(Div)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Vec3 HMM_Div(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_DivV3CPP);
 
-    HMM_Vec3 Result = HMM_PREFIX(DivV3)(Left, Right);
+    HMM_Vec3 Result = HMM_DivV3(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_DivV3FCPP, 1)
-HMM_INLINE HMM_Vec3 HMM_PREFIX(Div)(HMM_Vec3 Left, float Right)
+HMM_INLINE HMM_Vec3 HMM_Div(HMM_Vec3 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivV3FCPP);
 
-    HMM_Vec3 Result = HMM_PREFIX(DivV3F)(Left, Right);
+    HMM_Vec3 Result = HMM_DivV3F(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_DivV4CPP, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(Div)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE HMM_Vec4 HMM_Div(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_DivV4CPP);
 
-    HMM_Vec4 Result = HMM_PREFIX(DivV4)(Left, Right);
+    HMM_Vec4 Result = HMM_DivV4(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_DivV4FCPP, 1)
-HMM_INLINE HMM_Vec4 HMM_PREFIX(Div)(HMM_Vec4 Left, float Right)
+HMM_INLINE HMM_Vec4 HMM_Div(HMM_Vec4 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivV4FCPP);
 
-    HMM_Vec4 Result = HMM_PREFIX(DivV4F)(Left, Right);
+    HMM_Vec4 Result = HMM_DivV4F(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_DivM4fCPP, 1)
-HMM_INLINE HMM_Mat4 HMM_PREFIX(Div)(HMM_Mat4 Left, float Right)
+HMM_INLINE HMM_Mat4 HMM_Div(HMM_Mat4 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivM4fCPP);
 
-    HMM_Mat4 Result = HMM_PREFIX(DivM4f)(Left, Right);
+    HMM_Mat4 Result = HMM_DivM4f(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_DivQFCPP, 1)
-HMM_INLINE HMM_Quat HMM_PREFIX(Div)(HMM_Quat Left, float Right)
+HMM_INLINE HMM_Quat HMM_Div(HMM_Quat Left, float Right)
 {
     ASSERT_COVERED(HMM_DivQFCPP);
 
-    HMM_Quat Result = HMM_PREFIX(DivQF)(Left, Right);
+    HMM_Quat Result = HMM_DivQF(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_EqV2CPP, 1)
-HMM_INLINE HMM_Bool HMM_PREFIX(Eq)(HMM_Vec2 Left, HMM_Vec2 Right)
+HMM_INLINE HMM_Bool HMM_Eq(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_EqV2CPP);
 
-    HMM_Bool Result = HMM_PREFIX(EqV2)(Left, Right);
+    HMM_Bool Result = HMM_EqV2(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_EqV3CPP, 1)
-HMM_INLINE HMM_Bool HMM_PREFIX(Eq)(HMM_Vec3 Left, HMM_Vec3 Right)
+HMM_INLINE HMM_Bool HMM_Eq(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_EqV3CPP);
 
-    HMM_Bool Result = HMM_PREFIX(EqV3)(Left, Right);
+    HMM_Bool Result = HMM_EqV3(Left, Right);
 
     return (Result);
 }
 
 COVERAGE(HMM_EqV4CPP, 1)
-HMM_INLINE HMM_Bool HMM_PREFIX(Eq)(HMM_Vec4 Left, HMM_Vec4 Right)
+HMM_INLINE HMM_Bool HMM_Eq(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_EqV4CPP);
 
-    HMM_Bool Result = HMM_PREFIX(EqV4)(Left, Right);
+    HMM_Bool Result = HMM_EqV4(Left, Right);
 
     return (Result);
 }
@@ -2561,7 +2547,7 @@ HMM_INLINE HMM_Vec2 operator+(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_AddV2Op);
 
-    HMM_Vec2 Result = HMM_PREFIX(AddV2)(Left, Right);
+    HMM_Vec2 Result = HMM_AddV2(Left, Right);
 
     return (Result);
 }
@@ -2571,7 +2557,7 @@ HMM_INLINE HMM_Vec3 operator+(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_AddV3Op);
 
-    HMM_Vec3 Result = HMM_PREFIX(AddV3)(Left, Right);
+    HMM_Vec3 Result = HMM_AddV3(Left, Right);
 
     return (Result);
 }
@@ -2581,7 +2567,7 @@ HMM_INLINE HMM_Vec4 operator+(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_AddV4Op);
 
-    HMM_Vec4 Result = HMM_PREFIX(AddV4)(Left, Right);
+    HMM_Vec4 Result = HMM_AddV4(Left, Right);
 
     return (Result);
 }
@@ -2591,7 +2577,7 @@ HMM_INLINE HMM_Mat4 operator+(HMM_Mat4 Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_AddM4Op);
 
-    HMM_Mat4 Result = HMM_PREFIX(AddM4)(Left, Right);
+    HMM_Mat4 Result = HMM_AddM4(Left, Right);
 
     return (Result);
 }
@@ -2601,7 +2587,7 @@ HMM_INLINE HMM_Quat operator+(HMM_Quat Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_AddQOp);
 
-    HMM_Quat Result = HMM_PREFIX(AddQ)(Left, Right);
+    HMM_Quat Result = HMM_AddQ(Left, Right);
 
     return (Result);
 }
@@ -2611,7 +2597,7 @@ HMM_INLINE HMM_Vec2 operator-(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_SubV2Op);
 
-    HMM_Vec2 Result = HMM_PREFIX(SubV2)(Left, Right);
+    HMM_Vec2 Result = HMM_SubV2(Left, Right);
 
     return (Result);
 }
@@ -2621,7 +2607,7 @@ HMM_INLINE HMM_Vec3 operator-(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_SubV3Op);
 
-    HMM_Vec3 Result = HMM_PREFIX(SubV3)(Left, Right);
+    HMM_Vec3 Result = HMM_SubV3(Left, Right);
 
     return (Result);
 }
@@ -2631,7 +2617,7 @@ HMM_INLINE HMM_Vec4 operator-(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_SubV4Op);
 
-    HMM_Vec4 Result = HMM_PREFIX(SubV4)(Left, Right);
+    HMM_Vec4 Result = HMM_SubV4(Left, Right);
 
     return (Result);
 }
@@ -2641,7 +2627,7 @@ HMM_INLINE HMM_Mat4 operator-(HMM_Mat4 Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_SubM4Op);
 
-    HMM_Mat4 Result = HMM_PREFIX(SubM4)(Left, Right);
+    HMM_Mat4 Result = HMM_SubM4(Left, Right);
 
     return (Result);
 }
@@ -2651,7 +2637,7 @@ HMM_INLINE HMM_Quat operator-(HMM_Quat Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_SubQOp);
 
-    HMM_Quat Result = HMM_PREFIX(SubQ)(Left, Right);
+    HMM_Quat Result = HMM_SubQ(Left, Right);
 
     return (Result);
 }
@@ -2661,7 +2647,7 @@ HMM_INLINE HMM_Vec2 operator*(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_MulV2Op);
 
-    HMM_Vec2 Result = HMM_PREFIX(MulV2)(Left, Right);
+    HMM_Vec2 Result = HMM_MulV2(Left, Right);
 
     return (Result);
 }
@@ -2671,7 +2657,7 @@ HMM_INLINE HMM_Vec3 operator*(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_MulV3Op);
 
-    HMM_Vec3 Result = HMM_PREFIX(MulV3)(Left, Right);
+    HMM_Vec3 Result = HMM_MulV3(Left, Right);
 
     return (Result);
 }
@@ -2681,7 +2667,7 @@ HMM_INLINE HMM_Vec4 operator*(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_MulV4Op);
 
-    HMM_Vec4 Result = HMM_PREFIX(MulV4)(Left, Right);
+    HMM_Vec4 Result = HMM_MulV4(Left, Right);
 
     return (Result);
 }
@@ -2691,7 +2677,7 @@ HMM_INLINE HMM_Mat4 operator*(HMM_Mat4 Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_MulM4Op);
 
-    HMM_Mat4 Result = HMM_PREFIX(MulM4)(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4(Left, Right);
 
     return (Result);
 }
@@ -2701,7 +2687,7 @@ HMM_INLINE HMM_Quat operator*(HMM_Quat Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_MulQOp);
 
-    HMM_Quat Result = HMM_PREFIX(MulQ)(Left, Right);
+    HMM_Quat Result = HMM_MulQ(Left, Right);
 
     return (Result);
 }
@@ -2711,7 +2697,7 @@ HMM_INLINE HMM_Vec2 operator*(HMM_Vec2 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulV2FOp);
 
-    HMM_Vec2 Result = HMM_PREFIX(MulV2F)(Left, Right);
+    HMM_Vec2 Result = HMM_MulV2F(Left, Right);
 
     return (Result);
 }
@@ -2721,7 +2707,7 @@ HMM_INLINE HMM_Vec3 operator*(HMM_Vec3 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulV3FOp);
 
-    HMM_Vec3 Result = HMM_PREFIX(MulV3F)(Left, Right);
+    HMM_Vec3 Result = HMM_MulV3F(Left, Right);
 
     return (Result);
 }
@@ -2731,7 +2717,7 @@ HMM_INLINE HMM_Vec4 operator*(HMM_Vec4 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulV4FOp);
 
-    HMM_Vec4 Result = HMM_PREFIX(MulV4F)(Left, Right);
+    HMM_Vec4 Result = HMM_MulV4F(Left, Right);
 
     return (Result);
 }
@@ -2741,7 +2727,7 @@ HMM_INLINE HMM_Mat4 operator*(HMM_Mat4 Left, float Right)
 {
     ASSERT_COVERED(HMM_MulM4fOp);
 
-    HMM_Mat4 Result = HMM_PREFIX(MulM4f)(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4f(Left, Right);
 
     return (Result);
 }
@@ -2751,7 +2737,7 @@ HMM_INLINE HMM_Quat operator*(HMM_Quat Left, float Right)
 {
     ASSERT_COVERED(HMM_MulQFOp);
 
-    HMM_Quat Result = HMM_PREFIX(MulQF)(Left, Right);
+    HMM_Quat Result = HMM_MulQF(Left, Right);
 
     return (Result);
 }
@@ -2761,7 +2747,7 @@ HMM_INLINE HMM_Vec2 operator*(float Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_MulV2FOpLeft);
 
-    HMM_Vec2 Result = HMM_PREFIX(MulV2F)(Right, Left);
+    HMM_Vec2 Result = HMM_MulV2F(Right, Left);
 
     return (Result);
 }
@@ -2771,7 +2757,7 @@ HMM_INLINE HMM_Vec3 operator*(float Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_MulV3FOpLeft);
 
-    HMM_Vec3 Result = HMM_PREFIX(MulV3F)(Right, Left);
+    HMM_Vec3 Result = HMM_MulV3F(Right, Left);
 
     return (Result);
 }
@@ -2781,7 +2767,7 @@ HMM_INLINE HMM_Vec4 operator*(float Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_MulV4FOpLeft);
 
-    HMM_Vec4 Result = HMM_PREFIX(MulV4F)(Right, Left);
+    HMM_Vec4 Result = HMM_MulV4F(Right, Left);
 
     return (Result);
 }
@@ -2791,7 +2777,7 @@ HMM_INLINE HMM_Mat4 operator*(float Left, HMM_Mat4 Right)
 {
     ASSERT_COVERED(HMM_MulM4fOpLeft);
 
-    HMM_Mat4 Result = HMM_PREFIX(MulM4f)(Right, Left);
+    HMM_Mat4 Result = HMM_MulM4f(Right, Left);
 
     return (Result);
 }
@@ -2801,7 +2787,7 @@ HMM_INLINE HMM_Quat operator*(float Left, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_MulQFOpLeft);
 
-    HMM_Quat Result = HMM_PREFIX(MulQF)(Right, Left);
+    HMM_Quat Result = HMM_MulQF(Right, Left);
 
     return (Result);
 }
@@ -2811,7 +2797,7 @@ HMM_INLINE HMM_Vec4 operator*(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 {
     ASSERT_COVERED(HMM_MulM4ByV4Op);
 
-    HMM_Vec4 Result = HMM_PREFIX(MulM4ByV4)(Matrix, Vector);
+    HMM_Vec4 Result = HMM_MulM4ByV4(Matrix, Vector);
 
     return (Result);
 }
@@ -2821,7 +2807,7 @@ HMM_INLINE HMM_Vec2 operator/(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_DivV2Op);
 
-    HMM_Vec2 Result = HMM_PREFIX(DivV2)(Left, Right);
+    HMM_Vec2 Result = HMM_DivV2(Left, Right);
 
     return (Result);
 }
@@ -2831,7 +2817,7 @@ HMM_INLINE HMM_Vec3 operator/(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_DivV3Op);
 
-    HMM_Vec3 Result = HMM_PREFIX(DivV3)(Left, Right);
+    HMM_Vec3 Result = HMM_DivV3(Left, Right);
 
     return (Result);
 }
@@ -2841,7 +2827,7 @@ HMM_INLINE HMM_Vec4 operator/(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_DivV4Op);
 
-    HMM_Vec4 Result = HMM_PREFIX(DivV4)(Left, Right);
+    HMM_Vec4 Result = HMM_DivV4(Left, Right);
 
     return (Result);
 }
@@ -2851,7 +2837,7 @@ HMM_INLINE HMM_Vec2 operator/(HMM_Vec2 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivV2FOp);
 
-    HMM_Vec2 Result = HMM_PREFIX(DivV2F)(Left, Right);
+    HMM_Vec2 Result = HMM_DivV2F(Left, Right);
 
     return (Result);
 }
@@ -2861,7 +2847,7 @@ HMM_INLINE HMM_Vec3 operator/(HMM_Vec3 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivV3FOp);
 
-    HMM_Vec3 Result = HMM_PREFIX(DivV3F)(Left, Right);
+    HMM_Vec3 Result = HMM_DivV3F(Left, Right);
 
     return (Result);
 }
@@ -2871,7 +2857,7 @@ HMM_INLINE HMM_Vec4 operator/(HMM_Vec4 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivV4FOp);
 
-    HMM_Vec4 Result = HMM_PREFIX(DivV4F)(Left, Right);
+    HMM_Vec4 Result = HMM_DivV4F(Left, Right);
 
     return (Result);
 }
@@ -2881,7 +2867,7 @@ HMM_INLINE HMM_Mat4 operator/(HMM_Mat4 Left, float Right)
 {
     ASSERT_COVERED(HMM_DivM4fOp);
 
-    HMM_Mat4 Result = HMM_PREFIX(DivM4f)(Left, Right);
+    HMM_Mat4 Result = HMM_DivM4f(Left, Right);
 
     return (Result);
 }
@@ -2891,7 +2877,7 @@ HMM_INLINE HMM_Quat operator/(HMM_Quat Left, float Right)
 {
     ASSERT_COVERED(HMM_DivQFOp);
 
-    HMM_Quat Result = HMM_PREFIX(DivQF)(Left, Right);
+    HMM_Quat Result = HMM_DivQF(Left, Right);
 
     return (Result);
 }
@@ -3109,7 +3095,7 @@ HMM_INLINE HMM_Bool operator==(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_EqV2Op);
 
-    return HMM_PREFIX(EqV2)(Left, Right);
+    return HMM_EqV2(Left, Right);
 }
 
 COVERAGE(HMM_EqV3Op, 1)
@@ -3117,7 +3103,7 @@ HMM_INLINE HMM_Bool operator==(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_EqV3Op);
 
-    return HMM_PREFIX(EqV3)(Left, Right);
+    return HMM_EqV3(Left, Right);
 }
 
 COVERAGE(HMM_EqV4Op, 1)
@@ -3125,7 +3111,7 @@ HMM_INLINE HMM_Bool operator==(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_EqV4Op);
 
-    return HMM_PREFIX(EqV4)(Left, Right);
+    return HMM_EqV4(Left, Right);
 }
 
 COVERAGE(HMM_EqV2OpNot, 1)
@@ -3133,7 +3119,7 @@ HMM_INLINE HMM_Bool operator!=(HMM_Vec2 Left, HMM_Vec2 Right)
 {
     ASSERT_COVERED(HMM_EqV2OpNot);
 
-    return !HMM_PREFIX(EqV2)(Left, Right);
+    return !HMM_EqV2(Left, Right);
 }
 
 COVERAGE(HMM_EqV3OpNot, 1)
@@ -3141,7 +3127,7 @@ HMM_INLINE HMM_Bool operator!=(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_EqV3OpNot);
 
-    return !HMM_PREFIX(EqV3)(Left, Right);
+    return !HMM_EqV3(Left, Right);
 }
 
 COVERAGE(HMM_EqV4OpNot, 1)
@@ -3149,7 +3135,7 @@ HMM_INLINE HMM_Bool operator!=(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_EqV4OpNot);
 
-    return !HMM_PREFIX(EqV4)(Left, Right);
+    return !HMM_EqV4(Left, Right);
 }
 
 COVERAGE(HMM_UnaryMinusV2, 1)

@@ -21,7 +21,7 @@ enum Targets {
     SPECIAL_Size,
     
 };
-Str8List update_file_content(Arena* arena, str8 file_content, str8 function_prefix) {
+Str8List update_file_content(Arena* arena, str8 file_content) {
     Str8List out = {0};
 
     str8 Find[SPECIAL_Size];
@@ -29,9 +29,6 @@ Str8List update_file_content(Arena* arena, str8 file_content, str8 function_pref
     { /* NOTE: Initialization */
         Find[PREFIX_TYPE] = str8_lit("hmm_");
         Find[PREFIX_FUNCTION] = str8_lit("HMM_");
-        if (str8_not_empty(function_prefix)) {
-            Find[PREFIX_FUNCTION] = function_prefix;
-        }
         Repl[PREFIX_TYPE] = Find[PREFIX_FUNCTION];
         
         Find[TYPE_VEC] = str8_lit("vec");
@@ -124,7 +121,7 @@ Str8List update_file_content(Arena* arena, str8 file_content, str8 function_pref
             } 
         }
 
-        /* If in a HMM_ (or user prefix) function, do function name replacements */
+        /* If in a HMM_ function, do function name replacements */
         if (FoundFunctionPrefix) {
             for (u32 t = TYPES_Size+1; t < FUNCTIONS_Size; t++) {  
                 if (c == Find[t].str[MatchProgress[t]]) {  
@@ -201,18 +198,12 @@ int main(int argc, char* argv[]) {
 
     u32 argi = 1;
     str8 arg = str8_from_cstring(argv[argi]);
-    str8 prefixmark = str8_lit("prefix=");
-    str8 prefix = str8_EMPTY;
-    if (str8_has_prefix(arg, prefixmark)) {
-        prefix = str8_skip(arg, prefixmark.len);
-        argi++;
-    }
 
     for (; argi < argc; argi++) {
         arg = str8_from_cstring(argv[argi]);
         /* TODO: portable version instead */
         str8 file_content = win32_load_entire_file(tempa, arg);
-        Str8List result = update_file_content(tempa, file_content, prefix);
+        Str8List result = update_file_content(tempa, file_content);
         win32_write_file(arg, result);
     }
 }
