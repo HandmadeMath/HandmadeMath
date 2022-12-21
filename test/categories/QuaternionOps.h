@@ -111,7 +111,7 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the X axis
     {
-        HMM_Mat4 m = HMM_Rotate(90, HMM_V3(1, 0, 0));
+        HMM_Mat4 m = HMM_Rotate(HMM_AngleDeg(90.0f), HMM_V3(1, 0, 0));
         HMM_Quat result = HMM_M4ToQ(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
@@ -125,7 +125,7 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the Y axis (axis not normalized, just for fun)
     {
-        HMM_Mat4 m = HMM_Rotate(90, HMM_V3(0, 2, 0));
+        HMM_Mat4 m = HMM_Rotate(HMM_AngleDeg(90.0f), HMM_V3(0, 2, 0));
         HMM_Quat result = HMM_M4ToQ(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
@@ -139,7 +139,7 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the Z axis
     {
-        HMM_Mat4 m = HMM_Rotate(90, HMM_V3(0, 0, 1));
+        HMM_Mat4 m = HMM_Rotate(HMM_AngleDeg(90.0f), HMM_V3(0, 0, 1));
         HMM_Quat result = HMM_M4ToQ(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
@@ -153,7 +153,7 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 45 degrees on the X axis (this hits case 4)
     {
-        HMM_Mat4 m = HMM_Rotate(45, HMM_V3(1, 0, 0));
+        HMM_Mat4 m = HMM_Rotate(HMM_AngleDeg(45.0f), HMM_V3(1, 0, 0));
         HMM_Quat result = HMM_M4ToQ(m);
 
         float cosf = 0.9238795325f; // cos(90/2 degrees)

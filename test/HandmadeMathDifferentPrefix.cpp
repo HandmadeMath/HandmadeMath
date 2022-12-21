@@ -1,7 +1,5 @@
 #define HMM_PREFIX(name) WOW_##name
 
-#define HANDMADE_MATH_IMPLEMENTATION
-#define HANDMADE_MATH_NO_INLINE
 #include "../HandmadeMath.h"
 
 int main() {
