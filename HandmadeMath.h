@@ -1899,18 +1899,23 @@ HMM_INLINE HMM_Quat HMM_Slerp(HMM_Quat Left, float Time, HMM_Quat Right)
     HMM_Quat QRight;
 
     float Cos_Theta = HMM_DotQ(Left, Right);
-    float Angle = HMM_ACosF(Cos_Theta);
 
-    float S1 = HMM_SinF((1.0f - Time) * Angle);
-    float S2 = HMM_SinF(Time * Angle);
-    float Is = 1.0f / HMM_SinF(Angle);
+    /* Use Normalized Linear interpolation when vectors are roughly not L.I. */
+    if (HMM_ABS(Cos_Theta) > 0.9995) {
+        Result = HMM_Nlerp(Left, Time, Right);
+    } else {
+        float Angle = HMM_ACosF(Cos_Theta);
+        float S1 = HMM_SinF((1.0f - Time) * Angle);
+        float S2 = HMM_SinF(Time * Angle);
+        float Is = 1.0f / HMM_SinF(Angle);
 
-    QLeft = HMM_MulQF(Left, S1);
-    QRight = HMM_MulQF(Right, S2);
+        QLeft = HMM_MulQF(Left, S1);
+        QRight = HMM_MulQF(Right, S2);
 
-    Result = HMM_AddQ(QLeft, QRight);
-    Result = HMM_MulQF(Result, Is);
-
+        Result = HMM_AddQ(QLeft, QRight);
+        Result = HMM_MulQF(Result, Is);
+    }
+    
     return (Result);
 }
 
