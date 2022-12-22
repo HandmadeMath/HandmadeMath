@@ -317,7 +317,7 @@ TEST(Multiplication, Mat4Scalar)
 
     // Test the results
     {
-        HMM_Mat4 result = HMM_MulM4f(m4, s);
+        HMM_Mat4 result = HMM_MulM4F(m4, s);
         EXPECT_FLOAT_EQ(result.Elements[0][0], 3.0f);
         EXPECT_FLOAT_EQ(result.Elements[0][1], 6.0f);
         EXPECT_FLOAT_EQ(result.Elements[0][2], 9.0f);
@@ -432,7 +432,7 @@ TEST(Multiplication, Mat4Vec4)
 
     // Test the results
     {
-        HMM_Vec4 result = HMM_MulM4ByV4(m4, v4);
+        HMM_Vec4 result = HMM_MulM4V4(m4, v4);
         EXPECT_FLOAT_EQ(result.X, 90.0f);
         EXPECT_FLOAT_EQ(result.Y, 100.0f);
         EXPECT_FLOAT_EQ(result.Z, 110.0f);

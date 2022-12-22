@@ -94,6 +94,14 @@
 
 #endif /* #ifndef HANDMADE_MATH_NO_SSE */
 
+#ifndef HANDMADE_MATH_C11_GENERICS
+/* By default enable _Generic macros if available */
+#if (!defined(__cplusplus) && defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L)
+#define HANDMADE_MATH_C11_GENERICS
+#endif
+#endif /* #ifndef HANDMADE_MATH_C11_GENERICS */
+
+
 #ifdef HANDMADE_MATH__USE_SSE
 #include <xmmintrin.h>
 #endif
@@ -240,7 +248,6 @@ typedef union HMM_Vec2
     }
 #endif
 } HMM_Vec2;
-typedef HMM_Vec2 HMM_Vec2;
 
 typedef union HMM_Vec3
 {
@@ -292,7 +299,6 @@ typedef union HMM_Vec3
     }
 #endif
 } HMM_Vec3;
-typedef HMM_Vec3 HMM_Vec3;
 
 typedef union HMM_Vec4
 {
@@ -357,7 +363,6 @@ typedef union HMM_Vec4
     }
 #endif
 } HMM_Vec4;
-typedef HMM_Vec4 HMM_Vec4;
 
 typedef union HMM_Mat4
 {
@@ -386,7 +391,6 @@ typedef union HMM_Mat4
     }
 #endif
 } HMM_Mat4;
-typedef HMM_Mat4 HMM_Mat4;
 
 typedef union HMM_Quat
 {
@@ -410,11 +414,8 @@ typedef union HMM_Quat
     __m128 InternalElementsSSE;
 #endif
 } HMM_Quat;
-typedef HMM_Quat HMM_Quat;
 
 typedef signed int HMM_Bool;
-typedef HMM_Bool HMM_Bool; /* TODO(lcf): seems kinda silly */
-
 
 /*
  * Angle unit conversion functions
@@ -1438,10 +1439,10 @@ HMM_INLINE HMM_Mat4 HMM_MulM4(HMM_Mat4 Left, HMM_Mat4 Right)
 }
 
 
-COVERAGE(HMM_MulM4f, 1)
-HMM_INLINE HMM_Mat4 HMM_MulM4f(HMM_Mat4 Matrix, float Scalar)
+COVERAGE(HMM_MulM4F, 1)
+HMM_INLINE HMM_Mat4 HMM_MulM4F(HMM_Mat4 Matrix, float Scalar)
 {
-    ASSERT_COVERED(HMM_MulM4f);
+    ASSERT_COVERED(HMM_MulM4F);
 
     HMM_Mat4 Result;
 
@@ -1466,10 +1467,10 @@ HMM_INLINE HMM_Mat4 HMM_MulM4f(HMM_Mat4 Matrix, float Scalar)
     return (Result);
 }
 
-COVERAGE(HMM_MulM4ByV4, 1)
-HMM_INLINE HMM_Vec4 HMM_MulM4ByV4(HMM_Mat4 Matrix, HMM_Vec4 Vector)
+COVERAGE(HMM_MulM4V4, 1)
+HMM_INLINE HMM_Vec4 HMM_MulM4V4(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 {
-    ASSERT_COVERED(HMM_MulM4ByV4);
+    ASSERT_COVERED(HMM_MulM4V4);
 
     HMM_Vec4 Result;
 
@@ -2516,22 +2517,22 @@ HMM_INLINE HMM_Mat4 HMM_Mul(HMM_Mat4 Left, HMM_Mat4 Right)
     return (Result);
 }
 
-COVERAGE(HMM_MulM4fCPP, 1)
+COVERAGE(HMM_MulM4FCPP, 1)
 HMM_INLINE HMM_Mat4 HMM_Mul(HMM_Mat4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MulM4fCPP);
+    ASSERT_COVERED(HMM_MulM4FCPP);
 
-    HMM_Mat4 Result = HMM_MulM4f(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MulM4ByV4CPP, 1)
+COVERAGE(HMM_MulM4V4CPP, 1)
 HMM_INLINE HMM_Vec4 HMM_Mul(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 {
-    ASSERT_COVERED(HMM_MulM4ByV4CPP);
+    ASSERT_COVERED(HMM_MulM4V4CPP);
 
-    HMM_Vec4 Result = HMM_MulM4ByV4(Matrix, Vector);
+    HMM_Vec4 Result = HMM_MulM4V4(Matrix, Vector);
 
     return (Result);
 }
@@ -2846,12 +2847,12 @@ HMM_INLINE HMM_Vec4 operator*(HMM_Vec4 Left, float Right)
     return (Result);
 }
 
-COVERAGE(HMM_MulM4fOp, 1)
+COVERAGE(HMM_MulM4FOp, 1)
 HMM_INLINE HMM_Mat4 operator*(HMM_Mat4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MulM4fOp);
+    ASSERT_COVERED(HMM_MulM4FOp);
 
-    HMM_Mat4 Result = HMM_MulM4f(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4F(Left, Right);
 
     return (Result);
 }
@@ -2896,12 +2897,12 @@ HMM_INLINE HMM_Vec4 operator*(float Left, HMM_Vec4 Right)
     return (Result);
 }
 
-COVERAGE(HMM_MulM4fOpLeft, 1)
+COVERAGE(HMM_MulM4FOpLeft, 1)
 HMM_INLINE HMM_Mat4 operator*(float Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_MulM4fOpLeft);
+    ASSERT_COVERED(HMM_MulM4FOpLeft);
 
-    HMM_Mat4 Result = HMM_MulM4f(Right, Left);
+    HMM_Mat4 Result = HMM_MulM4F(Right, Left);
 
     return (Result);
 }
@@ -2916,12 +2917,12 @@ HMM_INLINE HMM_Quat operator*(float Left, HMM_Quat Right)
     return (Result);
 }
 
-COVERAGE(HMM_MulM4ByV4Op, 1)
+COVERAGE(HMM_MulM4V4Op, 1)
 HMM_INLINE HMM_Vec4 operator*(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 {
-    ASSERT_COVERED(HMM_MulM4ByV4Op);
+    ASSERT_COVERED(HMM_MulM4V4Op);
 
-    HMM_Vec4 Result = HMM_MulM4ByV4(Matrix, Vector);
+    HMM_Vec4 Result = HMM_MulM4V4(Matrix, Vector);
 
     return (Result);
 }
@@ -3134,10 +3135,10 @@ HMM_INLINE HMM_Vec4 &operator*=(HMM_Vec4 &Left, float Right)
     return (Left = Left * Right);
 }
 
-COVERAGE(HMM_MulM4fAssign, 1)
+COVERAGE(HMM_MulM4FAssign, 1)
 HMM_INLINE HMM_Mat4 &operator*=(HMM_Mat4 &Left, float Right)
 {
-    ASSERT_COVERED(HMM_MulM4fAssign);
+    ASSERT_COVERED(HMM_MulM4FAssign);
 
     return (Left = Left * Right);
 }
@@ -3302,7 +3303,97 @@ HMM_INLINE HMM_Vec4 operator-(HMM_Vec4 In)
     return(Result);
 }
 
-#endif /* __cplusplus */
+#endif /* __cplusplus*/
+
+#ifdef HANDMADE_MATH_C11_GENERICS
+#define HMM_Add(A, B) _Generic((A), \
+        HMM_Vec2: HMM_AddV2, \
+        HMM_Vec3: HMM_AddV3, \
+        HMM_Vec4: HMM_AddV4, \
+        HMM_Mat4: HMM_AddM4, \
+        HMM_Quat: HMM_AddQ, \
+)
+
+#define HMM_Sub(A, B) _Generic((A), \
+        HMM_Vec2: HMM_SubV2, \
+        HMM_Vec3: HMM_SubV3, \
+        HMM_Vec4: HMM_SubV4, \
+        HMM_Mat4: HMM_SubM4, \
+        HMM_Quat: HMM_SubQ, \
+)
+
+#define HMM_Mul(A, B) _Generic((B), \
+     float: _Generic((A), \
+            HMM_Vec2: HMM_MulV2F, \
+            HMM_Vec3: HMM_MulV3F, \
+            HMM_Vec4: HMM_MulV4F, \
+            HMM_Mat4: HMM_MulM4F, \
+            HMM_Quat: HMM_MulQF \
+     ), \
+     HMM_Mat4: HMM_MulM4, \
+     HMM_Quat: HMM_MulQ, \
+     default: _Generic((A), \
+        HMM_Vec2: HMM_MulV2, \
+        HMM_Vec3: HMM_MulV3, \
+        HMM_Vec4: HMM_MulV4, \
+        HMM_Mat4: HMM_MulM4V4 \
+    ) \
+)(A, B)
+
+#define HMM_Div(A, B) _Generic((B), \
+     float: _Generic((A), \
+            HMM_Vec2: HMM_DivV2F, \
+            HMM_Vec3: HMM_DivV3F, \
+            HMM_Vec4: HMM_DivV4F, \
+            HMM_Mat4: HMM_DivM4F, \
+            HMM_Quat: HMM_DivQF \
+     ), \
+     HMM_Mat4: HMM_DivM4, \
+     HMM_Quat: HMM_DivQ, \
+     default: _Generic((A), \
+        HMM_Vec2: HMM_DivV2, \
+        HMM_Vec3: HMM_DivV3, \
+        HMM_Vec4: HMM_DivV4, \
+        HMM_Mat4: HMM_DivM4V4 \
+    ) \
+)(A, B)
+
+#define HMM_Len(A) _Generic((A), \
+        HMM_Vec2: HMM_LenV2, \
+        HMM_Vec3: HMM_LenV3, \
+        HMM_Vec4: HMM_LenV4, \
+)
+
+#define HMM_LenSqr(A) _Generic((A), \
+        HMM_Vec2: HMM_LenSqrV2, \
+        HMM_Vec3: HMM_LenSqrV3, \
+        HMM_Vec4: HMM_LenSqrV4, \
+)
+
+#define HMM_Norm(A) _Generic((A), \
+        HMM_Vec2: HMM_NormV2, \
+        HMM_Vec3: HMM_NormV3, \
+        HMM_Vec4: HMM_NormV4, \
+)
+
+#define HMM_FastNorm(A) _Generic((A), \
+        HMM_Vec2: HMM_FastNormV2, \
+        HMM_Vec3: HMM_FastNormV3, \
+        HMM_Vec4: HMM_FastNormV4, \
+)
+
+#define HMM_Dot(A) _Generic((A), \
+        HMM_Vec2: HMM_DotV2, \
+        HMM_Vec3: HMM_DotV3, \
+        HMM_Vec4: HMM_DotV4, \
+)
+
+#define HMM_Eq(A) _Generic((A), \
+        HMM_Vec2: HMM_EqV2, \
+        HMM_Vec3: HMM_EqV3, \
+        HMM_Vec4: HMM_EqV4, \
+)
+#endif
 
 #if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic pop
