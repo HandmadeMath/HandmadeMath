@@ -64,12 +64,12 @@ TEST(QuaternionOps, NLerp)
     EXPECT_FLOAT_EQ(result.W, 0.86602540f);
 }
 
-TEST(QuaternionOps, Slerp)
+TEST(QuaternionOps, SLerp)
 {
     HMM_Quat from = HMM_Q(0.0f, 0.0f, 0.0f, 1.0f);
     HMM_Quat to = HMM_Q(0.5f, 0.5f, -0.5f, 0.5f);
 
-    HMM_Quat result = HMM_Slerp(from, 0.5f, to);
+    HMM_Quat result = HMM_SLerp(from, 0.5f, to);
     EXPECT_FLOAT_EQ(result.X, 0.28867513f);
     EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
     EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
@@ -111,8 +111,8 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the X axis
     {
-        HMM_Mat4 m = HMM_Rotate(HMM_AngleDeg(90.0f), HMM_V3(1, 0, 0));
-        HMM_Quat result = HMM_M4ToQ(m);
+        HMM_Mat4 m = HMM_Rotate_RH(HMM_AngleDeg(90.0f), HMM_V3(1, 0, 0));
+        HMM_Quat result = HMM_M4ToQ_RH(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
         float sinf = 0.707107f; // sin(90/2 degrees)
@@ -125,8 +125,8 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the Y axis (axis not normalized, just for fun)
     {
-        HMM_Mat4 m = HMM_Rotate(HMM_AngleDeg(90.0f), HMM_V3(0, 2, 0));
-        HMM_Quat result = HMM_M4ToQ(m);
+        HMM_Mat4 m = HMM_Rotate_RH(HMM_AngleDeg(90.0f), HMM_V3(0, 2, 0));
+        HMM_Quat result = HMM_M4ToQ_RH(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
         float sinf = 0.707107f; // sin(90/2 degrees)
@@ -139,8 +139,8 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 90 degrees on the Z axis
     {
-        HMM_Mat4 m = HMM_Rotate(HMM_AngleDeg(90.0f), HMM_V3(0, 0, 1));
-        HMM_Quat result = HMM_M4ToQ(m);
+        HMM_Mat4 m = HMM_Rotate_RH(HMM_AngleDeg(90.0f), HMM_V3(0, 0, 1));
+        HMM_Quat result = HMM_M4ToQ_RH(m);
 
         float cosf = 0.707107f; // cos(90/2 degrees)
         float sinf = 0.707107f; // sin(90/2 degrees)
@@ -153,8 +153,8 @@ TEST(QuaternionOps, Mat4ToQuat)
 
     // Rotate 45 degrees on the X axis (this hits case 4)
     {
-        HMM_Mat4 m = HMM_Rotate(HMM_AngleDeg(45.0f), HMM_V3(1, 0, 0));
-        HMM_Quat result = HMM_M4ToQ(m);
+        HMM_Mat4 m = HMM_Rotate_RH(HMM_AngleDeg(45.0f), HMM_V3(1, 0, 0));
+        HMM_Quat result = HMM_M4ToQ_RH(m);
 
         float cosf = 0.9238795325f; // cos(90/2 degrees)
         float sinf = 0.3826834324f; // sin(90/2 degrees)
@@ -171,7 +171,7 @@ TEST(QuaternionOps, FromAxisAngle)
     HMM_Vec3 axis = HMM_V3(1.0f, 0.0f, 0.0f);
     float angle = HMM_PI32 / 2.0f;
 
-    HMM_Quat result = HMM_QFromAxisAngle(axis, angle);
+    HMM_Quat result = HMM_QFromAxisAngle_RH(axis, angle);
     EXPECT_NEAR(result.X, 0.707107f, FLT_EPSILON * 2);
     EXPECT_FLOAT_EQ(result.Y, 0.0f);
     EXPECT_FLOAT_EQ(result.Z, 0.0f);

@@ -15,17 +15,20 @@ enum Targets {
     FUN_EQUALS, FUN_SUBTRACT, FUN_MULTIPLY, FUN_DIVIDE,
     FUN_INVERSE, FUN_R_SQUARE_ROOT, FUN_SQUARE_ROOT,
     FUN_LENGTH_SQUARED, FUN_LENGTH, FUN_NORM,
+    FUN_SLERP,
+
     FUNCTIONS_Size,
     /* Special */
-    SPECIAL_PERSPECTIVE, SPECIAL_ROTATE,
-    SPECIAL_Size,
+    HAND_PERSPECTIVE, HAND_ROTATE, /* Also wrap angle args for these */
+    HAND_ORTHO, HAND_LOOK_AT, HAND_QUAT_AXIS_ANGLE, HAND_MAT_TO_QUAT,
+    HAND_Size,
     
 };
 Str8List update_file_content(Arena* arena, str8 file_content) {
     Str8List out = {0};
 
-    str8 Find[SPECIAL_Size];
-    str8 Repl[SPECIAL_Size];
+    str8 Find[HAND_Size];
+    str8 Repl[HAND_Size];
     { /* NOTE: Initialization */
         Find[PREFIX_TYPE] = str8_lit("hmm_");
         Find[PREFIX_FUNCTION] = str8_lit("HMM_");
@@ -68,13 +71,19 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
         Repl[FUN_LENGTH] = str8_lit("Len");
         Find[FUN_NORM] = str8_lit("Normalize");
         Repl[FUN_NORM] = str8_lit("Norm");
-
-        Find[SPECIAL_PERSPECTIVE] = str8_lit("Perspective");
-        Find[SPECIAL_ROTATE] = str8_lit("Rotate");
+        Find[FUN_SLERP] = str8_lit("Slerp");
+        Repl[FUN_SLERP] = str8_lit("SLerp");
+        
+        Find[HAND_PERSPECTIVE] = str8_lit("Perspective");
+        Find[HAND_ROTATE] = str8_lit("Rotate");
+        Find[HAND_ORTHO] = str8_lit("Orthographic");
+        Find[HAND_LOOK_AT] = str8_lit("LookAt");
+        Find[HAND_QUAT_AXIS_ANGLE] = str8_lit("FromAxisAngle");
+        Find[HAND_MAT_TO_QUAT] = str8_lit("ToQuaternion");
     }
 
     /* Match with a bunch of sliding windows, skipping when there can't be a match */
-    u64 MatchProgress[SPECIAL_Size] = {0};
+    u64 MatchProgress[HAND_Size] = {0};
     b32 FoundTypePrefix = false;
     b32 FoundFunctionPrefix = false;
     str8_iter(file_content) {
@@ -157,26 +166,31 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
         }
 
         
-        /* Special cases. */
+        /* Handedness cases. */
         if (FoundFunctionPrefix) {
-            for (u32 t = FUNCTIONS_Size+1; t < SPECIAL_Size; t++) {  
+            for (u32 t = FUNCTIONS_Size+1; t < HAND_Size; t++) {  
                 if (c == Find[t].str[MatchProgress[t]]) {  
                     MatchProgress[t]++;  
                     if (MatchProgress[t] == Find[t].len) {
                         chr8 check = file_content.str[i+1];
                         ASSERT(check == '('); /* TODO: fail gracefully */
 
-                        /* TODO: emit warning for special cases */
-                        Str8List_add(arena, &out, str8_first(file_content, i + 2));
+                        Str8List_add(arena, &out, str8_first(file_content, i + 1));
+                        Str8List_add(arena, &out, str8_lit("_RH("));
                         file_content = str8_skip(file_content, i+2);
                         i = -1;
-                        
-                        u64 end_arg = str8_char_location(file_content, ',');
-                        ASSERT(end_arg != LCF_STRING_NO_MATCH);
-                        Str8List_add(arena, &out, str8_lit("HMM_AngleDeg("));
-                        Str8List_add(arena, &out, str8_first(file_content, end_arg));
-                        Str8List_add(arena, &out, str8_lit(")"));
-                        file_content = str8_skip(file_content, end_arg);
+
+
+                        if (t == HAND_PERSPECTIVE || t == HAND_ROTATE) {
+                            /* TODO: emit warning for special cases incase of repeated
+                             conversions. */
+                            u64 end_arg = str8_char_location(file_content, ',');
+                            ASSERT(end_arg != LCF_STRING_NO_MATCH);
+                            Str8List_add(arena, &out, str8_lit("HMM_AngleDeg("));
+                            Str8List_add(arena, &out, str8_first(file_content, end_arg));
+                            Str8List_add(arena, &out, str8_lit(")"));
+                            file_content = str8_skip(file_content, end_arg);
+                        }
                     }  
                 } else {  
                     MatchProgress[t] = 0;  

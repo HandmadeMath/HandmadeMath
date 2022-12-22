@@ -1525,10 +1525,10 @@ HMM_INLINE HMM_Mat4 HMM_DivM4f(HMM_Mat4 Matrix, float Scalar)
  * Common graphics transformations
  */
 
-COVERAGE(HMM_Orthographic, 1)
-HMM_INLINE HMM_Mat4 HMM_Orthographic(float Left, float Right, float Bottom, float Top, float Near, float Far)
+COVERAGE(HMM_Orthographic_RH, 1)
+HMM_INLINE HMM_Mat4 HMM_Orthographic_RH(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Orthographic);
+    ASSERT_COVERED(HMM_Orthographic_RH);
 
     HMM_Mat4 Result = HMM_M4();
 
@@ -1544,10 +1544,21 @@ HMM_INLINE HMM_Mat4 HMM_Orthographic(float Left, float Right, float Bottom, floa
     return (Result);
 }
 
-COVERAGE(HMM_Perspective, 1)
-HMM_INLINE HMM_Mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, float Far)
+COVERAGE(HMM_Orthographic_LH, 1)
+HMM_INLINE HMM_Mat4 HMM_Orthographic_LH(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Perspective);
+    ASSERT_COVERED(HMM_Orthographic_LH);
+
+    HMM_Mat4 Result = HMM_Orthographic_RH(Left, Right, Bottom, Top, Near, Far);
+    Result.Elements[2][2] = -Result.Elements[2][2];
+    
+    return (Result);
+}
+
+COVERAGE(HMM_Perspective_RH, 1)
+HMM_INLINE HMM_Mat4 HMM_Perspective_RH(float FOV, float AspectRatio, float Near, float Far)
+{
+    ASSERT_COVERED(HMM_Perspective_RH);
 
     HMM_Mat4 Result = HMM_M4();
 
@@ -1560,8 +1571,18 @@ HMM_INLINE HMM_Mat4 HMM_Perspective(float FOV, float AspectRatio, float Near, fl
     Result.Elements[2][3] = -1.0f;
     Result.Elements[2][2] = (Near + Far) / (Near - Far);
     Result.Elements[3][2] = (2.0f * Near * Far) / (Near - Far);
-    Result.Elements[3][3] = 0.0f;
 
+    return (Result);
+}
+
+COVERAGE(HMM_Perspective_LH, 1)
+HMM_INLINE HMM_Mat4 HMM_Perspective_LH(float FOV, float AspectRatio, float Near, float Far)
+{ 
+    ASSERT_COVERED(HMM_Perspective_LH);
+
+    HMM_Mat4 Result = HMM_Perspective_RH(FOV, AspectRatio, Near, Far);
+    Result.Elements[2][3] = +1.0f;
+  
     return (Result);
 }
 
@@ -1579,10 +1600,10 @@ HMM_INLINE HMM_Mat4 HMM_Translate(HMM_Vec3 Translation)
     return (Result);
 }
 
-COVERAGE(HMM_Rotate, 1)
-HMM_INLINE HMM_Mat4 HMM_Rotate(float Angle, HMM_Vec3 Axis)
+COVERAGE(HMM_Rotate_RH, 1)
+HMM_INLINE HMM_Mat4 HMM_Rotate_RH(float Angle, HMM_Vec3 Axis)
 {
-    ASSERT_COVERED(HMM_Rotate);
+    ASSERT_COVERED(HMM_Rotate_RH);
 
     HMM_Mat4 Result = HMM_M4d(1.0f);
 
@@ -1608,6 +1629,14 @@ HMM_INLINE HMM_Mat4 HMM_Rotate(float Angle, HMM_Vec3 Axis)
 }
 
 
+COVERAGE(HMM_Rotate_LH, 1)
+HMM_INLINE HMM_Mat4 HMM_Rotate_LH(float Angle, HMM_Vec3 Axis)
+{
+    ASSERT_COVERED(HMM_Rotate_LH);
+
+    /* NOTE(lcf): Matrix will be inverse/transpose of RH. */
+    return HMM_Rotate_RH(-Angle, Axis);
+}
 
 COVERAGE(HMM_Scale, 1)
 HMM_INLINE HMM_Mat4 HMM_Scale(HMM_Vec3 Scale)
@@ -1623,16 +1652,10 @@ HMM_INLINE HMM_Mat4 HMM_Scale(HMM_Vec3 Scale)
     return (Result);
 }
 
-COVERAGE(HMM_LookAt, 1)
-HMM_INLINE HMM_Mat4 HMM_LookAt(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
+
+HMM_INLINE HMM_Mat4 _HMM_LookAt(HMM_Vec3 F,  HMM_Vec3 S, HMM_Vec3 U,  HMM_Vec3 Eye)
 {
-    ASSERT_COVERED(HMM_LookAt);
-
     HMM_Mat4 Result;
-
-    HMM_Vec3 F = HMM_NormV3(HMM_SubV3(Center, Eye));
-    HMM_Vec3 S = HMM_NormV3(HMM_Cross(F, Up));
-    HMM_Vec3 U = HMM_Cross(S, F);
 
     Result.Elements[0][0] = S.X;
     Result.Elements[0][1] = U.X;
@@ -1655,6 +1678,30 @@ HMM_INLINE HMM_Mat4 HMM_LookAt(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
     Result.Elements[3][3] = 1.0f;
 
     return (Result);
+}
+
+COVERAGE(HMM_LookAt_RH, 1)
+HMM_INLINE HMM_Mat4 HMM_LookAt_RH(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
+{
+    ASSERT_COVERED(HMM_LookAt_RH);
+
+    HMM_Vec3 F = HMM_NormV3(HMM_SubV3(Center, Eye));
+    HMM_Vec3 S = HMM_NormV3(HMM_Cross(F, Up));
+    HMM_Vec3 U = HMM_Cross(S, F);
+
+    return _HMM_LookAt(F, S, U, Eye);
+}
+
+COVERAGE(HMM_LookAt_LH, 1)
+HMM_INLINE HMM_Mat4 HMM_LookAt_LH(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
+{
+    ASSERT_COVERED(HMM_LookAt_LH);
+
+    HMM_Vec3 F = HMM_NormV3(HMM_SubV3(Eye, Center));
+    HMM_Vec3 S = HMM_NormV3(HMM_Cross(F, Up));
+    HMM_Vec3 U = HMM_Cross(S, F);
+
+    return _HMM_LookAt(F, S, U, Eye);
 }
 
 /*
@@ -1889,10 +1936,10 @@ HMM_INLINE HMM_Quat HMM_NLerp(HMM_Quat Left, float Time, HMM_Quat Right)
     return (Result);
 }
 
-COVERAGE(HMM_Slerp, 1)
-HMM_INLINE HMM_Quat HMM_Slerp(HMM_Quat Left, float Time, HMM_Quat Right)
+COVERAGE(HMM_SLerp, 1)
+HMM_INLINE HMM_Quat HMM_SLerp(HMM_Quat Left, float Time, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_Slerp);
+    ASSERT_COVERED(HMM_SLerp);
 
     HMM_Quat Result;
     HMM_Quat QLeft;
@@ -1900,9 +1947,14 @@ HMM_INLINE HMM_Quat HMM_Slerp(HMM_Quat Left, float Time, HMM_Quat Right)
 
     float Cos_Theta = HMM_DotQ(Left, Right);
 
+    if (Cos_Theta < 0.0) { /* NOTE(lcf): Take shortest path on Hyper-sphere */
+        Cos_Theta = -Cos_Theta;
+        Right = HMM_Q(-Right.X, -Right.Y, -Right.Z, -Right.W);
+    }
+    
     /* Use Normalized Linear interpolation when vectors are roughly not L.I. */
-    if (HMM_ABS(Cos_Theta) > 0.9995) {
-        Result = HMM_Nlerp(Left, Time, Right);
+    if (Cos_Theta > 0.9995) {
+        Result = HMM_NLerp(Left, Time, Right);
     } else {
         float Angle = HMM_ACosF(Cos_Theta);
         float S1 = HMM_SinF((1.0f - Time) * Angle);
@@ -1979,15 +2031,15 @@ HMM_INLINE HMM_Mat4 HMM_QToM4(HMM_Quat Left)
 //
 // Don't be confused! Or if you must be confused, at least trust this
 // comment. :)
-COVERAGE(HMM_M4ToQ, 4)
-HMM_INLINE HMM_Quat HMM_M4ToQ(HMM_Mat4 M)
+COVERAGE(HMM_M4ToQ_RH, 4)
+HMM_INLINE HMM_Quat HMM_M4ToQ_RH(HMM_Mat4 M)
 {
     float T;
     HMM_Quat Q;
 
     if (M.Elements[2][2] < 0.0f) {
         if (M.Elements[0][0] > M.Elements[1][1]) {
-            ASSERT_COVERED(HMM_M4ToQ);
+            ASSERT_COVERED(HMM_M4ToQ_RH);
 
             T = 1 + M.Elements[0][0] - M.Elements[1][1] - M.Elements[2][2];
             Q = HMM_Q(
@@ -1997,7 +2049,7 @@ HMM_INLINE HMM_Quat HMM_M4ToQ(HMM_Mat4 M)
                 M.Elements[1][2] - M.Elements[2][1]
             );
         } else {
-            ASSERT_COVERED(HMM_M4ToQ);
+            ASSERT_COVERED(HMM_M4ToQ_RH);
 
             T = 1 - M.Elements[0][0] + M.Elements[1][1] - M.Elements[2][2];
             Q = HMM_Q(
@@ -2009,7 +2061,7 @@ HMM_INLINE HMM_Quat HMM_M4ToQ(HMM_Mat4 M)
         }
     } else {
         if (M.Elements[0][0] < -M.Elements[1][1]) {
-            ASSERT_COVERED(HMM_M4ToQ);
+            ASSERT_COVERED(HMM_M4ToQ_RH);
 
             T = 1 - M.Elements[0][0] - M.Elements[1][1] + M.Elements[2][2];
             Q = HMM_Q(
@@ -2019,7 +2071,7 @@ HMM_INLINE HMM_Quat HMM_M4ToQ(HMM_Mat4 M)
                 M.Elements[0][1] - M.Elements[1][0]
             );
         } else {
-            ASSERT_COVERED(HMM_M4ToQ);
+            ASSERT_COVERED(HMM_M4ToQ_RH);
 
             T = 1 + M.Elements[0][0] + M.Elements[1][1] + M.Elements[2][2];
             Q = HMM_Q(
@@ -2036,10 +2088,68 @@ HMM_INLINE HMM_Quat HMM_M4ToQ(HMM_Mat4 M)
     return Q;
 }
 
-COVERAGE(HMM_QFromAxisAngle, 1)
-HMM_INLINE HMM_Quat HMM_QFromAxisAngle(HMM_Vec3 Axis, float AngleOfRotation)
+COVERAGE(HMM_M4ToQ_LH, 4)
+HMM_INLINE HMM_Quat HMM_M4ToQ_LH(HMM_Mat4 M)
 {
-    ASSERT_COVERED(HMM_QFromAxisAngle);
+    float T;
+    HMM_Quat Q;
+
+    if (M.Elements[2][2] < 0.0f) {
+        if (M.Elements[0][0] > M.Elements[1][1]) {
+            ASSERT_COVERED(HMM_M4ToQ_LH);
+
+            T = 1 + M.Elements[0][0] - M.Elements[1][1] - M.Elements[2][2];
+            Q = HMM_Q(
+                T,
+                M.Elements[0][1] + M.Elements[1][0],
+                M.Elements[2][0] + M.Elements[0][2],
+                M.Elements[2][1] - M.Elements[1][2]
+            );
+        } else {
+            ASSERT_COVERED(HMM_M4ToQ_LH);
+
+            T = 1 - M.Elements[0][0] + M.Elements[1][1] - M.Elements[2][2];
+            Q = HMM_Q(
+                M.Elements[0][1] + M.Elements[1][0],
+                T,
+                M.Elements[1][2] + M.Elements[2][1],
+                M.Elements[0][2] - M.Elements[2][0]
+            );
+        }
+    } else {
+        if (M.Elements[0][0] < -M.Elements[1][1]) {
+            ASSERT_COVERED(HMM_M4ToQ_LH);
+
+            T = 1 - M.Elements[0][0] - M.Elements[1][1] + M.Elements[2][2];
+            Q = HMM_Q(
+                M.Elements[2][0] + M.Elements[0][2],
+                M.Elements[1][2] + M.Elements[2][1],
+                T,
+                M.Elements[1][0] - M.Elements[0][1]
+            );
+        } else {
+            ASSERT_COVERED(HMM_M4ToQ_LH);
+
+            T = 1 + M.Elements[0][0] + M.Elements[1][1] + M.Elements[2][2];
+            Q = HMM_Q(
+                M.Elements[2][1] - M.Elements[1][2],
+                M.Elements[0][2] - M.Elements[2][0],
+                M.Elements[1][0] - M.Elements[0][2],
+                T
+            );
+        }
+    }
+
+    Q = HMM_MulQF(Q, 0.5f / HMM_SqrtF(T));
+
+    return Q;
+}
+
+
+COVERAGE(HMM_QFromAxisAngle_RH, 1)
+HMM_INLINE HMM_Quat HMM_QFromAxisAngle_RH(HMM_Vec3 Axis, float AngleOfRotation)
+{
+    ASSERT_COVERED(HMM_QFromAxisAngle_RH);
 
     HMM_Quat Result;
 
@@ -2051,6 +2161,15 @@ HMM_INLINE HMM_Quat HMM_QFromAxisAngle(HMM_Vec3 Axis, float AngleOfRotation)
 
     return (Result);
 }
+
+COVERAGE(HMM_QFromAxisAngle_LH, 1)
+HMM_INLINE HMM_Quat HMM_QFromAxisAngle_LH(HMM_Vec3 Axis, float AngleOfRotation)
+{
+    ASSERT_COVERED(HMM_QFromAxisAngle_LH);
+
+    return HMM_QFromAxisAngle_RH(Axis, -AngleOfRotation);
+}
+
 
 #ifdef __cplusplus
 }
