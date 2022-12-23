@@ -69,11 +69,42 @@ TEST(QuaternionOps, SLerp)
     HMM_Quat from = HMM_Q(0.0f, 0.0f, 0.0f, 1.0f);
     HMM_Quat to = HMM_Q(0.5f, 0.5f, -0.5f, 0.5f);
 
-    HMM_Quat result = HMM_SLerp(from, 0.5f, to);
-    EXPECT_FLOAT_EQ(result.X, 0.28867513f);
-    EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
-    EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
-    EXPECT_FLOAT_EQ(result.W, 0.86602540f);
+    
+    {
+        HMM_Quat result = HMM_SLerp(from, 0.0f, to);
+        EXPECT_FLOAT_EQ(result.X, 0.0f);
+        EXPECT_FLOAT_EQ(result.Y, 0.0f);
+        EXPECT_FLOAT_EQ(result.Z, 0.0f);
+        EXPECT_FLOAT_EQ(result.W, 1.0);
+    }
+    {
+        HMM_Quat result = HMM_SLerp(from, 0.25f, to);
+        EXPECT_FLOAT_EQ(result.X, 0.149429246f);
+        EXPECT_FLOAT_EQ(result.Y, 0.149429246f);
+        EXPECT_FLOAT_EQ(result.Z, -0.149429246f);
+        EXPECT_FLOAT_EQ(result.W, 0.965925812f);
+    }
+    {
+        HMM_Quat result = HMM_SLerp(from, 0.5f, to);
+        EXPECT_FLOAT_EQ(result.X, 0.28867513f);
+        EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
+        EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
+        EXPECT_FLOAT_EQ(result.W, 0.86602540f);
+    }
+    {
+        HMM_Quat result = HMM_SLerp(from, 0.75f, to);
+        EXPECT_FLOAT_EQ(result.X, 0.40824830f);
+        EXPECT_FLOAT_EQ(result.Y, 0.40824830f);
+        EXPECT_FLOAT_EQ(result.Z, -0.40824830f);
+        EXPECT_FLOAT_EQ(result.W, 0.70710676f);
+    }
+        {
+        HMM_Quat result = HMM_SLerp(from, 1.0f, to);
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 0.5f);
+        EXPECT_FLOAT_EQ(result.Z, -0.5f);
+        EXPECT_FLOAT_EQ(result.W, 0.5f);
+    }
 }
 
 TEST(QuaternionOps, QuatToMat4)

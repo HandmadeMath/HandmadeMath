@@ -1901,16 +1901,33 @@ HMM_INLINE HMM_Quat HMM_InvQ(HMM_Quat Left)
 
 
 COVERAGE(HMM_NormQ, 1)
-HMM_INLINE HMM_Quat HMM_NormQ(HMM_Quat Left)
+HMM_INLINE HMM_Quat HMM_NormQ(HMM_Quat Quat)
 {
     ASSERT_COVERED(HMM_NormQ);
 
-    HMM_Quat Result;
-
-    float Len = HMM_SqrtF(HMM_DotQ(Left, Left));
-    Result = HMM_DivQF(Left, Len);
+    /* NOTE(lcf): Take advantage of SSE implementation in HMM_NormV4 */
+    HMM_Vec4 Vec = {Quat.X, Quat.Y, Quat.Z, Quat.W};
+    Vec = HMM_NormV4(Vec);
+    HMM_Quat Result = {Vec.X, Vec.Y, Vec.Z, Vec.W};
 
     return (Result);
+}
+
+HMM_INLINE HMM_Quat HMM_MixQ(HMM_Quat Left, float MixLeft, HMM_Quat Right, float MixRight) {
+    HMM_Quat Result;
+#ifdef HANDMADE_MATH__USE_SSE
+    __m128 ScalarLeft = _mm_set1_ps(MixLeft);
+    __m128 ScalarRight = _mm_set1_ps(MixRight);
+    __m128 SSEResultOne = _mm_mul_ps(Left.InternalElementsSSE, ScalarLeft);
+    __m128 SSEResultTwo = _mm_mul_ps(Right.InternalElementsSSE, ScalarRight);
+    Result.InternalElementsSSE = _mm_add_ps(SSEResultOne, SSEResultTwo);
+#else
+    Result.X = Left.X*MixLeft + Right.X*MixRight;
+    Result.Y = Left.Y*MixLeft + Right.Y*MixRight;
+    Result.Z = Left.Z*MixLeft + Right.Z*MixRight;
+    Result.W = Left.W*MixLeft + Right.W*MixRight;
+#endif
+    return Result;
 }
 
 COVERAGE(HMM_NLerp, 1)
@@ -1918,20 +1935,7 @@ HMM_INLINE HMM_Quat HMM_NLerp(HMM_Quat Left, float Time, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_NLerp);
 
-    HMM_Quat Result;
-
-#ifdef HANDMADE_MATH__USE_SSE
-    __m128 ScalarLeft = _mm_set1_ps(1.0f - Time);
-    __m128 ScalarRight = _mm_set1_ps(Time);
-    __m128 SSEResultOne = _mm_mul_ps(Left.InternalElementsSSE, ScalarLeft);
-    __m128 SSEResultTwo = _mm_mul_ps(Right.InternalElementsSSE, ScalarRight);
-    Result.InternalElementsSSE = _mm_add_ps(SSEResultOne, SSEResultTwo);
-#else
-    Result.X = HMM_Lerp(Left.X, Time, Right.X);
-    Result.Y = HMM_Lerp(Left.Y, Time, Right.Y);
-    Result.Z = HMM_Lerp(Left.Z, Time, Right.Z);
-    Result.W = HMM_Lerp(Left.W, Time, Right.W);
-#endif
+    HMM_Quat Result = HMM_MixQ(Left, 1.0-Time, Right, Time);
     Result = HMM_NormQ(Result);
 
     return (Result);
@@ -1943,8 +1947,6 @@ HMM_INLINE HMM_Quat HMM_SLerp(HMM_Quat Left, float Time, HMM_Quat Right)
     ASSERT_COVERED(HMM_SLerp);
 
     HMM_Quat Result;
-    HMM_Quat QLeft;
-    HMM_Quat QRight;
 
     float Cos_Theta = HMM_DotQ(Left, Right);
 
@@ -1958,15 +1960,11 @@ HMM_INLINE HMM_Quat HMM_SLerp(HMM_Quat Left, float Time, HMM_Quat Right)
         Result = HMM_NLerp(Left, Time, Right);
     } else {
         float Angle = HMM_ACosF(Cos_Theta);
-        float S1 = HMM_SinF((1.0f - Time) * Angle);
-        float S2 = HMM_SinF(Time * Angle);
-        float Is = 1.0f / HMM_SinF(Angle);
+        float MixLeft = HMM_SinF((1.0f - Time) * Angle);
+        float MixRight = HMM_SinF(Time * Angle);
 
-        QLeft = HMM_MulQF(Left, S1);
-        QRight = HMM_MulQF(Right, S2);
-
-        Result = HMM_AddQ(QLeft, QRight);
-        Result = HMM_MulQF(Result, Is);
+        Result = HMM_MixQ(Left, MixLeft, Right, MixRight);
+        Result = HMM_NormQ(Result);
     }
     
     return (Result);
