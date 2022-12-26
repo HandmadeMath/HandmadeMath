@@ -1860,15 +1860,16 @@ COVERAGE(HMM_InvOrthographic, 1)
 HMM_INLINE HMM_Mat4 HMM_InvOrthographic(HMM_Mat4 OrthoMatrix)
 {
     ASSERT_COVERED(HMM_InvOrthographic);
-    HMM_Mat4 Result = OrthoMatrix;
+    HMM_Mat4 Result = HMM_M4();
 
     Result.Elements[0][0] = 1.0f / OrthoMatrix.Elements[0][0];
     Result.Elements[1][1] = 1.0f / OrthoMatrix.Elements[1][1];
     Result.Elements[2][2] = 1.0f / OrthoMatrix.Elements[2][2];
+    Result.Elements[3][3] = 1.0f;
     
-    Result.Elements[3][0] = -OrthoMatrix.Elements[3][0];
-    Result.Elements[3][1] = -OrthoMatrix.Elements[3][1];
-    Result.Elements[3][2] = -OrthoMatrix.Elements[3][2];
+    Result.Elements[3][0] = -OrthoMatrix.Elements[3][0] * Result.Elements[0][0];
+    Result.Elements[3][1] = -OrthoMatrix.Elements[3][1] * Result.Elements[1][1];
+    Result.Elements[3][2] = -OrthoMatrix.Elements[3][2] * Result.Elements[2][2];
 
     return (Result);
 }
@@ -1910,14 +1911,16 @@ HMM_INLINE HMM_Mat4 HMM_InvPerspective(HMM_Mat4 PerspectiveMatrix)
 {
     ASSERT_COVERED(HMM_InvPerspective);
 
-    HMM_Mat4 Result = PerspectiveMatrix;
+    HMM_Mat4 Result = HMM_M4();
     Result.Elements[0][0] = 1.0f / PerspectiveMatrix.Elements[0][0];
     Result.Elements[1][1] = 1.0f / PerspectiveMatrix.Elements[1][1];
-    Result.Elements[2][2] = 1.0f / PerspectiveMatrix.Elements[2][2];
+    Result.Elements[2][2] = 0.0f;
 
-    Result.Elements[2][3] = -PerspectiveMatrix.Elements[2][3];
-    Result.Elements[3][2] = -PerspectiveMatrix.Elements[3][2];
+    Result.Elements[2][3] = 1.0f / PerspectiveMatrix.Elements[3][2];
+    Result.Elements[3][3] = PerspectiveMatrix.Elements[2][2] * Result.Elements[2][3];
+    Result.Elements[3][2] = PerspectiveMatrix.Elements[2][3];
 
+    return (Result);
 }
 
 COVERAGE(HMM_Translate, 1)
@@ -1941,9 +1944,9 @@ HMM_INLINE HMM_Mat4 HMM_InvTranslate(HMM_Mat4 TranslationMatrix)
 
     HMM_Mat4 Result = TranslationMatrix;
 
-    Result.Elements[3][0] = 1.0f / Result.Elements[3][0];
-    Result.Elements[3][1] = 1.0f / Result.Elements[3][1];
-    Result.Elements[3][2] = 1.0f / Result.Elements[3][2];
+    Result.Elements[3][0] = -Result.Elements[3][0];
+    Result.Elements[3][1] = -Result.Elements[3][1];
+    Result.Elements[3][2] = -Result.Elements[3][2];
 
     return (Result);
 }
@@ -2077,7 +2080,28 @@ HMM_INLINE HMM_Mat4 HMM_LookAt_LH(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
 COVERAGE(HMM_InvLookAt, 1)
 HMM_INLINE HMM_Mat4 HMM_InvLookAt(HMM_Mat4 Matrix)
 {
-    return HMM_TransposeM4(Matrix);
+    ASSERT_COVERED(HMM_InvLookAt);
+    HMM_Mat4 Result;
+
+    HMM_Mat3 Rotation = HMM_M3();
+    Rotation.Columns[0] = Matrix.Columns[0].XYZ;
+    Rotation.Columns[1] = Matrix.Columns[1].XYZ;
+    Rotation.Columns[2] = Matrix.Columns[2].XYZ;
+    Rotation = HMM_TransposeM3(Rotation);
+
+    Result.Columns[0] = HMM_V4V(Rotation.Columns[0], 0.0f);
+    Result.Columns[1] = HMM_V4V(Rotation.Columns[1], 0.0f);
+    Result.Columns[2] = HMM_V4V(Rotation.Columns[2], 0.0f);
+    Result.Columns[3] = HMM_MulV4F(Matrix.Columns[3], -1.0f);
+    Result.Elements[3][0] = -1.0 * Matrix.Elements[3][0] /
+        (Rotation.Elements[0][0] + Rotation.Elements[0][1] + Rotation.Elements[0][2]);
+    Result.Elements[3][1] = -1.0 * Matrix.Elements[3][1] /
+        (Rotation.Elements[1][0] + Rotation.Elements[1][1] + Rotation.Elements[1][2]);
+    Result.Elements[3][2] = -1.0 * Matrix.Elements[3][2] /
+        (Rotation.Elements[2][0] + Rotation.Elements[2][1] + Rotation.Elements[2][2]);
+    Result.Elements[3][3] = 1.0;
+
+    return (Result);
 }
 
 /*
