@@ -368,9 +368,9 @@ typedef union HMM_Mat4
 {
     float Elements[4][4];
 
-#ifdef HANDMADE_MATH__USE_SSE
-    __m128 Columns[4];
+    HMM_Vec4 Columns[4];
 
+#ifdef HANDMADE_MATH__USE_SSE
     HMM_DEPRECATED("Our matrices are column-major, so this was named incorrectly. Use Columns instead.")
     __m128 Rows[4];
 #endif
@@ -1278,21 +1278,32 @@ HMM_INLINE HMM_Vec4 HMM_FastNormV4(HMM_Vec4 A)
  * SSE stuff
  */
 
-#ifdef HANDMADE_MATH__USE_SSE
-COVERAGE(HMM_LinearCombineSSE, 1)
-HMM_INLINE __m128 HMM_LinearCombineSSE(__m128 Left, HMM_Mat4 Right)
+COVERAGE(HMM_LinearCombineV4M4, 1)
+HMM_INLINE HMM_Vec4 HMM_LinearCombineV4M4(HMM_Vec4 Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_LinearCombineSSE);
+    ASSERT_COVERED(HMM_LinearCombineV4M4);
 
-    __m128 Result;
-    Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Columns[0]);
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x55), Right.Columns[1]));
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xaa), Right.Columns[2]));
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xff), Right.Columns[3]));
+    HMM_Vec4 Result;
+#ifdef HANDMADE_MATH__USE_SSE
+    Result.InternalElementsSSE = _mm_mul_ps(_mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, 0x00), Right.Columns[0].InternalElementsSSE);
+    Result.InternalElementsSSE = _mm_add_ps(Result.InternalElementsSSE, _mm_mul_ps(_mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, 0x55), Right.Columns[1].InternalElementsSSE));
+    Result.InternalElementsSSE = _mm_add_ps(Result.InternalElementsSSE, _mm_mul_ps(_mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, 0xaa), Right.Columns[2].InternalElementsSSE));
+    Result.InternalElementsSSE = _mm_add_ps(Result.InternalElementsSSE, _mm_mul_ps(_mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, 0xff), Right.Columns[3].InternalElementsSSE));
+#else
+    int Columns, Rows;
+    for(Rows = 0; Rows < 4; ++Rows)
+    {
+            float Sum = 0;
+            for(Columns = 0; Columns < 4; ++Columns)
+            {
+                Sum += Left.Elements[Columns]*Right.Elements[Columns][Rows];
+            }
+            Result.Elements[Rows] = Sum;
+    }
+#endif
 
     return (Result);
 }
-#endif
 
 
 /*
@@ -1332,7 +1343,7 @@ HMM_INLINE HMM_Mat4 HMM_Transpose(HMM_Mat4 Matrix)
     HMM_Mat4 Result = Matrix;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    _MM_TRANSPOSE4_PS(Result.Columns[0], Result.Columns[1], Result.Columns[2], Result.Columns[3]);
+    _MM_TRANSPOSE4_PS(Result.Columns[0].InternalElementsSSE, Result.Columns[1].InternalElementsSSE, Result.Columns[2].InternalElementsSSE, Result.Columns[3].InternalElementsSSE);
 #else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
@@ -1357,10 +1368,10 @@ HMM_INLINE HMM_Mat4 HMM_AddM4(HMM_Mat4 Left, HMM_Mat4 Right)
     HMM_Mat4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.Columns[0] = _mm_add_ps(Left.Columns[0], Right.Columns[0]);
-    Result.Columns[1] = _mm_add_ps(Left.Columns[1], Right.Columns[1]);
-    Result.Columns[2] = _mm_add_ps(Left.Columns[2], Right.Columns[2]);
-    Result.Columns[3] = _mm_add_ps(Left.Columns[3], Right.Columns[3]);
+    Result.Columns[0].InternalElementsSSE = _mm_add_ps(Left.Columns[0].InternalElementsSSE, Right.Columns[0].InternalElementsSSE);
+    Result.Columns[1].InternalElementsSSE = _mm_add_ps(Left.Columns[1].InternalElementsSSE, Right.Columns[1].InternalElementsSSE);
+    Result.Columns[2].InternalElementsSSE = _mm_add_ps(Left.Columns[2].InternalElementsSSE, Right.Columns[2].InternalElementsSSE);
+    Result.Columns[3].InternalElementsSSE = _mm_add_ps(Left.Columns[3].InternalElementsSSE, Right.Columns[3].InternalElementsSSE);
 #else
      int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
@@ -1385,17 +1396,17 @@ HMM_INLINE HMM_Mat4 HMM_SubM4(HMM_Mat4 Left, HMM_Mat4 Right)
     HMM_Mat4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.Columns[0] = _mm_sub_ps(Left.Columns[0], Right.Columns[0]);
-    Result.Columns[1] = _mm_sub_ps(Left.Columns[1], Right.Columns[1]);
-    Result.Columns[2] = _mm_sub_ps(Left.Columns[2], Right.Columns[2]);
-    Result.Columns[3] = _mm_sub_ps(Left.Columns[3], Right.Columns[3]);
+    Result.Columns[0].InternalElementsSSE = _mm_sub_ps(Left.Columns[0].InternalElementsSSE, Right.Columns[0].InternalElementsSSE);
+    Result.Columns[1].InternalElementsSSE = _mm_sub_ps(Left.Columns[1].InternalElementsSSE, Right.Columns[1].InternalElementsSSE);
+    Result.Columns[2].InternalElementsSSE = _mm_sub_ps(Left.Columns[2].InternalElementsSSE, Right.Columns[2].InternalElementsSSE);
+    Result.Columns[3].InternalElementsSSE = _mm_sub_ps(Left.Columns[3].InternalElementsSSE, Right.Columns[3].InternalElementsSSE);
 #else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
         int Rows;
         for(Rows = 0; Rows < 4; ++Rows)
-        {
+        {s
             Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
         }
     }
@@ -1411,29 +1422,10 @@ HMM_INLINE HMM_Mat4 HMM_MulM4(HMM_Mat4 Left, HMM_Mat4 Right)
 
     HMM_Mat4 Result;
 
-#ifdef HANDMADE_MATH__USE_SSE
-    Result.Columns[0] = HMM_LinearCombineSSE(Right.Columns[0], Left);
-    Result.Columns[1] = HMM_LinearCombineSSE(Right.Columns[1], Left);
-    Result.Columns[2] = HMM_LinearCombineSSE(Right.Columns[2], Left);
-    Result.Columns[3] = HMM_LinearCombineSSE(Right.Columns[3], Left);
-#else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            float Sum = 0;
-            int CurrentMatrice;
-            for(CurrentMatrice = 0; CurrentMatrice < 4; ++CurrentMatrice)
-            {
-                Sum += Left.Elements[CurrentMatrice][Rows] * Right.Elements[Columns][CurrentMatrice];
-            }
-
-            Result.Elements[Columns][Rows] = Sum;
-        }
-    }
-#endif
+    Result.Columns[0] = HMM_LinearCombineV4M4(Right.Columns[0], Left);
+    Result.Columns[1] = HMM_LinearCombineV4M4(Right.Columns[1], Left);
+    Result.Columns[2] = HMM_LinearCombineV4M4(Right.Columns[2], Left);
+    Result.Columns[3] = HMM_LinearCombineV4M4(Right.Columns[3], Left);
 
     return (Result);
 }
@@ -1448,10 +1440,10 @@ HMM_INLINE HMM_Mat4 HMM_MulM4F(HMM_Mat4 Matrix, float Scalar)
 
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 SSEScalar = _mm_set1_ps(Scalar);
-    Result.Columns[0] = _mm_mul_ps(Matrix.Columns[0], SSEScalar);
-    Result.Columns[1] = _mm_mul_ps(Matrix.Columns[1], SSEScalar);
-    Result.Columns[2] = _mm_mul_ps(Matrix.Columns[2], SSEScalar);
-    Result.Columns[3] = _mm_mul_ps(Matrix.Columns[3], SSEScalar);
+    Result.Columns[0].InternalElementsSSE = _mm_mul_ps(Matrix.Columns[0].InternalElementsSSE, SSEScalar);
+    Result.Columns[1].InternalElementsSSE = _mm_mul_ps(Matrix.Columns[1].InternalElementsSSE, SSEScalar);
+    Result.Columns[2].InternalElementsSSE = _mm_mul_ps(Matrix.Columns[2].InternalElementsSSE, SSEScalar);
+    Result.Columns[3].InternalElementsSSE = _mm_mul_ps(Matrix.Columns[3].InternalElementsSSE, SSEScalar);
 #else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
@@ -1474,21 +1466,7 @@ HMM_INLINE HMM_Vec4 HMM_MulM4V4(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 
     HMM_Vec4 Result;
 
-#ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = HMM_LinearCombineSSE(Vector.InternalElementsSSE, Matrix);
-#else
-    int Columns, Rows;
-    for(Rows = 0; Rows < 4; ++Rows)
-    {
-        float Sum = 0;
-        for(Columns = 0; Columns < 4; ++Columns)
-        {
-            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
-        }
-
-        Result.Elements[Rows] = Sum;
-    }
-#endif
+    Result = HMM_LinearCombineV4M4(Vector, Matrix);
 
     return (Result);
 }
@@ -1503,10 +1481,10 @@ HMM_INLINE HMM_Mat4 HMM_DivM4f(HMM_Mat4 Matrix, float Scalar)
 
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 SSEScalar = _mm_set1_ps(Scalar);
-    Result.Columns[0] = _mm_div_ps(Matrix.Columns[0], SSEScalar);
-    Result.Columns[1] = _mm_div_ps(Matrix.Columns[1], SSEScalar);
-    Result.Columns[2] = _mm_div_ps(Matrix.Columns[2], SSEScalar);
-    Result.Columns[3] = _mm_div_ps(Matrix.Columns[3], SSEScalar);
+    Result.Columns[0].InternalElementsSSE = _mm_div_ps(Matrix.Columns[0].InternalElementsSSE, SSEScalar);
+    Result.Columns[1].InternalElementsSSE = _mm_div_ps(Matrix.Columns[1].InternalElementsSSE, SSEScalar);
+    Result.Columns[2].InternalElementsSSE = _mm_div_ps(Matrix.Columns[2].InternalElementsSSE, SSEScalar);
+    Result.Columns[3].InternalElementsSSE = _mm_div_ps(Matrix.Columns[3].InternalElementsSSE, SSEScalar);
 #else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)

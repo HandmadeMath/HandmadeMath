@@ -15,7 +15,7 @@ enum Targets {
     FUN_EQUALS, FUN_SUBTRACT, FUN_MULTIPLY, FUN_DIVIDE,
     FUN_INVERSE, FUN_R_SQUARE_ROOT, FUN_SQUARE_ROOT,
     FUN_LENGTH_SQUARED, FUN_LENGTH, FUN_NORM,
-    FUN_SLERP, FUN_BY,
+    FUN_SLERP, FUN_BY, FUN_LINEAR_COMBINE_SSE,
     FUNCTIONS_Size,
     /* Special */
     HAND_PERSPECTIVE, HAND_ROTATE, /* Also wrap angle args for these */
@@ -74,6 +74,8 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
         Repl[FUN_SLERP] = str8_lit("SLerp");
         Find[FUN_BY] = str8_lit("By");
         Repl[FUN_BY] = str8_lit("");
+        Find[FUN_LINEAR_COMBINE_SSE] = str8_lit("LinearCombineSSE");
+        Repl[FUN_LINEAR_COMBINE_SSE] = str8_lit("LinearCombineV4M4");
         
         Find[HAND_PERSPECTIVE] = str8_lit("Perspective");
         Find[HAND_ROTATE] = str8_lit("Rotate");
