@@ -378,7 +378,7 @@ typedef union HMM_Mat2
         Result.Elements[0] = Column[0];
         Result.Elements[1] = Column[1];
 
-        return Result;
+        return (Result);
     }
 #endif
 } HMM_Mat2;
@@ -398,7 +398,7 @@ typedef union HMM_Mat3
         Result.Elements[1] = Column[1];
         Result.Elements[2] = Column[2];
 
-        return Result;
+        return (Result);
     }
 #endif
 } HMM_Mat3;
@@ -426,7 +426,7 @@ typedef union HMM_Mat4
         Result.Elements[2] = Column[2];
         Result.Elements[3] = Column[3];
 
-        return Result;
+        return (Result);
     }
 #endif
 } HMM_Mat4;
@@ -1465,6 +1465,46 @@ HMM_INLINE HMM_Mat4 HMM_DivM4f(HMM_Mat4 Matrix, float Scalar)
     return (Result);
 }
 
+COVERAGE(HMM_DeterminantM4, 1)
+HMM_INLINE float HMM_DeterminantM4(HMM_Mat4 Matrix) 
+{
+    ASSERT_COVERED(HMM_DeterminantM4);
+    float Result;
+
+    HMM_Vec3 C01 = HMM_Cross(Matrix.Columns[0].XYZ, Matrix.Columns[1].XYZ);
+    HMM_Vec3 C23 = HMM_Cross(Matrix.Columns[2].XYZ, Matrix.Columns[3].XYZ);
+    HMM_Vec3 B10 = HMM_SubV3(HMM_MulV3F(Matrix.Columns[0].XYZ, Matrix.Columns[1].W), HMM_MulV3F(Matrix.Columns[1].XYZ,Matrix.Columns[0].W));
+    HMM_Vec3 B32 = HMM_SubV3(HMM_MulV3F(Matrix.Columns[2].XYZ, Matrix.Columns[3].W), HMM_MulV3F(Matrix.Columns[3].XYZ, Matrix.Columns[2].W));
+    
+    Result = HMM_DotV3(C01,B32) + HMM_DotV3(C23,B10);
+
+    return (Result);
+}
+
+COVERAGE(HMM_InvGeneralM4, 1);
+HMM_INLINE HMM_Mat4 HMM_InvGeneralM4(HMM_Mat4 Matrix) 
+{
+    ASSERT_COVERED(HMM_InvGeneralM4);
+    HMM_Mat4 Result;
+
+    HMM_Vec3 C01 = HMM_Cross(Matrix.Columns[0].XYZ, Matrix.Columns[1].XYZ);
+    HMM_Vec3 C23 = HMM_Cross(Matrix.Columns[2].XYZ, Matrix.Columns[3].XYZ);
+    HMM_Vec3 B10 = HMM_SubV3(HMM_MulV3F(Matrix.Columns[0].XYZ, Matrix.Columns[1].W), HMM_MulV3F(Matrix.Columns[1].XYZ,Matrix.Columns[0].W));
+    HMM_Vec3 B32 = HMM_SubV3(HMM_MulV3F(Matrix.Columns[2].XYZ, Matrix.Columns[3].W), HMM_MulV3F(Matrix.Columns[3].XYZ, Matrix.Columns[2].W));
+    
+    float InvDeterminant = 1.0f / (HMM_DotV3(C01,B32) + HMM_DotV3(C23,B10));
+    C01 = HMM_MulV3F(C01, InvDeterminant);
+    C23 = HMM_MulV3F(C23, InvDeterminant);
+    B10 = HMM_MulV3F(B10, InvDeterminant);
+    B32 = HMM_MulV3F(B32, InvDeterminant);
+
+    Result.Columns[0] = HMM_V4V(HMM_AddV3(HMM_Cross(Matrix.Columns[1].XYZ, B32), HMM_MulV3F(C23, Matrix.Columns[1].W)), -HMM_DotV3(Matrix.Columns[1].XYZ, C23));
+    Result.Columns[1] = HMM_V4V(HMM_SubV3(HMM_Cross(B32, Matrix.Columns[0].XYZ), HMM_MulV3F(C23, Matrix.Columns[0].W)), +HMM_DotV3(Matrix.Columns[0].XYZ, C23));
+    Result.Columns[2] = HMM_V4V(HMM_AddV3(HMM_Cross(Matrix.Columns[3].XYZ, B10), HMM_MulV3F(C01, Matrix.Columns[3].W)), -HMM_DotV3(Matrix.Columns[3].XYZ, C01));
+    Result.Columns[3] = HMM_V4V(HMM_SubV3(HMM_Cross(B10, Matrix.Columns[2].XYZ), HMM_MulV3F(C01, Matrix.Columns[2].W)), +HMM_DotV3(Matrix.Columns[2].XYZ, C01));
+        
+    return HMM_TransposeM4(Result);
+}
 
 /*
  * 3x3 Matrices
@@ -1502,7 +1542,7 @@ HMM_INLINE HMM_Mat3 HMM_TransposeM3(HMM_Mat3 Matrix)
         }
     }
     
-    return Result;
+    return (Result);
 }
 
 HMM_INLINE HMM_Mat3 HMM_AddM3(HMM_Mat3 Left, HMM_Mat3 Right)
@@ -1537,18 +1577,30 @@ HMM_INLINE HMM_Mat3 HMM_SubM3(HMM_Mat3 Left, HMM_Mat3 Right)
     return (Result);
 }
 
+HMM_INLINE HMM_Vec3 HMM_MulM3V3(HMM_Mat3 Matrix, HMM_Vec3 Vector)
+{
+    HMM_Vec3 Result = {0};
+    int Columns, Rows;
+    for(Rows = 0; Rows < 3; ++Rows)
+    {
+        float Sum = 0.0f;
+        for(Columns = 0; Columns < 3; ++Columns)
+        {
+            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
+        }
+        Result.Elements[Rows] = Sum;
+    }
+    return (Result);    
+}
+
 HMM_INLINE HMM_Mat3 HMM_MulM3(HMM_Mat3 Left, HMM_Mat3 Right)
 {
     HMM_Mat3 Result;
-    int Columns;
-    for(Columns = 0; Columns < 3; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 3; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] * Right.Elements[Columns][Rows];
-        }
-    }
+
+    Result.Columns[0] = HMM_MulM3V3(Left, Right.Columns[0]);
+    Result.Columns[1] = HMM_MulM3V3(Left, Right.Columns[1]);
+    Result.Columns[2] = HMM_MulM3V3(Left, Right.Columns[2]);
+
     return (Result);    
 }
 
@@ -1567,22 +1619,7 @@ HMM_INLINE HMM_Mat3 HMM_MulM3F(HMM_Mat3 Matrix, float Scalar)
     return (Result);            
 }
 
-HMM_INLINE HMM_Vec3 HMM_MulM3V3(HMM_Mat3 Matrix, HMM_Vec3 Vector)
-{
-    HMM_Vec3 Result;
-    int Columns;
-    for(Columns = 0; Columns < 3; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 3; ++Rows)
-        {
-            Result.Elements[Rows] = Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
-        }
-    }
-    return (Result);    
-}
-
-HMM_INLINE HMM_Mat3 HMM_DivM3f(HMM_Mat3 Matrix, float Scalar)
+HMM_INLINE HMM_Mat3 HMM_DivM3F(HMM_Mat3 Matrix, float Scalar)
 {
     HMM_Mat3 Result;
     int Columns;
@@ -1595,6 +1632,42 @@ HMM_INLINE HMM_Mat3 HMM_DivM3f(HMM_Mat3 Matrix, float Scalar)
         }
     }
     return (Result);                    
+}
+
+COVERAGE(HMM_DeterminantM3, 1)
+HMM_INLINE float HMM_DeterminantM3(HMM_Mat3 Matrix) 
+{
+    ASSERT_COVERED(HMM_DeterminantM3);
+    float Result;
+
+    HMM_Mat3 Cross;
+    Cross.Columns[0] = HMM_Cross(Matrix.Columns[1], Matrix.Columns[2]);
+    Cross.Columns[1] = HMM_Cross(Matrix.Columns[2], Matrix.Columns[0]);
+    Cross.Columns[2] = HMM_Cross(Matrix.Columns[0], Matrix.Columns[1]);
+
+    Result = HMM_DotV3(Cross.Columns[2], Matrix.Columns[2]);
+
+    return (Result);
+}
+
+COVERAGE(HMM_InvGeneralM3, 1);
+HMM_INLINE HMM_Mat3 HMM_InvGeneralM3(HMM_Mat3 Matrix) 
+{
+    ASSERT_COVERED(HMM_InvGeneralM3);
+    HMM_Mat3 Result;
+
+    HMM_Mat3 Cross;
+    Cross.Columns[0] = HMM_Cross(Matrix.Columns[1], Matrix.Columns[2]);
+    Cross.Columns[1] = HMM_Cross(Matrix.Columns[2], Matrix.Columns[0]);
+    Cross.Columns[2] = HMM_Cross(Matrix.Columns[0], Matrix.Columns[1]);
+
+    float InvDeterminant = 1.0f / HMM_DotV3(Cross.Columns[2], Matrix.Columns[2]);
+
+    Result.Columns[0] = HMM_MulV3F(Cross.Columns[0], InvDeterminant);
+    Result.Columns[1] = HMM_MulV3F(Cross.Columns[1], InvDeterminant);
+    Result.Columns[2] = HMM_MulV3F(Cross.Columns[2], InvDeterminant);
+
+    return HMM_TransposeM3(Result);
 }
 
 /*
@@ -1622,17 +1695,16 @@ HMM_INLINE HMM_Mat2 HMM_TransposeM2(HMM_Mat2 Matrix)
 {
     HMM_Mat2 Result = Matrix;
 
-    int Columns;
+    int Columns, Rows;
     for(Columns = 0; Columns < 2; ++Columns)
     {
-        int Rows;
         for(Rows = 0; Rows < 2; ++Rows)
         {
             Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
         }
     }
     
-    return Result;
+    return (Result);
 }
 
 HMM_INLINE HMM_Mat2 HMM_AddM2(HMM_Mat2 Left, HMM_Mat2 Right)
@@ -1667,18 +1739,29 @@ HMM_INLINE HMM_Mat2 HMM_SubM2(HMM_Mat2 Left, HMM_Mat2 Right)
     return (Result);
 }
 
+HMM_INLINE HMM_Vec2 HMM_MulM2V2(HMM_Mat2 Matrix, HMM_Vec2 Vector)
+{
+    HMM_Vec2 Result;
+    int Columns, Rows;
+    for(Rows = 0; Rows < 2; ++Rows)
+    {
+        float Sum = 0.0f;
+        for(Columns = 0; Columns < 2; ++Columns)
+        {
+             Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
+        }
+        Result.Elements[Rows] = Sum;
+    }
+    return (Result);    
+}
+
 HMM_INLINE HMM_Mat2 HMM_MulM2(HMM_Mat2 Left, HMM_Mat2 Right)
 {
     HMM_Mat2 Result;
-    int Columns;
-    for(Columns = 0; Columns < 2; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 2; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] * Right.Elements[Columns][Rows];
-        }
-    }
+
+    Result.Columns[0] = HMM_MulM2V2(Left, Right.Columns[0]);
+    Result.Columns[1] = HMM_MulM2V2(Left, Right.Columns[1]);
+
     return (Result);    
 }
 
@@ -1697,22 +1780,7 @@ HMM_INLINE HMM_Mat2 HMM_MulM2F(HMM_Mat2 Matrix, float Scalar)
     return (Result);            
 }
 
-HMM_INLINE HMM_Vec2 HMM_MulM2V2(HMM_Mat2 Matrix, HMM_Vec2 Vector)
-{
-    HMM_Vec2 Result;
-    int Columns;
-    for(Columns = 0; Columns < 2; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 2; ++Rows)
-        {
-            Result.Elements[Rows] = Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
-        }
-    }
-    return (Result);    
-}
-
-HMM_INLINE HMM_Mat2 HMM_DivM2f(HMM_Mat2 Matrix, float Scalar)
+HMM_INLINE HMM_Mat2 HMM_DivM2F(HMM_Mat2 Matrix, float Scalar)
 {
     HMM_Mat2 Result;
     int Columns;
@@ -1727,6 +1795,32 @@ HMM_INLINE HMM_Mat2 HMM_DivM2f(HMM_Mat2 Matrix, float Scalar)
     return (Result);                    
 }
 
+COVERAGE(HMM_DeterminantM2, 1)
+HMM_INLINE float HMM_DeterminantM2(HMM_Mat2 Matrix) 
+{
+    ASSERT_COVERED(HMM_DeterminantM2);
+    float Result;
+
+    Result =  Matrix.Elements[0][0]*Matrix.Elements[1][1] - Matrix.Elements[0][1]*Matrix.Elements[1][0];
+
+    return (Result);
+}
+
+
+COVERAGE(HMM_InvGeneralM2, 1);
+HMM_INLINE HMM_Mat2 HMM_InvGeneralM2(HMM_Mat2 Matrix) 
+{
+    ASSERT_COVERED(HMM_InvGeneralM2);
+    HMM_Mat2 Result;
+
+    float InvDeterminant = 1.0f / HMM_DeterminantM2(Matrix);
+    Result.Elements[0][0] = InvDeterminant * +Matrix.Elements[1][1];
+    Result.Elements[1][1] = InvDeterminant * +Matrix.Elements[0][0];
+    Result.Elements[0][1] = InvDeterminant * -Matrix.Elements[0][1];
+    Result.Elements[1][0] = InvDeterminant * -Matrix.Elements[1][0];
+
+    return (Result);
+}
 
 /*
  * Common graphics transformations
@@ -1762,6 +1856,23 @@ HMM_INLINE HMM_Mat4 HMM_Orthographic_LH(float Left, float Right, float Bottom, f
     return (Result);
 }
 
+COVERAGE(HMM_InvOrthographic, 1) 
+HMM_INLINE HMM_Mat4 HMM_InvOrthographic(HMM_Mat4 OrthoMatrix)
+{
+    ASSERT_COVERED(HMM_InvOrthographic);
+    HMM_Mat4 Result = OrthoMatrix;
+
+    Result.Elements[0][0] = 1.0f / OrthoMatrix.Elements[0][0];
+    Result.Elements[1][1] = 1.0f / OrthoMatrix.Elements[1][1];
+    Result.Elements[2][2] = 1.0f / OrthoMatrix.Elements[2][2];
+    
+    Result.Elements[3][0] = -OrthoMatrix.Elements[3][0];
+    Result.Elements[3][1] = -OrthoMatrix.Elements[3][1];
+    Result.Elements[3][2] = -OrthoMatrix.Elements[3][2];
+
+    return (Result);
+}
+
 COVERAGE(HMM_Perspective_RH, 1)
 HMM_INLINE HMM_Mat4 HMM_Perspective_RH(float FOV, float AspectRatio, float Near, float Far)
 {
@@ -1775,8 +1886,9 @@ HMM_INLINE HMM_Mat4 HMM_Perspective_RH(float FOV, float AspectRatio, float Near,
     
     Result.Elements[0][0] = Cotangent / AspectRatio;
     Result.Elements[1][1] = Cotangent;
-    Result.Elements[2][3] = -1.0f;
     Result.Elements[2][2] = (Near + Far) / (Near - Far);
+
+    Result.Elements[2][3] = -1.0f;
     Result.Elements[3][2] = (2.0f * Near * Far) / (Near - Far);
 
     return (Result);
@@ -1793,6 +1905,21 @@ HMM_INLINE HMM_Mat4 HMM_Perspective_LH(float FOV, float AspectRatio, float Near,
     return (Result);
 }
 
+COVERAGE(HMM_InvPerspective, 1)
+HMM_INLINE HMM_Mat4 HMM_InvPerspective(HMM_Mat4 PerspectiveMatrix) 
+{
+    ASSERT_COVERED(HMM_InvPerspective);
+
+    HMM_Mat4 Result = PerspectiveMatrix;
+    Result.Elements[0][0] = 1.0f / PerspectiveMatrix.Elements[0][0];
+    Result.Elements[1][1] = 1.0f / PerspectiveMatrix.Elements[1][1];
+    Result.Elements[2][2] = 1.0f / PerspectiveMatrix.Elements[2][2];
+
+    Result.Elements[2][3] = -PerspectiveMatrix.Elements[2][3];
+    Result.Elements[3][2] = -PerspectiveMatrix.Elements[3][2];
+
+}
+
 COVERAGE(HMM_Translate, 1)
 HMM_INLINE HMM_Mat4 HMM_Translate(HMM_Vec3 Translation)
 {
@@ -1803,6 +1930,20 @@ HMM_INLINE HMM_Mat4 HMM_Translate(HMM_Vec3 Translation)
     Result.Elements[3][0] = Translation.X;
     Result.Elements[3][1] = Translation.Y;
     Result.Elements[3][2] = Translation.Z;
+
+    return (Result);
+}
+
+COVERAGE(HMM_InvTranslate, 1)
+HMM_INLINE HMM_Mat4 HMM_InvTranslate(HMM_Mat4 TranslationMatrix)
+{
+    ASSERT_COVERED(HMM_InvTranslate);
+
+    HMM_Mat4 Result = TranslationMatrix;
+
+    Result.Elements[3][0] = 1.0f / Result.Elements[3][0];
+    Result.Elements[3][1] = 1.0f / Result.Elements[3][1];
+    Result.Elements[3][2] = 1.0f / Result.Elements[3][2];
 
     return (Result);
 }
@@ -1845,6 +1986,14 @@ HMM_INLINE HMM_Mat4 HMM_Rotate_LH(float Angle, HMM_Vec3 Axis)
     return HMM_Rotate_RH(-Angle, Axis);
 }
 
+COVERAGE(HMM_InvRotate, 1)
+HMM_INLINE HMM_Mat4 HMM_InvRotate(HMM_Mat4 RotationMatrix)
+{
+    ASSERT_COVERED(HMM_InvRotate);
+
+    return HMM_TransposeM4(RotationMatrix);
+}
+
 COVERAGE(HMM_Scale, 1)
 HMM_INLINE HMM_Mat4 HMM_Scale(HMM_Vec3 Scale)
 {
@@ -1857,6 +2006,20 @@ HMM_INLINE HMM_Mat4 HMM_Scale(HMM_Vec3 Scale)
     Result.Elements[2][2] = Scale.Z;
 
     return (Result);
+}
+
+COVERAGE(HMM_InvScale, 1)
+HMM_INLINE HMM_Mat4 HMM_InvScale(HMM_Mat4 ScaleMatrix) 
+{
+    ASSERT_COVERED(HMM_InvScale);
+
+    HMM_Mat4 Result = ScaleMatrix;
+
+    Result.Elements[0][0] = 1.0f / Result.Elements[0][0];
+    Result.Elements[1][1] = 1.0f / Result.Elements[1][1];
+    Result.Elements[2][2] = 1.0f / Result.Elements[2][2];
+
+    return (Result);    
 }
 
 
@@ -1909,6 +2072,12 @@ HMM_INLINE HMM_Mat4 HMM_LookAt_LH(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
     HMM_Vec3 U = HMM_Cross(S, F);
 
     return _HMM_LookAt(F, S, U, Eye);
+}
+
+COVERAGE(HMM_InvLookAt, 1)
+HMM_INLINE HMM_Mat4 HMM_InvLookAt(HMM_Mat4 Matrix)
+{
+    return HMM_TransposeM4(Matrix);
 }
 
 /*
@@ -2133,7 +2302,7 @@ HMM_INLINE HMM_Quat HMM_MixQ(HMM_Quat Left, float MixLeft, HMM_Quat Right, float
     Result.Z = Left.Z*MixLeft + Right.Z*MixRight;
     Result.W = Left.W*MixLeft + Right.W*MixRight;
 #endif
-    return Result;
+    return (Result);
 }
 
 COVERAGE(HMM_NLerp, 1)

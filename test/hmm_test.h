@@ -18,3 +18,4 @@
 #include "categories/Projection.h"
 #include "categories/Transformation.h"
 #include "categories/SSE.h"
+#include "categories/InvMatrix.h"
