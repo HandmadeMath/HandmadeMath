@@ -284,7 +284,7 @@ TEST(VectorOps, DotVec4)
  * MatrixOps tests
  */
 
-TEST(MatrixOps, Transpose)
+TEST(MatrixOps, TransposeM4)
 {
     HMM_Mat4 m4 = HMM_M4(); // will have 1 - 16
 
@@ -300,7 +300,7 @@ TEST(MatrixOps, Transpose)
     }
 
     // Test the matrix
-    HMM_Mat4 result = HMM_Transpose(m4);
+    HMM_Mat4 result = HMM_TransposeM4(m4);
     EXPECT_FLOAT_EQ(result.Elements[0][0], 1.0f);
     EXPECT_FLOAT_EQ(result.Elements[0][1], 5.0f);
     EXPECT_FLOAT_EQ(result.Elements[0][2], 9.0f);

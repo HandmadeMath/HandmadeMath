@@ -364,6 +364,45 @@ typedef union HMM_Vec4
 #endif
 } HMM_Vec4;
 
+typedef union HMM_Mat2
+{
+    float Elements[2][2];
+    HMM_Vec2 Columns[2];
+
+#ifdef __cplusplus
+    inline HMM_Vec2 operator[](const int &Index)
+    {
+        HMM_Vec2 Result;
+        float* Column = Elements[Index];
+        
+        Result.Elements[0] = Column[0];
+        Result.Elements[1] = Column[1];
+
+        return Result;
+    }
+#endif
+} HMM_Mat2;
+    
+typedef union HMM_Mat3
+{
+    float Elements[3][3];
+    HMM_Vec3 Columns[3];
+
+#ifdef __cplusplus
+    inline HMM_Vec3 operator[](const int &Index)
+    {
+        HMM_Vec3 Result;
+        float* Column = Elements[Index];
+        
+        Result.Elements[0] = Column[0];
+        Result.Elements[1] = Column[1];
+        Result.Elements[2] = Column[2];
+
+        return Result;
+    }
+#endif
+} HMM_Mat3;
+
 typedef union HMM_Mat4
 {
     float Elements[4][4];
@@ -1305,9 +1344,8 @@ HMM_INLINE HMM_Vec4 HMM_LinearCombineV4M4(HMM_Vec4 Left, HMM_Mat4 Right)
     return (Result);
 }
 
-
 /*
- * Matrix functions
+ * 4x4 Matrices
  */
 
 COVERAGE(HMM_M4, 1)
@@ -1335,10 +1373,10 @@ HMM_INLINE HMM_Mat4 HMM_M4d(float Diagonal)
     return (Result);
 }
 
-COVERAGE(HMM_Transpose, 1)
-HMM_INLINE HMM_Mat4 HMM_Transpose(HMM_Mat4 Matrix)
+COVERAGE(HMM_TransposeM4, 1)
+HMM_INLINE HMM_Mat4 HMM_TransposeM4(HMM_Mat4 Matrix)
 {
-    ASSERT_COVERED(HMM_Transpose);
+    ASSERT_COVERED(HMM_TransposeM4);
 
     HMM_Mat4 Result = Matrix;
 
@@ -1373,7 +1411,7 @@ HMM_INLINE HMM_Mat4 HMM_AddM4(HMM_Mat4 Left, HMM_Mat4 Right)
     Result.Columns[2].InternalElementsSSE = _mm_add_ps(Left.Columns[2].InternalElementsSSE, Right.Columns[2].InternalElementsSSE);
     Result.Columns[3].InternalElementsSSE = _mm_add_ps(Left.Columns[3].InternalElementsSSE, Right.Columns[3].InternalElementsSSE);
 #else
-     int Columns;
+    int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
         int Rows;
@@ -1406,7 +1444,7 @@ HMM_INLINE HMM_Mat4 HMM_SubM4(HMM_Mat4 Left, HMM_Mat4 Right)
     {
         int Rows;
         for(Rows = 0; Rows < 4; ++Rows)
-        {s
+        {
             Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
         }
     }
@@ -1499,6 +1537,269 @@ HMM_INLINE HMM_Mat4 HMM_DivM4f(HMM_Mat4 Matrix, float Scalar)
 
     return (Result);
 }
+
+
+/*
+ * 3x3 Matrices
+ */
+
+HMM_INLINE HMM_Mat3 HMM_M3(void)
+{
+    HMM_Mat3 Result = {0};
+
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 HMM_M3d(float Diagonal)
+{
+    HMM_Mat3 Result = HMM_M3();
+
+    Result.Elements[0][0] = Diagonal;
+    Result.Elements[1][1] = Diagonal;
+    Result.Elements[2][2] = Diagonal;
+
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 HMM_TransposeM3(HMM_Mat3 Matrix)
+{
+    HMM_Mat3 Result = Matrix;
+
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
+        }
+    }
+    
+    return Result;
+}
+
+HMM_INLINE HMM_Mat3 HMM_AddM3(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    HMM_Mat3 Result;
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
+        }
+    }
+
+   
+    return (Result);    
+}
+
+HMM_INLINE HMM_Mat3 HMM_SubM3(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    HMM_Mat3 Result;
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
+        }
+    }
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 HMM_MulM3(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    HMM_Mat3 Result;
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] * Right.Elements[Columns][Rows];
+        }
+    }
+    return (Result);    
+}
+
+HMM_INLINE HMM_Mat3 HMM_MulM3F(HMM_Mat3 Matrix, float Scalar)
+{
+    HMM_Mat3 Result;
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
+        }
+    }
+    return (Result);            
+}
+
+HMM_INLINE HMM_Vec3 HMM_MulM3V3(HMM_Mat3 Matrix, HMM_Vec3 Vector)
+{
+    HMM_Vec3 Result;
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Rows] = Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
+        }
+    }
+    return (Result);    
+}
+
+HMM_INLINE HMM_Mat3 HMM_DivM3f(HMM_Mat3 Matrix, float Scalar)
+{
+    HMM_Mat3 Result;
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
+        }
+    }
+    return (Result);                    
+}
+
+/*
+ * 2x2 Matrices
+ */
+
+HMM_INLINE HMM_Mat2 HMM_M2(void)
+{
+    HMM_Mat2 Result = {0};
+
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat2 HMM_M2d(float Diagonal)
+{
+    HMM_Mat2 Result = HMM_M2();
+
+    Result.Elements[0][0] = Diagonal;
+    Result.Elements[1][1] = Diagonal;
+
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat2 HMM_TransposeM2(HMM_Mat2 Matrix)
+{
+    HMM_Mat2 Result = Matrix;
+
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
+        }
+    }
+    
+    return Result;
+}
+
+HMM_INLINE HMM_Mat2 HMM_AddM2(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    HMM_Mat2 Result;
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
+        }
+    }
+
+   
+    return (Result);    
+}
+
+HMM_INLINE HMM_Mat2 HMM_SubM2(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    HMM_Mat2 Result;
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
+        }
+    }
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat2 HMM_MulM2(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    HMM_Mat2 Result;
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] * Right.Elements[Columns][Rows];
+        }
+    }
+    return (Result);    
+}
+
+HMM_INLINE HMM_Mat2 HMM_MulM2F(HMM_Mat2 Matrix, float Scalar)
+{
+    HMM_Mat2 Result;
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
+        }
+    }
+    return (Result);            
+}
+
+HMM_INLINE HMM_Vec2 HMM_MulM2V2(HMM_Mat2 Matrix, HMM_Vec2 Vector)
+{
+    HMM_Vec2 Result;
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Rows] = Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
+        }
+    }
+    return (Result);    
+}
+
+HMM_INLINE HMM_Mat2 HMM_DivM2f(HMM_Mat2 Matrix, float Scalar)
+{
+    HMM_Mat2 Result;
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
+        }
+    }
+    return (Result);                    
+}
+
 
 /*
  * Common graphics transformations
