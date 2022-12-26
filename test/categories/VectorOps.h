@@ -42,20 +42,20 @@ TEST(VectorOps, Normalize)
 
     {
         HMM_Vec2 result = HMM_NormV2(v2);
-        EXPECT_FLOAT_EQ(HMM_LenV2(result), 1.0f);
+        EXPECT_NEAR(HMM_LenV2(result), 1.0f, 0.001f);
         EXPECT_GT(result.X, 0.0f);
         EXPECT_LT(result.Y, 0.0f);
     }
     {
         HMM_Vec3 result = HMM_NormV3(v3);
-        EXPECT_FLOAT_EQ(HMM_LenV3(result), 1.0f);
+        EXPECT_NEAR(HMM_LenV3(result), 1.0f, 0.001f);
         EXPECT_GT(result.X, 0.0f);
         EXPECT_LT(result.Y, 0.0f);
         EXPECT_GT(result.Z, 0.0f);
     }
     {
         HMM_Vec4 result = HMM_NormV4(v4);
-        EXPECT_FLOAT_EQ(HMM_LenV4(result), 1.0f);
+        EXPECT_NEAR(HMM_LenV4(result), 1.0f, 0.001f);
         EXPECT_GT(result.X, 0.0f);
         EXPECT_LT(result.Y, 0.0f);
         EXPECT_GT(result.Z, 0.0f);
@@ -65,20 +65,20 @@ TEST(VectorOps, Normalize)
 #ifdef __cplusplus
     {
         HMM_Vec2 result = HMM_Norm(v2);
-        EXPECT_FLOAT_EQ(HMM_LenV2(result), 1.0f);
+        EXPECT_NEAR(HMM_LenV2(result), 1.0f, 0.001f);
         EXPECT_GT(result.X, 0.0f);
         EXPECT_LT(result.Y, 0.0f);
     }
     {
         HMM_Vec3 result = HMM_Norm(v3);
-        EXPECT_FLOAT_EQ(HMM_LenV3(result), 1.0f);
+        EXPECT_NEAR(HMM_LenV3(result), 1.0f, 0.001f);
         EXPECT_GT(result.X, 0.0f);
         EXPECT_LT(result.Y, 0.0f);
         EXPECT_GT(result.Z, 0.0f);
     }
     {
         HMM_Vec4 result = HMM_Norm(v4);
-        EXPECT_FLOAT_EQ(HMM_LenV4(result), 1.0f);
+        EXPECT_NEAR(HMM_LenV4(result), 1.0f, 0.001f);
         EXPECT_GT(result.X, 0.0f);
         EXPECT_LT(result.Y, 0.0f);
         EXPECT_GT(result.Z, 0.0f);
@@ -126,106 +126,6 @@ TEST(VectorOps, NormalizeZero)
     }
     {
         HMM_Vec4 result = HMM_Norm(v4);
-        EXPECT_FLOAT_EQ(result.X, 0.0f);
-        EXPECT_FLOAT_EQ(result.Y, 0.0f);
-        EXPECT_FLOAT_EQ(result.Z, 0.0f);
-        EXPECT_FLOAT_EQ(result.W, 0.0f);
-    }
-#endif
-}
-
-TEST(VectorOps, FastNormalize)
-{
-    HMM_Vec2 v2 = HMM_V2(1.0f, -2.0f);
-    HMM_Vec3 v3 = HMM_V3(1.0f, -2.0f, 3.0f);
-    HMM_Vec4 v4 = HMM_V4(1.0f, -2.0f, 3.0f, -1.0f);
-
-    {
-        HMM_Vec2 result = HMM_FastNormV2(v2);
-        EXPECT_NEAR(HMM_LenV2(result), 1.0f, 0.001f);
-        EXPECT_GT(result.X, 0.0f);
-        EXPECT_LT(result.Y, 0.0f);
-    }
-    {
-        HMM_Vec3 result = HMM_FastNormV3(v3);
-        EXPECT_NEAR(HMM_LenV3(result), 1.0f, 0.001f);
-        EXPECT_GT(result.X, 0.0f);
-        EXPECT_LT(result.Y, 0.0f);
-        EXPECT_GT(result.Z, 0.0f);
-    }
-    {
-        HMM_Vec4 result = HMM_FastNormV4(v4);
-        EXPECT_NEAR(HMM_LenV4(result), 1.0f, 0.001f);
-        EXPECT_GT(result.X, 0.0f);
-        EXPECT_LT(result.Y, 0.0f);
-        EXPECT_GT(result.Z, 0.0f);
-        EXPECT_LT(result.W, 0.0f);
-    }
-
-#ifdef __cplusplus
-    {
-        HMM_Vec2 result = HMM_FastNorm(v2);
-        EXPECT_NEAR(HMM_LenV2(result), 1.0f, 0.001f);
-        EXPECT_GT(result.X, 0.0f);
-        EXPECT_LT(result.Y, 0.0f);
-    }
-    {
-        HMM_Vec3 result = HMM_FastNorm(v3);
-        EXPECT_NEAR(HMM_LenV3(result), 1.0f, 0.001f);
-        EXPECT_GT(result.X, 0.0f);
-        EXPECT_LT(result.Y, 0.0f);
-        EXPECT_GT(result.Z, 0.0f);
-    }
-    {
-        HMM_Vec4 result = HMM_FastNorm(v4);
-        EXPECT_NEAR(HMM_LenV4(result), 1.0f, 0.001f);
-        EXPECT_GT(result.X, 0.0f);
-        EXPECT_LT(result.Y, 0.0f);
-        EXPECT_GT(result.Z, 0.0f);
-        EXPECT_LT(result.W, 0.0f);
-    }
-#endif
-}
-
-TEST(VectorOps, FastNormalizeZero)
-{
-    HMM_Vec2 v2 = HMM_V2(0.0f, 0.0f);
-    HMM_Vec3 v3 = HMM_V3(0.0f, 0.0f, 0.0f);
-    HMM_Vec4 v4 = HMM_V4(0.0f, 0.0f, 0.0f, 0.0f);
-
-    {
-        HMM_Vec2 result = HMM_FastNormV2(v2);
-        EXPECT_FLOAT_EQ(result.X, 0.0f);
-        EXPECT_FLOAT_EQ(result.Y, 0.0f);
-    }
-    {
-        HMM_Vec3 result = HMM_FastNormV3(v3);
-        EXPECT_FLOAT_EQ(result.X, 0.0f);
-        EXPECT_FLOAT_EQ(result.Y, 0.0f);
-        EXPECT_FLOAT_EQ(result.Z, 0.0f);
-    }
-    {
-        HMM_Vec4 result = HMM_FastNormV4(v4);
-        EXPECT_FLOAT_EQ(result.X, 0.0f);
-        EXPECT_FLOAT_EQ(result.Y, 0.0f);
-        EXPECT_FLOAT_EQ(result.Z, 0.0f);
-        EXPECT_FLOAT_EQ(result.W, 0.0f);
-    }
-
-#ifdef __cplusplus
-    {
-        HMM_Vec2 result = HMM_FastNorm(v2);
-        EXPECT_FLOAT_EQ(result.X, 0.0f);
-        EXPECT_FLOAT_EQ(result.Y, 0.0f);
-    }
-    {
-        HMM_Vec3 result = HMM_FastNorm(v3);
-        EXPECT_FLOAT_EQ(result.X, 0.0f);
-        EXPECT_FLOAT_EQ(result.Y, 0.0f);
-        EXPECT_FLOAT_EQ(result.Z, 0.0f);
-    }
-    {
-        HMM_Vec4 result = HMM_FastNorm(v4);
         EXPECT_FLOAT_EQ(result.X, 0.0f);
         EXPECT_FLOAT_EQ(result.Y, 0.0f);
         EXPECT_FLOAT_EQ(result.Z, 0.0f);

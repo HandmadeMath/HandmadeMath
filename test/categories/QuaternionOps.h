@@ -36,18 +36,18 @@ TEST(QuaternionOps, Normalize)
 
     {
         HMM_Quat result = HMM_NormQ(q);
-        EXPECT_FLOAT_EQ(result.X, 0.1825741858f);
-        EXPECT_FLOAT_EQ(result.Y, 0.3651483717f);
-        EXPECT_FLOAT_EQ(result.Z, 0.5477225575f);
-        EXPECT_FLOAT_EQ(result.W, 0.7302967433f);
+        EXPECT_NEAR(result.X, 0.1825741858f, 0.001f);
+        EXPECT_NEAR(result.Y, 0.3651483717f, 0.001f);
+        EXPECT_NEAR(result.Z, 0.5477225575f, 0.001f);
+        EXPECT_NEAR(result.W, 0.7302967433f, 0.001f);
     }
 #ifdef __cplusplus
     {
         HMM_Quat result = HMM_Norm(q);
-        EXPECT_FLOAT_EQ(result.X, 0.1825741858f);
-        EXPECT_FLOAT_EQ(result.Y, 0.3651483717f);
-        EXPECT_FLOAT_EQ(result.Z, 0.5477225575f);
-        EXPECT_FLOAT_EQ(result.W, 0.7302967433f);
+        EXPECT_NEAR(result.X, 0.1825741858f, 0.001f);
+        EXPECT_NEAR(result.Y, 0.3651483717f, 0.001f);
+        EXPECT_NEAR(result.Z, 0.5477225575f, 0.001f);
+        EXPECT_NEAR(result.W, 0.7302967433f, 0.001f);
     }
 #endif
 }
@@ -58,10 +58,10 @@ TEST(QuaternionOps, NLerp)
     HMM_Quat to = HMM_Q(0.5f, 0.5f, -0.5f, 0.5f);
 
     HMM_Quat result = HMM_NLerp(from, 0.5f, to);
-    EXPECT_FLOAT_EQ(result.X, 0.28867513f);
-    EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
-    EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
-    EXPECT_FLOAT_EQ(result.W, 0.86602540f);
+    EXPECT_NEAR(result.X, 0.28867513f, 0.001f);
+    EXPECT_NEAR(result.Y, 0.28867513f, 0.001f);
+    EXPECT_NEAR(result.Z, -0.28867513f, 0.001f);
+    EXPECT_NEAR(result.W, 0.86602540f, 0.001f);
 }
 
 TEST(QuaternionOps, SLerp)
@@ -69,47 +69,46 @@ TEST(QuaternionOps, SLerp)
     HMM_Quat from = HMM_Q(0.0f, 0.0f, 0.0f, 1.0f);
     HMM_Quat to = HMM_Q(0.5f, 0.5f, -0.5f, 0.5f);
 
-    
     {
         HMM_Quat result = HMM_SLerp(from, 0.0f, to);
-        EXPECT_FLOAT_EQ(result.X, 0.0f);
-        EXPECT_FLOAT_EQ(result.Y, 0.0f);
-        EXPECT_FLOAT_EQ(result.Z, 0.0f);
-        EXPECT_FLOAT_EQ(result.W, 1.0);
+        EXPECT_NEAR(result.X, 0.0f, 0.001f);
+        EXPECT_NEAR(result.Y, 0.0f, 0.001f);
+        EXPECT_NEAR(result.Z, 0.0f, 0.001f);
+        EXPECT_NEAR(result.W, 1.0, 0.001f);
     }
     {
         HMM_Quat result = HMM_SLerp(from, 0.25f, to);
-        EXPECT_FLOAT_EQ(result.X, 0.149429246f);
-        EXPECT_FLOAT_EQ(result.Y, 0.149429246f);
-        EXPECT_FLOAT_EQ(result.Z, -0.149429246f);
-        EXPECT_FLOAT_EQ(result.W, 0.965925812f);
+        EXPECT_NEAR(result.X, 0.149429246f, 0.001f);
+        EXPECT_NEAR(result.Y, 0.149429246f, 0.001f);
+        EXPECT_NEAR(result.Z, -0.149429246f, 0.001f);
+        EXPECT_NEAR(result.W, 0.965925812f, 0.001f);
     }
     {
         HMM_Quat result = HMM_SLerp(from, 0.5f, to);
-        EXPECT_FLOAT_EQ(result.X, 0.28867513f);
-        EXPECT_FLOAT_EQ(result.Y, 0.28867513f);
-        EXPECT_FLOAT_EQ(result.Z, -0.28867513f);
-        EXPECT_FLOAT_EQ(result.W, 0.86602540f);
+        EXPECT_NEAR(result.X, 0.28867513f, 0.001f);
+        EXPECT_NEAR(result.Y, 0.28867513f, 0.001f);
+        EXPECT_NEAR(result.Z, -0.28867513f, 0.001f);
+        EXPECT_NEAR(result.W, 0.86602540f, 0.001f);
     }
     {
         HMM_Quat result = HMM_SLerp(from, 0.75f, to);
-        EXPECT_FLOAT_EQ(result.X, 0.40824830f);
-        EXPECT_FLOAT_EQ(result.Y, 0.40824830f);
-        EXPECT_FLOAT_EQ(result.Z, -0.40824830f);
-        EXPECT_FLOAT_EQ(result.W, 0.70710676f);
+        EXPECT_NEAR(result.X, 0.40824830f, 0.001f);
+        EXPECT_NEAR(result.Y, 0.40824830f, 0.001f);
+        EXPECT_NEAR(result.Z, -0.40824830f, 0.001f);
+        EXPECT_NEAR(result.W, 0.70710676f, 0.001f);
     }
         {
         HMM_Quat result = HMM_SLerp(from, 1.0f, to);
-        EXPECT_FLOAT_EQ(result.X, 0.5f);
-        EXPECT_FLOAT_EQ(result.Y, 0.5f);
-        EXPECT_FLOAT_EQ(result.Z, -0.5f);
-        EXPECT_FLOAT_EQ(result.W, 0.5f);
+        EXPECT_NEAR(result.X, 0.5f, 0.001f);
+        EXPECT_NEAR(result.Y, 0.5f, 0.001f);
+        EXPECT_NEAR(result.Z, -0.5f, 0.001f);
+        EXPECT_NEAR(result.W, 0.5f, 0.001f);
     }
 }
 
 TEST(QuaternionOps, QuatToMat4)
 {
-    const float abs_error = 0.0001f;
+    const float abs_error = 0.001f;
 
     HMM_Quat rot = HMM_Q(0.707107f, 0.0f, 0.0f, 0.707107f);
 
@@ -262,16 +261,16 @@ TEST(QuaternionOps, FromAxisAngle)
 
     {
         HMM_Quat result = HMM_QFromAxisAngle_RH(axis, angle);
-        EXPECT_NEAR(result.X, 0.707107f, FLT_EPSILON * 2);
-        EXPECT_FLOAT_EQ(result.Y, 0.0f);
-        EXPECT_FLOAT_EQ(result.Z, 0.0f);
-        EXPECT_NEAR(result.W, 0.707107f, FLT_EPSILON * 2);
+        EXPECT_NEAR(result.X, 0.707107f, 0.001f);
+        EXPECT_NEAR(result.Y, 0.0f, 0.001f);
+        EXPECT_NEAR(result.Z, 0.0f, 0.001f);
+        EXPECT_NEAR(result.W, 0.707107f, 0.001f);
     }
     {
         HMM_Quat result = HMM_QFromAxisAngle_LH(axis, angle);
-        EXPECT_NEAR(result.X, -0.707107f, FLT_EPSILON * 2);
-        EXPECT_FLOAT_EQ(result.Y, 0.0f);
-        EXPECT_FLOAT_EQ(result.Z, 0.0f);
-        EXPECT_NEAR(result.W, 0.707107f, FLT_EPSILON * 2);
+        EXPECT_NEAR(result.X, -0.707107f, 0.001f);
+        EXPECT_NEAR(result.Y, 0.0f, 0.001f);
+        EXPECT_NEAR(result.Z, 0.0f, 0.001f);
+        EXPECT_NEAR(result.W, 0.707107f, 0.001f);
     }
 }

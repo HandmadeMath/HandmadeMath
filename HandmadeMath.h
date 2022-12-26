@@ -1215,99 +1215,26 @@ HMM_INLINE float HMM_LenV4(HMM_Vec4 A)
     return(Result);
 }
 
-COVERAGE(HMM_NormV2, 2)
+COVERAGE(HMM_NormV2, 1)
 HMM_INLINE HMM_Vec2 HMM_NormV2(HMM_Vec2 A)
 {
     ASSERT_COVERED(HMM_NormV2);
 
-    HMM_Vec2 Result = {0};
-
-    float ALen = HMM_LenV2(A);
-
-    /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
-    if (ALen != 0.0f)
-    {
-        ASSERT_COVERED(HMM_NormV2);
-
-        Result.X = A.X * (1.0f / ALen);
-        Result.Y = A.Y * (1.0f / ALen);
-    }
-
-    return (Result);
+    return HMM_MulV2F(A, HMM_InvSqrtF(HMM_DotV2(A, A)));
 }
 
-COVERAGE(HMM_NormV3, 2)
+COVERAGE(HMM_NormV3, 1)
 HMM_INLINE HMM_Vec3 HMM_NormV3(HMM_Vec3 A)
 {
     ASSERT_COVERED(HMM_NormV3);
 
-    HMM_Vec3 Result = {0};
-
-    float ALen = HMM_LenV3(A);
-
-    /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
-    if (ALen != 0.0f)
-    {
-        ASSERT_COVERED(HMM_NormV3);
-
-        Result.X = A.X * (1.0f / ALen);
-        Result.Y = A.Y * (1.0f / ALen);
-        Result.Z = A.Z * (1.0f / ALen);
-    }
-
-    return (Result);
-}
-
-COVERAGE(HMM_NormV4, 2)
-HMM_INLINE HMM_Vec4 HMM_NormV4(HMM_Vec4 A)
-{
-    ASSERT_COVERED(HMM_NormV4);
-
-    HMM_Vec4 Result = {0};
-
-    float ALen = HMM_LenV4(A);
-
-    /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
-    if (ALen != 0.0f)
-    {
-        ASSERT_COVERED(HMM_NormV4);
-
-        float Multiplier = 1.0f / ALen;
-
-#ifdef HANDMADE_MATH__USE_SSE
-        __m128 SSEMultiplier = _mm_set1_ps(Multiplier);
-        Result.InternalElementsSSE = _mm_mul_ps(A.InternalElementsSSE, SSEMultiplier);
-#else
-        Result.X = A.X * Multiplier;
-        Result.Y = A.Y * Multiplier;
-        Result.Z = A.Z * Multiplier;
-        Result.W = A.W * Multiplier;
-#endif
-    }
-
-    return (Result);
-}
-
-COVERAGE(HMM_FastNormV2, 1)
-HMM_INLINE HMM_Vec2 HMM_FastNormV2(HMM_Vec2 A)
-{
-    ASSERT_COVERED(HMM_FastNormV2);
-
-    return HMM_MulV2F(A, HMM_InvSqrtF(HMM_DotV2(A, A)));
-}
-
-COVERAGE(HMM_FastNormV3, 1)
-HMM_INLINE HMM_Vec3 HMM_FastNormV3(HMM_Vec3 A)
-{
-    ASSERT_COVERED(HMM_FastNormV3);
-
     return HMM_MulV3F(A, HMM_InvSqrtF(HMM_DotV3(A, A)));
 }
 
-COVERAGE(HMM_FastNormV4, 1)
-HMM_INLINE HMM_Vec4 HMM_FastNormV4(HMM_Vec4 A)
+COVERAGE(HMM_NormV4, 1)
+HMM_INLINE HMM_Vec4 HMM_NormV4(HMM_Vec4 A)
 {
-    ASSERT_COVERED(HMM_FastNormV4);
+    ASSERT_COVERED(HMM_NormV4);
 
     return HMM_MulV4F(A, HMM_InvSqrtF(HMM_DotV4(A, A)));
 }
@@ -2566,36 +2493,6 @@ HMM_INLINE HMM_Vec4 HMM_Norm(HMM_Vec4 A)
     return (Result);
 }
 
-COVERAGE(HMM_FastNormV2CPP, 1)
-HMM_INLINE HMM_Vec2 HMM_FastNorm(HMM_Vec2 A)
-{
-    ASSERT_COVERED(HMM_FastNormV2CPP);
-
-    HMM_Vec2 Result = HMM_FastNormV2(A);
-
-    return (Result);
-}
-
-COVERAGE(HMM_FastNormV3CPP, 1)
-HMM_INLINE HMM_Vec3 HMM_FastNorm(HMM_Vec3 A)
-{
-    ASSERT_COVERED(HMM_FastNormV3CPP);
-
-    HMM_Vec3 Result = HMM_FastNormV3(A);
-
-    return (Result);
-}
-
-COVERAGE(HMM_FastNormV4CPP, 1)
-HMM_INLINE HMM_Vec4 HMM_FastNorm(HMM_Vec4 A)
-{
-    ASSERT_COVERED(HMM_FastNormV4CPP);
-
-    HMM_Vec4 Result = HMM_FastNormV4(A);
-
-    return (Result);
-}
-
 COVERAGE(HMM_NormQCPP, 1)
 HMM_INLINE HMM_Quat HMM_Norm(HMM_Quat A)
 {
@@ -3673,12 +3570,6 @@ HMM_INLINE HMM_Vec4 operator-(HMM_Vec4 In)
         HMM_Vec2: HMM_NormV2, \
         HMM_Vec3: HMM_NormV3, \
         HMM_Vec4: HMM_NormV4, \
-)
-
-#define HMM_FastNorm(A) _Generic((A), \
-        HMM_Vec2: HMM_FastNormV2, \
-        HMM_Vec3: HMM_FastNormV3, \
-        HMM_Vec4: HMM_FastNormV4, \
 )
 
 #define HMM_Dot(A) _Generic((A), \

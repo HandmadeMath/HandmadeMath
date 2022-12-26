@@ -17,6 +17,7 @@ enum Targets {
     FUN_LENGTH_SQUARED, FUN_LENGTH, FUN_NORM,
     FUN_SLERP, FUN_BY,
     FUN_LINEAR_COMBINE_SSE, FUN_TRANSPOSE,
+    FUN_FAST_NORM,
     FUNCTIONS_Size,
     /* Special */
     HAND_PERSPECTIVE, HAND_ROTATE, /* Also wrap angle args for these */
@@ -75,11 +76,13 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
         Repl[FUN_SLERP] = str8_lit("SLerp");
         Find[FUN_BY] = str8_lit("By");
         Repl[FUN_BY] = str8_lit("");
-        Find[FUN_LINEAR_COMBINE_SSE] = str8_lit("LinearCombineSSE");
+        Find[FUN_LINEAR_COMBINE_SSE] = str8_lit("LinearCombineSSE"); /* TODO: emit warning */
         Repl[FUN_LINEAR_COMBINE_SSE] = str8_lit("LinearCombineV4M4");
         Find[FUN_TRANSPOSE] = str8_lit("Transpose");
-        Repl[FUN_TRANSPOSE] = str8_lit("TransposeM4")
-        
+        Repl[FUN_TRANSPOSE] = str8_lit("TransposeM4");
+        Find[FUN_FAST_NORM] = str8_lit("FastNorm"); /* TODO: emit warning, lower precision. */
+        Repl[FUN_FAST_NORM] = str8_lit("Norm");
+            
         Find[HAND_PERSPECTIVE] = str8_lit("Perspective");
         Find[HAND_ROTATE] = str8_lit("Rotate");
         Find[HAND_ORTHO] = str8_lit("Orthographic");
