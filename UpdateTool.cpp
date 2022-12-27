@@ -1,7 +1,5 @@
 #include "../lcf/lcf.h"
 #include "../lcf/lcf.c"
-/* TODO: why does scalar math get fucked
-   TODO: what is wrong with tests */
 
 enum Targets {
     PREFIX_TYPE, PREFIX_FUNCTION,
@@ -10,14 +8,13 @@ enum Targets {
     TYPE_VEC, TYPE_MAT, TYPE_QUATERNION, TYPE_BOOL,
     TYPES_Size,
     /* Types in Function Names */
-    FUN_VEC, FUN_MAT, FUN_QUATERNION, FUN_FLOAT, 
+    FUN_VEC, FUN_MAT, FUN_QUATERNION,  
     /* Function Names for Common Operations */
     FUN_EQUALS, FUN_SUBTRACT, FUN_MULTIPLY, FUN_DIVIDE,
     FUN_INVERSE, FUN_R_SQUARE_ROOT, FUN_SQUARE_ROOT,
-    FUN_LENGTH_SQUARED, FUN_LENGTH, FUN_NORM,
+    FUN_LENGTH_SQUARED, FUN_LENGTH, FUN_FAST_NORM, FUN_NORM,
     FUN_SLERP, FUN_BY,
     FUN_LINEAR_COMBINE_SSE, FUN_TRANSPOSE,
-    FUN_FAST_NORM,
     FUNCTIONS_Size,
     /* Special */
     HAND_PERSPECTIVE, HAND_ROTATE, /* Also wrap angle args for these */
@@ -50,8 +47,6 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
         Repl[FUN_MAT] = str8_lit("M");
         Find[FUN_QUATERNION] = str8_lit("Quaternion");
         Repl[FUN_QUATERNION] = str8_lit("Q");
-        Find[FUN_FLOAT] = str8_lit("f");
-        Repl[FUN_FLOAT] = str8_lit("F");
         Find[FUN_EQUALS] = str8_lit("Equals");
         Repl[FUN_EQUALS] = str8_lit("Eq");
         Find[FUN_SUBTRACT] = str8_lit("Subtract");
@@ -70,8 +65,7 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
         Repl[FUN_LENGTH_SQUARED] = str8_lit("Sqr"); /* FIXME: not working for some reason */
         Find[FUN_LENGTH] = str8_lit("Length");
         Repl[FUN_LENGTH] = str8_lit("Len");
-        Find[FUN_NORM] = str8_lit("Normalize");
-        Repl[FUN_NORM] = str8_lit("Norm");
+        
         Find[FUN_SLERP] = str8_lit("Slerp");
         Repl[FUN_SLERP] = str8_lit("SLerp");
         Find[FUN_BY] = str8_lit("By");
@@ -80,9 +74,11 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
         Repl[FUN_LINEAR_COMBINE_SSE] = str8_lit("LinearCombineV4M4");
         Find[FUN_TRANSPOSE] = str8_lit("Transpose");
         Repl[FUN_TRANSPOSE] = str8_lit("TransposeM4");
-        Find[FUN_FAST_NORM] = str8_lit("FastNorm"); /* TODO: emit warning, lower precision. */
-        Repl[FUN_FAST_NORM] = str8_lit("Norm");
-            
+        Find[FUN_FAST_NORM] = str8_lit("Fast"); /* TODO: emit warning, lower precision. */
+        Repl[FUN_FAST_NORM] = str8_lit("");
+        Find[FUN_NORM] = str8_lit("Normalize");
+        Repl[FUN_NORM] = str8_lit("Norm");
+    
         Find[HAND_PERSPECTIVE] = str8_lit("Perspective");
         Find[HAND_ROTATE] = str8_lit("Rotate");
         Find[HAND_ORTHO] = str8_lit("Orthographic");
@@ -95,7 +91,11 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
     u64 MatchProgress[HAND_Size] = {0};
     b32 FoundTypePrefix = false;
     b32 FoundFunctionPrefix = false;
+    u64 Line = 1;
     str8_iter(file_content) {
+        if (c == '\n') {
+            Line++;
+        }
         if (FoundTypePrefix || FoundFunctionPrefix) {
             if (chr8_is_whitespace(c)
                 || str8_contains_char(str8_lit("(){}[]:;,.<>~?!@#$%^&+-*/'\""), c)) {
@@ -125,9 +125,11 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
                 if (c == Find[t].str[MatchProgress[t]]) {  
                     MatchProgress[t]++;  
                     if (MatchProgress[t] == Find[t].len) {  
+                        MatchProgress[t] = 0;
+                        printf("\t[%lld]: Find: %.*s, Repl: %.*s.\n", Line, str8_PRINTF_ARGS(Find[t]), str8_PRINTF_ARGS(Repl[t]));
                         Str8List_add(arena, &out,
                                      str8_first(file_content,
-                                                i + 1 - Find[t].len - Find[PREFIX_TYPE].len));
+                                                i + 1 - (Find[t].len + Find[PREFIX_TYPE].len)));
                         Str8List_add(arena, &out, Repl[PREFIX_TYPE]);
                         Str8List_add(arena, &out, Repl[t]);
                         file_content = str8_skip(file_content, i+1);
@@ -145,13 +147,24 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
                 if (c == Find[t].str[MatchProgress[t]]) {  
                     MatchProgress[t]++;  
                     if (MatchProgress[t] == Find[t].len) {  
+                        MatchProgress[t] = 0;
+                        printf("\t[%lld]: Find: %.*s, Repl: %.*s.\n", Line, str8_PRINTF_ARGS(Find[t]), str8_PRINTF_ARGS(Repl[t]));
                         Str8List_add(arena, &out, str8_first(file_content, i + 1 - Find[t].len));
                         Str8List_add(arena, &out, Repl[t]);
                         file_content = str8_skip(file_content, i+1);
                         i = -1;
 
+                        /* NOTE(lcf): Special case because Find[] overlaps here */
+                        if (t == FUN_R_SQUARE_ROOT) {
+                            MatchProgress[FUN_SQUARE_ROOT] = 0;
+                        }
+
+                        if (t == FUN_LINEAR_COMBINE_SSE) {
+                            printf("\t[%lld]: HMM_LinearCombineSSE is now HMM_LinearCombineV4M4, and will now use a fallback method when SSE is not available. \n\tYou no longer need to check for the availability of SSE.\n", Line);
+                        }
+
                         if (t == FUN_VEC) {
-                            /* if pattern is Vec2i, this is now i */
+                            /* NOTE(lcf): if pattern is Vec2i, this is now i */
                             c = file_content.str[1];
                             if (c == 'i') {
                                 Str8List_add(arena, &out, str8_first(file_content, 1));
@@ -186,31 +199,37 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
             } 
         }
 
-        
         /* Handedness cases. */
         if (FoundFunctionPrefix) {
             for (u32 t = FUNCTIONS_Size+1; t < HAND_Size; t++) {  
                 if (c == Find[t].str[MatchProgress[t]]) {  
                     MatchProgress[t]++;  
                     if (MatchProgress[t] == Find[t].len) {
+                        MatchProgress[t] = 0;
+                        
                         chr8 check = file_content.str[i+1];
-                        ASSERT(check == '('); /* TODO: fail gracefully */
+                        if (check == '(') {
+                            printf("\t[%lld]: Find: %.*s, Appending: _RH for old default handedness.\n", Line, str8_PRINTF_ARGS(Find[t]), str8_PRINTF_ARGS(Repl[t]));
+                            Str8List_add(arena, &out, str8_first(file_content, i + 1));
+                            Str8List_add(arena, &out, str8_lit("_RH("));
+                            file_content = str8_skip(file_content, i+2);
+                            i = -1;
 
-                        Str8List_add(arena, &out, str8_first(file_content, i + 1));
-                        Str8List_add(arena, &out, str8_lit("_RH("));
-                        file_content = str8_skip(file_content, i+2);
-                        i = -1;
-
-
-                        if (t == HAND_PERSPECTIVE || t == HAND_ROTATE) {
-                            /* TODO: emit warning for special cases incase of repeated
-                             conversions. */
-                            u64 end_arg = str8_char_location(file_content, ',');
-                            ASSERT(end_arg != LCF_STRING_NO_MATCH);
-                            Str8List_add(arena, &out, str8_lit("HMM_AngleDeg("));
-                            Str8List_add(arena, &out, str8_first(file_content, end_arg));
-                            Str8List_add(arena, &out, str8_lit(")"));
-                            file_content = str8_skip(file_content, end_arg);
+                            if (t == HAND_PERSPECTIVE || t == HAND_ROTATE) {
+                                printf("\t[%lld]: ", Line);
+                                if (t == HAND_PERSPECTIVE) {
+                                    printf("HMM_Perspective_RH()");
+                                } else {
+                                    printf("HMM_Rotate_RH()");
+                                }
+                                printf(" now takes Radians. Wrapping Degrees with HMM_AngleDeg()\n");
+                                u64 end_arg = str8_char_location(file_content, ',');
+                                ASSERT(end_arg != LCF_STRING_NO_MATCH);
+                                Str8List_add(arena, &out, str8_lit("HMM_AngleDeg("));
+                                Str8List_add(arena, &out, str8_first(file_content, end_arg));
+                                Str8List_add(arena, &out, str8_lit(")"));
+                                file_content = str8_skip(file_content, end_arg);
+                            }
                         }
                     }  
                 } else {  
@@ -219,6 +238,7 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
             } 
         }
     }
+
     Str8List_add(arena, &out, file_content);
     
     return out;
@@ -238,7 +258,13 @@ int main(int argc, char* argv[]) {
         arg = str8_from_cstring(argv[argi]);
         /* TODO: portable version instead */
         str8 file_content = win32_load_entire_file(tempa, arg);
+        if (str8_is_empty(file_content)) {
+            printf("X - Invalid file name: %.*s\n\n", str8_PRINTF_ARGS(arg));
+            continue;
+        }
+        printf("O - Updating file: %.*s -------------------\n", str8_PRINTF_ARGS(arg));
         Str8List result = update_file_content(tempa, file_content);
+        printf("\n");
         win32_write_file(arg, result);
     }
 }

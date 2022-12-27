@@ -2752,7 +2752,7 @@ HMM_INLINE float HMM_Determinant(HMM_Mat2 Matrix)
 
 HMM_INLINE float HMM_Determinant(HMM_Mat3 Matrix)
 {
-    HMM_Mat3 Result = HMM_DeterminantM3(Matrix);
+    float Result = HMM_DeterminantM3(Matrix);
     return (Result);
 }
 
