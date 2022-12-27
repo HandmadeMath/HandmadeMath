@@ -4,8 +4,8 @@
 
 TEST(SSE, LinearCombine)
 {
-    HMM_Mat4 MatrixOne = HMM_M4d(2.0f);
-    HMM_Mat4 MatrixTwo = HMM_M4d(4.0f);
+    HMM_Mat4 MatrixOne = HMM_M4D(2.0f);
+    HMM_Mat4 MatrixTwo = HMM_M4D(4.0f);
     HMM_Mat4 Result;
 
     Result.Columns[0] = HMM_LinearCombineV4M4(MatrixOne.Columns[0], MatrixTwo);

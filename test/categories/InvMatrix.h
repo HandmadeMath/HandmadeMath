@@ -10,7 +10,7 @@ TEST(InvMatrix, InvGeneral)
             11.0f, 1.0f, 0.0f, 10.0f
         };
 
-        HMM_Mat4 Expect = HMM_M4d(1.0);
+        HMM_Mat4 Expect = HMM_M4D(1.0);
         HMM_Mat4 Inverse = HMM_InvGeneralM4(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
         
@@ -45,7 +45,7 @@ TEST(InvMatrix, InvGeneral)
             0.0f, 1.0f, 5.0f
         };
 
-        HMM_Mat3 Expect = HMM_M3d(1.0);
+        HMM_Mat3 Expect = HMM_M3D(1.0);
         HMM_Mat3 Inverse = HMM_InvGeneralM3(Matrix);
         HMM_Mat3 Result = HMM_MulM3(Matrix, Inverse);
         
@@ -73,7 +73,7 @@ TEST(InvMatrix, InvGeneral)
              1.0f, 5.0f
         };
 
-        HMM_Mat2 Expect = HMM_M2d(1.0);
+        HMM_Mat2 Expect = HMM_M2D(1.0);
         HMM_Mat2 Inverse = HMM_InvGeneralM2(Matrix);
         HMM_Mat2 Result = HMM_MulM2(Matrix, Inverse);
         
@@ -93,7 +93,7 @@ TEST(InvMatrix, Mat4Inverses)
 {
     {
         HMM_Mat4 Matrix = HMM_Orthographic_RH(-160+100, 160+100, -90+200, 90+200, 10, 10000);
-        HMM_Mat4 Expect = HMM_M4d(1.0f);
+        HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvOrthographic(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
         
@@ -119,7 +119,7 @@ TEST(InvMatrix, Mat4Inverses)
     }
     {
         HMM_Mat4 Matrix = HMM_Perspective_RH(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
-        HMM_Mat4 Expect = HMM_M4d(1.0f);
+        HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
 
@@ -148,7 +148,7 @@ TEST(InvMatrix, Mat4Inverses)
         HMM_Vec3 Center = {100.0f, 200.0f, 30.0f};
         HMM_Vec3 Up = {0.0f, 0.0f, 1.0f};
         HMM_Mat4 Matrix = HMM_LookAt_RH(Eye, Center, Up);
-        HMM_Mat4 Expect = HMM_M4d(1.0f);
+        HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvLookAt(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
 
@@ -175,7 +175,7 @@ TEST(InvMatrix, Mat4Inverses)
     {
         HMM_Vec3 Axis = {1.0f, -1.0f, 0.5f};
         HMM_Mat4 Matrix = HMM_Rotate_RH(HMM_AngleDeg(30), HMM_NormV3(Axis));
-        HMM_Mat4 Expect = HMM_M4d(1.0f);
+        HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvRotate(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
 
@@ -202,7 +202,7 @@ TEST(InvMatrix, Mat4Inverses)
     {
         HMM_Vec3 Scale  = {1.0f, -1.0f, 0.5f};
         HMM_Mat4 Matrix = HMM_Scale(Scale);
-        HMM_Mat4 Expect = HMM_M4d(1.0f);
+        HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvScale(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
 
@@ -229,7 +229,7 @@ TEST(InvMatrix, Mat4Inverses)
     {
         HMM_Vec3 Move  = {1.0f, -1.0f, 0.5f};
         HMM_Mat4 Matrix = HMM_Translate(Move);
-        HMM_Mat4 Expect = HMM_M4d(1.0f);
+        HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvTranslate(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
 

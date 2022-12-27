@@ -1285,10 +1285,10 @@ HMM_INLINE HMM_Mat4 HMM_M4(void)
     return (Result);
 }
 
-COVERAGE(HMM_M4d, 1)
-HMM_INLINE HMM_Mat4 HMM_M4d(float Diagonal)
+COVERAGE(HMM_M4D, 1)
+HMM_INLINE HMM_Mat4 HMM_M4D(float Diagonal)
 {
-    ASSERT_COVERED(HMM_M4d);
+    ASSERT_COVERED(HMM_M4D);
 
     HMM_Mat4 Result = HMM_M4();
 
@@ -1437,10 +1437,10 @@ HMM_INLINE HMM_Vec4 HMM_MulM4V4(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 }
 
 
-COVERAGE(HMM_DivM4f, 1)
-HMM_INLINE HMM_Mat4 HMM_DivM4f(HMM_Mat4 Matrix, float Scalar)
+COVERAGE(HMM_DivM4F, 1)
+HMM_INLINE HMM_Mat4 HMM_DivM4F(HMM_Mat4 Matrix, float Scalar)
 {
-    ASSERT_COVERED(HMM_DivM4f);
+    ASSERT_COVERED(HMM_DivM4F);
 
     HMM_Mat4 Result;
 
@@ -1517,7 +1517,7 @@ HMM_INLINE HMM_Mat3 HMM_M3(void)
     return (Result);
 }
 
-HMM_INLINE HMM_Mat3 HMM_M3d(float Diagonal)
+HMM_INLINE HMM_Mat3 HMM_M3D(float Diagonal)
 {
     HMM_Mat3 Result = HMM_M3();
 
@@ -1681,7 +1681,7 @@ HMM_INLINE HMM_Mat2 HMM_M2(void)
     return (Result);
 }
 
-HMM_INLINE HMM_Mat2 HMM_M2d(float Diagonal)
+HMM_INLINE HMM_Mat2 HMM_M2D(float Diagonal)
 {
     HMM_Mat2 Result = HMM_M2();
 
@@ -1928,7 +1928,7 @@ HMM_INLINE HMM_Mat4 HMM_Translate(HMM_Vec3 Translation)
 {
     ASSERT_COVERED(HMM_Translate);
 
-    HMM_Mat4 Result = HMM_M4d(1.0f);
+    HMM_Mat4 Result = HMM_M4D(1.0f);
 
     Result.Elements[3][0] = Translation.X;
     Result.Elements[3][1] = Translation.Y;
@@ -1956,7 +1956,7 @@ HMM_INLINE HMM_Mat4 HMM_Rotate_RH(float Angle, HMM_Vec3 Axis)
 {
     ASSERT_COVERED(HMM_Rotate_RH);
 
-    HMM_Mat4 Result = HMM_M4d(1.0f);
+    HMM_Mat4 Result = HMM_M4D(1.0f);
 
     Axis = HMM_NormV3(Axis);
 
@@ -2002,7 +2002,7 @@ HMM_INLINE HMM_Mat4 HMM_Scale(HMM_Vec3 Scale)
 {
     ASSERT_COVERED(HMM_Scale);
 
-    HMM_Mat4 Result = HMM_M4d(1.0f);
+    HMM_Mat4 Result = HMM_M4D(1.0f);
 
     Result.Elements[0][0] = Scale.X;
     Result.Elements[1][1] = Scale.Y;
@@ -2726,6 +2726,60 @@ HMM_INLINE float HMM_Dot(HMM_Vec4 Left, HMM_Vec4 VecTwo)
     return (Result);
 }
 
+HMM_INLINE HMM_Mat2 HMM_Transpose(HMM_Mat2 Matrix)
+{
+    HMM_Mat2 Result = HMM_TransposeM2(Matrix);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 HMM_Transpose(HMM_Mat3 Matrix)
+{
+    HMM_Mat3 Result = HMM_TransposeM3(Matrix);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat4 HMM_Transpose(HMM_Mat4 Matrix)
+{
+    HMM_Mat4 Result = HMM_TransposeM4(Matrix);
+    return (Result);
+}
+
+HMM_INLINE float HMM_Determinant(HMM_Mat2 Matrix)
+{
+    float Result = HMM_DeterminantM2(Matrix);
+    return (Result);
+}
+
+HMM_INLINE float HMM_Determinant(HMM_Mat3 Matrix)
+{
+    HMM_Mat3 Result = HMM_DeterminantM3(Matrix);
+    return (Result);
+}
+
+HMM_INLINE float HMM_Determinant(HMM_Mat4 Matrix)
+{
+    float Result = HMM_DeterminantM4(Matrix);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat2 HMM_InvGeneral(HMM_Mat2 Matrix)
+{
+    HMM_Mat2 Result = HMM_InvGeneralM2(Matrix);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 HMM_InvGeneral(HMM_Mat3 Matrix)
+{
+    HMM_Mat3 Result = HMM_InvGeneralM3(Matrix);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat4 HMM_InvGeneral(HMM_Mat4 Matrix)
+{
+    HMM_Mat4 Result = HMM_InvGeneralM4(Matrix);
+    return (Result);
+}
+
 COVERAGE(HMM_DotQCPP, 1)
 HMM_INLINE float HMM_Dot(HMM_Quat QuatOne, HMM_Quat QuatTwo)
 {
@@ -2763,6 +2817,18 @@ HMM_INLINE HMM_Vec4 HMM_Add(HMM_Vec4 Left, HMM_Vec4 Right)
 
     HMM_Vec4 Result = HMM_AddV4(Left, Right);
 
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat2 HMM_Add(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    HMM_Mat2 Result = HMM_AddM2(Left, Right);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 HMM_Add(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    HMM_Mat3 Result = HMM_AddM3(Left, Right);
     return (Result);
 }
 
@@ -2813,6 +2879,18 @@ HMM_INLINE HMM_Vec4 HMM_Sub(HMM_Vec4 Left, HMM_Vec4 Right)
 
     HMM_Vec4 Result = HMM_SubV4(Left, Right);
 
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat2 HMM_Sub(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    HMM_Mat2 Result = HMM_SubM2(Left, Right);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 HMM_Sub(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    HMM_Mat3 Result = HMM_SubM3(Left, Right);
     return (Result);
 }
 
@@ -2896,6 +2974,18 @@ HMM_INLINE HMM_Vec4 HMM_Mul(HMM_Vec4 Left, float Right)
     return (Result);
 }
 
+HMM_INLINE HMM_Mat2 HMM_Mul(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    HMM_Mat2 Result = HMM_MulM2(Left, Right);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 HMM_Mul(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    HMM_Mat3 Result = HMM_MulM3(Left, Right);
+    return (Result);
+}
+
 COVERAGE(HMM_MulM4CPP, 1)
 HMM_INLINE HMM_Mat4 HMM_Mul(HMM_Mat4 Left, HMM_Mat4 Right)
 {
@@ -2913,6 +3003,18 @@ HMM_INLINE HMM_Mat4 HMM_Mul(HMM_Mat4 Left, float Right)
 
     HMM_Mat4 Result = HMM_MulM4F(Left, Right);
 
+    return (Result);
+}
+
+HMM_INLINE HMM_Vec2 HMM_Mul(HMM_Mat2 Matrix, HMM_Vec2 Vector)
+{
+    HMM_Vec2 Result = HMM_MulM2V2(Matrix, Vector);
+    return (Result);
+}
+
+HMM_INLINE HMM_Vec3 HMM_Mul(HMM_Mat3 Matrix, HMM_Vec3 Vector)
+{
+    HMM_Vec3 Result = HMM_MulM3V3(Matrix, Vector);
     return (Result);
 }
 
@@ -3006,12 +3108,24 @@ HMM_INLINE HMM_Vec4 HMM_Div(HMM_Vec4 Left, float Right)
     return (Result);
 }
 
-COVERAGE(HMM_DivM4fCPP, 1)
+HMM_INLINE HMM_Mat2 HMM_Div(HMM_Mat2 Left, float Right)
+{
+    HMM_Mat2 Result = HMM_DivM2F(Left, Right);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 HMM_Div(HMM_Mat3 Left, float Right)
+{
+    HMM_Mat3 Result = HMM_DivM3F(Left, Right);
+    return (Result);
+}
+
+COVERAGE(HMM_DivM4FCPP, 1)
 HMM_INLINE HMM_Mat4 HMM_Div(HMM_Mat4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivM4fCPP);
+    ASSERT_COVERED(HMM_DivM4FCPP);
 
-    HMM_Mat4 Result = HMM_DivM4f(Left, Right);
+    HMM_Mat4 Result = HMM_DivM4F(Left, Right);
 
     return (Result);
 }
@@ -3086,6 +3200,18 @@ HMM_INLINE HMM_Vec4 operator+(HMM_Vec4 Left, HMM_Vec4 Right)
     return (Result);
 }
 
+HMM_INLINE HMM_Mat2 operator+(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    HMM_Mat2 Result = HMM_AddM2(Left, Right);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 operator+(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    HMM_Mat3 Result = HMM_AddM3(Left, Right);
+    return (Result);
+}
+
 COVERAGE(HMM_AddM4Op, 1)
 HMM_INLINE HMM_Mat4 operator+(HMM_Mat4 Left, HMM_Mat4 Right)
 {
@@ -3133,6 +3259,18 @@ HMM_INLINE HMM_Vec4 operator-(HMM_Vec4 Left, HMM_Vec4 Right)
 
     HMM_Vec4 Result = HMM_SubV4(Left, Right);
 
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat2 operator-(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    HMM_Mat2 Result = HMM_SubM2(Left, Right);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 operator-(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    HMM_Mat3 Result = HMM_SubM3(Left, Right);
     return (Result);
 }
 
@@ -3236,6 +3374,18 @@ HMM_INLINE HMM_Vec4 operator*(HMM_Vec4 Left, float Right)
     return (Result);
 }
 
+HMM_INLINE HMM_Mat2 operator*(HMM_Mat2 Left, float Right)
+{
+    HMM_Mat2 Result = HMM_MulM2F(Left, Right);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 operator*(HMM_Mat3 Left, float Right)
+{
+    HMM_Mat3 Result = HMM_MulM3F(Left, Right);
+    return (Result);
+}
+
 COVERAGE(HMM_MulM4FOp, 1)
 HMM_INLINE HMM_Mat4 operator*(HMM_Mat4 Left, float Right)
 {
@@ -3283,6 +3433,19 @@ HMM_INLINE HMM_Vec4 operator*(float Left, HMM_Vec4 Right)
 
     HMM_Vec4 Result = HMM_MulV4F(Right, Left);
 
+    return (Result);
+}
+
+
+HMM_INLINE HMM_Mat2 operator*(float Left, HMM_Mat2 Right)
+{
+    HMM_Mat2 Result = HMM_MulM2F(Right, Left);
+    return (Result);
+}
+
+HMM_INLINE HMM_Mat3 operator*(float Left, HMM_Mat3 Right)
+{
+    HMM_Mat3 Result = HMM_MulM3F(Right, Left);
     return (Result);
 }
 
@@ -3376,12 +3539,12 @@ HMM_INLINE HMM_Vec4 operator/(HMM_Vec4 Left, float Right)
     return (Result);
 }
 
-COVERAGE(HMM_DivM4fOp, 1)
+COVERAGE(HMM_DivM4FOp, 1)
 HMM_INLINE HMM_Mat4 operator/(HMM_Mat4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivM4fOp);
+    ASSERT_COVERED(HMM_DivM4FOp);
 
-    HMM_Mat4 Result = HMM_DivM4f(Left, Right);
+    HMM_Mat4 Result = HMM_DivM4F(Left, Right);
 
     return (Result);
 }
@@ -3417,6 +3580,17 @@ HMM_INLINE HMM_Vec4 &operator+=(HMM_Vec4 &Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_AddV4Assign);
 
+    return (Left = Left + Right);
+}
+
+
+HMM_INLINE HMM_Mat2 &operator+=(HMM_Mat2 &Left, HMM_Mat2 Right)
+{
+    return (Left = Left + Right);
+}
+
+HMM_INLINE HMM_Mat3 &operator+=(HMM_Mat3 &Left, HMM_Mat3 Right)
+{
     return (Left = Left + Right);
 }
 
@@ -3524,6 +3698,16 @@ HMM_INLINE HMM_Vec4 &operator*=(HMM_Vec4 &Left, float Right)
     return (Left = Left * Right);
 }
 
+HMM_INLINE HMM_Mat2 &operator*=(HMM_Mat2 &Left, float Right)
+{
+    return (Left = Left * Right);
+}
+
+HMM_INLINE HMM_Mat3 &operator*=(HMM_Mat3 &Left, float Right)
+{
+    return (Left = Left * Right);
+}
+
 COVERAGE(HMM_MulM4FAssign, 1)
 HMM_INLINE HMM_Mat4 &operator*=(HMM_Mat4 &Left, float Right)
 {
@@ -3588,10 +3772,10 @@ HMM_INLINE HMM_Vec4 &operator/=(HMM_Vec4 &Left, float Right)
     return (Left = Left / Right);
 }
 
-COVERAGE(HMM_DivM4fAssign, 1)
+COVERAGE(HMM_DivM4FAssign, 1)
 HMM_INLINE HMM_Mat4 &operator/=(HMM_Mat4 &Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivM4fAssign);
+    ASSERT_COVERED(HMM_DivM4FAssign);
 
     return (Left = Left / Right);
 }
@@ -3699,51 +3883,64 @@ HMM_INLINE HMM_Vec4 operator-(HMM_Vec4 In)
         HMM_Vec2: HMM_AddV2, \
         HMM_Vec3: HMM_AddV3, \
         HMM_Vec4: HMM_AddV4, \
+        HMM_Mat2: HMM_AddM2, \
+        HMM_Mat3: HMM_AddM3, \
         HMM_Mat4: HMM_AddM4, \
-        HMM_Quat: HMM_AddQ, \
-)
+        HMM_Quat: HMM_AddQ \
+)(A, B)
 
 #define HMM_Sub(A, B) _Generic((A), \
         HMM_Vec2: HMM_SubV2, \
         HMM_Vec3: HMM_SubV3, \
         HMM_Vec4: HMM_SubV4, \
+        HMM_Mat2: HMM_SubM2, \
+        HMM_Mat3: HMM_SubM3, \
         HMM_Mat4: HMM_SubM4, \
-        HMM_Quat: HMM_SubQ, \
-)
+        HMM_Quat: HMM_SubQ \
+)(A, B)
 
 #define HMM_Mul(A, B) _Generic((B), \
      float: _Generic((A), \
-            HMM_Vec2: HMM_MulV2F, \
-            HMM_Vec3: HMM_MulV3F, \
-            HMM_Vec4: HMM_MulV4F, \
-            HMM_Mat4: HMM_MulM4F, \
-            HMM_Quat: HMM_MulQF \
+        HMM_Vec2: HMM_MulV2F, \
+        HMM_Vec3: HMM_MulV3F, \
+        HMM_Vec4: HMM_MulV4F, \
+        HMM_Mat2: HMM_MulM2F, \
+        HMM_Mat3: HMM_MulM3F, \
+        HMM_Mat4: HMM_MulM4F, \
+        HMM_Quat: HMM_MulQF \
      ), \
+     HMM_Mat2: HMM_MulM2, \
+     HMM_Mat3: HMM_MulM3, \
      HMM_Mat4: HMM_MulM4, \
      HMM_Quat: HMM_MulQ, \
      default: _Generic((A), \
         HMM_Vec2: HMM_MulV2, \
         HMM_Vec3: HMM_MulV3, \
         HMM_Vec4: HMM_MulV4, \
+        HMM_Mat2: HMM_MulM2V2, \
+        HMM_Mat3: HMM_MulM3V3, \
         HMM_Mat4: HMM_MulM4V4 \
     ) \
 )(A, B)
 
 #define HMM_Div(A, B) _Generic((B), \
      float: _Generic((A), \
-            HMM_Vec2: HMM_DivV2F, \
-            HMM_Vec3: HMM_DivV3F, \
-            HMM_Vec4: HMM_DivV4F, \
-            HMM_Mat4: HMM_DivM4F, \
-            HMM_Quat: HMM_DivQF \
+        HMM_Mat2: HMM_DivM2F, \
+        HMM_Mat3: HMM_DivM3F, \
+        HMM_Mat4: HMM_DivM4F, \
+        HMM_Vec2: HMM_DivV2F, \
+        HMM_Vec3: HMM_DivV3F, \
+        HMM_Vec4: HMM_DivV4F, \
+        HMM_Quat: HMM_DivQF, \
      ), \
+     HMM_Mat2: HMM_DivM2, \
+     HMM_Mat3: HMM_DivM3, \
      HMM_Mat4: HMM_DivM4, \
      HMM_Quat: HMM_DivQ, \
      default: _Generic((A), \
         HMM_Vec2: HMM_DivV2, \
         HMM_Vec3: HMM_DivV3, \
         HMM_Vec4: HMM_DivV4, \
-        HMM_Mat4: HMM_DivM4V4 \
     ) \
 )(A, B)
 
@@ -3751,31 +3948,50 @@ HMM_INLINE HMM_Vec4 operator-(HMM_Vec4 In)
         HMM_Vec2: HMM_LenV2, \
         HMM_Vec3: HMM_LenV3, \
         HMM_Vec4: HMM_LenV4, \
-)
+)(A)
 
 #define HMM_LenSqr(A) _Generic((A), \
         HMM_Vec2: HMM_LenSqrV2, \
         HMM_Vec3: HMM_LenSqrV3, \
         HMM_Vec4: HMM_LenSqrV4, \
-)
+)(A)
 
 #define HMM_Norm(A) _Generic((A), \
         HMM_Vec2: HMM_NormV2, \
         HMM_Vec3: HMM_NormV3, \
         HMM_Vec4: HMM_NormV4, \
-)
+)(A)
 
 #define HMM_Dot(A) _Generic((A), \
         HMM_Vec2: HMM_DotV2, \
         HMM_Vec3: HMM_DotV3, \
         HMM_Vec4: HMM_DotV4, \
-)
+)(A)
 
 #define HMM_Eq(A) _Generic((A), \
         HMM_Vec2: HMM_EqV2, \
         HMM_Vec3: HMM_EqV3, \
         HMM_Vec4: HMM_EqV4, \
-)
+)(A)
+
+#define HMM_Transpose(M) _Generic((M), \
+        HMM_Mat2: HMM_TransposeM2, \
+        HMM_Mat3: HMM_TransposeM3, \
+        HMM_Mat4: HMM_TransposeM4, \
+)(M)
+
+#define HMM_Determinant(M) _Generic((M), \
+        HMM_Mat2: HMM_DeterminantM2, \
+        HMM_Mat3: HMM_DeterminantM3, \
+        HMM_Mat4: HMM_DeterminantM4, \
+)(M)
+
+#define HMM_InvGeneral(M) _Generic((M), \
+        HMM_Mat2: HMM_InvGeneralM2, \
+        HMM_Mat3: HMM_InvGeneralM3, \
+        HMM_Mat4: HMM_InvGeneralM4, \
+)(M)
+
 #endif
 
 #if defined(__GNUC__) || defined(__clang__)

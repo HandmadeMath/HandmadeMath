@@ -208,7 +208,7 @@ TEST(Initialization, MatrixEmpty)
 
 TEST(Initialization, MatrixDiagonal)
 {
-    HMM_Mat4 m4d = HMM_M4d(1.0f);
+    HMM_Mat4 m4d = HMM_M4D(1.0f);
     for (int Column = 0; Column < 4; ++Column)
     {
         for (int Row = 0; Row < 4; ++Row)

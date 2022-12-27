@@ -151,7 +151,7 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
                         i = -1;
 
                         if (t == FUN_VEC) {
-                            /* if pattern is vec2i, this is now i */
+                            /* if pattern is Vec2i, this is now i */
                             c = file_content.str[1];
                             if (c == 'i') {
                                 Str8List_add(arena, &out, str8_first(file_content, 1));
@@ -160,6 +160,18 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
                             } else if (c == 'v') {
                                 Str8List_add(arena, &out, str8_first(file_content, 1));
                                 Str8List_add(arena, &out, str8_lit("V"));
+                                file_content = str8_skip(file_content, 2);
+                            } else if (c == 'f') {
+                                Str8List_add(arena, &out, str8_first(file_content, 1));
+                                Str8List_add(arena, &out, str8_lit("F"));
+                                file_content = str8_skip(file_content, 2);
+                            }
+                        } else if (t == FUN_MAT) {
+                            /* if pattern is Mat4d, this is now d */
+                            c = file_content.str[1];
+                            if (c == 'd') {
+                                Str8List_add(arena, &out, str8_first(file_content, 1));
+                                Str8List_add(arena, &out, str8_lit("D"));
                                 file_content = str8_skip(file_content, 2);
                             } else if (c == 'f') {
                                 Str8List_add(arena, &out, str8_first(file_content, 1));

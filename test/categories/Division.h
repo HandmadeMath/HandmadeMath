@@ -210,7 +210,7 @@ TEST(Division, Mat4Scalar)
 
     // Test the results
     {
-        HMM_Mat4 result = HMM_DivM4f(m4, s);
+        HMM_Mat4 result = HMM_DivM4F(m4, s);
         EXPECT_FLOAT_EQ(result.Elements[0][0], 0.5f);
         EXPECT_FLOAT_EQ(result.Elements[0][1], 1.0f);
         EXPECT_FLOAT_EQ(result.Elements[0][2], 1.5f);
