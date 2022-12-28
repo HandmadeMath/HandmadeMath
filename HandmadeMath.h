@@ -1,5 +1,5 @@
 /*
-  HandmadeMath.h v1.13.0
+  HandmadeMath.h v2.0.0
 
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
@@ -59,6 +59,7 @@
    Ben Visness (@bvisness)
    Trinton Bullard (@Peliex_Dev)
    @AntonDan
+   Logan Forman (@dev_dwarf)
 
   Fixes:
    Jeroen van Rijn (@J_vanRijn)
