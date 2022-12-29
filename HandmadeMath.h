@@ -453,7 +453,7 @@ typedef signed int HMM_Bool;
 /*
  * Angle unit conversion functions
  */
-HMM_INLINE float HMM_ToRadians(float Angle)
+HMM_INLINE float HMM_ToRad(float Angle)
 {
 #if defined(HMM_USE_RADIAN_INPUT)
     float Result = Angle;
@@ -466,7 +466,7 @@ HMM_INLINE float HMM_ToRadians(float Angle)
     return (Result);
 }
 
-HMM_INLINE float HMM_ToDegrees(float Angle)
+HMM_INLINE float HMM_ToDeg(float Angle)
 {
 #if defined(HMM_USE_RADIAN_INPUT)
     float Result = Angle * HMM_RadToDeg;
@@ -479,7 +479,7 @@ HMM_INLINE float HMM_ToDegrees(float Angle)
     return (Result);
 }
 
-HMM_INLINE float HMM_ToTurns(float Angle)
+HMM_INLINE float HMM_ToTurn(float Angle)
 {
 #if defined(HMM_USE_RADIAN_INPUT)
     float Result = Angle * HMM_RadToTurn;
