@@ -177,8 +177,8 @@ extern "C"
 #if !defined(HMM_PROVIDE_MATH_FUNCTIONS)
 #include <math.h>
 /* Conversion function to the unit the trig functions need angles in.
-   Define as one of HMM_ToRadians, HMM_ToDegrees, or HMM_ToTurns. */
-#define HMM_ANGLE_USER_TO_INTERNAL(a) (HMM_ToRadians(a))
+   Define as one of HMM_ToRad, HMM_ToDeg, or HMM_ToTurn. */
+#define HMM_ANGLE_USER_TO_INTERNAL(a) (HMM_ToRad(a))
 /* Conversion function to the User's input angle unit from the internal unit.
    If your internal and input angle units are the same simply define:
 #define HMM_ANGLE_INTERNAL_TO_USER(a) (a) 
