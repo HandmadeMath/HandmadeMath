@@ -141,12 +141,6 @@ extern "C"
 
 #define HMM_INLINE static inline
 
-#if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
-    !defined(HMM_SQRTF) || !defined(HMM_EXPF) || !defined(HMM_LOGF) || \
-    !defined(HMM_ACOSF) || !defined(HMM_ATANF)|| !defined(HMM_ATAN2F)
-#include <math.h>
-#endif
-
 #if !defined(HMM_USE_DEGREE_INPUT) \
     && !defined(HMM_USE_TURN_INPUT) \
     && !defined(HMM_USE_RADIAN_INPUT)
@@ -181,6 +175,7 @@ extern "C"
 #endif
 
 #if !defined(HMM_PROVIDE_MATH_FUNCTIONS)
+#include <math.h>
 /* Conversion function to the unit the trig functions need angles in.
    Define as one of HMM_ToRadians, HMM_ToDegrees, or HMM_ToTurns. */
 #define HMM_ANGLE_USER_TO_INTERNAL(a) (HMM_ToRadians(a))
@@ -208,8 +203,6 @@ extern "C"
 #define HMM_EXPF expf
 #define HMM_LOGF logf
 #define HMM_ACOSF acosf
-#define HMM_ATANF atanf
-#define HMM_ATAN2F atan2f
 #endif
 
 #define HMM_MIN(a, b) ((a) > (b) ? (b) : (a))
