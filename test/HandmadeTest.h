@@ -154,7 +154,7 @@ INITIALIZER(_HMT_COVERCASE_FUNCNAME_INIT(name)) { \
     float diff = actual - (_expected); \
     if (diff < -FLT_EPSILON || FLT_EPSILON < diff) { \
         _HMT_CASE_FAIL(); \
-        printf("Expected %.17f, got %.17f", (_expected), actual); \
+        printf("Expected %f, got %f", (_expected), actual); \
     } \
 } \
 
