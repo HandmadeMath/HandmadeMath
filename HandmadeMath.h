@@ -2348,7 +2348,7 @@ HMM_INLINE HMM_Quat HMM_SLerp(HMM_Quat Left, float Time, HMM_Quat Right)
         Right = HMM_Q(-Right.X, -Right.Y, -Right.Z, -Right.W);
     }
     
-    /* Use Normalized Linear interpolation when vectors are roughly not L.I. */
+    /* NOTE(lcf): Use Normalized Linear interpolation when vectors are roughly not L.I. */
     if (Cos_Theta > 0.9995) {
         Result = HMM_NLerp(Left, Time, Right);
     } else {
@@ -2358,28 +2358,6 @@ HMM_INLINE HMM_Quat HMM_SLerp(HMM_Quat Left, float Time, HMM_Quat Right)
 
         Result = HMM_MixQ(Left, MixLeft, Right, MixRight);
         Result = HMM_NormQ(Result);
-
-        /* /\* NOTE(lcf): Exactly accurate to above to within floating point accuracy on
-         current tests. *\/ */
-        /* float ca = Cos_Theta; */
-        /* float d = HMM_ABS(ca); */
-        /* float t = Time; */
-        /* float A = 1.0904f + d * (-3.2452f + d * (3.55645f - d * 1.43519f)); */
-        /* float B = 0.848013f + d * (-1.06021f + d * 0.215638f); */
-        /* float k = A * (t - 0.5f) * (t - 0.5f) + B; */
-        /* float ot = t + t * (t - 0.5f) * (t - 1) * k; */
-        /* Result = HMM_NLerp(Left, ca > 0 ? ot : -ot, Right); */
-
-        /* NOTE(lcf): what I came up with.
-           REF: desmos.com/calculator/8kfumvumrx
-           REF: desmos.com/calculator/myh0kjk5gs */
-        /* float D = (1.0f-Cos_Theta*Cos_Theta)/6.0f; */
-        /* float tr = Time; */
-        /* float tl = 1-Time; */
-        /* float mr = tr - tr*tr*tr*D; */
-        /* float ml = tl - tl*tl*tl*D; */
-        /* Result = HMM_MixQ(Left, ml, Right, mr); */
-        /* Result = HMM_NormQ(Result); */
     }
     
     return (Result);
