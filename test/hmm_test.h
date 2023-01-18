@@ -9,6 +9,7 @@
 #include "categories/ScalarMath.h"
 #include "categories/Initialization.h"
 #include "categories/VectorOps.h"
+#include "categories/MatrixOps.h"
 #include "categories/QuaternionOps.h"
 #include "categories/Addition.h"
 #include "categories/Subtraction.h"
@@ -18,4 +19,3 @@
 #include "categories/Projection.h"
 #include "categories/Transformation.h"
 #include "categories/SSE.h"
-#include "categories/InvMatrix.h"
