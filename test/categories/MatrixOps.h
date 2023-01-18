@@ -1,5 +1,117 @@
 #include "../HandmadeTest.h"
 
+TEST(InvMatrix, Transpose)
+{
+    {
+        HMM_Mat2 Matrix = {
+            1.0f, 3.0f,
+            2.0f, 4.0f,
+        };
+        HMM_Mat2 Expect = {
+            1.0f, 2.0f,
+            3.0f, 4.0f,
+        };
+
+        {
+            HMM_Mat2 result = HMM_TransposeM2(Matrix);
+            EXPECT_FLOAT_EQ(result.Elements[0][0], Expect.Elements[0][0]);
+            EXPECT_FLOAT_EQ(result.Elements[0][1], Expect.Elements[0][1]);
+            EXPECT_FLOAT_EQ(result.Elements[1][0], Expect.Elements[1][0]);
+            EXPECT_FLOAT_EQ(result.Elements[1][1], Expect.Elements[1][1]);
+        }
+#ifdef __cplusplus
+        {
+            HMM_Mat2 result = HMM_Transpose(Matrix);
+            EXPECT_FLOAT_EQ(result.Elements[0][0], Expect.Elements[0][0]);
+            EXPECT_FLOAT_EQ(result.Elements[0][1], Expect.Elements[0][1]);
+            EXPECT_FLOAT_EQ(result.Elements[1][0], Expect.Elements[1][0]);
+            EXPECT_FLOAT_EQ(result.Elements[1][1], Expect.Elements[1][1]);
+        }
+#endif
+    }
+
+    {
+        HMM_Mat3 Matrix = {
+            1.0f, 4.0f, 7.0f,
+            2.0f, 5.0f, 8.0f,
+            3.0f, 6.0f, 9.0f,
+        };
+        HMM_Mat3 Expect = {
+            1.0f, 2.0f, 3.0f,
+            4.0f, 5.0f, 6.0f,
+            7.0f, 8.0f, 9.0f
+        };
+
+        {
+            HMM_Mat3 result = HMM_TransposeM3(Matrix);
+            EXPECT_FLOAT_EQ(result.Elements[0][0], Expect.Elements[0][0]);
+            EXPECT_FLOAT_EQ(result.Elements[0][1], Expect.Elements[0][1]);
+            EXPECT_FLOAT_EQ(result.Elements[0][2], Expect.Elements[0][2]);
+            EXPECT_FLOAT_EQ(result.Elements[1][0], Expect.Elements[1][0]);
+            EXPECT_FLOAT_EQ(result.Elements[1][1], Expect.Elements[1][1]);
+            EXPECT_FLOAT_EQ(result.Elements[1][2], Expect.Elements[1][2]);
+            EXPECT_FLOAT_EQ(result.Elements[2][0], Expect.Elements[2][0]);
+            EXPECT_FLOAT_EQ(result.Elements[2][1], Expect.Elements[2][1]);
+            EXPECT_FLOAT_EQ(result.Elements[2][2], Expect.Elements[2][2]);
+        }
+#ifdef __cplusplus
+        {
+            HMM_Mat3 result = HMM_Transpose(Matrix);
+            EXPECT_FLOAT_EQ(result.Elements[0][0], Expect.Elements[0][0]);
+            EXPECT_FLOAT_EQ(result.Elements[0][1], Expect.Elements[0][1]);
+            EXPECT_FLOAT_EQ(result.Elements[0][2], Expect.Elements[0][2]);
+            EXPECT_FLOAT_EQ(result.Elements[1][0], Expect.Elements[1][0]);
+            EXPECT_FLOAT_EQ(result.Elements[1][1], Expect.Elements[1][1]);
+            EXPECT_FLOAT_EQ(result.Elements[1][2], Expect.Elements[1][2]);
+            EXPECT_FLOAT_EQ(result.Elements[2][0], Expect.Elements[2][0]);
+            EXPECT_FLOAT_EQ(result.Elements[2][1], Expect.Elements[2][1]);
+            EXPECT_FLOAT_EQ(result.Elements[2][2], Expect.Elements[2][2]);
+        }
+#endif
+    }
+    {
+        HMM_Mat4 Matrix = {
+            1.0f, 5.0f,  9.0f, 13.0f,
+            2.0f, 6.0f, 10.0f, 14.0f, 
+            3.0f, 7.0f, 11.0f, 15.0f,
+            4.0f, 8.0f, 12.0f, 16.0f
+        };
+        HMM_Mat4 Expect = {
+            1.0f, 2.0f, 3.0f, 4.0f,
+            5.0f, 6.0f, 7.0f, 8.0f,
+            9.0f, 10.0f, 11.0f, 12.0f,
+            13.0f, 14.0f, 15.0f, 16.0f,
+        };
+        {
+            HMM_Mat4 result = HMM_TransposeM4(Matrix);
+            EXPECT_FLOAT_EQ(result.Elements[0][0], Expect.Elements[0][0]);
+            EXPECT_FLOAT_EQ(result.Elements[0][1], Expect.Elements[0][1]);
+            EXPECT_FLOAT_EQ(result.Elements[0][2], Expect.Elements[0][2]);
+            EXPECT_FLOAT_EQ(result.Elements[1][0], Expect.Elements[1][0]);
+            EXPECT_FLOAT_EQ(result.Elements[1][1], Expect.Elements[1][1]);
+            EXPECT_FLOAT_EQ(result.Elements[1][2], Expect.Elements[1][2]);
+            EXPECT_FLOAT_EQ(result.Elements[2][0], Expect.Elements[2][0]);
+            EXPECT_FLOAT_EQ(result.Elements[2][1], Expect.Elements[2][1]);
+            EXPECT_FLOAT_EQ(result.Elements[2][2], Expect.Elements[2][2]);
+        }
+#ifdef __cplusplus
+        {
+            HMM_Mat4 result = HMM_Transpose(Matrix);
+            EXPECT_FLOAT_EQ(result.Elements[0][0], Expect.Elements[0][0]);
+            EXPECT_FLOAT_EQ(result.Elements[0][1], Expect.Elements[0][1]);
+            EXPECT_FLOAT_EQ(result.Elements[0][2], Expect.Elements[0][2]);
+            EXPECT_FLOAT_EQ(result.Elements[1][0], Expect.Elements[1][0]);
+            EXPECT_FLOAT_EQ(result.Elements[1][1], Expect.Elements[1][1]);
+            EXPECT_FLOAT_EQ(result.Elements[1][2], Expect.Elements[1][2]);
+            EXPECT_FLOAT_EQ(result.Elements[2][0], Expect.Elements[2][0]);
+            EXPECT_FLOAT_EQ(result.Elements[2][1], Expect.Elements[2][1]);
+            EXPECT_FLOAT_EQ(result.Elements[2][2], Expect.Elements[2][2]);
+        }
+#endif
+    }
+
+}
+
 TEST(InvMatrix, InvGeneral)
 {
     {
@@ -21,21 +133,43 @@ TEST(InvMatrix, InvGeneral)
         EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
         EXPECT_FLOAT_EQ(Result.Elements[0][2], Expect.Elements[0][2]);
         EXPECT_FLOAT_EQ(Result.Elements[0][3], Expect.Elements[0][3]);
-
         EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
         EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
         EXPECT_FLOAT_EQ(Result.Elements[1][2], Expect.Elements[1][2]);
         EXPECT_FLOAT_EQ(Result.Elements[1][3], Expect.Elements[1][3]);
-
         EXPECT_FLOAT_EQ(Result.Elements[2][0], Expect.Elements[2][0]);
         EXPECT_FLOAT_EQ(Result.Elements[2][1], Expect.Elements[2][1]);
         EXPECT_FLOAT_EQ(Result.Elements[2][2], Expect.Elements[2][2]);
         EXPECT_FLOAT_EQ(Result.Elements[2][3], Expect.Elements[2][3]);
-
         EXPECT_FLOAT_EQ(Result.Elements[3][0], Expect.Elements[3][0]);
         EXPECT_FLOAT_EQ(Result.Elements[3][1], Expect.Elements[3][1]);
         EXPECT_FLOAT_EQ(Result.Elements[3][2], Expect.Elements[3][2]);
         EXPECT_FLOAT_EQ(Result.Elements[3][3], Expect.Elements[3][3]);
+
+#ifdef __cplusplus
+        Inverse = HMM_InvGeneral(Matrix);
+        Result = HMM_Mul(Matrix, Inverse);
+        
+        Det = HMM_Determinant(Matrix);
+        EXPECT_FLOAT_EQ(Det, -80.0f);
+
+        EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
+        EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
+        EXPECT_FLOAT_EQ(Result.Elements[0][2], Expect.Elements[0][2]);
+        EXPECT_FLOAT_EQ(Result.Elements[0][3], Expect.Elements[0][3]);
+        EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
+        EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
+        EXPECT_FLOAT_EQ(Result.Elements[1][2], Expect.Elements[1][2]);
+        EXPECT_FLOAT_EQ(Result.Elements[1][3], Expect.Elements[1][3]);
+        EXPECT_FLOAT_EQ(Result.Elements[2][0], Expect.Elements[2][0]);
+        EXPECT_FLOAT_EQ(Result.Elements[2][1], Expect.Elements[2][1]);
+        EXPECT_FLOAT_EQ(Result.Elements[2][2], Expect.Elements[2][2]);
+        EXPECT_FLOAT_EQ(Result.Elements[2][3], Expect.Elements[2][3]);
+        EXPECT_FLOAT_EQ(Result.Elements[3][0], Expect.Elements[3][0]);
+        EXPECT_FLOAT_EQ(Result.Elements[3][1], Expect.Elements[3][1]);
+        EXPECT_FLOAT_EQ(Result.Elements[3][2], Expect.Elements[3][2]);
+        EXPECT_FLOAT_EQ(Result.Elements[3][3], Expect.Elements[3][3]);
+#endif
     }
 
     {
@@ -55,18 +189,31 @@ TEST(InvMatrix, InvGeneral)
         EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
         EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
         EXPECT_FLOAT_EQ(Result.Elements[0][2], Expect.Elements[0][2]);
-
         EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
         EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
         EXPECT_FLOAT_EQ(Result.Elements[1][2], Expect.Elements[1][2]);
-
         EXPECT_FLOAT_EQ(Result.Elements[2][0], Expect.Elements[2][0]);
         EXPECT_FLOAT_EQ(Result.Elements[2][1], Expect.Elements[2][1]);
         EXPECT_FLOAT_EQ(Result.Elements[2][2], Expect.Elements[2][2]);
 
+#ifdef __cplusplus
+        Inverse = HMM_InvGeneral(Matrix);
+        Result = HMM_Mul(Matrix, Inverse);
+        Det = HMM_Determinant(Matrix);
+        EXPECT_FLOAT_EQ(Det, -12.0f);
+
+        EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
+        EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
+        EXPECT_FLOAT_EQ(Result.Elements[0][2], Expect.Elements[0][2]);
+        EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
+        EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
+        EXPECT_FLOAT_EQ(Result.Elements[1][2], Expect.Elements[1][2]);
+        EXPECT_FLOAT_EQ(Result.Elements[2][0], Expect.Elements[2][0]);
+        EXPECT_FLOAT_EQ(Result.Elements[2][1], Expect.Elements[2][1]);
+        EXPECT_FLOAT_EQ(Result.Elements[2][2], Expect.Elements[2][2]);
+#endif
     }
 
-    
     {
         HMM_Mat2 Matrix = {
             12.0f, 2.0f, 
@@ -82,10 +229,20 @@ TEST(InvMatrix, InvGeneral)
 
         EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
         EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
-
         EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
         EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
 
+#ifdef __cplusplus
+        Inverse = HMM_InvGeneral(Matrix);
+        Result = HMM_Mul(Matrix, Inverse);
+        Det = HMM_Determinant(Matrix);
+        EXPECT_FLOAT_EQ(Det, 58.0f);
+
+        EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
+        EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
+        EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
+        EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
+#endif
     }    
 }
 

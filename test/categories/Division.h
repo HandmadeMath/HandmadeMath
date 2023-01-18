@@ -192,6 +192,100 @@ TEST(Division, Vec4Scalar)
 #endif
 }
 
+TEST(Division, Mat2Scalar) 
+{
+    HMM_Mat2 m = HMM_M2();
+    float s = 0.5f;
+
+    int Counter = 1;
+    for (int Column = 0; Column < 2; ++Column) {
+        for (int Row = 0; Row < 2; ++Row) {
+            m.Elements[Column][Row] = Counter++;
+        }
+    }
+
+    {
+        HMM_Mat2 result = HMM_DivM2F(m, s);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 2.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 4.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 6.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 8.0f);
+    }
+
+#ifdef __cplusplus
+    {
+        HMM_Mat2 result = HMM_Div(m, s);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 2.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 4.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 6.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 8.0f);
+    }
+
+    {
+        HMM_Mat2 result = m / s;
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 2.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 4.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 6.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 8.0f);
+    }
+#endif
+}
+
+
+TEST(Division, Mat3Scalar) 
+{
+    HMM_Mat3 m = HMM_M3();
+    float s = 0.5f;
+
+    int Counter = 1;
+    for (int Column = 0; Column < 3; ++Column) {
+        for (int Row = 0; Row < 3; ++Row) {
+            m.Elements[Column][Row] = Counter++;
+        }
+    }
+
+    {
+        HMM_Mat3 result = HMM_DivM3F(m, s);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 2.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 4.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 6.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 8.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 12.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 14.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 16.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 18.0f);
+    }
+
+#ifdef __cplusplus
+    {
+        HMM_Mat3 result = HMM_Div(m, s);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 2.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 4.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 6.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 8.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 12.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 14.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 16.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 18.0f);
+    }
+
+    {
+        HMM_Mat3 result = m / s;
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 2.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 4.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 6.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 8.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 12.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 14.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 16.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 18.0f);
+    }
+#endif
+}
+
 TEST(Division, Mat4Scalar)
 {
     HMM_Mat4 m4 = HMM_M4(); // will have 1 - 16

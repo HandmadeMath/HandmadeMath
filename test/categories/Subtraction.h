@@ -96,6 +96,120 @@ TEST(Subtraction, Vec4)
 #endif
 }
 
+TEST(Subtraction, Mat2)
+{
+    HMM_Mat2 a = HMM_M2();
+    HMM_Mat2 b = HMM_M2();
+    
+    int Counter = 1;
+    for (int Column = 0; Column < 2; ++Column)
+    {
+        for (int Row = 0; Row < 2; ++Row)
+        {
+            a.Elements[Column][Row] = Counter++;
+        }
+    }
+    for (int Column = 0; Column < 2; ++Column)
+    {
+        for (int Row = 0; Row < 2; ++Row)
+        {
+            b.Elements[Column][Row] = Counter++;
+        }
+    }
+
+    {
+        HMM_Mat2 result = HMM_SubM2(b,a);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 4.0);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 4.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 4.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 4.0);
+    }
+#ifdef __cplusplus
+    {
+        HMM_Mat2 result = HMM_Sub(b,a);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 4.0);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 4.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 4.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 4.0);
+    }
+
+    {
+        HMM_Mat2 result = b - a;
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 4.0);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 4.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 4.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 4.0);
+    }
+
+    b -= a;
+    EXPECT_FLOAT_EQ(b.Elements[0][0], 4.0);
+    EXPECT_FLOAT_EQ(b.Elements[0][1], 4.0);
+    EXPECT_FLOAT_EQ(b.Elements[1][0], 4.0);
+    EXPECT_FLOAT_EQ(b.Elements[1][1], 4.0);
+#endif
+}
+
+
+TEST(Subtraction, Mat3)
+{
+    HMM_Mat3 a = HMM_M3();
+    HMM_Mat3 b = HMM_M3();
+    
+    int Counter = 1;
+    for (int Column = 0; Column < 3; ++Column)
+    {
+        for (int Row = 0; Row < 3; ++Row)
+        {
+            a.Elements[Column][Row] = Counter++;
+        }
+    }
+    for (int Column = 0; Column < 3; ++Column)
+    {
+        for (int Row = 0; Row < 3; ++Row)
+        {
+            b.Elements[Column][Row] = Counter++;
+        }
+    }
+
+    {
+        HMM_Mat3 result = HMM_SubM3(b,a);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 9.0);
+    }
+#ifdef __cplusplus
+    {
+        HMM_Mat3 result = HMM_Sub(b,a);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 9.0);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 9.0);
+    }
+
+    b -= a;
+    EXPECT_FLOAT_EQ(b.Elements[0][0], 9.0);
+    EXPECT_FLOAT_EQ(b.Elements[0][1], 9.0);
+    EXPECT_FLOAT_EQ(b.Elements[0][2], 9.0);
+    EXPECT_FLOAT_EQ(b.Elements[1][0], 9.0);
+    EXPECT_FLOAT_EQ(b.Elements[1][1], 9.0);
+    EXPECT_FLOAT_EQ(b.Elements[1][2], 9.0);
+    EXPECT_FLOAT_EQ(b.Elements[2][0], 9.0);
+    EXPECT_FLOAT_EQ(b.Elements[2][1], 9.0);
+    EXPECT_FLOAT_EQ(b.Elements[2][2], 9.0);
+#endif
+}
+
 TEST(Subtraction, Mat4)
 {
     HMM_Mat4 m4_1 = HMM_M4(); // will have 1 - 16

@@ -209,6 +209,305 @@ TEST(Multiplication, Vec4Scalar)
 #endif
 }
 
+TEST(Multiplication, Mat2Mat2) {
+    HMM_Mat2 a = HMM_M2();
+    HMM_Mat2 b = HMM_M2();
+
+    int counter = 1;
+    for (int Column = 0; Column < 2; Column++) {
+        for (int Row = 0; Row < 2; Row++) {
+            a.Elements[Column][Row] = counter++;
+        }
+    }
+    
+    for (int Column = 0; Column < 2; Column++) {
+        for (int Row = 0; Row < 2; Row++) {
+            b.Elements[Column][Row] = counter++;
+        }
+    }
+
+    {
+        HMM_Mat2 result = HMM_MulM2(a,b);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 23.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 34.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 31.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 46.0f);        
+    }
+
+#ifdef __cplusplus
+    {
+        HMM_Mat2 result = HMM_Mul(a,b);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 23.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 34.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 31.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 46.0f);        
+    }
+
+    {
+        HMM_Mat2 result = a * b;
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 23.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 34.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 31.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 46.0f);        
+    }
+#endif
+}
+
+TEST(Multiplication, Mat2Scalar) {
+    HMM_Mat2 m = HMM_M2();
+    float s = 10.0f;
+
+    int counter = 1;
+    for (int Column = 0; Column < 2; Column++) {
+        for (int Row = 0; Row < 2; Row++) {
+            m.Elements[Column][Row] = counter++;
+        }
+    }
+
+    {
+        HMM_Mat2 result = HMM_MulM2F(m, s);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 20.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 30.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 40.0f);
+    }
+#ifdef __cplusplus
+    {
+        HMM_Mat2 result = HMM_Mul(m, s);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 20.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 30.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 40.0f);
+    }
+    {
+        HMM_Mat2 result = m * s;
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 20.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 30.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 40.0f);
+    }
+    {
+        HMM_Mat2 result = s * m;
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 20.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 30.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 40.0f);
+    }
+    m *= s;
+    EXPECT_FLOAT_EQ(m.Elements[0][0], 10.0f);
+    EXPECT_FLOAT_EQ(m.Elements[0][1], 20.0f);
+    EXPECT_FLOAT_EQ(m.Elements[1][0], 30.0f);
+    EXPECT_FLOAT_EQ(m.Elements[1][1], 40.0f);
+#endif
+}
+
+TEST(Multiplication, Mat2Vec2) {
+    HMM_Mat2 m = HMM_M2();
+    HMM_Vec2 v = HMM_V2(0.0f, 0.0f);
+
+    int counter = 1;
+    for (int Column = 0; Column < 2; Column++) {
+        for (int Row = 0; Row < 2; Row++) {
+            m.Elements[Column][Row] = counter++;
+        }
+    }
+
+    for (int Row = 0; Row < 2; Row++) {
+        v.Elements[Row] = counter++;
+    }
+
+    {
+        HMM_Vec2 result = HMM_MulM2V2(m, v);
+        EXPECT_FLOAT_EQ(result.Elements[0], 23.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1], 34.0f);
+    }
+
+#ifdef __cplusplus
+    {
+        HMM_Vec2 result = HMM_Mul(m, v);
+        EXPECT_FLOAT_EQ(result.Elements[0], 23.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1], 34.0f);
+    }
+    
+    {
+        HMM_Vec2 result = m * v;
+        EXPECT_FLOAT_EQ(result.Elements[0], 23.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1], 34.0f);
+    }
+#endif
+}
+ 
+TEST(Multiplication, Mat3Mat3) 
+{
+    HMM_Mat3 a = HMM_M3();
+    HMM_Mat3 b = HMM_M3();
+
+    int counter = 1;
+    for (int Column = 0; Column < 3; Column++) {
+        for (int Row = 0; Row < 3; Row++) {
+            a.Elements[Column][Row] = counter++;
+        }
+    }
+    
+    for (int Column = 0; Column < 3; Column++) {
+        for (int Row = 0; Row < 3; Row++) {
+            b.Elements[Column][Row] = counter++;
+        }
+    }
+
+    {
+        HMM_Mat3 result = HMM_MulM3(a,b);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 138.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 171.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 204.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 174.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 216.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 258.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 210.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 261.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 312.0f);
+    }
+
+#ifdef __cplusplus
+    {
+        HMM_Mat3 result = HMM_Mul(a,b);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 138.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 171.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 204.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 174.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 216.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 258.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 210.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 261.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 312.0f);
+    }
+
+    {
+        HMM_Mat3 result = a * b;
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 138.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 171.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 204.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 174.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 216.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 258.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 210.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 261.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 312.0f);
+    }
+#endif
+}
+
+TEST(Multiplication, Mat3Scalar) {
+    HMM_Mat3 m = HMM_M3();
+    float s = 10.0f;
+
+    int counter = 1;
+    for (int Column = 0; Column < 3; Column++) {
+        for (int Row = 0; Row < 3; Row++) {
+            m.Elements[Column][Row] = counter++;
+        }
+    }
+
+    {
+        HMM_Mat3 result = HMM_MulM3F(m, s);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 20.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 30.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 40.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 50.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 60.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 70.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 80.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 90.0f);
+    }
+#ifdef __cplusplus
+    {
+        HMM_Mat3 result = HMM_Mul(m, s);
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 20.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 30.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 40.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 50.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 60.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 70.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 80.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 90.0f);
+    }
+    {
+        HMM_Mat3 result = m * s;
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 20.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 30.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 40.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 50.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 60.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 70.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 80.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 90.0f);
+    }
+    {
+        HMM_Mat3 result = s * m;
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 20.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 30.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 40.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 50.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 60.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 70.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][1], 80.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 90.0f);
+    }
+    m *= s;
+    EXPECT_FLOAT_EQ(m.Elements[0][0], 10.0f);
+    EXPECT_FLOAT_EQ(m.Elements[0][1], 20.0f);
+    EXPECT_FLOAT_EQ(m.Elements[0][2], 30.0f);
+    EXPECT_FLOAT_EQ(m.Elements[1][0], 40.0f);
+    EXPECT_FLOAT_EQ(m.Elements[1][1], 50.0f);
+    EXPECT_FLOAT_EQ(m.Elements[1][2], 60.0f);
+    EXPECT_FLOAT_EQ(m.Elements[2][0], 70.0f);
+    EXPECT_FLOAT_EQ(m.Elements[2][1], 80.0f);
+    EXPECT_FLOAT_EQ(m.Elements[2][2], 90.0f);
+#endif
+}
+
+TEST(Multiplication, Mat3Vec3) {
+    HMM_Mat3 m = HMM_M3();
+    HMM_Vec3 v = HMM_V3(0.0f, 0.0f, 0.0f);
+
+    int counter = 1;
+    for (int Column = 0; Column < 3; Column++) {
+        for (int Row = 0; Row < 3; Row++) {
+            m.Elements[Column][Row] = counter++;
+        }
+    }
+
+    for (int Row = 0; Row < 3; Row++) {
+        v.Elements[Row] = counter++;
+    }
+
+    {
+        HMM_Vec3 result = HMM_MulM3V3(m, v);
+        EXPECT_FLOAT_EQ(result.Elements[0], 138.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1], 171.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2], 204.0f);
+    }
+#ifdef __cplusplus
+    {
+        HMM_Vec3 result = HMM_Mul(m, v);
+        EXPECT_FLOAT_EQ(result.Elements[0], 138.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1], 171.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2], 204.0f);
+    }
+    
+    {
+        HMM_Vec3 result = m * v;
+        EXPECT_FLOAT_EQ(result.Elements[0], 138.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1], 171.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2], 204.0f);
+    }
+#endif
+}
+
 TEST(Multiplication, Mat4Mat4)
 {
     HMM_Mat4 m4_1 = HMM_M4(); // will have 1 - 16
