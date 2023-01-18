@@ -41,6 +41,18 @@
 
   =============================================================================
 
+  By default projection matrices use a Normalized-Device-Coordinates (NDC)
+  range of X: [-1, 1], Y: [-1, 1], Z: [-1, 1], as is standard in OpenGL.
+  However, other graphics APIs require the range with Z: [0, 1], as this has
+  better numerical properties for depth buffers.
+
+  To use NDC with Z: [0, 1], you MUST
+
+  #define HANDMADE_MATH_USE_NDC_Z01
+
+  Which will make HMM_Perspective and HMM_Orthographic functions project Z to [0, 1].
+  
+  =============================================================================
   LICENSE
 
   This software is in the public domain. Where that dedication is not
@@ -1880,12 +1892,19 @@ HMM_INLINE HMM_Mat4 HMM_Orthographic_RH(float Left, float Right, float Bottom, f
 
     Result.Elements[0][0] = 2.0f / (Right - Left);
     Result.Elements[1][1] = 2.0f / (Top - Bottom);
-    Result.Elements[2][2] = 2.0f / (Near - Far);
     Result.Elements[3][3] = 1.0f;
 
     Result.Elements[3][0] = (Left + Right) / (Left - Right);
     Result.Elements[3][1] = (Bottom + Top) / (Bottom - Top);
+
+#if HANDMADE_MATH_USE_NDC_Z01
+    Result.Elements[2][2] = 1.0f / (Near - Far);
+    Result.Elements[3][2] = (Near) / (Near - Far);
+#else
+    Result.Elements[2][2] = 2.0f / (Near - Far);
     Result.Elements[3][2] = (Far + Near) / (Near - Far);
+#endif
+
 
     return (Result);
 }
@@ -1932,10 +1951,16 @@ HMM_INLINE HMM_Mat4 HMM_Perspective_RH(float FOV, float AspectRatio, float Near,
     
     Result.Elements[0][0] = Cotangent / AspectRatio;
     Result.Elements[1][1] = Cotangent;
-    Result.Elements[2][2] = (Near + Far) / (Near - Far);
 
     Result.Elements[2][3] = -1.0f;
+
+#if HANDMADE_MATH_USE_NDC_Z01 
+    Result.Elements[2][2] = (Far) / (Near - Far);
+    Result.Elements[3][2] = (Near * Far) / (Near - Far);
+#else
+    Result.Elements[2][2] = (Near + Far) / (Near - Far);
     Result.Elements[3][2] = (2.0f * Near * Far) / (Near - Far);
+#endif
 
     return (Result);
 }
