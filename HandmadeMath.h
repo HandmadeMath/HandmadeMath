@@ -1897,7 +1897,7 @@ HMM_INLINE HMM_Mat4 HMM_Orthographic_RH(float Left, float Right, float Bottom, f
     Result.Elements[3][0] = (Left + Right) / (Left - Right);
     Result.Elements[3][1] = (Bottom + Top) / (Bottom - Top);
 
-#if HANDMADE_MATH_USE_NDC_Z01
+#ifdef HANDMADE_MATH_USE_NDC_Z01
     Result.Elements[2][2] = 1.0f / (Near - Far);
     Result.Elements[3][2] = (Near) / (Near - Far);
 #else
@@ -1954,7 +1954,7 @@ HMM_INLINE HMM_Mat4 HMM_Perspective_RH(float FOV, float AspectRatio, float Near,
 
     Result.Elements[2][3] = -1.0f;
 
-#if HANDMADE_MATH_USE_NDC_Z01 
+#ifdef HANDMADE_MATH_USE_NDC_Z01 
     Result.Elements[2][2] = (Far) / (Near - Far);
     Result.Elements[3][2] = (Near * Far) / (Near - Far);
 #else
