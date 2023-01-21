@@ -179,6 +179,68 @@ TEST(VectorOps, DotVec4)
 #endif
 }
 
+TEST(VectorOps, LerpV2)
+{
+    HMM_Vec2 v1 = HMM_V2(1.0f, 0.0f);
+    HMM_Vec2 v2 = HMM_V2(0.0f, 1.0f);
+
+    {
+        HMM_Vec2 result = HMM_LerpV2(v1, 0.5, v2);
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 0.5f);
+    }
+#ifdef __cplusplus
+    {
+        HMM_Vec2 result = HMM_Lerp(v1, 0.5, v2);
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 0.5f);
+    }
+#endif
+}
+
+TEST(VectorOps, LerpV3)
+{
+    HMM_Vec3 v1 = HMM_V3(1.0f, 1.0f, 0.0f);
+    HMM_Vec3 v2 = HMM_V3(0.0f, 1.0f, 1.0f);
+
+    {
+        HMM_Vec3 result = HMM_LerpV3(v1, 0.5, v2);
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 1.0f);
+        EXPECT_FLOAT_EQ(result.Z, 0.5f);
+    }
+#ifdef __cplusplus
+    {
+        HMM_Vec3 result = HMM_Lerp(v1, 0.5, v2);
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 1.0f);
+        EXPECT_FLOAT_EQ(result.Z, 0.5f);
+    }
+#endif
+}
+
+TEST(VectorOps, LerpV4)
+{
+    HMM_Vec4 v1 = HMM_V4(1.0f, 1.0f, 0.0f, 1.0f);
+    HMM_Vec4 v2 = HMM_V4(0.0f, 1.0f, 1.0f, 1.0f);
+
+    {
+        HMM_Vec4 result = HMM_LerpV4(v1, 0.5, v2);
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 1.0f);
+        EXPECT_FLOAT_EQ(result.Z, 0.5f);
+        EXPECT_FLOAT_EQ(result.W, 1.0f);
+    }
+#ifdef __cplusplus
+    {
+        HMM_Vec4 result = HMM_Lerp(v1, 0.5, v2);
+        EXPECT_FLOAT_EQ(result.X, 0.5f);
+        EXPECT_FLOAT_EQ(result.Y, 1.0f);
+        EXPECT_FLOAT_EQ(result.Z, 0.5f);
+        EXPECT_FLOAT_EQ(result.W, 1.0f);
+    }
+#endif
+}
 
 /*
  * MatrixOps tests
