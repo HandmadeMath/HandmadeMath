@@ -24,23 +24,8 @@ TEST(ScalarMath, Trigonometry)
     EXPECT_NEAR(HMM_TanF(HMM_PI32), 0.0f, trigAbsError);
     EXPECT_NEAR(HMM_TanF(-HMM_PI32 / 4), -1.0f, trigAbsError);
 
-    EXPECT_NEAR(HMM_ATanF(0.0f), 0.0f, trigAbsError);
-    EXPECT_NEAR(HMM_ATanF(HMM_PI32), 1.2626272557f, trigAbsError);
-    EXPECT_NEAR(HMM_ATanF(-HMM_PI32), -1.2626272557f, trigAbsError);
-
-    EXPECT_NEAR(HMM_ATan2F(0.0f, 1.0f), 0.0f, trigAbsError);
-    EXPECT_NEAR(HMM_ATan2F(1.0f, 1.0f), HMM_PI32 / 4.0f, trigAbsError);
-    EXPECT_NEAR(HMM_ATan2F(1.0f, 0.0f), HMM_PI32 / 2.0f, trigAbsError);
-
     // This isn't the most rigorous because we're really just sanity-
     // checking that things work by default.
-}
-
-TEST(ScalarMath, ToRadians)
-{
-    EXPECT_FLOAT_EQ(HMM_ToRadians(0.0f), 0.0f);
-    EXPECT_FLOAT_EQ(HMM_ToRadians(180.0f), HMM_PI32);
-    EXPECT_FLOAT_EQ(HMM_ToRadians(-180.0f), -HMM_PI32);
 }
 
 TEST(ScalarMath, ExpF)
@@ -57,12 +42,12 @@ TEST(ScalarMath, LogF)
 
 TEST(ScalarMath, SquareRoot)
 {
-    EXPECT_FLOAT_EQ(HMM_SquareRootF(16.0f), 4.0f);
+    EXPECT_FLOAT_EQ(HMM_SqrtF(16.0f), 4.0f);
 }
 
 TEST(ScalarMath, RSquareRootF)
 {
-    EXPECT_NEAR(HMM_RSquareRootF(10.0f), 0.31616211f, 0.0001f);
+    EXPECT_NEAR(HMM_InvSqrtF(10.0f), 0.31616211f, 0.0001f);
 }
 
 TEST(ScalarMath, Power)

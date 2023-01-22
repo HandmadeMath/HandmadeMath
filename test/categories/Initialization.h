@@ -5,8 +5,8 @@ TEST(Initialization, Vectors)
     //
     // Test vec2
     //
-    hmm_vec2 v2 = HMM_Vec2(1.0f, 2.0f);
-    hmm_vec2 v2i = HMM_Vec2i(1, 2);
+    HMM_Vec2 v2 = HMM_V2(1.0f, 2.0f);
+    HMM_Vec2 v2i = HMM_V2I(1, 2);
 
     EXPECT_FLOAT_EQ(v2.X, 1.0f);
     EXPECT_FLOAT_EQ(v2.Y, 2.0f);
@@ -41,8 +41,8 @@ TEST(Initialization, Vectors)
     //
     // Test vec3
     //
-    hmm_vec3 v3 = HMM_Vec3(1.0f, 2.0f, 3.0f);
-    hmm_vec3 v3i = HMM_Vec3i(1, 2, 3);
+    HMM_Vec3 v3 = HMM_V3(1.0f, 2.0f, 3.0f);
+    HMM_Vec3 v3i = HMM_V3I(1, 2, 3);
 
     EXPECT_FLOAT_EQ(v3.X, 1.0f);
     EXPECT_FLOAT_EQ(v3.Y, 2.0f);
@@ -99,9 +99,9 @@ TEST(Initialization, Vectors)
     //
     // Test vec4
     //
-    hmm_vec4 v4 = HMM_Vec4(1.0f, 2.0f, 3.0f, 4.0f);
-    hmm_vec4 v4i = HMM_Vec4i(1, 2, 3, 4);
-    hmm_vec4 v4v = HMM_Vec4v(v3, 4.0f);
+    HMM_Vec4 v4 = HMM_V4(1.0f, 2.0f, 3.0f, 4.0f);
+    HMM_Vec4 v4i = HMM_V4I(1, 2, 3, 4);
+    HMM_Vec4 v4v = HMM_V4V(v3, 4.0f);
 
     EXPECT_FLOAT_EQ(v4.X, 1.0f);
     EXPECT_FLOAT_EQ(v4.Y, 2.0f);
@@ -193,7 +193,7 @@ TEST(Initialization, Vectors)
 
 TEST(Initialization, MatrixEmpty)
 {
-    hmm_mat4 m4 = HMM_Mat4();
+    HMM_Mat4 m4 = HMM_M4();
     for (int Column = 0; Column < 4; ++Column)
     {
         for (int Row = 0; Row < 4; ++Row)
@@ -208,7 +208,7 @@ TEST(Initialization, MatrixEmpty)
 
 TEST(Initialization, MatrixDiagonal)
 {
-    hmm_mat4 m4d = HMM_Mat4d(1.0f);
+    HMM_Mat4 m4d = HMM_M4D(1.0f);
     for (int Column = 0; Column < 4; ++Column)
     {
         for (int Row = 0; Row < 4; ++Row)
@@ -224,7 +224,7 @@ TEST(Initialization, MatrixDiagonal)
 
 TEST(Initialization, Quaternion)
 {
-    hmm_quaternion q = HMM_Quaternion(1.0f, 2.0f, 3.0f, 4.0f);
+    HMM_Quat q = HMM_Q(1.0f, 2.0f, 3.0f, 4.0f);
 
     EXPECT_FLOAT_EQ(q.X, 1.0f);
     EXPECT_FLOAT_EQ(q.Y, 2.0f);
@@ -236,8 +236,8 @@ TEST(Initialization, Quaternion)
     EXPECT_FLOAT_EQ(q.Elements[2], 3.0f);
     EXPECT_FLOAT_EQ(q.Elements[3], 4.0f);
 
-    hmm_vec4 v = HMM_Vec4(1.0f, 2.0f, 3.0f, 4.0f);
-    hmm_quaternion qv = HMM_QuaternionV4(v);
+    HMM_Vec4 v = HMM_V4(1.0f, 2.0f, 3.0f, 4.0f);
+    HMM_Quat qv = HMM_QV4(v);
 
     EXPECT_FLOAT_EQ(qv.X, 1.0f);
     EXPECT_FLOAT_EQ(qv.Y, 2.0f);

@@ -1,16 +1,16 @@
 /*
-  HandmadeMath.h v1.13.0
+  HandmadeMath.h v2.0.0
 
   This is a single header file with a bunch of useful functions for game and
   graphics math operations.
 
   =============================================================================
 
-  To disable SSE intrinsics, you MUST
+  To disable SSE intrinsics, you must
 
   #define HANDMADE_MATH_NO_SSE
 
-  in EXACTLY one C or C++ file that includes this header, BEFORE the
+  in one C or C++ file that includes this header, before the
   include, like this:
 
      #define HANDMADE_MATH_NO_SSE
@@ -18,18 +18,15 @@
 
   =============================================================================
 
-  If you would prefer not to use the HMM_ prefix on function names, you can
+  To use HandmadeMath without the CRT, you must
 
-  #define HMM_PREFIX
+     #define HMM_PROVIDE_MATH_FUNCTIONS
 
-  To use a custom prefix instead, you can
+  Provide your own implementations of SinF, CosF, ACosF, ExpF, and LogF
+  in one C or C++ file that includes this header,
+  before the include, like this (assuming your functions take radians):
 
-  #define HMM_PREFIX(name) YOUR_PREFIX_##name
-
-  =============================================================================
-
-  To use HandmadeMath without the CRT, you MUST
-
+     #define HMM_PROVIDE_MATH_FUNCTIONS
      #define HMM_SINF MySinF
      #define HMM_COSF MyCosF
      #define HMM_TANF MyTanF
@@ -37,22 +34,6 @@
      #define HMM_EXPF MyExpF
      #define HMM_LOGF MyLogF
      #define HMM_ACOSF MyACosF
-     #define HMM_ATANF MyATanF
-     #define HMM_ATAN2F MYATan2F
-
-  Provide your own implementations of SinF, CosF, TanF, ACosF, ATanF, ATan2F,
-  ExpF, and LogF in EXACTLY one C or C++ file that includes this header,
-  BEFORE the include, like this:
-
-     #define HMM_SINF MySinF
-     #define HMM_COSF MyCosF
-     #define HMM_TANF MyTanF
-     #define HMM_SQRTF MySqrtF
-     #define HMM_EXPF MyExpF
-     #define HMM_LOGF MyLogF
-     #define HMM_ACOSF MyACosF
-     #define HMM_ATANF MyATanF
-     #define HMM_ATAN2F MyATan2F
      #include "HandmadeMath.h"
 
   If you do not define all of these, HandmadeMath.h will use the
@@ -60,6 +41,19 @@
 
   =============================================================================
 
+  By default projection matrices use a Normalized-Device-Coordinates (NDC)
+  range of X: [-1, 1], Y: [-1, 1], Z: [-1, 1], as is standard in OpenGL.
+  However, other graphics APIs require the range with Z: [0, 1], as this has
+  better numerical properties for depth buffers.
+
+  To use NDC with Z: [0, 1], you must
+
+  #define HANDMADE_MATH_USE_NDC_Z01
+
+  In one C or C++ file that includes this header, before the include, which will 
+  make HMM_Perspective and HMM_Orthographic functions project Z to [0, 1].
+  
+  =============================================================================
   LICENSE
 
   This software is in the public domain. Where that dedication is not
@@ -78,6 +72,7 @@
    Ben Visness (@bvisness)
    Trinton Bullard (@Peliex_Dev)
    @AntonDan
+   Logan Forman (@dev_dwarf)
 
   Fixes:
    Jeroen van Rijn (@J_vanRijn)
@@ -112,6 +107,12 @@
 # endif /* not _MSC_VER */
 
 #endif /* #ifndef HANDMADE_MATH_NO_SSE */
+
+#ifndef HANDMADE_MATH_NO_C11_GENERICS
+ #if (!defined(__cplusplus) && defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L)
+ #define HANDMADE_MATH__USE_C11_GENERICS 1
+ #endif
+#endif /* #ifndef HANDMADE_MATH_NO_C11_GENERICS */
 
 #ifdef HANDMADE_MATH__USE_SSE
 #include <xmmintrin.h>
@@ -149,52 +150,69 @@ extern "C"
 {
 #endif
 
-#define HMM_INLINE static inline
+#if !defined(HMM_USE_DEGREE_INPUT) \
+    && !defined(HMM_USE_TURN_INPUT) \
+    && !defined(HMM_USE_RADIAN_INPUT)
+#define HMM_USE_RADIAN_INPUT
+#endif
+    
+#define HMM_PI 3.14159265358979323846
+#define HMM_PI32 3.14159265359f
+#define HMM_DEG180 180.0
+#define HMM_DEG18032 180.0f
+#define HMM_TURNHALF 0.5
+#define HMM_TURNHALF32 0.5f
+#define HMM_RadToDeg ((float)(HMM_DEG180/HMM_PI))
+#define HMM_RadToTurn ((float)(HMM_TURNHALF/HMM_PI))
+#define HMM_DegToRad ((float)(HMM_PI/HMM_DEG180))
+#define HMM_DegToTurn ((float)(HMM_TURNHALF/HMM_DEG180))
+#define HMM_TurnToRad ((float)(HMM_PI/HMM_TURNHALF))
+#define HMM_TurnToDeg ((float)(HMM_DEG180/HMM_TURNHALF))
 
-#if !defined(HMM_SINF) || !defined(HMM_COSF) || !defined(HMM_TANF) || \
-    !defined(HMM_SQRTF) || !defined(HMM_EXPF) || !defined(HMM_LOGF) || \
-    !defined(HMM_ACOSF) || !defined(HMM_ATANF)|| !defined(HMM_ATAN2F)
+#if defined(HMM_USE_RADIAN_INPUT)
+#define HMM_AngleRad(a) (a)
+#define HMM_AngleDeg(a) ((a)*HMM_DegToRad)
+#define HMM_AngleTurn(a) ((a)*HMM_TurnToRad)
+#elif defined(HMM_USE_DEGREE_INPUT) 
+#define HMM_AngleRad(a) ((a)*HMM_RadToDeg)
+#define HMM_AngleDeg(a) (a)
+#define HMM_AngleTurn(a) ((a)*HMM_TurnToDeg)
+#elif defined(HMM_USE_TURN_INPUT)
+#define HMM_AngleRad(a) ((a)*HMM_RadToTurn)
+#define HMM_AngleDeg(a) ((a)*HMM_DegToTurn)
+#define HMM_AngleTurn(a) (a)
+#endif
+
+#if !defined(HMM_PROVIDE_MATH_FUNCTIONS)
 #include <math.h>
+/* Conversion function to the unit the trig functions need angles in.
+   Define as one of HMM_ToRad, HMM_ToDeg, or HMM_ToTurn. */
+#define HMM_ANGLE_USER_TO_INTERNAL(a) (HMM_ToRad(a))
+/* Conversion function to the User's input angle unit from the internal unit.
+   If your internal and input angle units are the same simply define:
+#define HMM_ANGLE_INTERNAL_TO_USER(a) (a) 
+   Default internal angle unit is radians. */
+#if defined(HMM_USE_RADIAN_INPUT)
+#define HMM_ANGLE_INTERNAL_TO_USER(a) (a) 
+#elif defined(HMM_USE_DEGREE_INPUT)
+#define HMM_ANGLE_INTERNAL_TO_USER(a) ((a)*HMM_RadToDeg)
+#elif defined(HMM_USE_TURN_INPUT)
+#define HMM_ANGLE_INTERNAL_TO_USER(a) ((a)*HMM_RadToTurn)
 #endif
 
-#ifndef HMM_SINF
+#if !defined(HMM_ANGLE_USER_TO_INTERNAL)
+#define HMM_ANGLE_USER_TO_INTERNAL(a) (a)
+#define HMM_ANGLE_INTERNAL_TO_USER(a) (a)
+#endif
+    
 #define HMM_SINF sinf
-#endif
-
-#ifndef HMM_COSF
 #define HMM_COSF cosf
-#endif
-
-#ifndef HMM_TANF
 #define HMM_TANF tanf
-#endif
-
-#ifndef HMM_SQRTF
 #define HMM_SQRTF sqrtf
-#endif
-
-#ifndef HMM_EXPF
 #define HMM_EXPF expf
-#endif
-
-#ifndef HMM_LOGF
 #define HMM_LOGF logf
-#endif
-
-#ifndef HMM_ACOSF
 #define HMM_ACOSF acosf
 #endif
-
-#ifndef HMM_ATANF
-#define HMM_ATANF atanf
-#endif
-
-#ifndef HMM_ATAN2F
-#define HMM_ATAN2F atan2f
-#endif
-
-#define HMM_PI32 3.14159265359f
-#define HMM_PI 3.14159265358979323846
 
 #define HMM_MIN(a, b) ((a) > (b) ? (b) : (a))
 #define HMM_MAX(a, b) ((a) < (b) ? (b) : (a))
@@ -202,11 +220,7 @@ extern "C"
 #define HMM_MOD(a, m) (((a) % (m)) >= 0 ? ((a) % (m)) : (((a) % (m)) + (m)))
 #define HMM_SQUARE(x) ((x) * (x))
 
-#ifndef HMM_PREFIX
-#define HMM_PREFIX(name) HMM_##name
-#endif
-
-typedef union hmm_vec2
+typedef union HMM_Vec2
 {
     struct
     {
@@ -236,9 +250,9 @@ typedef union hmm_vec2
         return Elements[Index];
     }
 #endif
-} hmm_vec2;
+} HMM_Vec2;
 
-typedef union hmm_vec3
+typedef union HMM_Vec3
 {
     struct
     {
@@ -257,26 +271,26 @@ typedef union hmm_vec3
 
     struct
     {
-        hmm_vec2 XY;
+        HMM_Vec2 XY;
         float Ignored0_;
     };
 
     struct
     {
         float Ignored1_;
-        hmm_vec2 YZ;
+        HMM_Vec2 YZ;
     };
 
     struct
     {
-        hmm_vec2 UV;
+        HMM_Vec2 UV;
         float Ignored2_;
     };
 
     struct
     {
         float Ignored3_;
-        hmm_vec2 VW;
+        HMM_Vec2 VW;
     };
 
     float Elements[3];
@@ -287,15 +301,15 @@ typedef union hmm_vec3
         return Elements[Index];
     }
 #endif
-} hmm_vec3;
+} HMM_Vec3;
 
-typedef union hmm_vec4
+typedef union HMM_Vec4
 {
     struct
     {
         union
         {
-            hmm_vec3 XYZ;
+            HMM_Vec3 XYZ;
             struct
             {
                 float X, Y, Z;
@@ -308,7 +322,7 @@ typedef union hmm_vec4
     {
         union
         {
-            hmm_vec3 RGB;
+            HMM_Vec3 RGB;
             struct
             {
                 float R, G, B;
@@ -320,7 +334,7 @@ typedef union hmm_vec4
 
     struct
     {
-        hmm_vec2 XY;
+        HMM_Vec2 XY;
         float Ignored0_;
         float Ignored1_;
     };
@@ -328,7 +342,7 @@ typedef union hmm_vec4
     struct
     {
         float Ignored2_;
-        hmm_vec2 YZ;
+        HMM_Vec2 YZ;
         float Ignored3_;
     };
 
@@ -336,13 +350,13 @@ typedef union hmm_vec4
     {
         float Ignored4_;
         float Ignored5_;
-        hmm_vec2 ZW;
+        HMM_Vec2 ZW;
     };
 
     float Elements[4];
 
 #ifdef HANDMADE_MATH__USE_SSE
-    __m128 InternalElementsSSE;
+    __m128 SSE;
 #endif
 
 #ifdef __cplusplus
@@ -351,43 +365,61 @@ typedef union hmm_vec4
         return Elements[Index];
     }
 #endif
-} hmm_vec4;
+} HMM_Vec4;
 
-typedef union hmm_mat4
+typedef union HMM_Mat2
+{
+    float Elements[2][2];
+    HMM_Vec2 Columns[2];
+
+#ifdef __cplusplus
+    inline HMM_Vec2 &operator[](const int &Index)
+    {
+        HMM_Vec2 Result;
+        float* Column = Elements[Index];
+        
+        Result.Elements[0] = Column[0];
+        Result.Elements[1] = Column[1];
+
+        return (Columns[Index]);
+    }
+#endif
+} HMM_Mat2;
+    
+typedef union HMM_Mat3
+{
+    float Elements[3][3];
+    HMM_Vec3 Columns[3];
+
+#ifdef __cplusplus
+    inline HMM_Vec3 &operator[](const int &Index)
+    {
+        return (Columns[Index]);
+    }
+#endif
+} HMM_Mat3;
+
+typedef union HMM_Mat4
 {
     float Elements[4][4];
 
-#ifdef HANDMADE_MATH__USE_SSE
-    __m128 Columns[4];
-
-    HMM_DEPRECATED("Our matrices are column-major, so this was named incorrectly. Use Columns instead.")
-    __m128 Rows[4];
-#endif
+    HMM_Vec4 Columns[4];
 
 #ifdef __cplusplus
-    inline hmm_vec4 operator[](const int &Index)
+    inline HMM_Vec4 &operator[](const int &Index)
     {
-        hmm_vec4 Result;
-        float* Column = Elements[Index];
-        
-
-        Result.Elements[0] = Column[0];
-        Result.Elements[1] = Column[1];
-        Result.Elements[2] = Column[2];
-        Result.Elements[3] = Column[3];
-
-        return Result;
+        return (Columns[Index]);
     }
 #endif
-} hmm_mat4;
+} HMM_Mat4;
 
-typedef union hmm_quaternion
+typedef union HMM_Quat
 {
     struct
     {
         union
         {
-            hmm_vec3 XYZ;
+            HMM_Vec3 XYZ;
             struct
             {
                 float X, Y, Z;
@@ -400,84 +432,98 @@ typedef union hmm_quaternion
     float Elements[4];
 
 #ifdef HANDMADE_MATH__USE_SSE
-    __m128 InternalElementsSSE;
+    __m128 SSE;
 #endif
-} hmm_quaternion;
+} HMM_Quat;
 
-typedef signed int hmm_bool;
+typedef signed int HMM_Bool;
 
-typedef hmm_vec2 hmm_v2;
-typedef hmm_vec3 hmm_v3;
-typedef hmm_vec4 hmm_v4;
-typedef hmm_mat4 hmm_m4;
+/*
+ * Angle unit conversion functions
+ */
+static inline float HMM_ToRad(float Angle)
+{
+#if defined(HMM_USE_RADIAN_INPUT)
+    float Result = Angle;
+#elif defined(HMM_USE_DEGREE_INPUT) 
+    float Result = Angle * HMM_DegToRad;
+#elif defined(HMM_USE_TURN_INPUT)
+    float Result = Angle * HMM_TurnToRad;
+#endif
+    
+    return (Result);
+}
 
+static inline float HMM_ToDeg(float Angle)
+{
+#if defined(HMM_USE_RADIAN_INPUT)
+    float Result = Angle * HMM_RadToDeg;
+#elif defined(HMM_USE_DEGREE_INPUT) 
+    float Result = Angle;
+#elif defined(HMM_USE_TURN_INPUT)
+    float Result = Angle * HMM_TurnToDeg;
+#endif
+    
+    return (Result);
+}
+
+static inline float HMM_ToTurn(float Angle)
+{
+#if defined(HMM_USE_RADIAN_INPUT)
+    float Result = Angle * HMM_RadToTurn;
+#elif defined(HMM_USE_DEGREE_INPUT) 
+    float Result = Angle * HMM_DegToTurn;
+#elif defined(HMM_USE_TURN_INPUT)
+    float Result = Angle;
+#endif
+    
+    return (Result);
+}
 
 /*
  * Floating-point math functions
  */
 
 COVERAGE(HMM_SinF, 1)
-HMM_INLINE float HMM_PREFIX(SinF)(float Radians)
+static inline float HMM_SinF(float Angle)
 {
     ASSERT_COVERED(HMM_SinF);
 
-    float Result = HMM_SINF(Radians);
+    float Result = HMM_SINF(HMM_ANGLE_USER_TO_INTERNAL(Angle));
 
     return (Result);
 }
 
 COVERAGE(HMM_CosF, 1)
-HMM_INLINE float HMM_PREFIX(CosF)(float Radians)
+static inline float HMM_CosF(float Angle)
 {
     ASSERT_COVERED(HMM_CosF);
 
-    float Result = HMM_COSF(Radians);
-
-    return (Result);
-}
-
-COVERAGE(HMM_TanF, 1)
-HMM_INLINE float HMM_PREFIX(TanF)(float Radians)
-{
-    ASSERT_COVERED(HMM_TanF);
-
-    float Result = HMM_TANF(Radians);
+    float Result = HMM_COSF(HMM_ANGLE_USER_TO_INTERNAL(Angle));
 
     return (Result);
 }
 
 COVERAGE(HMM_ACosF, 1)
-HMM_INLINE float HMM_PREFIX(ACosF)(float Radians)
+static inline float HMM_ACosF(float Angle)
 {
     ASSERT_COVERED(HMM_ACosF);
 
-    float Result = HMM_ACOSF(Radians);
+    float Result = HMM_ANGLE_INTERNAL_TO_USER(HMM_ACOSF(Angle));
 
     return (Result);
 }
 
-COVERAGE(HMM_ATanF, 1)
-HMM_INLINE float HMM_PREFIX(ATanF)(float Radians)
+COVERAGE(HMM_TanF, 1)
+static inline float HMM_TanF(float Angle)
 {
-    ASSERT_COVERED(HMM_ATanF);
-
-    float Result = HMM_ATANF(Radians);
-
-    return (Result);
-}
-
-COVERAGE(HMM_ATan2F, 1)
-HMM_INLINE float HMM_PREFIX(ATan2F)(float Left, float Right)
-{
-    ASSERT_COVERED(HMM_ATan2F);
-
-    float Result = HMM_ATAN2F(Left, Right);
-
+    ASSERT_COVERED(HMM_TanF);
+    float Result = HMM_TANF(HMM_ANGLE_USER_TO_INTERNAL(Angle));
     return (Result);
 }
 
 COVERAGE(HMM_ExpF, 1)
-HMM_INLINE float HMM_PREFIX(ExpF)(float Float)
+static inline float HMM_ExpF(float Float)
 {
     ASSERT_COVERED(HMM_ExpF);
 
@@ -487,7 +533,7 @@ HMM_INLINE float HMM_PREFIX(ExpF)(float Float)
 }
 
 COVERAGE(HMM_LogF, 1)
-HMM_INLINE float HMM_PREFIX(LogF)(float Float)
+static inline float HMM_LogF(float Float)
 {
     ASSERT_COVERED(HMM_LogF);
 
@@ -496,10 +542,10 @@ HMM_INLINE float HMM_PREFIX(LogF)(float Float)
     return (Result);
 }
 
-COVERAGE(HMM_SquareRootF, 1)
-HMM_INLINE float HMM_PREFIX(SquareRootF)(float Float)
+COVERAGE(HMM_SqrtF, 1)
+static inline float HMM_SqrtF(float Float)
 {
-    ASSERT_COVERED(HMM_SquareRootF);
+    ASSERT_COVERED(HMM_SqrtF);
 
     float Result;
 
@@ -514,10 +560,10 @@ HMM_INLINE float HMM_PREFIX(SquareRootF)(float Float)
     return(Result);
 }
 
-COVERAGE(HMM_RSquareRootF, 1)
-HMM_INLINE float HMM_PREFIX(RSquareRootF)(float Float)
+COVERAGE(HMM_InvSqrtF, 1)
+static inline float HMM_InvSqrtF(float Float)
 {
-    ASSERT_COVERED(HMM_RSquareRootF);
+    ASSERT_COVERED(HMM_InvSqrtF);
 
     float Result;
 
@@ -526,14 +572,14 @@ HMM_INLINE float HMM_PREFIX(RSquareRootF)(float Float)
     __m128 Out = _mm_rsqrt_ss(In);
     Result = _mm_cvtss_f32(Out);
 #else
-    Result = 1.0f/HMM_PREFIX(SquareRootF)(Float);
+    Result = 1.0f/HMM_SqrtF(Float);
 #endif
 
     return(Result);
 }
 
 COVERAGE(HMM_Power, 2)
-HMM_INLINE float HMM_PREFIX(Power)(float Base, int Exponent)
+static inline float HMM_Power(float Base, int Exponent)
 {
     ASSERT_COVERED(HMM_Power);
 
@@ -557,7 +603,7 @@ HMM_INLINE float HMM_PREFIX(Power)(float Base, int Exponent)
 }
 
 COVERAGE(HMM_PowerF, 1)
-HMM_INLINE float HMM_PREFIX(PowerF)(float Base, float Exponent)
+static inline float HMM_PowerF(float Base, float Exponent)
 {
     ASSERT_COVERED(HMM_PowerF);
 
@@ -571,18 +617,8 @@ HMM_INLINE float HMM_PREFIX(PowerF)(float Base, float Exponent)
  * Utility functions
  */
 
-COVERAGE(HMM_ToRadians, 1)
-HMM_INLINE float HMM_PREFIX(ToRadians)(float Degrees)
-{
-    ASSERT_COVERED(HMM_ToRadians);
-
-    float Result = Degrees * (HMM_PI32 / 180.0f);
-
-    return (Result);
-}
-
 COVERAGE(HMM_Lerp, 1)
-HMM_INLINE float HMM_PREFIX(Lerp)(float A, float Time, float B)
+static inline float HMM_Lerp(float A, float Time, float B)
 {
     ASSERT_COVERED(HMM_Lerp);
 
@@ -592,7 +628,7 @@ HMM_INLINE float HMM_PREFIX(Lerp)(float A, float Time, float B)
 }
 
 COVERAGE(HMM_Clamp, 1)
-HMM_INLINE float HMM_PREFIX(Clamp)(float Min, float Value, float Max)
+static inline float HMM_Clamp(float Min, float Value, float Max)
 {
     ASSERT_COVERED(HMM_Clamp);
 
@@ -616,12 +652,12 @@ HMM_INLINE float HMM_PREFIX(Clamp)(float Min, float Value, float Max)
  * Vector initialization
  */
 
-COVERAGE(HMM_Vec2, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(Vec2)(float X, float Y)
+COVERAGE(HMM_V2, 1)
+static inline HMM_Vec2 HMM_V2(float X, float Y)
 {
-    ASSERT_COVERED(HMM_Vec2);
+    ASSERT_COVERED(HMM_V2);
 
-    hmm_vec2 Result;
+    HMM_Vec2 Result;
 
     Result.X = X;
     Result.Y = Y;
@@ -629,12 +665,12 @@ HMM_INLINE hmm_vec2 HMM_PREFIX(Vec2)(float X, float Y)
     return (Result);
 }
 
-COVERAGE(HMM_Vec2i, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(Vec2i)(int X, int Y)
+COVERAGE(HMM_V2I, 1)
+static inline HMM_Vec2 HMM_V2I(int X, int Y)
 {
-    ASSERT_COVERED(HMM_Vec2i);
+    ASSERT_COVERED(HMM_V2I);
 
-    hmm_vec2 Result;
+    HMM_Vec2 Result;
 
     Result.X = (float)X;
     Result.Y = (float)Y;
@@ -642,12 +678,12 @@ HMM_INLINE hmm_vec2 HMM_PREFIX(Vec2i)(int X, int Y)
     return (Result);
 }
 
-COVERAGE(HMM_Vec3, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(Vec3)(float X, float Y, float Z)
+COVERAGE(HMM_V3, 1)
+static inline HMM_Vec3 HMM_V3(float X, float Y, float Z)
 {
-    ASSERT_COVERED(HMM_Vec3);
+    ASSERT_COVERED(HMM_V3);
 
-    hmm_vec3 Result;
+    HMM_Vec3 Result;
 
     Result.X = X;
     Result.Y = Y;
@@ -656,12 +692,12 @@ HMM_INLINE hmm_vec3 HMM_PREFIX(Vec3)(float X, float Y, float Z)
     return (Result);
 }
 
-COVERAGE(HMM_Vec3i, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(Vec3i)(int X, int Y, int Z)
+COVERAGE(HMM_V3I, 1)
+static inline HMM_Vec3 HMM_V3I(int X, int Y, int Z)
 {
-    ASSERT_COVERED(HMM_Vec3i);
+    ASSERT_COVERED(HMM_V3I);
 
-    hmm_vec3 Result;
+    HMM_Vec3 Result;
 
     Result.X = (float)X;
     Result.Y = (float)Y;
@@ -670,15 +706,15 @@ HMM_INLINE hmm_vec3 HMM_PREFIX(Vec3i)(int X, int Y, int Z)
     return (Result);
 }
 
-COVERAGE(HMM_Vec4, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Vec4)(float X, float Y, float Z, float W)
+COVERAGE(HMM_V4, 1)
+static inline HMM_Vec4 HMM_V4(float X, float Y, float Z, float W)
 {
-    ASSERT_COVERED(HMM_Vec4);
+    ASSERT_COVERED(HMM_V4);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_setr_ps(X, Y, Z, W);
+    Result.SSE = _mm_setr_ps(X, Y, Z, W);
 #else
     Result.X = X;
     Result.Y = Y;
@@ -689,15 +725,15 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(Vec4)(float X, float Y, float Z, float W)
     return (Result);
 }
 
-COVERAGE(HMM_Vec4i, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Vec4i)(int X, int Y, int Z, int W)
+COVERAGE(HMM_V4I, 1)
+static inline HMM_Vec4 HMM_V4I(int X, int Y, int Z, int W)
 {
-    ASSERT_COVERED(HMM_Vec4i);
+    ASSERT_COVERED(HMM_V4I);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_setr_ps((float)X, (float)Y, (float)Z, (float)W);
+    Result.SSE = _mm_setr_ps((float)X, (float)Y, (float)Z, (float)W);
 #else
     Result.X = (float)X;
     Result.Y = (float)Y;
@@ -708,15 +744,15 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(Vec4i)(int X, int Y, int Z, int W)
     return (Result);
 }
 
-COVERAGE(HMM_Vec4v, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Vec4v)(hmm_vec3 Vector, float W)
+COVERAGE(HMM_V4V, 1)
+static inline HMM_Vec4 HMM_V4V(HMM_Vec3 Vector, float W)
 {
-    ASSERT_COVERED(HMM_Vec4v);
+    ASSERT_COVERED(HMM_V4V);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_setr_ps(Vector.X, Vector.Y, Vector.Z, W);
+    Result.SSE = _mm_setr_ps(Vector.X, Vector.Y, Vector.Z, W);
 #else
     Result.XYZ = Vector;
     Result.W = W;
@@ -730,12 +766,12 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(Vec4v)(hmm_vec3 Vector, float W)
  * Binary vector operations
  */
 
-COVERAGE(HMM_AddVec2, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(AddVec2)(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_AddV2, 1)
+static inline HMM_Vec2 HMM_AddV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_AddVec2);
+    ASSERT_COVERED(HMM_AddV2);
 
-    hmm_vec2 Result;
+    HMM_Vec2 Result;
 
     Result.X = Left.X + Right.X;
     Result.Y = Left.Y + Right.Y;
@@ -743,12 +779,12 @@ HMM_INLINE hmm_vec2 HMM_PREFIX(AddVec2)(hmm_vec2 Left, hmm_vec2 Right)
     return (Result);
 }
 
-COVERAGE(HMM_AddVec3, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(AddVec3)(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_AddV3, 1)
+static inline HMM_Vec3 HMM_AddV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_AddVec3);
+    ASSERT_COVERED(HMM_AddV3);
 
-    hmm_vec3 Result;
+    HMM_Vec3 Result;
 
     Result.X = Left.X + Right.X;
     Result.Y = Left.Y + Right.Y;
@@ -757,15 +793,15 @@ HMM_INLINE hmm_vec3 HMM_PREFIX(AddVec3)(hmm_vec3 Left, hmm_vec3 Right)
     return (Result);
 }
 
-COVERAGE(HMM_AddVec4, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(AddVec4)(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_AddV4, 1)
+static inline HMM_Vec4 HMM_AddV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_AddVec4);
+    ASSERT_COVERED(HMM_AddV4);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_add_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+    Result.SSE = _mm_add_ps(Left.SSE, Right.SSE);
 #else
     Result.X = Left.X + Right.X;
     Result.Y = Left.Y + Right.Y;
@@ -776,12 +812,12 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(AddVec4)(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
-COVERAGE(HMM_SubtractVec2, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(SubtractVec2)(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_SubV2, 1)
+static inline HMM_Vec2 HMM_SubV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec2);
+    ASSERT_COVERED(HMM_SubV2);
 
-    hmm_vec2 Result;
+    HMM_Vec2 Result;
 
     Result.X = Left.X - Right.X;
     Result.Y = Left.Y - Right.Y;
@@ -789,12 +825,12 @@ HMM_INLINE hmm_vec2 HMM_PREFIX(SubtractVec2)(hmm_vec2 Left, hmm_vec2 Right)
     return (Result);
 }
 
-COVERAGE(HMM_SubtractVec3, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(SubtractVec3)(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_SubV3, 1)
+static inline HMM_Vec3 HMM_SubV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec3);
+    ASSERT_COVERED(HMM_SubV3);
 
-    hmm_vec3 Result;
+    HMM_Vec3 Result;
 
     Result.X = Left.X - Right.X;
     Result.Y = Left.Y - Right.Y;
@@ -803,15 +839,15 @@ HMM_INLINE hmm_vec3 HMM_PREFIX(SubtractVec3)(hmm_vec3 Left, hmm_vec3 Right)
     return (Result);
 }
 
-COVERAGE(HMM_SubtractVec4, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(SubtractVec4)(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_SubV4, 1)
+static inline HMM_Vec4 HMM_SubV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec4);
+    ASSERT_COVERED(HMM_SubV4);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_sub_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+    Result.SSE = _mm_sub_ps(Left.SSE, Right.SSE);
 #else
     Result.X = Left.X - Right.X;
     Result.Y = Left.Y - Right.Y;
@@ -822,12 +858,12 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(SubtractVec4)(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec2, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(MultiplyVec2)(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_MulV2, 1)
+static inline HMM_Vec2 HMM_MulV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec2);
+    ASSERT_COVERED(HMM_MulV2);
 
-    hmm_vec2 Result;
+    HMM_Vec2 Result;
 
     Result.X = Left.X * Right.X;
     Result.Y = Left.Y * Right.Y;
@@ -835,12 +871,12 @@ HMM_INLINE hmm_vec2 HMM_PREFIX(MultiplyVec2)(hmm_vec2 Left, hmm_vec2 Right)
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec2f, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(MultiplyVec2f)(hmm_vec2 Left, float Right)
+COVERAGE(HMM_MulV2F, 1)
+static inline HMM_Vec2 HMM_MulV2F(HMM_Vec2 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec2f);
+    ASSERT_COVERED(HMM_MulV2F);
 
-    hmm_vec2 Result;
+    HMM_Vec2 Result;
 
     Result.X = Left.X * Right;
     Result.Y = Left.Y * Right;
@@ -848,12 +884,12 @@ HMM_INLINE hmm_vec2 HMM_PREFIX(MultiplyVec2f)(hmm_vec2 Left, float Right)
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec3, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(MultiplyVec3)(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_MulV3, 1)
+static inline HMM_Vec3 HMM_MulV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec3);
+    ASSERT_COVERED(HMM_MulV3);
 
-    hmm_vec3 Result;
+    HMM_Vec3 Result;
 
     Result.X = Left.X * Right.X;
     Result.Y = Left.Y * Right.Y;
@@ -862,12 +898,12 @@ HMM_INLINE hmm_vec3 HMM_PREFIX(MultiplyVec3)(hmm_vec3 Left, hmm_vec3 Right)
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec3f, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(MultiplyVec3f)(hmm_vec3 Left, float Right)
+COVERAGE(HMM_MulV3F, 1)
+static inline HMM_Vec3 HMM_MulV3F(HMM_Vec3 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec3f);
+    ASSERT_COVERED(HMM_MulV3F);
 
-    hmm_vec3 Result;
+    HMM_Vec3 Result;
 
     Result.X = Left.X * Right;
     Result.Y = Left.Y * Right;
@@ -876,15 +912,15 @@ HMM_INLINE hmm_vec3 HMM_PREFIX(MultiplyVec3f)(hmm_vec3 Left, float Right)
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec4, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(MultiplyVec4)(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_MulV4, 1)
+static inline HMM_Vec4 HMM_MulV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec4);
+    ASSERT_COVERED(HMM_MulV4);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_mul_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+    Result.SSE = _mm_mul_ps(Left.SSE, Right.SSE);
 #else
     Result.X = Left.X * Right.X;
     Result.Y = Left.Y * Right.Y;
@@ -895,16 +931,16 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(MultiplyVec4)(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec4f, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(MultiplyVec4f)(hmm_vec4 Left, float Right)
+COVERAGE(HMM_MulV4F, 1)
+static inline HMM_Vec4 HMM_MulV4F(HMM_Vec4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec4f);
+    ASSERT_COVERED(HMM_MulV4F);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Scalar = _mm_set1_ps(Right);
-    Result.InternalElementsSSE = _mm_mul_ps(Left.InternalElementsSSE, Scalar);
+    Result.SSE = _mm_mul_ps(Left.SSE, Scalar);
 #else
     Result.X = Left.X * Right;
     Result.Y = Left.Y * Right;
@@ -915,12 +951,12 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(MultiplyVec4f)(hmm_vec4 Left, float Right)
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec2, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(DivideVec2)(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_DivV2, 1)
+static inline HMM_Vec2 HMM_DivV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec2);
+    ASSERT_COVERED(HMM_DivV2);
 
-    hmm_vec2 Result;
+    HMM_Vec2 Result;
 
     Result.X = Left.X / Right.X;
     Result.Y = Left.Y / Right.Y;
@@ -928,12 +964,12 @@ HMM_INLINE hmm_vec2 HMM_PREFIX(DivideVec2)(hmm_vec2 Left, hmm_vec2 Right)
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec2f, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(DivideVec2f)(hmm_vec2 Left, float Right)
+COVERAGE(HMM_DivV2F, 1)
+static inline HMM_Vec2 HMM_DivV2F(HMM_Vec2 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec2f);
+    ASSERT_COVERED(HMM_DivV2F);
 
-    hmm_vec2 Result;
+    HMM_Vec2 Result;
 
     Result.X = Left.X / Right;
     Result.Y = Left.Y / Right;
@@ -941,12 +977,12 @@ HMM_INLINE hmm_vec2 HMM_PREFIX(DivideVec2f)(hmm_vec2 Left, float Right)
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec3, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(DivideVec3)(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_DivV3, 1)
+static inline HMM_Vec3 HMM_DivV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec3);
+    ASSERT_COVERED(HMM_DivV3);
 
-    hmm_vec3 Result;
+    HMM_Vec3 Result;
 
     Result.X = Left.X / Right.X;
     Result.Y = Left.Y / Right.Y;
@@ -955,12 +991,12 @@ HMM_INLINE hmm_vec3 HMM_PREFIX(DivideVec3)(hmm_vec3 Left, hmm_vec3 Right)
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec3f, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(DivideVec3f)(hmm_vec3 Left, float Right)
+COVERAGE(HMM_DivV3F, 1)
+static inline HMM_Vec3 HMM_DivV3F(HMM_Vec3 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec3f);
+    ASSERT_COVERED(HMM_DivV3F);
 
-    hmm_vec3 Result;
+    HMM_Vec3 Result;
 
     Result.X = Left.X / Right;
     Result.Y = Left.Y / Right;
@@ -969,15 +1005,15 @@ HMM_INLINE hmm_vec3 HMM_PREFIX(DivideVec3f)(hmm_vec3 Left, float Right)
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec4, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(DivideVec4)(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_DivV4, 1)
+static inline HMM_Vec4 HMM_DivV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec4);
+    ASSERT_COVERED(HMM_DivV4);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_div_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+    Result.SSE = _mm_div_ps(Left.SSE, Right.SSE);
 #else
     Result.X = Left.X / Right.X;
     Result.Y = Left.Y / Right.Y;
@@ -988,16 +1024,16 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(DivideVec4)(hmm_vec4 Left, hmm_vec4 Right)
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec4f, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(DivideVec4f)(hmm_vec4 Left, float Right)
+COVERAGE(HMM_DivV4F, 1)
+static inline HMM_Vec4 HMM_DivV4F(HMM_Vec4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec4f);
+    ASSERT_COVERED(HMM_DivV4F);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Scalar = _mm_set1_ps(Right);
-    Result.InternalElementsSSE = _mm_div_ps(Left.InternalElementsSSE, Scalar);
+    Result.SSE = _mm_div_ps(Left.SSE, Scalar);
 #else
     Result.X = Left.X / Right;
     Result.Y = Left.Y / Right;
@@ -1008,60 +1044,60 @@ HMM_INLINE hmm_vec4 HMM_PREFIX(DivideVec4f)(hmm_vec4 Left, float Right)
     return (Result);
 }
 
-COVERAGE(HMM_EqualsVec2, 1)
-HMM_INLINE hmm_bool HMM_PREFIX(EqualsVec2)(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_EqV2, 1)
+static inline HMM_Bool HMM_EqV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec2);
+    ASSERT_COVERED(HMM_EqV2);
 
-    hmm_bool Result = (Left.X == Right.X && Left.Y == Right.Y);
+    HMM_Bool Result = (Left.X == Right.X && Left.Y == Right.Y);
 
     return (Result);
 }
 
-COVERAGE(HMM_EqualsVec3, 1)
-HMM_INLINE hmm_bool HMM_PREFIX(EqualsVec3)(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_EqV3, 1)
+static inline HMM_Bool HMM_EqV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec3);
+    ASSERT_COVERED(HMM_EqV3);
 
-    hmm_bool Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z);
+    HMM_Bool Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z);
 
     return (Result);
 }
 
-COVERAGE(HMM_EqualsVec4, 1)
-HMM_INLINE hmm_bool HMM_PREFIX(EqualsVec4)(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_EqV4, 1)
+static inline HMM_Bool HMM_EqV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec4);
+    ASSERT_COVERED(HMM_EqV4);
 
-    hmm_bool Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z && Left.W == Right.W);
+    HMM_Bool Result = (Left.X == Right.X && Left.Y == Right.Y && Left.Z == Right.Z && Left.W == Right.W);
 
     return (Result);
 }
 
-COVERAGE(HMM_DotVec2, 1)
-HMM_INLINE float HMM_PREFIX(DotVec2)(hmm_vec2 VecOne, hmm_vec2 VecTwo)
+COVERAGE(HMM_DotV2, 1)
+static inline float HMM_DotV2(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_DotVec2);
+    ASSERT_COVERED(HMM_DotV2);
 
-    float Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y);
+    float Result = (Left.X * Right.X) + (Left.Y * Right.Y);
 
     return (Result);
 }
 
-COVERAGE(HMM_DotVec3, 1)
-HMM_INLINE float HMM_PREFIX(DotVec3)(hmm_vec3 VecOne, hmm_vec3 VecTwo)
+COVERAGE(HMM_DotV3, 1)
+static inline float HMM_DotV3(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_DotVec3);
+    ASSERT_COVERED(HMM_DotV3);
 
-    float Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z);
+    float Result = (Left.X * Right.X) + (Left.Y * Right.Y) + (Left.Z * Right.Z);
 
     return (Result);
 }
 
-COVERAGE(HMM_DotVec4, 1)
-HMM_INLINE float HMM_PREFIX(DotVec4)(hmm_vec4 VecOne, hmm_vec4 VecTwo)
+COVERAGE(HMM_DotV4, 1)
+static inline float HMM_DotV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_DotVec4);
+    ASSERT_COVERED(HMM_DotV4);
 
     float Result;
 
@@ -1069,29 +1105,29 @@ HMM_INLINE float HMM_PREFIX(DotVec4)(hmm_vec4 VecOne, hmm_vec4 VecTwo)
     // we can use _mm_dp_ps (4.3) but for now we will use the old way.
     // Or a r = _mm_mul_ps(v1, v2), r = _mm_hadd_ps(r, r), r = _mm_hadd_ps(r, r) for SSE3
 #ifdef HANDMADE_MATH__USE_SSE
-    __m128 SSEResultOne = _mm_mul_ps(VecOne.InternalElementsSSE, VecTwo.InternalElementsSSE);
+    __m128 SSEResultOne = _mm_mul_ps(Left.SSE, Right.SSE);
     __m128 SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(2, 3, 0, 1));
     SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
     SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(0, 1, 2, 3));
     SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
     _mm_store_ss(&Result, SSEResultOne);
 #else
-    Result = (VecOne.X * VecTwo.X) + (VecOne.Y * VecTwo.Y) + (VecOne.Z * VecTwo.Z) + (VecOne.W * VecTwo.W);
+    Result = (Left.X * Right.X) + (Left.Y * Right.Y) + (Left.Z * Right.Z) + (Left.W * Right.W);
 #endif
 
     return (Result);
 }
 
 COVERAGE(HMM_Cross, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(Cross)(hmm_vec3 VecOne, hmm_vec3 VecTwo)
+static inline HMM_Vec3 HMM_Cross(HMM_Vec3 Left, HMM_Vec3 Right)
 {
     ASSERT_COVERED(HMM_Cross);
 
-    hmm_vec3 Result;
+    HMM_Vec3 Result;
 
-    Result.X = (VecOne.Y * VecTwo.Z) - (VecOne.Z * VecTwo.Y);
-    Result.Y = (VecOne.Z * VecTwo.X) - (VecOne.X * VecTwo.Z);
-    Result.Z = (VecOne.X * VecTwo.Y) - (VecOne.Y * VecTwo.X);
+    Result.X = (Left.Y * Right.Z) - (Left.Z * Right.Y);
+    Result.Y = (Left.Z * Right.X) - (Left.X * Right.Z);
+    Result.Z = (Left.X * Right.Y) - (Left.Y * Right.X);
 
     return (Result);
 }
@@ -1101,205 +1137,178 @@ HMM_INLINE hmm_vec3 HMM_PREFIX(Cross)(hmm_vec3 VecOne, hmm_vec3 VecTwo)
  * Unary vector operations
  */
 
-COVERAGE(HMM_LengthSquaredVec2, 1)
-HMM_INLINE float HMM_PREFIX(LengthSquaredVec2)(hmm_vec2 A)
+COVERAGE(HMM_LenSqrV2, 1)
+static inline float HMM_LenSqrV2(HMM_Vec2 A)
 {
-    ASSERT_COVERED(HMM_LengthSquaredVec2);
+    ASSERT_COVERED(HMM_LenSqrV2);
 
-    float Result = HMM_PREFIX(DotVec2)(A, A);
+    float Result = HMM_DotV2(A, A);
 
     return (Result);
 }
 
-COVERAGE(HMM_LengthSquaredVec3, 1)
-HMM_INLINE float HMM_PREFIX(LengthSquaredVec3)(hmm_vec3 A)
+COVERAGE(HMM_LenSqrV3, 1)
+static inline float HMM_LenSqrV3(HMM_Vec3 A)
 {
-    ASSERT_COVERED(HMM_LengthSquaredVec3);
+    ASSERT_COVERED(HMM_LenSqrV3);
 
-    float Result = HMM_PREFIX(DotVec3)(A, A);
+    float Result = HMM_DotV3(A, A);
 
     return (Result);
 }
 
-COVERAGE(HMM_LengthSquaredVec4, 1)
-HMM_INLINE float HMM_PREFIX(LengthSquaredVec4)(hmm_vec4 A)
+COVERAGE(HMM_LenSqrV4, 1)
+static inline float HMM_LenSqrV4(HMM_Vec4 A)
 {
-    ASSERT_COVERED(HMM_LengthSquaredVec4);
+    ASSERT_COVERED(HMM_LenSqrV4);
 
-    float Result = HMM_PREFIX(DotVec4)(A, A);
+    float Result = HMM_DotV4(A, A);
 
     return (Result);
 }
 
-COVERAGE(HMM_LengthVec2, 1)
-HMM_INLINE float HMM_PREFIX(LengthVec2)(hmm_vec2 A)
+COVERAGE(HMM_LenV2, 1)
+static inline float HMM_LenV2(HMM_Vec2 A)
 {
-    ASSERT_COVERED(HMM_LengthVec2);
+    ASSERT_COVERED(HMM_LenV2);
 
-    float Result = HMM_PREFIX(SquareRootF)(HMM_PREFIX(LengthSquaredVec2)(A));
+    float Result = HMM_SqrtF(HMM_LenSqrV2(A));
 
     return (Result);
 }
 
-COVERAGE(HMM_LengthVec3, 1)
-HMM_INLINE float HMM_PREFIX(LengthVec3)(hmm_vec3 A)
+COVERAGE(HMM_LenV3, 1)
+static inline float HMM_LenV3(HMM_Vec3 A)
 {
-    ASSERT_COVERED(HMM_LengthVec3);
+    ASSERT_COVERED(HMM_LenV3);
 
-    float Result = HMM_PREFIX(SquareRootF)(HMM_PREFIX(LengthSquaredVec3)(A));
+    float Result = HMM_SqrtF(HMM_LenSqrV3(A));
 
     return (Result);
 }
 
-COVERAGE(HMM_LengthVec4, 1)
-HMM_INLINE float HMM_PREFIX(LengthVec4)(hmm_vec4 A)
+COVERAGE(HMM_LenV4, 1)
+static inline float HMM_LenV4(HMM_Vec4 A)
 {
-    ASSERT_COVERED(HMM_LengthVec4);
+    ASSERT_COVERED(HMM_LenV4);
 
-    float Result = HMM_PREFIX(SquareRootF)(HMM_PREFIX(LengthSquaredVec4)(A));
+    float Result = HMM_SqrtF(HMM_LenSqrV4(A));
 
     return(Result);
 }
 
-COVERAGE(HMM_NormalizeVec2, 2)
-HMM_INLINE hmm_vec2 HMM_PREFIX(NormalizeVec2)(hmm_vec2 A)
+COVERAGE(HMM_NormV2, 1)
+static inline HMM_Vec2 HMM_NormV2(HMM_Vec2 A)
 {
-    ASSERT_COVERED(HMM_NormalizeVec2);
+    ASSERT_COVERED(HMM_NormV2);
 
-    hmm_vec2 Result = {0};
+    return HMM_MulV2F(A, HMM_InvSqrtF(HMM_DotV2(A, A)));
+}
 
-    float VectorLength = HMM_PREFIX(LengthVec2)(A);
+COVERAGE(HMM_NormV3, 1)
+static inline HMM_Vec3 HMM_NormV3(HMM_Vec3 A)
+{
+    ASSERT_COVERED(HMM_NormV3);
 
-    /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
-    if (VectorLength != 0.0f)
-    {
-        ASSERT_COVERED(HMM_NormalizeVec2);
+    return HMM_MulV3F(A, HMM_InvSqrtF(HMM_DotV3(A, A)));
+}
 
-        Result.X = A.X * (1.0f / VectorLength);
-        Result.Y = A.Y * (1.0f / VectorLength);
-    }
+COVERAGE(HMM_NormV4, 1)
+static inline HMM_Vec4 HMM_NormV4(HMM_Vec4 A)
+{
+    ASSERT_COVERED(HMM_NormV4);
+
+    return HMM_MulV4F(A, HMM_InvSqrtF(HMM_DotV4(A, A)));
+}
+
+/*
+ * Utility vector functions
+ */
+
+COVERAGE(HMM_LerpV2, 1)
+static inline HMM_Vec2 HMM_LerpV2(HMM_Vec2 A, float Time, HMM_Vec2 B) 
+{
+    ASSERT_COVERED(HMM_LerpV2);
+
+    float InvTime = 1.0 - Time;
+    HMM_Vec2 Result = HMM_AddV2(HMM_MulV2F(A, InvTime), HMM_MulV2F(B, Time));
 
     return (Result);
 }
 
-COVERAGE(HMM_NormalizeVec3, 2)
-HMM_INLINE hmm_vec3 HMM_PREFIX(NormalizeVec3)(hmm_vec3 A)
+COVERAGE(HMM_LerpV3, 1)
+static inline HMM_Vec3 HMM_LerpV3(HMM_Vec3 A, float Time, HMM_Vec3 B) 
 {
-    ASSERT_COVERED(HMM_NormalizeVec3);
+    ASSERT_COVERED(HMM_LerpV3);
 
-    hmm_vec3 Result = {0};
-
-    float VectorLength = HMM_PREFIX(LengthVec3)(A);
-
-    /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
-    if (VectorLength != 0.0f)
-    {
-        ASSERT_COVERED(HMM_NormalizeVec3);
-
-        Result.X = A.X * (1.0f / VectorLength);
-        Result.Y = A.Y * (1.0f / VectorLength);
-        Result.Z = A.Z * (1.0f / VectorLength);
-    }
+    float InvTime = 1.0 - Time;
+    HMM_Vec3 Result = HMM_AddV3(HMM_MulV3F(A, InvTime), HMM_MulV3F(B, Time));
 
     return (Result);
 }
 
-COVERAGE(HMM_NormalizeVec4, 2)
-HMM_INLINE hmm_vec4 HMM_PREFIX(NormalizeVec4)(hmm_vec4 A)
+COVERAGE(HMM_LerpV4, 1)
+static inline HMM_Vec4 HMM_LerpV4(HMM_Vec4 A, float Time, HMM_Vec4 B) 
 {
-    ASSERT_COVERED(HMM_NormalizeVec4);
+    ASSERT_COVERED(HMM_LerpV4);
 
-    hmm_vec4 Result = {0};
-
-    float VectorLength = HMM_PREFIX(LengthVec4)(A);
-
-    /* NOTE(kiljacken): We need a zero check to not divide-by-zero */
-    if (VectorLength != 0.0f)
-    {
-        ASSERT_COVERED(HMM_NormalizeVec4);
-
-        float Multiplier = 1.0f / VectorLength;
-
-#ifdef HANDMADE_MATH__USE_SSE
-        __m128 SSEMultiplier = _mm_set1_ps(Multiplier);
-        Result.InternalElementsSSE = _mm_mul_ps(A.InternalElementsSSE, SSEMultiplier);
-#else
-        Result.X = A.X * Multiplier;
-        Result.Y = A.Y * Multiplier;
-        Result.Z = A.Z * Multiplier;
-        Result.W = A.W * Multiplier;
-#endif
-    }
+    float InvTime = 1.0 - Time;
+    HMM_Vec4 Result = HMM_AddV4(HMM_MulV4F(A, InvTime), HMM_MulV4F(B, Time));
 
     return (Result);
 }
-
-COVERAGE(HMM_FastNormalizeVec2, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(FastNormalizeVec2)(hmm_vec2 A)
-{
-    ASSERT_COVERED(HMM_FastNormalizeVec2);
-
-    return HMM_PREFIX(MultiplyVec2f)(A, HMM_PREFIX(RSquareRootF)(HMM_PREFIX(DotVec2)(A, A)));
-}
-
-COVERAGE(HMM_FastNormalizeVec3, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(FastNormalizeVec3)(hmm_vec3 A)
-{
-    ASSERT_COVERED(HMM_FastNormalizeVec3);
-
-    return HMM_PREFIX(MultiplyVec3f)(A, HMM_PREFIX(RSquareRootF)(HMM_PREFIX(DotVec3)(A, A)));
-}
-
-COVERAGE(HMM_FastNormalizeVec4, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(FastNormalizeVec4)(hmm_vec4 A)
-{
-    ASSERT_COVERED(HMM_FastNormalizeVec4);
-
-    return HMM_PREFIX(MultiplyVec4f)(A, HMM_PREFIX(RSquareRootF)(HMM_PREFIX(DotVec4)(A, A)));
-}
-
 
 /*
  * SSE stuff
  */
 
-#ifdef HANDMADE_MATH__USE_SSE
-COVERAGE(HMM_LinearCombineSSE, 1)
-HMM_INLINE __m128 HMM_PREFIX(LinearCombineSSE)(__m128 Left, hmm_mat4 Right)
+COVERAGE(HMM_LinearCombineV4M4, 1)
+static inline HMM_Vec4 HMM_LinearCombineV4M4(HMM_Vec4 Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_LinearCombineSSE);
+    ASSERT_COVERED(HMM_LinearCombineV4M4);
 
-    __m128 Result;
-    Result = _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x00), Right.Columns[0]);
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0x55), Right.Columns[1]));
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xaa), Right.Columns[2]));
-    Result = _mm_add_ps(Result, _mm_mul_ps(_mm_shuffle_ps(Left, Left, 0xff), Right.Columns[3]));
-
-    return (Result);
-}
+    HMM_Vec4 Result;
+#ifdef HANDMADE_MATH__USE_SSE
+    Result.SSE = _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0x00), Right.Columns[0].SSE);
+    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0x55), Right.Columns[1].SSE));
+    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0xaa), Right.Columns[2].SSE));
+    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0xff), Right.Columns[3].SSE));
+#else
+    int Columns, Rows;
+    for(Rows = 0; Rows < 4; ++Rows)
+    {
+            float Sum = 0;
+            for(Columns = 0; Columns < 4; ++Columns)
+            {
+                Sum += Left.Elements[Columns]*Right.Elements[Columns][Rows];
+            }
+            Result.Elements[Rows] = Sum;
+    }
 #endif
 
+    return (Result);
+}
 
 /*
- * Matrix functions
+ * 4x4 Matrices
  */
 
-COVERAGE(HMM_Mat4, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Mat4)(void)
+COVERAGE(HMM_M4, 1)
+static inline HMM_Mat4 HMM_M4(void)
 {
-    ASSERT_COVERED(HMM_Mat4);
+    ASSERT_COVERED(HMM_M4);
 
-    hmm_mat4 Result = {0};
+    HMM_Mat4 Result = {0};
 
     return (Result);
 }
 
-COVERAGE(HMM_Mat4d, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Mat4d)(float Diagonal)
+COVERAGE(HMM_M4D, 1)
+static inline HMM_Mat4 HMM_M4D(float Diagonal)
 {
-    ASSERT_COVERED(HMM_Mat4d);
+    ASSERT_COVERED(HMM_M4D);
 
-    hmm_mat4 Result = HMM_PREFIX(Mat4)();
+    HMM_Mat4 Result = HMM_M4();
 
     Result.Elements[0][0] = Diagonal;
     Result.Elements[1][1] = Diagonal;
@@ -1309,15 +1318,15 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(Mat4d)(float Diagonal)
     return (Result);
 }
 
-COVERAGE(HMM_Transpose, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Transpose)(hmm_mat4 Matrix)
+COVERAGE(HMM_TransposeM4, 1)
+static inline HMM_Mat4 HMM_TransposeM4(HMM_Mat4 Matrix)
 {
-    ASSERT_COVERED(HMM_Transpose);
+    ASSERT_COVERED(HMM_TransposeM4);
 
-    hmm_mat4 Result = Matrix;
+    HMM_Mat4 Result = Matrix;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    _MM_TRANSPOSE4_PS(Result.Columns[0], Result.Columns[1], Result.Columns[2], Result.Columns[3]);
+    _MM_TRANSPOSE4_PS(Result.Columns[0].SSE, Result.Columns[1].SSE, Result.Columns[2].SSE, Result.Columns[3].SSE);
 #else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
@@ -1334,20 +1343,20 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(Transpose)(hmm_mat4 Matrix)
     return (Result);
 }
 
-COVERAGE(HMM_AddMat4, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(AddMat4)(hmm_mat4 Left, hmm_mat4 Right)
+COVERAGE(HMM_AddM4, 1)
+static inline HMM_Mat4 HMM_AddM4(HMM_Mat4 Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_AddMat4);
+    ASSERT_COVERED(HMM_AddM4);
 
-    hmm_mat4 Result;
+    HMM_Mat4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.Columns[0] = _mm_add_ps(Left.Columns[0], Right.Columns[0]);
-    Result.Columns[1] = _mm_add_ps(Left.Columns[1], Right.Columns[1]);
-    Result.Columns[2] = _mm_add_ps(Left.Columns[2], Right.Columns[2]);
-    Result.Columns[3] = _mm_add_ps(Left.Columns[3], Right.Columns[3]);
+    Result.Columns[0].SSE = _mm_add_ps(Left.Columns[0].SSE, Right.Columns[0].SSE);
+    Result.Columns[1].SSE = _mm_add_ps(Left.Columns[1].SSE, Right.Columns[1].SSE);
+    Result.Columns[2].SSE = _mm_add_ps(Left.Columns[2].SSE, Right.Columns[2].SSE);
+    Result.Columns[3].SSE = _mm_add_ps(Left.Columns[3].SSE, Right.Columns[3].SSE);
 #else
-     int Columns;
+    int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
     {
         int Rows;
@@ -1362,18 +1371,18 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(AddMat4)(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
-COVERAGE(HMM_SubtractMat4, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(SubtractMat4)(hmm_mat4 Left, hmm_mat4 Right)
+COVERAGE(HMM_SubM4, 1)
+static inline HMM_Mat4 HMM_SubM4(HMM_Mat4 Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_SubtractMat4);
+    ASSERT_COVERED(HMM_SubM4);
 
-    hmm_mat4 Result;
+    HMM_Mat4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.Columns[0] = _mm_sub_ps(Left.Columns[0], Right.Columns[0]);
-    Result.Columns[1] = _mm_sub_ps(Left.Columns[1], Right.Columns[1]);
-    Result.Columns[2] = _mm_sub_ps(Left.Columns[2], Right.Columns[2]);
-    Result.Columns[3] = _mm_sub_ps(Left.Columns[3], Right.Columns[3]);
+    Result.Columns[0].SSE = _mm_sub_ps(Left.Columns[0].SSE, Right.Columns[0].SSE);
+    Result.Columns[1].SSE = _mm_sub_ps(Left.Columns[1].SSE, Right.Columns[1].SSE);
+    Result.Columns[2].SSE = _mm_sub_ps(Left.Columns[2].SSE, Right.Columns[2].SSE);
+    Result.Columns[3].SSE = _mm_sub_ps(Left.Columns[3].SSE, Right.Columns[3].SSE);
 #else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
@@ -1389,54 +1398,35 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(SubtractMat4)(hmm_mat4 Left, hmm_mat4 Right)
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyMat4, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(MultiplyMat4)(hmm_mat4 Left, hmm_mat4 Right)
+COVERAGE(HMM_MulM4, 1)
+static inline HMM_Mat4 HMM_MulM4(HMM_Mat4 Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4);
+    ASSERT_COVERED(HMM_MulM4);
 
-    hmm_mat4 Result;
+    HMM_Mat4 Result;
 
-#ifdef HANDMADE_MATH__USE_SSE
-    Result.Columns[0] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[0], Left);
-    Result.Columns[1] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[1], Left);
-    Result.Columns[2] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[2], Left);
-    Result.Columns[3] = HMM_PREFIX(LinearCombineSSE)(Right.Columns[3], Left);
-#else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            float Sum = 0;
-            int CurrentMatrice;
-            for(CurrentMatrice = 0; CurrentMatrice < 4; ++CurrentMatrice)
-            {
-                Sum += Left.Elements[CurrentMatrice][Rows] * Right.Elements[Columns][CurrentMatrice];
-            }
-
-            Result.Elements[Columns][Rows] = Sum;
-        }
-    }
-#endif
+    Result.Columns[0] = HMM_LinearCombineV4M4(Right.Columns[0], Left);
+    Result.Columns[1] = HMM_LinearCombineV4M4(Right.Columns[1], Left);
+    Result.Columns[2] = HMM_LinearCombineV4M4(Right.Columns[2], Left);
+    Result.Columns[3] = HMM_LinearCombineV4M4(Right.Columns[3], Left);
 
     return (Result);
 }
 
 
-COVERAGE(HMM_MultiplyMat4f, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(MultiplyMat4f)(hmm_mat4 Matrix, float Scalar)
+COVERAGE(HMM_MulM4F, 1)
+static inline HMM_Mat4 HMM_MulM4F(HMM_Mat4 Matrix, float Scalar)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4f);
+    ASSERT_COVERED(HMM_MulM4F);
 
-    hmm_mat4 Result;
+    HMM_Mat4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 SSEScalar = _mm_set1_ps(Scalar);
-    Result.Columns[0] = _mm_mul_ps(Matrix.Columns[0], SSEScalar);
-    Result.Columns[1] = _mm_mul_ps(Matrix.Columns[1], SSEScalar);
-    Result.Columns[2] = _mm_mul_ps(Matrix.Columns[2], SSEScalar);
-    Result.Columns[3] = _mm_mul_ps(Matrix.Columns[3], SSEScalar);
+    Result.Columns[0].SSE = _mm_mul_ps(Matrix.Columns[0].SSE, SSEScalar);
+    Result.Columns[1].SSE = _mm_mul_ps(Matrix.Columns[1].SSE, SSEScalar);
+    Result.Columns[2].SSE = _mm_mul_ps(Matrix.Columns[2].SSE, SSEScalar);
+    Result.Columns[3].SSE = _mm_mul_ps(Matrix.Columns[3].SSE, SSEScalar);
 #else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
@@ -1452,46 +1442,32 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(MultiplyMat4f)(hmm_mat4 Matrix, float Scalar)
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyMat4ByVec4, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(MultiplyMat4ByVec4)(hmm_mat4 Matrix, hmm_vec4 Vector)
+COVERAGE(HMM_MulM4V4, 1)
+static inline HMM_Vec4 HMM_MulM4V4(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4ByVec4);
+    ASSERT_COVERED(HMM_MulM4V4);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 
-#ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = HMM_PREFIX(LinearCombineSSE)(Vector.InternalElementsSSE, Matrix);
-#else
-    int Columns, Rows;
-    for(Rows = 0; Rows < 4; ++Rows)
-    {
-        float Sum = 0;
-        for(Columns = 0; Columns < 4; ++Columns)
-        {
-            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
-        }
-
-        Result.Elements[Rows] = Sum;
-    }
-#endif
+    Result = HMM_LinearCombineV4M4(Vector, Matrix);
 
     return (Result);
 }
 
 
-COVERAGE(HMM_DivideMat4f, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(DivideMat4f)(hmm_mat4 Matrix, float Scalar)
+COVERAGE(HMM_DivM4F, 1)
+static inline HMM_Mat4 HMM_DivM4F(HMM_Mat4 Matrix, float Scalar)
 {
-    ASSERT_COVERED(HMM_DivideMat4f);
+    ASSERT_COVERED(HMM_DivM4F);
 
-    hmm_mat4 Result;
+    HMM_Mat4 Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 SSEScalar = _mm_set1_ps(Scalar);
-    Result.Columns[0] = _mm_div_ps(Matrix.Columns[0], SSEScalar);
-    Result.Columns[1] = _mm_div_ps(Matrix.Columns[1], SSEScalar);
-    Result.Columns[2] = _mm_div_ps(Matrix.Columns[2], SSEScalar);
-    Result.Columns[3] = _mm_div_ps(Matrix.Columns[3], SSEScalar);
+    Result.Columns[0].SSE = _mm_div_ps(Matrix.Columns[0].SSE, SSEScalar);
+    Result.Columns[1].SSE = _mm_div_ps(Matrix.Columns[1].SSE, SSEScalar);
+    Result.Columns[2].SSE = _mm_div_ps(Matrix.Columns[2].SSE, SSEScalar);
+    Result.Columns[3].SSE = _mm_div_ps(Matrix.Columns[3].SSE, SSEScalar);
 #else
     int Columns;
     for(Columns = 0; Columns < 4; ++Columns)
@@ -1507,56 +1483,535 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(DivideMat4f)(hmm_mat4 Matrix, float Scalar)
     return (Result);
 }
 
-/*
- * Common graphics transformations
- */
-
-COVERAGE(HMM_Orthographic, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Orthographic)(float Left, float Right, float Bottom, float Top, float Near, float Far)
+COVERAGE(HMM_DeterminantM4, 1)
+static inline float HMM_DeterminantM4(HMM_Mat4 Matrix) 
 {
-    ASSERT_COVERED(HMM_Orthographic);
+    ASSERT_COVERED(HMM_DeterminantM4);
+    float Result;
 
-    hmm_mat4 Result = HMM_PREFIX(Mat4)();
-
-    Result.Elements[0][0] = 2.0f / (Right - Left);
-    Result.Elements[1][1] = 2.0f / (Top - Bottom);
-    Result.Elements[2][2] = 2.0f / (Near - Far);
-    Result.Elements[3][3] = 1.0f;
-
-    Result.Elements[3][0] = (Left + Right) / (Left - Right);
-    Result.Elements[3][1] = (Bottom + Top) / (Bottom - Top);
-    Result.Elements[3][2] = (Far + Near) / (Near - Far);
+    HMM_Vec3 C01 = HMM_Cross(Matrix.Columns[0].XYZ, Matrix.Columns[1].XYZ);
+    HMM_Vec3 C23 = HMM_Cross(Matrix.Columns[2].XYZ, Matrix.Columns[3].XYZ);
+    HMM_Vec3 B10 = HMM_SubV3(HMM_MulV3F(Matrix.Columns[0].XYZ, Matrix.Columns[1].W), HMM_MulV3F(Matrix.Columns[1].XYZ, Matrix.Columns[0].W));
+    HMM_Vec3 B32 = HMM_SubV3(HMM_MulV3F(Matrix.Columns[2].XYZ, Matrix.Columns[3].W), HMM_MulV3F(Matrix.Columns[3].XYZ, Matrix.Columns[2].W));
+    
+    Result = HMM_DotV3(C01, B32) + HMM_DotV3(C23, B10);
 
     return (Result);
 }
 
-COVERAGE(HMM_Perspective, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Perspective)(float FOV, float AspectRatio, float Near, float Far)
+COVERAGE(HMM_InvGeneralM4, 1)
+static inline HMM_Mat4 HMM_InvGeneralM4(HMM_Mat4 Matrix) 
 {
-    ASSERT_COVERED(HMM_Perspective);
+    ASSERT_COVERED(HMM_InvGeneralM4);
+    HMM_Mat4 Result;
 
-    hmm_mat4 Result = HMM_PREFIX(Mat4)();
+    HMM_Vec3 C01 = HMM_Cross(Matrix.Columns[0].XYZ, Matrix.Columns[1].XYZ);
+    HMM_Vec3 C23 = HMM_Cross(Matrix.Columns[2].XYZ, Matrix.Columns[3].XYZ);
+    HMM_Vec3 B10 = HMM_SubV3(HMM_MulV3F(Matrix.Columns[0].XYZ, Matrix.Columns[1].W), HMM_MulV3F(Matrix.Columns[1].XYZ, Matrix.Columns[0].W));
+    HMM_Vec3 B32 = HMM_SubV3(HMM_MulV3F(Matrix.Columns[2].XYZ, Matrix.Columns[3].W), HMM_MulV3F(Matrix.Columns[3].XYZ, Matrix.Columns[2].W));
+    
+    float InvDeterminant = 1.0f / (HMM_DotV3(C01, B32) + HMM_DotV3(C23, B10));
+    C01 = HMM_MulV3F(C01, InvDeterminant);
+    C23 = HMM_MulV3F(C23, InvDeterminant);
+    B10 = HMM_MulV3F(B10, InvDeterminant);
+    B32 = HMM_MulV3F(B32, InvDeterminant);
+
+    Result.Columns[0] = HMM_V4V(HMM_AddV3(HMM_Cross(Matrix.Columns[1].XYZ, B32), HMM_MulV3F(C23, Matrix.Columns[1].W)), -HMM_DotV3(Matrix.Columns[1].XYZ, C23));
+    Result.Columns[1] = HMM_V4V(HMM_SubV3(HMM_Cross(B32, Matrix.Columns[0].XYZ), HMM_MulV3F(C23, Matrix.Columns[0].W)), +HMM_DotV3(Matrix.Columns[0].XYZ, C23));
+    Result.Columns[2] = HMM_V4V(HMM_AddV3(HMM_Cross(Matrix.Columns[3].XYZ, B10), HMM_MulV3F(C01, Matrix.Columns[3].W)), -HMM_DotV3(Matrix.Columns[3].XYZ, C01));
+    Result.Columns[3] = HMM_V4V(HMM_SubV3(HMM_Cross(B10, Matrix.Columns[2].XYZ), HMM_MulV3F(C01, Matrix.Columns[2].W)), +HMM_DotV3(Matrix.Columns[2].XYZ, C01));
+        
+    return HMM_TransposeM4(Result);
+}
+
+/*
+ * 3x3 Matrices
+ */
+
+COVERAGE(HMM_M3, 1)
+static inline HMM_Mat3 HMM_M3(void)
+{
+    ASSERT_COVERED(HMM_M3);
+    
+    HMM_Mat3 Result = {0};
+
+    return (Result);
+}
+
+COVERAGE(HMM_M3D, 1)
+static inline HMM_Mat3 HMM_M3D(float Diagonal)
+{
+    ASSERT_COVERED(HMM_M3D);
+    
+    HMM_Mat3 Result = {0};
+
+    Result.Elements[0][0] = Diagonal;
+    Result.Elements[1][1] = Diagonal;
+    Result.Elements[2][2] = Diagonal;
+
+    return (Result);
+}
+
+COVERAGE(HMM_TransposeM3, 1)
+static inline HMM_Mat3 HMM_TransposeM3(HMM_Mat3 Matrix)
+{
+    ASSERT_COVERED(HMM_TransposeM3);
+
+    HMM_Mat3 Result = Matrix;
+
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
+        }
+    }
+    
+    return (Result);
+}
+
+COVERAGE(HMM_AddM3, 1)
+static inline HMM_Mat3 HMM_AddM3(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    ASSERT_COVERED(HMM_AddM3);
+    
+    HMM_Mat3 Result;
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
+        }
+    }
+
+   
+    return (Result);    
+}
+
+COVERAGE(HMM_SubM3, 1)
+static inline HMM_Mat3 HMM_SubM3(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    ASSERT_COVERED(HMM_SubM3);
+
+    HMM_Mat3 Result;
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
+        }
+    }
+    return (Result);
+}
+
+COVERAGE(HMM_MulM3V3, 1)
+static inline HMM_Vec3 HMM_MulM3V3(HMM_Mat3 Matrix, HMM_Vec3 Vector)
+{
+    ASSERT_COVERED(HMM_MulM3V3);
+    
+    HMM_Vec3 Result = {0};
+    int Columns, Rows;
+    for(Rows = 0; Rows < 3; ++Rows)
+    {
+        float Sum = 0.0f;
+        for(Columns = 0; Columns < 3; ++Columns)
+        {
+            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
+        }
+        Result.Elements[Rows] = Sum;
+    }
+    return (Result);    
+}
+
+COVERAGE(HMM_MulM3, 1)
+static inline HMM_Mat3 HMM_MulM3(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    ASSERT_COVERED(HMM_MulM3);
+
+    HMM_Mat3 Result;
+
+    Result.Columns[0] = HMM_MulM3V3(Left, Right.Columns[0]);
+    Result.Columns[1] = HMM_MulM3V3(Left, Right.Columns[1]);
+    Result.Columns[2] = HMM_MulM3V3(Left, Right.Columns[2]);
+
+    return (Result);    
+}
+
+COVERAGE(HMM_MulM3F, 1)
+static inline HMM_Mat3 HMM_MulM3F(HMM_Mat3 Matrix, float Scalar)
+{
+    ASSERT_COVERED(HMM_MulM3F);
+    HMM_Mat3 Result;
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
+        }
+    }
+    return (Result);            
+}
+
+COVERAGE(HMM_DivM3, 1)
+static inline HMM_Mat3 HMM_DivM3F(HMM_Mat3 Matrix, float Scalar)
+{
+    ASSERT_COVERED(HMM_DivM3);
+    HMM_Mat3 Result;
+    int Columns;
+    for(Columns = 0; Columns < 3; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 3; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
+        }
+    }
+    return (Result);                    
+}
+
+COVERAGE(HMM_DeterminantM3, 1)
+static inline float HMM_DeterminantM3(HMM_Mat3 Matrix) 
+{
+    ASSERT_COVERED(HMM_DeterminantM3);
+    float Result;
+
+    HMM_Mat3 Cross;
+    Cross.Columns[0] = HMM_Cross(Matrix.Columns[1], Matrix.Columns[2]);
+    Cross.Columns[1] = HMM_Cross(Matrix.Columns[2], Matrix.Columns[0]);
+    Cross.Columns[2] = HMM_Cross(Matrix.Columns[0], Matrix.Columns[1]);
+
+    Result = HMM_DotV3(Cross.Columns[2], Matrix.Columns[2]);
+
+    return (Result);
+}
+
+COVERAGE(HMM_InvGeneralM3, 1)
+static inline HMM_Mat3 HMM_InvGeneralM3(HMM_Mat3 Matrix) 
+{
+    ASSERT_COVERED(HMM_InvGeneralM3);
+    HMM_Mat3 Result;
+
+    HMM_Mat3 Cross;
+    Cross.Columns[0] = HMM_Cross(Matrix.Columns[1], Matrix.Columns[2]);
+    Cross.Columns[1] = HMM_Cross(Matrix.Columns[2], Matrix.Columns[0]);
+    Cross.Columns[2] = HMM_Cross(Matrix.Columns[0], Matrix.Columns[1]);
+
+    float InvDeterminant = 1.0f / HMM_DotV3(Cross.Columns[2], Matrix.Columns[2]);
+
+    Result.Columns[0] = HMM_MulV3F(Cross.Columns[0], InvDeterminant);
+    Result.Columns[1] = HMM_MulV3F(Cross.Columns[1], InvDeterminant);
+    Result.Columns[2] = HMM_MulV3F(Cross.Columns[2], InvDeterminant);
+
+    return HMM_TransposeM3(Result);
+}
+
+/*
+ * 2x2 Matrices
+ */
+
+COVERAGE(HMM_M2, 1)
+static inline HMM_Mat2 HMM_M2(void)
+{
+    ASSERT_COVERED(HMM_M2);
+    
+    HMM_Mat2 Result = {0};
+
+    return (Result);
+}
+
+COVERAGE(HMM_M2D, 1)
+static inline HMM_Mat2 HMM_M2D(float Diagonal)
+{
+    ASSERT_COVERED(HMM_M2D);
+    
+    HMM_Mat2 Result = {0};
+
+    Result.Elements[0][0] = Diagonal;
+    Result.Elements[1][1] = Diagonal;
+
+    return (Result);
+}
+
+COVERAGE(HMM_TransposeM2, 1)
+static inline HMM_Mat2 HMM_TransposeM2(HMM_Mat2 Matrix)
+{
+    ASSERT_COVERED(HMM_TransposeM2);
+    
+    HMM_Mat2 Result = Matrix;
+
+    int Columns, Rows;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
+        }
+    }
+    
+    return (Result);
+}
+
+COVERAGE(HMM_AddM2, 1)
+static inline HMM_Mat2 HMM_AddM2(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    ASSERT_COVERED(HMM_AddM2);
+    
+    HMM_Mat2 Result;
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
+        }
+    }
+
+   
+    return (Result);    
+}
+
+COVERAGE(HMM_SubM2, 1)
+static inline HMM_Mat2 HMM_SubM2(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    ASSERT_COVERED(HMM_SubM2);
+    
+    HMM_Mat2 Result;
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
+        }
+    }
+    return (Result);
+}
+
+COVERAGE(HMM_MulM2V2, 1)
+static inline HMM_Vec2 HMM_MulM2V2(HMM_Mat2 Matrix, HMM_Vec2 Vector)
+{
+    ASSERT_COVERED(HMM_MulM2V2);
+    
+    HMM_Vec2 Result;
+    int Columns, Rows;
+    for(Rows = 0; Rows < 2; ++Rows)
+    {
+        float Sum = 0.0f;
+        for(Columns = 0; Columns < 2; ++Columns)
+        {
+             Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
+        }
+        Result.Elements[Rows] = Sum;
+    }
+    return (Result);    
+}
+
+COVERAGE(HMM_MulM2, 1)
+static inline HMM_Mat2 HMM_MulM2(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    ASSERT_COVERED(HMM_MulM2);
+    
+    HMM_Mat2 Result;
+
+    Result.Columns[0] = HMM_MulM2V2(Left, Right.Columns[0]);
+    Result.Columns[1] = HMM_MulM2V2(Left, Right.Columns[1]);
+
+    return (Result);    
+}
+
+COVERAGE(HMM_MulM2F, 1)
+static inline HMM_Mat2 HMM_MulM2F(HMM_Mat2 Matrix, float Scalar)
+{
+    ASSERT_COVERED(HMM_MulM2F);
+    
+    HMM_Mat2 Result;
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
+        }
+    }
+    return (Result);            
+}
+
+COVERAGE(HMM_DivM2F, 1)
+static inline HMM_Mat2 HMM_DivM2F(HMM_Mat2 Matrix, float Scalar)
+{
+    ASSERT_COVERED(HMM_DivM2F);
+    
+    HMM_Mat2 Result;
+    int Columns;
+    for(Columns = 0; Columns < 2; ++Columns)
+    {
+        int Rows;
+        for(Rows = 0; Rows < 2; ++Rows)
+        {
+            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
+        }
+    }
+    return (Result);                    
+}
+
+COVERAGE(HMM_DeterminantM2, 1)
+static inline float HMM_DeterminantM2(HMM_Mat2 Matrix) 
+{
+    ASSERT_COVERED(HMM_DeterminantM2);
+    float Result;
+
+    Result =  Matrix.Elements[0][0]*Matrix.Elements[1][1] - Matrix.Elements[0][1]*Matrix.Elements[1][0];
+
+    return (Result);
+}
+
+
+COVERAGE(HMM_InvGeneralM2, 1)
+static inline HMM_Mat2 HMM_InvGeneralM2(HMM_Mat2 Matrix) 
+{
+    ASSERT_COVERED(HMM_InvGeneralM2);
+    HMM_Mat2 Result;
+
+    float InvDeterminant = 1.0f / HMM_DeterminantM2(Matrix);
+    Result.Elements[0][0] = InvDeterminant * +Matrix.Elements[1][1];
+    Result.Elements[1][1] = InvDeterminant * +Matrix.Elements[0][0];
+    Result.Elements[0][1] = InvDeterminant * -Matrix.Elements[0][1];
+    Result.Elements[1][0] = InvDeterminant * -Matrix.Elements[1][0];
+
+    return (Result);
+}
+
+/*
+ * Common graphics transformations
+ */
+
+COVERAGE(HMM_Orthographic_RH, 1)
+static inline HMM_Mat4 HMM_Orthographic_RH(float Left, float Right, float Bottom, float Top, float Near, float Far)
+{
+    ASSERT_COVERED(HMM_Orthographic_RH);
+
+    HMM_Mat4 Result = {0};
+
+    Result.Elements[0][0] = 2.0f / (Right - Left);
+    Result.Elements[1][1] = 2.0f / (Top - Bottom);
+    Result.Elements[3][3] = 1.0f;
+
+    Result.Elements[3][0] = (Left + Right) / (Left - Right);
+    Result.Elements[3][1] = (Bottom + Top) / (Bottom - Top);
+
+#ifdef HANDMADE_MATH_USE_NDC_Z01
+    Result.Elements[2][2] = 1.0f / (Near - Far);
+    Result.Elements[3][2] = (Near) / (Near - Far);
+#else
+    Result.Elements[2][2] = 2.0f / (Near - Far);
+    Result.Elements[3][2] = (Far + Near) / (Near - Far);
+#endif
+
+
+    return (Result);
+}
+
+COVERAGE(HMM_Orthographic_LH, 1)
+static inline HMM_Mat4 HMM_Orthographic_LH(float Left, float Right, float Bottom, float Top, float Near, float Far)
+{
+    ASSERT_COVERED(HMM_Orthographic_LH);
+
+    HMM_Mat4 Result = HMM_Orthographic_RH(Left, Right, Bottom, Top, Near, Far);
+    Result.Elements[2][2] = -Result.Elements[2][2];
+    
+    return (Result);
+}
+
+COVERAGE(HMM_InvOrthographic, 1) 
+static inline HMM_Mat4 HMM_InvOrthographic(HMM_Mat4 OrthoMatrix)
+{
+    ASSERT_COVERED(HMM_InvOrthographic);
+    HMM_Mat4 Result = {0};
+
+    Result.Elements[0][0] = 1.0f / OrthoMatrix.Elements[0][0];
+    Result.Elements[1][1] = 1.0f / OrthoMatrix.Elements[1][1];
+    Result.Elements[2][2] = 1.0f / OrthoMatrix.Elements[2][2];
+    Result.Elements[3][3] = 1.0f;
+    
+    Result.Elements[3][0] = -OrthoMatrix.Elements[3][0] * Result.Elements[0][0];
+    Result.Elements[3][1] = -OrthoMatrix.Elements[3][1] * Result.Elements[1][1];
+    Result.Elements[3][2] = -OrthoMatrix.Elements[3][2] * Result.Elements[2][2];
+
+    return (Result);
+}
+
+COVERAGE(HMM_Perspective_RH, 1)
+static inline HMM_Mat4 HMM_Perspective_RH(float FOV, float AspectRatio, float Near, float Far)
+{
+    ASSERT_COVERED(HMM_Perspective_RH);
+
+    HMM_Mat4 Result = {0};
 
     // See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
 
-    float Cotangent = 1.0f / HMM_PREFIX(TanF)(FOV * (HMM_PI32 / 360.0f));
-
+    float Cotangent = 1.0f / HMM_TanF(FOV / 2.0f);
+    
     Result.Elements[0][0] = Cotangent / AspectRatio;
     Result.Elements[1][1] = Cotangent;
+
     Result.Elements[2][3] = -1.0f;
+
+#ifdef HANDMADE_MATH_USE_NDC_Z01 
+    Result.Elements[2][2] = (Far) / (Near - Far);
+    Result.Elements[3][2] = (Near * Far) / (Near - Far);
+#else
     Result.Elements[2][2] = (Near + Far) / (Near - Far);
     Result.Elements[3][2] = (2.0f * Near * Far) / (Near - Far);
-    Result.Elements[3][3] = 0.0f;
+#endif
+
+    return (Result);
+}
+
+COVERAGE(HMM_Perspective_LH, 1)
+static inline HMM_Mat4 HMM_Perspective_LH(float FOV, float AspectRatio, float Near, float Far)
+{ 
+    ASSERT_COVERED(HMM_Perspective_LH);
+
+    HMM_Mat4 Result = HMM_Perspective_RH(FOV, AspectRatio, Near, Far);
+    Result.Elements[2][3] = +1.0f;
+  
+    return (Result);
+}
+
+COVERAGE(HMM_InvPerspective, 1)
+static inline HMM_Mat4 HMM_InvPerspective(HMM_Mat4 PerspectiveMatrix) 
+{
+    ASSERT_COVERED(HMM_InvPerspective);
+
+    HMM_Mat4 Result = {0};
+    Result.Elements[0][0] = 1.0f / PerspectiveMatrix.Elements[0][0];
+    Result.Elements[1][1] = 1.0f / PerspectiveMatrix.Elements[1][1];
+    Result.Elements[2][2] = 0.0f;
+
+    Result.Elements[2][3] = 1.0f / PerspectiveMatrix.Elements[3][2];
+    Result.Elements[3][3] = PerspectiveMatrix.Elements[2][2] * Result.Elements[2][3];
+    Result.Elements[3][2] = PerspectiveMatrix.Elements[2][3];
 
     return (Result);
 }
 
 COVERAGE(HMM_Translate, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Translate)(hmm_vec3 Translation)
+static inline HMM_Mat4 HMM_Translate(HMM_Vec3 Translation)
 {
     ASSERT_COVERED(HMM_Translate);
 
-    hmm_mat4 Result = HMM_PREFIX(Mat4d)(1.0f);
+    HMM_Mat4 Result = HMM_M4D(1.0f);
 
     Result.Elements[3][0] = Translation.X;
     Result.Elements[3][1] = Translation.Y;
@@ -1565,17 +2020,31 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(Translate)(hmm_vec3 Translation)
     return (Result);
 }
 
-COVERAGE(HMM_Rotate, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Rotate)(float Angle, hmm_vec3 Axis)
+COVERAGE(HMM_InvTranslate, 1)
+static inline HMM_Mat4 HMM_InvTranslate(HMM_Mat4 TranslationMatrix)
 {
-    ASSERT_COVERED(HMM_Rotate);
+    ASSERT_COVERED(HMM_InvTranslate);
 
-    hmm_mat4 Result = HMM_PREFIX(Mat4d)(1.0f);
+    HMM_Mat4 Result = TranslationMatrix;
 
-    Axis = HMM_PREFIX(NormalizeVec3)(Axis);
+    Result.Elements[3][0] = -Result.Elements[3][0];
+    Result.Elements[3][1] = -Result.Elements[3][1];
+    Result.Elements[3][2] = -Result.Elements[3][2];
 
-    float SinTheta = HMM_PREFIX(SinF)(HMM_PREFIX(ToRadians)(Angle));
-    float CosTheta = HMM_PREFIX(CosF)(HMM_PREFIX(ToRadians)(Angle));
+    return (Result);
+}
+
+COVERAGE(HMM_Rotate_RH, 1)
+static inline HMM_Mat4 HMM_Rotate_RH(float Angle, HMM_Vec3 Axis)
+{
+    ASSERT_COVERED(HMM_Rotate_RH);
+
+    HMM_Mat4 Result = HMM_M4D(1.0f);
+
+    Axis = HMM_NormV3(Axis);
+
+    float SinTheta = HMM_SinF(Angle);
+    float CosTheta = HMM_CosF(Angle);
     float CosValue = 1.0f - CosTheta;
 
     Result.Elements[0][0] = (Axis.X * Axis.X * CosValue) + CosTheta;
@@ -1594,13 +2063,29 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(Rotate)(float Angle, hmm_vec3 Axis)
 }
 
 
+COVERAGE(HMM_Rotate_LH, 1)
+static inline HMM_Mat4 HMM_Rotate_LH(float Angle, HMM_Vec3 Axis)
+{
+    ASSERT_COVERED(HMM_Rotate_LH);
+
+    /* NOTE(lcf): Matrix will be inverse/transpose of RH. */
+    return HMM_Rotate_RH(-Angle, Axis);
+}
+
+COVERAGE(HMM_InvRotate, 1)
+static inline HMM_Mat4 HMM_InvRotate(HMM_Mat4 RotationMatrix)
+{
+    ASSERT_COVERED(HMM_InvRotate);
+
+    return HMM_TransposeM4(RotationMatrix);
+}
 
 COVERAGE(HMM_Scale, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Scale)(hmm_vec3 Scale)
+static inline HMM_Mat4 HMM_Scale(HMM_Vec3 Scale)
 {
     ASSERT_COVERED(HMM_Scale);
 
-    hmm_mat4 Result = HMM_PREFIX(Mat4d)(1.0f);
+    HMM_Mat4 Result = HMM_M4D(1.0f);
 
     Result.Elements[0][0] = Scale.X;
     Result.Elements[1][1] = Scale.Y;
@@ -1609,16 +2094,24 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(Scale)(hmm_vec3 Scale)
     return (Result);
 }
 
-COVERAGE(HMM_LookAt, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(LookAt)(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 Up)
+COVERAGE(HMM_InvScale, 1)
+static inline HMM_Mat4 HMM_InvScale(HMM_Mat4 ScaleMatrix) 
 {
-    ASSERT_COVERED(HMM_LookAt);
+    ASSERT_COVERED(HMM_InvScale);
 
-    hmm_mat4 Result;
+    HMM_Mat4 Result = ScaleMatrix;
 
-    hmm_vec3 F = HMM_PREFIX(NormalizeVec3)(HMM_PREFIX(SubtractVec3)(Center, Eye));
-    hmm_vec3 S = HMM_PREFIX(NormalizeVec3)(HMM_PREFIX(Cross)(F, Up));
-    hmm_vec3 U = HMM_PREFIX(Cross)(S, F);
+    Result.Elements[0][0] = 1.0f / Result.Elements[0][0];
+    Result.Elements[1][1] = 1.0f / Result.Elements[1][1];
+    Result.Elements[2][2] = 1.0f / Result.Elements[2][2];
+
+    return (Result);    
+}
+
+
+static inline HMM_Mat4 _HMM_LookAt(HMM_Vec3 F,  HMM_Vec3 S, HMM_Vec3 U,  HMM_Vec3 Eye)
+{
+    HMM_Mat4 Result;
 
     Result.Elements[0][0] = S.X;
     Result.Elements[0][1] = U.X;
@@ -1635,9 +2128,60 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(LookAt)(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 U
     Result.Elements[2][2] = -F.Z;
     Result.Elements[2][3] = 0.0f;
 
-    Result.Elements[3][0] = -HMM_PREFIX(DotVec3)(S, Eye);
-    Result.Elements[3][1] = -HMM_PREFIX(DotVec3)(U, Eye);
-    Result.Elements[3][2] = HMM_PREFIX(DotVec3)(F, Eye);
+    Result.Elements[3][0] = -HMM_DotV3(S, Eye);
+    Result.Elements[3][1] = -HMM_DotV3(U, Eye);
+    Result.Elements[3][2] = HMM_DotV3(F, Eye);
+    Result.Elements[3][3] = 1.0f;
+
+    return (Result);
+}
+
+COVERAGE(HMM_LookAt_RH, 1)
+static inline HMM_Mat4 HMM_LookAt_RH(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
+{
+    ASSERT_COVERED(HMM_LookAt_RH);
+
+    HMM_Vec3 F = HMM_NormV3(HMM_SubV3(Center, Eye));
+    HMM_Vec3 S = HMM_NormV3(HMM_Cross(F, Up));
+    HMM_Vec3 U = HMM_Cross(S, F);
+
+    return _HMM_LookAt(F, S, U, Eye);
+}
+
+COVERAGE(HMM_LookAt_LH, 1)
+static inline HMM_Mat4 HMM_LookAt_LH(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
+{
+    ASSERT_COVERED(HMM_LookAt_LH);
+
+    HMM_Vec3 F = HMM_NormV3(HMM_SubV3(Eye, Center));
+    HMM_Vec3 S = HMM_NormV3(HMM_Cross(F, Up));
+    HMM_Vec3 U = HMM_Cross(S, F);
+
+    return _HMM_LookAt(F, S, U, Eye);
+}
+
+COVERAGE(HMM_InvLookAt, 1)
+static inline HMM_Mat4 HMM_InvLookAt(HMM_Mat4 Matrix)
+{
+    ASSERT_COVERED(HMM_InvLookAt);
+    HMM_Mat4 Result;
+
+    HMM_Mat3 Rotation = {0};
+    Rotation.Columns[0] = Matrix.Columns[0].XYZ;
+    Rotation.Columns[1] = Matrix.Columns[1].XYZ;
+    Rotation.Columns[2] = Matrix.Columns[2].XYZ;
+    Rotation = HMM_TransposeM3(Rotation);
+
+    Result.Columns[0] = HMM_V4V(Rotation.Columns[0], 0.0f);
+    Result.Columns[1] = HMM_V4V(Rotation.Columns[1], 0.0f);
+    Result.Columns[2] = HMM_V4V(Rotation.Columns[2], 0.0f);
+    Result.Columns[3] = HMM_MulV4F(Matrix.Columns[3], -1.0f);
+    Result.Elements[3][0] = -1.0f * Matrix.Elements[3][0] /
+        (Rotation.Elements[0][0] + Rotation.Elements[0][1] + Rotation.Elements[0][2]);
+    Result.Elements[3][1] = -1.0f * Matrix.Elements[3][1] /
+        (Rotation.Elements[1][0] + Rotation.Elements[1][1] + Rotation.Elements[1][2]);
+    Result.Elements[3][2] = -1.0f * Matrix.Elements[3][2] /
+        (Rotation.Elements[2][0] + Rotation.Elements[2][1] + Rotation.Elements[2][2]);
     Result.Elements[3][3] = 1.0f;
 
     return (Result);
@@ -1647,15 +2191,15 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(LookAt)(hmm_vec3 Eye, hmm_vec3 Center, hmm_vec3 U
  * Quaternion operations
  */
 
-COVERAGE(HMM_Quaternion, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(Quaternion)(float X, float Y, float Z, float W)
+COVERAGE(HMM_Q, 1)
+static inline HMM_Quat HMM_Q(float X, float Y, float Z, float W)
 {
-    ASSERT_COVERED(HMM_Quaternion);
+    ASSERT_COVERED(HMM_Q);
 
-    hmm_quaternion Result;
+    HMM_Quat Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_setr_ps(X, Y, Z, W);
+    Result.SSE = _mm_setr_ps(X, Y, Z, W);
 #else
     Result.X = X;
     Result.Y = Y;
@@ -1666,15 +2210,15 @@ HMM_INLINE hmm_quaternion HMM_PREFIX(Quaternion)(float X, float Y, float Z, floa
     return (Result);
 }
 
-COVERAGE(HMM_QuaternionV4, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(QuaternionV4)(hmm_vec4 Vector)
+COVERAGE(HMM_QV4, 1)
+static inline HMM_Quat HMM_QV4(HMM_Vec4 Vector)
 {
-    ASSERT_COVERED(HMM_QuaternionV4);
+    ASSERT_COVERED(HMM_QV4);
 
-    hmm_quaternion Result;
+    HMM_Quat Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = Vector.InternalElementsSSE;
+    Result.SSE = Vector.SSE;
 #else
     Result.X = Vector.X;
     Result.Y = Vector.Y;
@@ -1685,15 +2229,15 @@ HMM_INLINE hmm_quaternion HMM_PREFIX(QuaternionV4)(hmm_vec4 Vector)
     return (Result);
 }
 
-COVERAGE(HMM_AddQuaternion, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(AddQuaternion)(hmm_quaternion Left, hmm_quaternion Right)
+COVERAGE(HMM_AddQ, 1)
+static inline HMM_Quat HMM_AddQ(HMM_Quat Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_AddQuaternion);
+    ASSERT_COVERED(HMM_AddQ);
 
-    hmm_quaternion Result;
+    HMM_Quat Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_add_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+    Result.SSE = _mm_add_ps(Left.SSE, Right.SSE);
 #else
 
     Result.X = Left.X + Right.X;
@@ -1705,15 +2249,15 @@ HMM_INLINE hmm_quaternion HMM_PREFIX(AddQuaternion)(hmm_quaternion Left, hmm_qua
     return (Result);
 }
 
-COVERAGE(HMM_SubtractQuaternion, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(SubtractQuaternion)(hmm_quaternion Left, hmm_quaternion Right)
+COVERAGE(HMM_SubQ, 1)
+static inline HMM_Quat HMM_SubQ(HMM_Quat Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_SubtractQuaternion);
+    ASSERT_COVERED(HMM_SubQ);
 
-    hmm_quaternion Result;
+    HMM_Quat Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_sub_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+    Result.SSE = _mm_sub_ps(Left.SSE, Right.SSE);
 #else
 
     Result.X = Left.X - Right.X;
@@ -1725,29 +2269,29 @@ HMM_INLINE hmm_quaternion HMM_PREFIX(SubtractQuaternion)(hmm_quaternion Left, hm
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyQuaternion, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(MultiplyQuaternion)(hmm_quaternion Left, hmm_quaternion Right)
+COVERAGE(HMM_MulQ, 1)
+static inline HMM_Quat HMM_MulQ(HMM_Quat Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_MultiplyQuaternion);
+    ASSERT_COVERED(HMM_MulQ);
 
-    hmm_quaternion Result;
+    HMM_Quat Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    __m128 SSEResultOne = _mm_xor_ps(_mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, _MM_SHUFFLE(0, 0, 0, 0)), _mm_setr_ps(0.f, -0.f, 0.f, -0.f));
-    __m128 SSEResultTwo = _mm_shuffle_ps(Right.InternalElementsSSE, Right.InternalElementsSSE, _MM_SHUFFLE(0, 1, 2, 3));
+    __m128 SSEResultOne = _mm_xor_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, _MM_SHUFFLE(0, 0, 0, 0)), _mm_setr_ps(0.f, -0.f, 0.f, -0.f));
+    __m128 SSEResultTwo = _mm_shuffle_ps(Right.SSE, Right.SSE, _MM_SHUFFLE(0, 1, 2, 3));
     __m128 SSEResultThree = _mm_mul_ps(SSEResultTwo, SSEResultOne);
 
-    SSEResultOne = _mm_xor_ps(_mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, _MM_SHUFFLE(1, 1, 1, 1)) , _mm_setr_ps(0.f, 0.f, -0.f, -0.f));
-    SSEResultTwo = _mm_shuffle_ps(Right.InternalElementsSSE, Right.InternalElementsSSE, _MM_SHUFFLE(1, 0, 3, 2));
+    SSEResultOne = _mm_xor_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, _MM_SHUFFLE(1, 1, 1, 1)) , _mm_setr_ps(0.f, 0.f, -0.f, -0.f));
+    SSEResultTwo = _mm_shuffle_ps(Right.SSE, Right.SSE, _MM_SHUFFLE(1, 0, 3, 2));
     SSEResultThree = _mm_add_ps(SSEResultThree, _mm_mul_ps(SSEResultTwo, SSEResultOne));
 
-    SSEResultOne = _mm_xor_ps(_mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, _MM_SHUFFLE(2, 2, 2, 2)), _mm_setr_ps(-0.f, 0.f, 0.f, -0.f));
-    SSEResultTwo = _mm_shuffle_ps(Right.InternalElementsSSE, Right.InternalElementsSSE, _MM_SHUFFLE(2, 3, 0, 1));
+    SSEResultOne = _mm_xor_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, _MM_SHUFFLE(2, 2, 2, 2)), _mm_setr_ps(-0.f, 0.f, 0.f, -0.f));
+    SSEResultTwo = _mm_shuffle_ps(Right.SSE, Right.SSE, _MM_SHUFFLE(2, 3, 0, 1));
     SSEResultThree = _mm_add_ps(SSEResultThree, _mm_mul_ps(SSEResultTwo, SSEResultOne));
 
-    SSEResultOne = _mm_shuffle_ps(Left.InternalElementsSSE, Left.InternalElementsSSE, _MM_SHUFFLE(3, 3, 3, 3));
-    SSEResultTwo = _mm_shuffle_ps(Right.InternalElementsSSE, Right.InternalElementsSSE, _MM_SHUFFLE(3, 2, 1, 0));
-    Result.InternalElementsSSE = _mm_add_ps(SSEResultThree, _mm_mul_ps(SSEResultTwo, SSEResultOne));
+    SSEResultOne = _mm_shuffle_ps(Left.SSE, Left.SSE, _MM_SHUFFLE(3, 3, 3, 3));
+    SSEResultTwo = _mm_shuffle_ps(Right.SSE, Right.SSE, _MM_SHUFFLE(3, 2, 1, 0));
+    Result.SSE = _mm_add_ps(SSEResultThree, _mm_mul_ps(SSEResultTwo, SSEResultOne));
 #else
     Result.X = (Left.X * Right.W) + (Left.Y * Right.Z) - (Left.Z * Right.Y) + (Left.W * Right.X);
     Result.Y = (-Left.X * Right.Z) + (Left.Y * Right.W) + (Left.Z * Right.X) + (Left.W * Right.Y);
@@ -1758,16 +2302,16 @@ HMM_INLINE hmm_quaternion HMM_PREFIX(MultiplyQuaternion)(hmm_quaternion Left, hm
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyQuaternionF, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(MultiplyQuaternionF)(hmm_quaternion Left, float Multiplicative)
+COVERAGE(HMM_MulQF, 1)
+static inline HMM_Quat HMM_MulQF(HMM_Quat Left, float Multiplicative)
 {
-    ASSERT_COVERED(HMM_MultiplyQuaternionF);
+    ASSERT_COVERED(HMM_MulQF);
 
-    hmm_quaternion Result;
+    HMM_Quat Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Scalar = _mm_set1_ps(Multiplicative);
-    Result.InternalElementsSSE = _mm_mul_ps(Left.InternalElementsSSE, Scalar);
+    Result.SSE = _mm_mul_ps(Left.SSE, Scalar);
 #else
     Result.X = Left.X * Multiplicative;
     Result.Y = Left.Y * Multiplicative;
@@ -1778,35 +2322,35 @@ HMM_INLINE hmm_quaternion HMM_PREFIX(MultiplyQuaternionF)(hmm_quaternion Left, f
     return (Result);
 }
 
-COVERAGE(HMM_DivideQuaternionF, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(DivideQuaternionF)(hmm_quaternion Left, float Dividend)
+COVERAGE(HMM_DivQF, 1)
+static inline HMM_Quat HMM_DivQF(HMM_Quat Left, float Divnd)
 {
-    ASSERT_COVERED(HMM_DivideQuaternionF);
+    ASSERT_COVERED(HMM_DivQF);
 
-    hmm_quaternion Result;
+    HMM_Quat Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    __m128 Scalar = _mm_set1_ps(Dividend);
-    Result.InternalElementsSSE = _mm_div_ps(Left.InternalElementsSSE, Scalar);
+    __m128 Scalar = _mm_set1_ps(Divnd);
+    Result.SSE = _mm_div_ps(Left.SSE, Scalar);
 #else
-    Result.X = Left.X / Dividend;
-    Result.Y = Left.Y / Dividend;
-    Result.Z = Left.Z / Dividend;
-    Result.W = Left.W / Dividend;
+    Result.X = Left.X / Divnd;
+    Result.Y = Left.Y / Divnd;
+    Result.Z = Left.Z / Divnd;
+    Result.W = Left.W / Divnd;
 #endif
 
     return (Result);
 }
 
-COVERAGE(HMM_DotQuaternion, 1)
-HMM_INLINE float HMM_PREFIX(DotQuaternion)(hmm_quaternion Left, hmm_quaternion Right)
+COVERAGE(HMM_DotQ, 1)
+static inline float HMM_DotQ(HMM_Quat Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_DotQuaternion);
+    ASSERT_COVERED(HMM_DotQ);
 
     float Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
-    __m128 SSEResultOne = _mm_mul_ps(Left.InternalElementsSSE, Right.InternalElementsSSE);
+    __m128 SSEResultOne = _mm_mul_ps(Left.SSE, Right.SSE);
     __m128 SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(2, 3, 0, 1));
     SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
     SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(0, 1, 2, 3));
@@ -1820,108 +2364,116 @@ HMM_INLINE float HMM_PREFIX(DotQuaternion)(hmm_quaternion Left, hmm_quaternion R
 }
 
 
-COVERAGE(HMM_InverseQuaternion, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(InverseQuaternion)(hmm_quaternion Left)
+COVERAGE(HMM_InvQ, 1)
+static inline HMM_Quat HMM_InvQ(HMM_Quat Left)
 {
-    ASSERT_COVERED(HMM_InverseQuaternion);
+    ASSERT_COVERED(HMM_InvQ);
     
-    hmm_quaternion Result;
+    HMM_Quat Result;
 
     Result.X = -Left.X;
     Result.Y = -Left.Y;
     Result.Z = -Left.Z;
     Result.W = Left.W;
 
-    Result = HMM_PREFIX(DivideQuaternionF)(Result, (HMM_PREFIX(DotQuaternion)(Left, Left)));
+    Result = HMM_DivQF(Result, (HMM_DotQ(Left, Left)));
 
     return (Result);
 }
 
 
-COVERAGE(HMM_NormalizeQuaternion, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(NormalizeQuaternion)(hmm_quaternion Left)
+COVERAGE(HMM_NormQ, 1)
+static inline HMM_Quat HMM_NormQ(HMM_Quat Quat)
 {
-    ASSERT_COVERED(HMM_NormalizeQuaternion);
+    ASSERT_COVERED(HMM_NormQ);
 
-    hmm_quaternion Result;
+    /* NOTE(lcf): Take advantage of SSE implementation in HMM_NormV4 */
+    HMM_Vec4 Vec = {Quat.X, Quat.Y, Quat.Z, Quat.W};
+    Vec = HMM_NormV4(Vec);
+    HMM_Quat Result = {Vec.X, Vec.Y, Vec.Z, Vec.W};
 
-    float Length = HMM_PREFIX(SquareRootF)(HMM_PREFIX(DotQuaternion)(Left, Left));
-    Result = HMM_PREFIX(DivideQuaternionF)(Left, Length);
+    return (Result);
+}
 
+static inline HMM_Quat _HMM_MixQ(HMM_Quat Left, float MixLeft, HMM_Quat Right, float MixRight) {
+    HMM_Quat Result;
+#ifdef HANDMADE_MATH__USE_SSE
+    __m128 ScalarLeft = _mm_set1_ps(MixLeft);
+    __m128 ScalarRight = _mm_set1_ps(MixRight);
+    __m128 SSEResultOne = _mm_mul_ps(Left.SSE, ScalarLeft);
+    __m128 SSEResultTwo = _mm_mul_ps(Right.SSE, ScalarRight);
+    Result.SSE = _mm_add_ps(SSEResultOne, SSEResultTwo);
+#else
+    Result.X = Left.X*MixLeft + Right.X*MixRight;
+    Result.Y = Left.Y*MixLeft + Right.Y*MixRight;
+    Result.Z = Left.Z*MixLeft + Right.Z*MixRight;
+    Result.W = Left.W*MixLeft + Right.W*MixRight;
+#endif
     return (Result);
 }
 
 COVERAGE(HMM_NLerp, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(NLerp)(hmm_quaternion Left, float Time, hmm_quaternion Right)
+static inline HMM_Quat HMM_NLerp(HMM_Quat Left, float Time, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_NLerp);
 
-    hmm_quaternion Result;
-
-#ifdef HANDMADE_MATH__USE_SSE
-    __m128 ScalarLeft = _mm_set1_ps(1.0f - Time);
-    __m128 ScalarRight = _mm_set1_ps(Time);
-    __m128 SSEResultOne = _mm_mul_ps(Left.InternalElementsSSE, ScalarLeft);
-    __m128 SSEResultTwo = _mm_mul_ps(Right.InternalElementsSSE, ScalarRight);
-    Result.InternalElementsSSE = _mm_add_ps(SSEResultOne, SSEResultTwo);
-#else
-    Result.X = HMM_PREFIX(Lerp)(Left.X, Time, Right.X);
-    Result.Y = HMM_PREFIX(Lerp)(Left.Y, Time, Right.Y);
-    Result.Z = HMM_PREFIX(Lerp)(Left.Z, Time, Right.Z);
-    Result.W = HMM_PREFIX(Lerp)(Left.W, Time, Right.W);
-#endif
-    Result = HMM_PREFIX(NormalizeQuaternion)(Result);
+    HMM_Quat Result = _HMM_MixQ(Left, 1.0f-Time, Right, Time);
+    Result = HMM_NormQ(Result);
 
     return (Result);
 }
 
-COVERAGE(HMM_Slerp, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(Slerp)(hmm_quaternion Left, float Time, hmm_quaternion Right)
+COVERAGE(HMM_SLerp, 1)
+static inline HMM_Quat HMM_SLerp(HMM_Quat Left, float Time, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_Slerp);
+    ASSERT_COVERED(HMM_SLerp);
 
-    hmm_quaternion Result;
-    hmm_quaternion QuaternionLeft;
-    hmm_quaternion QuaternionRight;
+    HMM_Quat Result;
 
-    float Cos_Theta = HMM_PREFIX(DotQuaternion)(Left, Right);
-    float Angle = HMM_PREFIX(ACosF)(Cos_Theta);
+    float Cos_Theta = HMM_DotQ(Left, Right);
 
-    float S1 = HMM_PREFIX(SinF)((1.0f - Time) * Angle);
-    float S2 = HMM_PREFIX(SinF)(Time * Angle);
-    float Is = 1.0f / HMM_PREFIX(SinF)(Angle);
+    if (Cos_Theta < 0.0f) { /* NOTE(lcf): Take shortest path on Hyper-sphere */
+        Cos_Theta = -Cos_Theta;
+        Right = HMM_Q(-Right.X, -Right.Y, -Right.Z, -Right.W);
+    }
+    
+    /* NOTE(lcf): Use Normalized Linear interpolation when vectors are roughly not L.I. */
+    if (Cos_Theta > 0.9995f) {
+        Result = HMM_NLerp(Left, Time, Right);
+    } else {
+        float Angle = HMM_ACosF(Cos_Theta);
+        float MixLeft = HMM_SinF((1.0f - Time) * Angle);
+        float MixRight = HMM_SinF(Time * Angle);
 
-    QuaternionLeft = HMM_PREFIX(MultiplyQuaternionF)(Left, S1);
-    QuaternionRight = HMM_PREFIX(MultiplyQuaternionF)(Right, S2);
-
-    Result = HMM_PREFIX(AddQuaternion)(QuaternionLeft, QuaternionRight);
-    Result = HMM_PREFIX(MultiplyQuaternionF)(Result, Is);
-
+        Result = _HMM_MixQ(Left, MixLeft, Right, MixRight);
+        Result = HMM_NormQ(Result);
+    }
+    
     return (Result);
 }
 
-COVERAGE(HMM_QuaternionToMat4, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(QuaternionToMat4)(hmm_quaternion Left)
+COVERAGE(HMM_QToM4, 1)
+static inline HMM_Mat4 HMM_QToM4(HMM_Quat Left)
 {
-    ASSERT_COVERED(HMM_QuaternionToMat4);
+    ASSERT_COVERED(HMM_QToM4);
 
-    hmm_mat4 Result;
+    HMM_Mat4 Result;
 
-    hmm_quaternion NormalizedQuaternion = HMM_PREFIX(NormalizeQuaternion)(Left);
+    HMM_Quat NormalizedQ = HMM_NormQ(Left);
 
     float XX, YY, ZZ,
           XY, XZ, YZ,
           WX, WY, WZ;
 
-    XX = NormalizedQuaternion.X * NormalizedQuaternion.X;
-    YY = NormalizedQuaternion.Y * NormalizedQuaternion.Y;
-    ZZ = NormalizedQuaternion.Z * NormalizedQuaternion.Z;
-    XY = NormalizedQuaternion.X * NormalizedQuaternion.Y;
-    XZ = NormalizedQuaternion.X * NormalizedQuaternion.Z;
-    YZ = NormalizedQuaternion.Y * NormalizedQuaternion.Z;
-    WX = NormalizedQuaternion.W * NormalizedQuaternion.X;
-    WY = NormalizedQuaternion.W * NormalizedQuaternion.Y;
-    WZ = NormalizedQuaternion.W * NormalizedQuaternion.Z;
+    XX = NormalizedQ.X * NormalizedQ.X;
+    YY = NormalizedQ.Y * NormalizedQ.Y;
+    ZZ = NormalizedQ.Z * NormalizedQ.Z;
+    XY = NormalizedQ.X * NormalizedQ.Y;
+    XZ = NormalizedQ.X * NormalizedQ.Z;
+    YZ = NormalizedQ.Y * NormalizedQ.Z;
+    WX = NormalizedQ.W * NormalizedQ.X;
+    WY = NormalizedQ.W * NormalizedQ.Y;
+    WZ = NormalizedQ.W * NormalizedQ.Z;
 
     Result.Elements[0][0] = 1.0f - 2.0f * (YY + ZZ);
     Result.Elements[0][1] = 2.0f * (XY + WZ);
@@ -1960,28 +2512,28 @@ HMM_INLINE hmm_mat4 HMM_PREFIX(QuaternionToMat4)(hmm_quaternion Left)
 //
 // Don't be confused! Or if you must be confused, at least trust this
 // comment. :)
-COVERAGE(HMM_Mat4ToQuaternion, 4)
-HMM_INLINE hmm_quaternion HMM_PREFIX(Mat4ToQuaternion)(hmm_mat4 M)
+COVERAGE(HMM_M4ToQ_RH, 4)
+static inline HMM_Quat HMM_M4ToQ_RH(HMM_Mat4 M)
 {
     float T;
-    hmm_quaternion Q;
+    HMM_Quat Q;
 
     if (M.Elements[2][2] < 0.0f) {
         if (M.Elements[0][0] > M.Elements[1][1]) {
-            ASSERT_COVERED(HMM_Mat4ToQuaternion);
+            ASSERT_COVERED(HMM_M4ToQ_RH);
 
             T = 1 + M.Elements[0][0] - M.Elements[1][1] - M.Elements[2][2];
-            Q = HMM_PREFIX(Quaternion)(
+            Q = HMM_Q(
                 T,
                 M.Elements[0][1] + M.Elements[1][0],
                 M.Elements[2][0] + M.Elements[0][2],
                 M.Elements[1][2] - M.Elements[2][1]
             );
         } else {
-            ASSERT_COVERED(HMM_Mat4ToQuaternion);
+            ASSERT_COVERED(HMM_M4ToQ_RH);
 
             T = 1 - M.Elements[0][0] + M.Elements[1][1] - M.Elements[2][2];
-            Q = HMM_PREFIX(Quaternion)(
+            Q = HMM_Q(
                 M.Elements[0][1] + M.Elements[1][0],
                 T,
                 M.Elements[1][2] + M.Elements[2][1],
@@ -1990,20 +2542,20 @@ HMM_INLINE hmm_quaternion HMM_PREFIX(Mat4ToQuaternion)(hmm_mat4 M)
         }
     } else {
         if (M.Elements[0][0] < -M.Elements[1][1]) {
-            ASSERT_COVERED(HMM_Mat4ToQuaternion);
+            ASSERT_COVERED(HMM_M4ToQ_RH);
 
             T = 1 - M.Elements[0][0] - M.Elements[1][1] + M.Elements[2][2];
-            Q = HMM_PREFIX(Quaternion)(
+            Q = HMM_Q(
                 M.Elements[2][0] + M.Elements[0][2],
                 M.Elements[1][2] + M.Elements[2][1],
                 T,
                 M.Elements[0][1] - M.Elements[1][0]
             );
         } else {
-            ASSERT_COVERED(HMM_Mat4ToQuaternion);
+            ASSERT_COVERED(HMM_M4ToQ_RH);
 
             T = 1 + M.Elements[0][0] + M.Elements[1][1] + M.Elements[2][2];
-            Q = HMM_PREFIX(Quaternion)(
+            Q = HMM_Q(
                 M.Elements[1][2] - M.Elements[2][1],
                 M.Elements[2][0] - M.Elements[0][2],
                 M.Elements[0][1] - M.Elements[1][0],
@@ -2012,26 +2564,93 @@ HMM_INLINE hmm_quaternion HMM_PREFIX(Mat4ToQuaternion)(hmm_mat4 M)
         }
     }
 
-    Q = HMM_PREFIX(MultiplyQuaternionF)(Q, 0.5f / HMM_PREFIX(SquareRootF)(T));
+    Q = HMM_MulQF(Q, 0.5f / HMM_SqrtF(T));
 
     return Q;
 }
 
-COVERAGE(HMM_QuaternionFromAxisAngle, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(QuaternionFromAxisAngle)(hmm_vec3 Axis, float AngleOfRotation)
+COVERAGE(HMM_M4ToQ_LH, 4)
+static inline HMM_Quat HMM_M4ToQ_LH(HMM_Mat4 M)
 {
-    ASSERT_COVERED(HMM_QuaternionFromAxisAngle);
+    float T;
+    HMM_Quat Q;
 
-    hmm_quaternion Result;
+    if (M.Elements[2][2] < 0.0f) {
+        if (M.Elements[0][0] > M.Elements[1][1]) {
+            ASSERT_COVERED(HMM_M4ToQ_LH);
 
-    hmm_vec3 AxisNormalized = HMM_PREFIX(NormalizeVec3)(Axis);
-    float SineOfRotation = HMM_PREFIX(SinF)(AngleOfRotation / 2.0f);
+            T = 1 + M.Elements[0][0] - M.Elements[1][1] - M.Elements[2][2];
+            Q = HMM_Q(
+                T,
+                M.Elements[0][1] + M.Elements[1][0],
+                M.Elements[2][0] + M.Elements[0][2],
+                M.Elements[2][1] - M.Elements[1][2]
+            );
+        } else {
+            ASSERT_COVERED(HMM_M4ToQ_LH);
 
-    Result.XYZ = HMM_PREFIX(MultiplyVec3f)(AxisNormalized, SineOfRotation);
-    Result.W = HMM_PREFIX(CosF)(AngleOfRotation / 2.0f);
+            T = 1 - M.Elements[0][0] + M.Elements[1][1] - M.Elements[2][2];
+            Q = HMM_Q(
+                M.Elements[0][1] + M.Elements[1][0],
+                T,
+                M.Elements[1][2] + M.Elements[2][1],
+                M.Elements[0][2] - M.Elements[2][0]
+            );
+        }
+    } else {
+        if (M.Elements[0][0] < -M.Elements[1][1]) {
+            ASSERT_COVERED(HMM_M4ToQ_LH);
+
+            T = 1 - M.Elements[0][0] - M.Elements[1][1] + M.Elements[2][2];
+            Q = HMM_Q(
+                M.Elements[2][0] + M.Elements[0][2],
+                M.Elements[1][2] + M.Elements[2][1],
+                T,
+                M.Elements[1][0] - M.Elements[0][1]
+            );
+        } else {
+            ASSERT_COVERED(HMM_M4ToQ_LH);
+
+            T = 1 + M.Elements[0][0] + M.Elements[1][1] + M.Elements[2][2];
+            Q = HMM_Q(
+                M.Elements[2][1] - M.Elements[1][2],
+                M.Elements[0][2] - M.Elements[2][0],
+                M.Elements[1][0] - M.Elements[0][2],
+                T
+            );
+        }
+    }
+
+    Q = HMM_MulQF(Q, 0.5f / HMM_SqrtF(T));
+
+    return Q;
+}
+
+
+COVERAGE(HMM_QFromAxisAngle_RH, 1)
+static inline HMM_Quat HMM_QFromAxisAngle_RH(HMM_Vec3 Axis, float AngleOfRotation)
+{
+    ASSERT_COVERED(HMM_QFromAxisAngle_RH);
+
+    HMM_Quat Result;
+
+    HMM_Vec3 AxisNormalized = HMM_NormV3(Axis);
+    float SineOfRotation = HMM_SinF(AngleOfRotation / 2.0f);
+
+    Result.XYZ = HMM_MulV3F(AxisNormalized, SineOfRotation);
+    Result.W = HMM_CosF(AngleOfRotation / 2.0f);
 
     return (Result);
 }
+
+COVERAGE(HMM_QFromAxisAngle_LH, 1)
+static inline HMM_Quat HMM_QFromAxisAngle_LH(HMM_Vec3 Axis, float AngleOfRotation)
+{
+    ASSERT_COVERED(HMM_QFromAxisAngle_LH);
+
+    return HMM_QFromAxisAngle_RH(Axis, -AngleOfRotation);
+}
+
 
 #ifdef __cplusplus
 }
@@ -2039,1122 +2658,1513 @@ HMM_INLINE hmm_quaternion HMM_PREFIX(QuaternionFromAxisAngle)(hmm_vec3 Axis, flo
 
 #ifdef __cplusplus
 
-COVERAGE(HMM_LengthVec2CPP, 1)
-HMM_INLINE float HMM_PREFIX(Length)(hmm_vec2 A)
+COVERAGE(HMM_LenV2CPP, 1)
+static inline float HMM_Len(HMM_Vec2 A)
 {
-    ASSERT_COVERED(HMM_LengthVec2CPP);
+    ASSERT_COVERED(HMM_LenV2CPP);
 
-    float Result = HMM_PREFIX(LengthVec2)(A);
+    float Result = HMM_LenV2(A);
     return (Result);
 }
 
-COVERAGE(HMM_LengthVec3CPP, 1)
-HMM_INLINE float HMM_PREFIX(Length)(hmm_vec3 A)
+COVERAGE(HMM_LenV3CPP, 1)
+static inline float HMM_Len(HMM_Vec3 A)
 {
-    ASSERT_COVERED(HMM_LengthVec3CPP);
+    ASSERT_COVERED(HMM_LenV3CPP);
 
-    float Result = HMM_PREFIX(LengthVec3)(A);
+    float Result = HMM_LenV3(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_LengthVec4CPP, 1)
-HMM_INLINE float HMM_PREFIX(Length)(hmm_vec4 A)
+COVERAGE(HMM_LenV4CPP, 1)
+static inline float HMM_Len(HMM_Vec4 A)
 {
-    ASSERT_COVERED(HMM_LengthVec4CPP);
+    ASSERT_COVERED(HMM_LenV4CPP);
 
-    float Result = HMM_PREFIX(LengthVec4)(A);
+    float Result = HMM_LenV4(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_LengthSquaredVec2CPP, 1)
-HMM_INLINE float HMM_PREFIX(LengthSquared)(hmm_vec2 A)
+COVERAGE(HMM_LenSqrV2CPP, 1)
+static inline float HMM_LenSqr(HMM_Vec2 A)
 {
-    ASSERT_COVERED(HMM_LengthSquaredVec2CPP);
+    ASSERT_COVERED(HMM_LenSqrV2CPP);
 
-    float Result = HMM_PREFIX(LengthSquaredVec2)(A);
+    float Result = HMM_LenSqrV2(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_LengthSquaredVec3CPP, 1)
-HMM_INLINE float HMM_PREFIX(LengthSquared)(hmm_vec3 A)
+COVERAGE(HMM_LenSqrV3CPP, 1)
+static inline float HMM_LenSqr(HMM_Vec3 A)
 {
-    ASSERT_COVERED(HMM_LengthSquaredVec3CPP);
+    ASSERT_COVERED(HMM_LenSqrV3CPP);
 
-    float Result = HMM_PREFIX(LengthSquaredVec3)(A);
+    float Result = HMM_LenSqrV3(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_LengthSquaredVec4CPP, 1)
-HMM_INLINE float HMM_PREFIX(LengthSquared)(hmm_vec4 A)
+COVERAGE(HMM_LenSqrV4CPP, 1)
+static inline float HMM_LenSqr(HMM_Vec4 A)
 {
-    ASSERT_COVERED(HMM_LengthSquaredVec4CPP);
+    ASSERT_COVERED(HMM_LenSqrV4CPP);
 
-    float Result = HMM_PREFIX(LengthSquaredVec4)(A);
+    float Result = HMM_LenSqrV4(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_NormalizeVec2CPP, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(Normalize)(hmm_vec2 A)
+COVERAGE(HMM_NormV2CPP, 1)
+static inline HMM_Vec2 HMM_Norm(HMM_Vec2 A)
 {
-    ASSERT_COVERED(HMM_NormalizeVec2CPP);
+    ASSERT_COVERED(HMM_NormV2CPP);
 
-    hmm_vec2 Result = HMM_PREFIX(NormalizeVec2)(A);
+    HMM_Vec2 Result = HMM_NormV2(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_NormalizeVec3CPP, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(Normalize)(hmm_vec3 A)
+COVERAGE(HMM_NormV3CPP, 1)
+static inline HMM_Vec3 HMM_Norm(HMM_Vec3 A)
 {
-    ASSERT_COVERED(HMM_NormalizeVec3CPP);
+    ASSERT_COVERED(HMM_NormV3CPP);
 
-    hmm_vec3 Result = HMM_PREFIX(NormalizeVec3)(A);
+    HMM_Vec3 Result = HMM_NormV3(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_NormalizeVec4CPP, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Normalize)(hmm_vec4 A)
+COVERAGE(HMM_NormV4CPP, 1)
+static inline HMM_Vec4 HMM_Norm(HMM_Vec4 A)
 {
-    ASSERT_COVERED(HMM_NormalizeVec4CPP);
+    ASSERT_COVERED(HMM_NormV4CPP);
 
-    hmm_vec4 Result = HMM_PREFIX(NormalizeVec4)(A);
+    HMM_Vec4 Result = HMM_NormV4(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_FastNormalizeVec2CPP, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(FastNormalize)(hmm_vec2 A)
+COVERAGE(HMM_NormQCPP, 1)
+static inline HMM_Quat HMM_Norm(HMM_Quat A)
 {
-    ASSERT_COVERED(HMM_FastNormalizeVec2CPP);
+    ASSERT_COVERED(HMM_NormQCPP);
 
-    hmm_vec2 Result = HMM_PREFIX(FastNormalizeVec2)(A);
+    HMM_Quat Result = HMM_NormQ(A);
 
     return (Result);
 }
 
-COVERAGE(HMM_FastNormalizeVec3CPP, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(FastNormalize)(hmm_vec3 A)
+COVERAGE(HMM_DotV2CPP, 1)
+static inline float HMM_Dot(HMM_Vec2 Left, HMM_Vec2 VecTwo)
 {
-    ASSERT_COVERED(HMM_FastNormalizeVec3CPP);
+    ASSERT_COVERED(HMM_DotV2CPP);
 
-    hmm_vec3 Result = HMM_PREFIX(FastNormalizeVec3)(A);
+    float Result = HMM_DotV2(Left, VecTwo);
 
     return (Result);
 }
 
-COVERAGE(HMM_FastNormalizeVec4CPP, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(FastNormalize)(hmm_vec4 A)
+COVERAGE(HMM_DotV3CPP, 1)
+static inline float HMM_Dot(HMM_Vec3 Left, HMM_Vec3 VecTwo)
 {
-    ASSERT_COVERED(HMM_FastNormalizeVec4CPP);
+    ASSERT_COVERED(HMM_DotV3CPP);
 
-    hmm_vec4 Result = HMM_PREFIX(FastNormalizeVec4)(A);
+    float Result = HMM_DotV3(Left, VecTwo);
 
     return (Result);
 }
 
-COVERAGE(HMM_NormalizeQuaternionCPP, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(Normalize)(hmm_quaternion A)
+COVERAGE(HMM_DotV4CPP, 1)
+static inline float HMM_Dot(HMM_Vec4 Left, HMM_Vec4 VecTwo)
 {
-    ASSERT_COVERED(HMM_NormalizeQuaternionCPP);
+    ASSERT_COVERED(HMM_DotV4CPP);
 
-    hmm_quaternion Result = HMM_PREFIX(NormalizeQuaternion)(A);
+    float Result = HMM_DotV4(Left, VecTwo);
 
     return (Result);
 }
+ 
+COVERAGE(HMM_LerpV2CPP, 1)
+static inline HMM_Vec2 HMM_Lerp(HMM_Vec2 Left, float Time, HMM_Vec2 Right) 
+{
+    ASSERT_COVERED(HMM_LerpV2CPP);
+    
+    HMM_Vec2 Result = HMM_LerpV2(Left, Time, Right);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_LerpV3CPP, 1)
+static inline HMM_Vec3 HMM_Lerp(HMM_Vec3 Left, float Time, HMM_Vec3 Right) 
+{
+    ASSERT_COVERED(HMM_LerpV3CPP);
+    
+    HMM_Vec3 Result = HMM_LerpV3(Left, Time, Right);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_LerpV4CPP, 1)
+static inline HMM_Vec4 HMM_Lerp(HMM_Vec4 Left, float Time, HMM_Vec4 Right) 
+{
+    ASSERT_COVERED(HMM_LerpV4CPP);
+    
+    HMM_Vec4 Result = HMM_LerpV4(Left, Time, Right);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_TransposeM2CPP, 1)
+static inline HMM_Mat2 HMM_Transpose(HMM_Mat2 Matrix)
+{
+    ASSERT_COVERED(HMM_TransposeM2CPP);
+        
+    HMM_Mat2 Result = HMM_TransposeM2(Matrix);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_TransposeM3CPP, 1)
+static inline HMM_Mat3 HMM_Transpose(HMM_Mat3 Matrix)
+{
+    ASSERT_COVERED(HMM_TransposeM3CPP);
+    
+    HMM_Mat3 Result = HMM_TransposeM3(Matrix);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_TransposeM4CPP, 1)
+static inline HMM_Mat4 HMM_Transpose(HMM_Mat4 Matrix)
+{
+    ASSERT_COVERED(HMM_TransposeM4CPP);
+    
+    HMM_Mat4 Result = HMM_TransposeM4(Matrix);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_DeterminantM2CPP, 1)
+static inline float HMM_Determinant(HMM_Mat2 Matrix)
+{
+    ASSERT_COVERED(HMM_DeterminantM2CPP);
+    
+    float Result = HMM_DeterminantM2(Matrix);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_DeterminantM3CPP, 1)
+static inline float HMM_Determinant(HMM_Mat3 Matrix)
+{
+    ASSERT_COVERED(HMM_DeterminantM3CPP);
+
+    float Result = HMM_DeterminantM3(Matrix);
+     
+    return (Result);
+}
+
+COVERAGE(HMM_DeterminantM4CPP, 1)
+static inline float HMM_Determinant(HMM_Mat4 Matrix)
+{
+    ASSERT_COVERED(HMM_DeterminantM4CPP);
+
+    float Result = HMM_DeterminantM4(Matrix);
+
+    return (Result);
+}
+
+COVERAGE(HMM_InvGeneralM2CPP, 1)
+static inline HMM_Mat2 HMM_InvGeneral(HMM_Mat2 Matrix)
+{
+    ASSERT_COVERED(HMM_InvGeneralM2CPP);
+    
+    HMM_Mat2 Result = HMM_InvGeneralM2(Matrix);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_InvGeneralM3CPP, 1)
+static inline HMM_Mat3 HMM_InvGeneral(HMM_Mat3 Matrix)
+{
+    ASSERT_COVERED(HMM_InvGeneralM3CPP);
+    
+    HMM_Mat3 Result = HMM_InvGeneralM3(Matrix);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_InvGeneralM4CPP, 1)
+static inline HMM_Mat4 HMM_InvGeneral(HMM_Mat4 Matrix)
+{
+    ASSERT_COVERED(HMM_InvGeneralM4CPP);
+    
+    HMM_Mat4 Result = HMM_InvGeneralM4(Matrix);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_DotQCPP, 1)
+static inline float HMM_Dot(HMM_Quat QuatOne, HMM_Quat QuatTwo)
+{
+    ASSERT_COVERED(HMM_DotQCPP);
+
+    float Result = HMM_DotQ(QuatOne, QuatTwo);
+
+    return (Result);
+}
+
+COVERAGE(HMM_AddV2CPP, 1)
+static inline HMM_Vec2 HMM_Add(HMM_Vec2 Left, HMM_Vec2 Right)
+{
+    ASSERT_COVERED(HMM_AddV2CPP);
+
+    HMM_Vec2 Result = HMM_AddV2(Left, Right);
+
+    return (Result);
+}
+
+COVERAGE(HMM_AddV3CPP, 1)
+static inline HMM_Vec3 HMM_Add(HMM_Vec3 Left, HMM_Vec3 Right)
+{
+    ASSERT_COVERED(HMM_AddV3CPP);
+
+    HMM_Vec3 Result = HMM_AddV3(Left, Right);
+
+    return (Result);
+}
+
+COVERAGE(HMM_AddV4CPP, 1)
+static inline HMM_Vec4 HMM_Add(HMM_Vec4 Left, HMM_Vec4 Right)
+{
+    ASSERT_COVERED(HMM_AddV4CPP);
+
+    HMM_Vec4 Result = HMM_AddV4(Left, Right);
+
+    return (Result);
+}
+
+COVERAGE(HMM_AddM2CPP, 1)
+static inline HMM_Mat2 HMM_Add(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    ASSERT_COVERED(HMM_AddM2CPP);
+    
+    HMM_Mat2 Result = HMM_AddM2(Left, Right);
+    
+    return (Result);
+}
 
-COVERAGE(HMM_DotVec2CPP, 1)
-HMM_INLINE float HMM_PREFIX(Dot)(hmm_vec2 VecOne, hmm_vec2 VecTwo)
+COVERAGE(HMM_AddM3CPP, 1)
+static inline HMM_Mat3 HMM_Add(HMM_Mat3 Left, HMM_Mat3 Right)
 {
-    ASSERT_COVERED(HMM_DotVec2CPP);
+    ASSERT_COVERED(HMM_AddM3CPP);
+    
+    HMM_Mat3 Result = HMM_AddM3(Left, Right);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_AddM4CPP, 1)
+static inline HMM_Mat4 HMM_Add(HMM_Mat4 Left, HMM_Mat4 Right)
+{
+    ASSERT_COVERED(HMM_AddM4CPP);
+
+    HMM_Mat4 Result = HMM_AddM4(Left, Right);
+
+    return (Result);
+}
+
+COVERAGE(HMM_AddQCPP, 1)
+static inline HMM_Quat HMM_Add(HMM_Quat Left, HMM_Quat Right)
+{
+    ASSERT_COVERED(HMM_AddQCPP);
+
+    HMM_Quat Result = HMM_AddQ(Left, Right);
+
+    return (Result);
+}
+
+COVERAGE(HMM_SubV2CPP, 1)
+static inline HMM_Vec2 HMM_Sub(HMM_Vec2 Left, HMM_Vec2 Right)
+{
+    ASSERT_COVERED(HMM_SubV2CPP);
+
+    HMM_Vec2 Result = HMM_SubV2(Left, Right);
+
+    return (Result);
+}
+
+COVERAGE(HMM_SubV3CPP, 1)
+static inline HMM_Vec3 HMM_Sub(HMM_Vec3 Left, HMM_Vec3 Right)
+{
+    ASSERT_COVERED(HMM_SubV3CPP);
 
-    float Result = HMM_PREFIX(DotVec2)(VecOne, VecTwo);
+    HMM_Vec3 Result = HMM_SubV3(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DotVec3CPP, 1)
-HMM_INLINE float HMM_PREFIX(Dot)(hmm_vec3 VecOne, hmm_vec3 VecTwo)
+COVERAGE(HMM_SubV4CPP, 1)
+static inline HMM_Vec4 HMM_Sub(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_DotVec3CPP);
+    ASSERT_COVERED(HMM_SubV4CPP);
 
-    float Result = HMM_PREFIX(DotVec3)(VecOne, VecTwo);
+    HMM_Vec4 Result = HMM_SubV4(Left, Right);
+
+    return (Result);
+}
 
+COVERAGE(HMM_SubM2CPP, 1)
+static inline HMM_Mat2 HMM_Sub(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    ASSERT_COVERED(HMM_SubM2CPP);
+    
+    HMM_Mat2 Result = HMM_SubM2(Left, Right);
+    
     return (Result);
 }
 
-COVERAGE(HMM_DotVec4CPP, 1)
-HMM_INLINE float HMM_PREFIX(Dot)(hmm_vec4 VecOne, hmm_vec4 VecTwo)
+COVERAGE(HMM_SubM3CPP, 1)
+static inline HMM_Mat3 HMM_Sub(HMM_Mat3 Left, HMM_Mat3 Right)
 {
-    ASSERT_COVERED(HMM_DotVec4CPP);
+    ASSERT_COVERED(HMM_SubM3CPP);
 
-    float Result = HMM_PREFIX(DotVec4)(VecOne, VecTwo);
+    HMM_Mat3 Result = HMM_SubM3(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DotQuaternionCPP, 1)
-HMM_INLINE float HMM_PREFIX(Dot)(hmm_quaternion QuatOne, hmm_quaternion QuatTwo)
+COVERAGE(HMM_SubM4CPP, 1)
+static inline HMM_Mat4 HMM_Sub(HMM_Mat4 Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_DotQuaternionCPP);
+    ASSERT_COVERED(HMM_SubM4CPP);
 
-    float Result = HMM_PREFIX(DotQuaternion)(QuatOne, QuatTwo);
+    HMM_Mat4 Result = HMM_SubM4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddVec2CPP, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(Add)(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_SubQCPP, 1)
+static inline HMM_Quat HMM_Sub(HMM_Quat Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_AddVec2CPP);
+    ASSERT_COVERED(HMM_SubQCPP);
 
-    hmm_vec2 Result = HMM_PREFIX(AddVec2)(Left, Right);
+    HMM_Quat Result = HMM_SubQ(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddVec3CPP, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(Add)(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_MulV2CPP, 1)
+static inline HMM_Vec2 HMM_Mul(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_AddVec3CPP);
+    ASSERT_COVERED(HMM_MulV2CPP);
 
-    hmm_vec3 Result = HMM_PREFIX(AddVec3)(Left, Right);
+    HMM_Vec2 Result = HMM_MulV2(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddVec4CPP, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Add)(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_MulV2FCPP, 1)
+static inline HMM_Vec2 HMM_Mul(HMM_Vec2 Left, float Right)
 {
-    ASSERT_COVERED(HMM_AddVec4CPP);
+    ASSERT_COVERED(HMM_MulV2FCPP);
 
-    hmm_vec4 Result = HMM_PREFIX(AddVec4)(Left, Right);
+    HMM_Vec2 Result = HMM_MulV2F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddMat4CPP, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Add)(hmm_mat4 Left, hmm_mat4 Right)
+COVERAGE(HMM_MulV3CPP, 1)
+static inline HMM_Vec3 HMM_Mul(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_AddMat4CPP);
+    ASSERT_COVERED(HMM_MulV3CPP);
 
-    hmm_mat4 Result = HMM_PREFIX(AddMat4)(Left, Right);
+    HMM_Vec3 Result = HMM_MulV3(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddQuaternionCPP, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(Add)(hmm_quaternion Left, hmm_quaternion Right)
+COVERAGE(HMM_MulV3FCPP, 1)
+static inline HMM_Vec3 HMM_Mul(HMM_Vec3 Left, float Right)
 {
-    ASSERT_COVERED(HMM_AddQuaternionCPP);
+    ASSERT_COVERED(HMM_MulV3FCPP);
 
-    hmm_quaternion Result = HMM_PREFIX(AddQuaternion)(Left, Right);
+    HMM_Vec3 Result = HMM_MulV3F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_SubtractVec2CPP, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(Subtract)(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_MulV4CPP, 1)
+static inline HMM_Vec4 HMM_Mul(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec2CPP);
+    ASSERT_COVERED(HMM_MulV4CPP);
 
-    hmm_vec2 Result = HMM_PREFIX(SubtractVec2)(Left, Right);
+    HMM_Vec4 Result = HMM_MulV4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_SubtractVec3CPP, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(Subtract)(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_MulV4FCPP, 1)
+static inline HMM_Vec4 HMM_Mul(HMM_Vec4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec3CPP);
+    ASSERT_COVERED(HMM_MulV4FCPP);
+
+    HMM_Vec4 Result = HMM_MulV4F(Left, Right);
+
+    return (Result);
+}
 
-    hmm_vec3 Result = HMM_PREFIX(SubtractVec3)(Left, Right);
+COVERAGE(HMM_MulM2CPP, 1)
+static inline HMM_Mat2 HMM_Mul(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    ASSERT_COVERED(HMM_MulM2CPP);
+    
+    HMM_Mat2 Result = HMM_MulM2(Left, Right);
+    
+    return (Result);
+}
 
+COVERAGE(HMM_MulM3CPP, 1)
+static inline HMM_Mat3 HMM_Mul(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    ASSERT_COVERED(HMM_MulM3CPP);
+    
+    HMM_Mat3 Result = HMM_MulM3(Left, Right);
+    
     return (Result);
 }
 
-COVERAGE(HMM_SubtractVec4CPP, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Subtract)(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_MulM4CPP, 1)
+static inline HMM_Mat4 HMM_Mul(HMM_Mat4 Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec4CPP);
+    ASSERT_COVERED(HMM_MulM4CPP);
 
-    hmm_vec4 Result = HMM_PREFIX(SubtractVec4)(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_SubtractMat4CPP, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Subtract)(hmm_mat4 Left, hmm_mat4 Right)
+COVERAGE(HMM_MulM2FCPP, 1)
+static inline HMM_Mat2 HMM_Mul(HMM_Mat2 Left, float Right)
 {
-    ASSERT_COVERED(HMM_SubtractMat4CPP);
+    ASSERT_COVERED(HMM_MulM2FCPP);
 
-    hmm_mat4 Result = HMM_PREFIX(SubtractMat4)(Left, Right);
+    HMM_Mat2 Result = HMM_MulM2F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_SubtractQuaternionCPP, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(Subtract)(hmm_quaternion Left, hmm_quaternion Right)
+COVERAGE(HMM_MulM3FCPP, 1)
+static inline HMM_Mat3 HMM_Mul(HMM_Mat3 Left, float Right)
 {
-    ASSERT_COVERED(HMM_SubtractQuaternionCPP);
+    ASSERT_COVERED(HMM_MulM3FCPP);
 
-    hmm_quaternion Result = HMM_PREFIX(SubtractQuaternion)(Left, Right);
+    HMM_Mat3 Result = HMM_MulM3F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec2CPP, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(Multiply)(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_MulM4FCPP, 1)
+static inline HMM_Mat4 HMM_Mul(HMM_Mat4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec2CPP);
+    ASSERT_COVERED(HMM_MulM4FCPP);
 
-    hmm_vec2 Result = HMM_PREFIX(MultiplyVec2)(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4F(Left, Right);
+
+    return (Result);
+}
+
+static inline HMM_Vec2 HMM_Mul(HMM_Mat2 Matrix, HMM_Vec2 Vector)
+{
+    HMM_Vec2 Result = HMM_MulM2V2(Matrix, Vector);
+    return (Result);
+}
 
+COVERAGE(HMM_MulM3V3CPP, 1)
+static inline HMM_Vec3 HMM_Mul(HMM_Mat3 Matrix, HMM_Vec3 Vector)
+{
+    ASSERT_COVERED(HMM_MulM3V3CPP);
+    
+    HMM_Vec3 Result = HMM_MulM3V3(Matrix, Vector);
+    
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec2fCPP, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(Multiply)(hmm_vec2 Left, float Right)
+COVERAGE(HMM_MulM4V4CPP, 1)
+static inline HMM_Vec4 HMM_Mul(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 {
-    ASSERT_COVERED(HMM_MultiplyVec2fCPP);
+    ASSERT_COVERED(HMM_MulM4V4CPP);
 
-    hmm_vec2 Result = HMM_PREFIX(MultiplyVec2f)(Left, Right);
+    HMM_Vec4 Result = HMM_MulM4V4(Matrix, Vector);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec3CPP, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(Multiply)(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_MulQCPP, 1)
+static inline HMM_Quat HMM_Mul(HMM_Quat Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec3CPP);
+    ASSERT_COVERED(HMM_MulQCPP);
 
-    hmm_vec3 Result = HMM_PREFIX(MultiplyVec3)(Left, Right);
+    HMM_Quat Result = HMM_MulQ(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec3fCPP, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(Multiply)(hmm_vec3 Left, float Right)
+COVERAGE(HMM_MulQFCPP, 1)
+static inline HMM_Quat HMM_Mul(HMM_Quat Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec3fCPP);
+    ASSERT_COVERED(HMM_MulQFCPP);
 
-    hmm_vec3 Result = HMM_PREFIX(MultiplyVec3f)(Left, Right);
+    HMM_Quat Result = HMM_MulQF(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec4CPP, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Multiply)(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_DivV2CPP, 1)
+static inline HMM_Vec2 HMM_Div(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec4CPP);
+    ASSERT_COVERED(HMM_DivV2CPP);
 
-    hmm_vec4 Result = HMM_PREFIX(MultiplyVec4)(Left, Right);
+    HMM_Vec2 Result = HMM_DivV2(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec4fCPP, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Multiply)(hmm_vec4 Left, float Right)
+COVERAGE(HMM_DivV2FCPP, 1)
+static inline HMM_Vec2 HMM_Div(HMM_Vec2 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec4fCPP);
+    ASSERT_COVERED(HMM_DivV2FCPP);
 
-    hmm_vec4 Result = HMM_PREFIX(MultiplyVec4f)(Left, Right);
+    HMM_Vec2 Result = HMM_DivV2F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyMat4CPP, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Multiply)(hmm_mat4 Left, hmm_mat4 Right)
+COVERAGE(HMM_DivV3CPP, 1)
+static inline HMM_Vec3 HMM_Div(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4CPP);
+    ASSERT_COVERED(HMM_DivV3CPP);
 
-    hmm_mat4 Result = HMM_PREFIX(MultiplyMat4)(Left, Right);
+    HMM_Vec3 Result = HMM_DivV3(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyMat4fCPP, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Multiply)(hmm_mat4 Left, float Right)
+COVERAGE(HMM_DivV3FCPP, 1)
+static inline HMM_Vec3 HMM_Div(HMM_Vec3 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4fCPP);
+    ASSERT_COVERED(HMM_DivV3FCPP);
 
-    hmm_mat4 Result = HMM_PREFIX(MultiplyMat4f)(Left, Right);
+    HMM_Vec3 Result = HMM_DivV3F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyMat4ByVec4CPP, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Multiply)(hmm_mat4 Matrix, hmm_vec4 Vector)
+COVERAGE(HMM_DivV4CPP, 1)
+static inline HMM_Vec4 HMM_Div(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4ByVec4CPP);
+    ASSERT_COVERED(HMM_DivV4CPP);
 
-    hmm_vec4 Result = HMM_PREFIX(MultiplyMat4ByVec4)(Matrix, Vector);
+    HMM_Vec4 Result = HMM_DivV4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyQuaternionCPP, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(Multiply)(hmm_quaternion Left, hmm_quaternion Right)
+COVERAGE(HMM_DivV4FCPP, 1)
+static inline HMM_Vec4 HMM_Div(HMM_Vec4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyQuaternionCPP);
+    ASSERT_COVERED(HMM_DivV4FCPP);
+
+    HMM_Vec4 Result = HMM_DivV4F(Left, Right);
 
-    hmm_quaternion Result = HMM_PREFIX(MultiplyQuaternion)(Left, Right);
+    return (Result);
+}
+
+COVERAGE(HMM_DivM2FCPP, 1)
+static inline HMM_Mat2 HMM_Div(HMM_Mat2 Left, float Right)
+{
+    ASSERT_COVERED(HMM_DivM2FCPP);
+    
+    HMM_Mat2 Result = HMM_DivM2F(Left, Right);
+    
+    return (Result);
+}
 
+COVERAGE(HMM_DivM3FCPP, 1)
+static inline HMM_Mat3 HMM_Div(HMM_Mat3 Left, float Right)
+{
+    ASSERT_COVERED(HMM_DivM3FCPP);
+    
+    HMM_Mat3 Result = HMM_DivM3F(Left, Right);
+    
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyQuaternionFCPP, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(Multiply)(hmm_quaternion Left, float Right)
+COVERAGE(HMM_DivM4FCPP, 1)
+static inline HMM_Mat4 HMM_Div(HMM_Mat4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyQuaternionFCPP);
+    ASSERT_COVERED(HMM_DivM4FCPP);
 
-    hmm_quaternion Result = HMM_PREFIX(MultiplyQuaternionF)(Left, Right);
+    HMM_Mat4 Result = HMM_DivM4F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec2CPP, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(Divide)(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_DivQFCPP, 1)
+static inline HMM_Quat HMM_Div(HMM_Quat Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec2CPP);
+    ASSERT_COVERED(HMM_DivQFCPP);
 
-    hmm_vec2 Result = HMM_PREFIX(DivideVec2)(Left, Right);
+    HMM_Quat Result = HMM_DivQF(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec2fCPP, 1)
-HMM_INLINE hmm_vec2 HMM_PREFIX(Divide)(hmm_vec2 Left, float Right)
+COVERAGE(HMM_EqV2CPP, 1)
+static inline HMM_Bool HMM_Eq(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec2fCPP);
+    ASSERT_COVERED(HMM_EqV2CPP);
 
-    hmm_vec2 Result = HMM_PREFIX(DivideVec2f)(Left, Right);
+    HMM_Bool Result = HMM_EqV2(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec3CPP, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(Divide)(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_EqV3CPP, 1)
+static inline HMM_Bool HMM_Eq(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec3CPP);
+    ASSERT_COVERED(HMM_EqV3CPP);
 
-    hmm_vec3 Result = HMM_PREFIX(DivideVec3)(Left, Right);
+    HMM_Bool Result = HMM_EqV3(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec3fCPP, 1)
-HMM_INLINE hmm_vec3 HMM_PREFIX(Divide)(hmm_vec3 Left, float Right)
+COVERAGE(HMM_EqV4CPP, 1)
+static inline HMM_Bool HMM_Eq(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec3fCPP);
+    ASSERT_COVERED(HMM_EqV4CPP);
 
-    hmm_vec3 Result = HMM_PREFIX(DivideVec3f)(Left, Right);
+    HMM_Bool Result = HMM_EqV4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec4CPP, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Divide)(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_AddV2Op, 1)
+static inline HMM_Vec2 operator+(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec4CPP);
+    ASSERT_COVERED(HMM_AddV2Op);
 
-    hmm_vec4 Result = HMM_PREFIX(DivideVec4)(Left, Right);
+    HMM_Vec2 Result = HMM_AddV2(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec4fCPP, 1)
-HMM_INLINE hmm_vec4 HMM_PREFIX(Divide)(hmm_vec4 Left, float Right)
+COVERAGE(HMM_AddV3Op, 1)
+static inline HMM_Vec3 operator+(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec4fCPP);
+    ASSERT_COVERED(HMM_AddV3Op);
 
-    hmm_vec4 Result = HMM_PREFIX(DivideVec4f)(Left, Right);
+    HMM_Vec3 Result = HMM_AddV3(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideMat4fCPP, 1)
-HMM_INLINE hmm_mat4 HMM_PREFIX(Divide)(hmm_mat4 Left, float Right)
+COVERAGE(HMM_AddV4Op, 1)
+static inline HMM_Vec4 operator+(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_DivideMat4fCPP);
+    ASSERT_COVERED(HMM_AddV4Op);
+
+    HMM_Vec4 Result = HMM_AddV4(Left, Right);
+
+    return (Result);
+}
 
-    hmm_mat4 Result = HMM_PREFIX(DivideMat4f)(Left, Right);
+COVERAGE(HMM_AddM2Op, 1)
+static inline HMM_Mat2 operator+(HMM_Mat2 Left, HMM_Mat2 Right)
+{
+    ASSERT_COVERED(HMM_AddM2Op);
+    
+    HMM_Mat2 Result = HMM_AddM2(Left, Right);
+    
+    return (Result);
+}
 
+COVERAGE(HMM_AddM3Op, 1)
+static inline HMM_Mat3 operator+(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    ASSERT_COVERED(HMM_AddM3Op);
+    
+    HMM_Mat3 Result = HMM_AddM3(Left, Right);
+    
     return (Result);
 }
 
-COVERAGE(HMM_DivideQuaternionFCPP, 1)
-HMM_INLINE hmm_quaternion HMM_PREFIX(Divide)(hmm_quaternion Left, float Right)
+COVERAGE(HMM_AddM4Op, 1)
+static inline HMM_Mat4 operator+(HMM_Mat4 Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_DivideQuaternionFCPP);
+    ASSERT_COVERED(HMM_AddM4Op);
 
-    hmm_quaternion Result = HMM_PREFIX(DivideQuaternionF)(Left, Right);
+    HMM_Mat4 Result = HMM_AddM4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_EqualsVec2CPP, 1)
-HMM_INLINE hmm_bool HMM_PREFIX(Equals)(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_AddQOp, 1)
+static inline HMM_Quat operator+(HMM_Quat Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec2CPP);
+    ASSERT_COVERED(HMM_AddQOp);
 
-    hmm_bool Result = HMM_PREFIX(EqualsVec2)(Left, Right);
+    HMM_Quat Result = HMM_AddQ(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_EqualsVec3CPP, 1)
-HMM_INLINE hmm_bool HMM_PREFIX(Equals)(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_SubV2Op, 1)
+static inline HMM_Vec2 operator-(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec3CPP);
+    ASSERT_COVERED(HMM_SubV2Op);
 
-    hmm_bool Result = HMM_PREFIX(EqualsVec3)(Left, Right);
+    HMM_Vec2 Result = HMM_SubV2(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_EqualsVec4CPP, 1)
-HMM_INLINE hmm_bool HMM_PREFIX(Equals)(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_SubV3Op, 1)
+static inline HMM_Vec3 operator-(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec4CPP);
+    ASSERT_COVERED(HMM_SubV3Op);
 
-    hmm_bool Result = HMM_PREFIX(EqualsVec4)(Left, Right);
+    HMM_Vec3 Result = HMM_SubV3(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddVec2Op, 1)
-HMM_INLINE hmm_vec2 operator+(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_SubV4Op, 1)
+static inline HMM_Vec4 operator-(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_AddVec2Op);
+    ASSERT_COVERED(HMM_SubV4Op);
 
-    hmm_vec2 Result = HMM_PREFIX(AddVec2)(Left, Right);
+    HMM_Vec4 Result = HMM_SubV4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddVec3Op, 1)
-HMM_INLINE hmm_vec3 operator+(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_SubM2Op, 1)
+static inline HMM_Mat2 operator-(HMM_Mat2 Left, HMM_Mat2 Right)
 {
-    ASSERT_COVERED(HMM_AddVec3Op);
+    ASSERT_COVERED(HMM_SubM2Op);
+    
+    HMM_Mat2 Result = HMM_SubM2(Left, Right);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_SubM3Op, 1)
+static inline HMM_Mat3 operator-(HMM_Mat3 Left, HMM_Mat3 Right)
+{
+    ASSERT_COVERED(HMM_SubM3Op);
+    
+    HMM_Mat3 Result = HMM_SubM3(Left, Right);
+    
+    return (Result);
+}
+
+COVERAGE(HMM_SubM4Op, 1)
+static inline HMM_Mat4 operator-(HMM_Mat4 Left, HMM_Mat4 Right)
+{
+    ASSERT_COVERED(HMM_SubM4Op);
 
-    hmm_vec3 Result = HMM_PREFIX(AddVec3)(Left, Right);
+    HMM_Mat4 Result = HMM_SubM4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddVec4Op, 1)
-HMM_INLINE hmm_vec4 operator+(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_SubQOp, 1)
+static inline HMM_Quat operator-(HMM_Quat Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_AddVec4Op);
+    ASSERT_COVERED(HMM_SubQOp);
 
-    hmm_vec4 Result = HMM_PREFIX(AddVec4)(Left, Right);
+    HMM_Quat Result = HMM_SubQ(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddMat4Op, 1)
-HMM_INLINE hmm_mat4 operator+(hmm_mat4 Left, hmm_mat4 Right)
+COVERAGE(HMM_MulV2Op, 1)
+static inline HMM_Vec2 operator*(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_AddMat4Op);
+    ASSERT_COVERED(HMM_MulV2Op);
 
-    hmm_mat4 Result = HMM_PREFIX(AddMat4)(Left, Right);
+    HMM_Vec2 Result = HMM_MulV2(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddQuaternionOp, 1)
-HMM_INLINE hmm_quaternion operator+(hmm_quaternion Left, hmm_quaternion Right)
+COVERAGE(HMM_MulV3Op, 1)
+static inline HMM_Vec3 operator*(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_AddQuaternionOp);
+    ASSERT_COVERED(HMM_MulV3Op);
 
-    hmm_quaternion Result = HMM_PREFIX(AddQuaternion)(Left, Right);
+    HMM_Vec3 Result = HMM_MulV3(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_SubtractVec2Op, 1)
-HMM_INLINE hmm_vec2 operator-(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_MulV4Op, 1)
+static inline HMM_Vec4 operator*(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec2Op);
+    ASSERT_COVERED(HMM_MulV4Op);
 
-    hmm_vec2 Result = HMM_PREFIX(SubtractVec2)(Left, Right);
+    HMM_Vec4 Result = HMM_MulV4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_SubtractVec3Op, 1)
-HMM_INLINE hmm_vec3 operator-(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_MulM2Op, 1)
+static inline HMM_Mat2 operator*(HMM_Mat2 Left, HMM_Mat2 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec3Op);
+    ASSERT_COVERED(HMM_MulM2Op);
 
-    hmm_vec3 Result = HMM_PREFIX(SubtractVec3)(Left, Right);
+    HMM_Mat2 Result = HMM_MulM2(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_SubtractVec4Op, 1)
-HMM_INLINE hmm_vec4 operator-(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_MulM3Op, 1)
+static inline HMM_Mat3 operator*(HMM_Mat3 Left, HMM_Mat3 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec4Op);
+    ASSERT_COVERED(HMM_MulM3Op);
 
-    hmm_vec4 Result = HMM_PREFIX(SubtractVec4)(Left, Right);
+    HMM_Mat3 Result = HMM_MulM3(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_SubtractMat4Op, 1)
-HMM_INLINE hmm_mat4 operator-(hmm_mat4 Left, hmm_mat4 Right)
+COVERAGE(HMM_MulM4Op, 1)
+static inline HMM_Mat4 operator*(HMM_Mat4 Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_SubtractMat4Op);
+    ASSERT_COVERED(HMM_MulM4Op);
 
-    hmm_mat4 Result = HMM_PREFIX(SubtractMat4)(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_SubtractQuaternionOp, 1)
-HMM_INLINE hmm_quaternion operator-(hmm_quaternion Left, hmm_quaternion Right)
+COVERAGE(HMM_MulQOp, 1)
+static inline HMM_Quat operator*(HMM_Quat Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_SubtractQuaternionOp);
+    ASSERT_COVERED(HMM_MulQOp);
 
-    hmm_quaternion Result = HMM_PREFIX(SubtractQuaternion)(Left, Right);
+    HMM_Quat Result = HMM_MulQ(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec2Op, 1)
-HMM_INLINE hmm_vec2 operator*(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_MulV2FOp, 1)
+static inline HMM_Vec2 operator*(HMM_Vec2 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec2Op);
+    ASSERT_COVERED(HMM_MulV2FOp);
 
-    hmm_vec2 Result = HMM_PREFIX(MultiplyVec2)(Left, Right);
+    HMM_Vec2 Result = HMM_MulV2F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec3Op, 1)
-HMM_INLINE hmm_vec3 operator*(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_MulV3FOp, 1)
+static inline HMM_Vec3 operator*(HMM_Vec3 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec3Op);
+    ASSERT_COVERED(HMM_MulV3FOp);
 
-    hmm_vec3 Result = HMM_PREFIX(MultiplyVec3)(Left, Right);
+    HMM_Vec3 Result = HMM_MulV3F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec4Op, 1)
-HMM_INLINE hmm_vec4 operator*(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_MulV4FOp, 1)
+static inline HMM_Vec4 operator*(HMM_Vec4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec4Op);
+    ASSERT_COVERED(HMM_MulV4FOp);
 
-    hmm_vec4 Result = HMM_PREFIX(MultiplyVec4)(Left, Right);
+    HMM_Vec4 Result = HMM_MulV4F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyMat4Op, 1)
-HMM_INLINE hmm_mat4 operator*(hmm_mat4 Left, hmm_mat4 Right)
+COVERAGE(HMM_MulM2FOp, 1)
+static inline HMM_Mat2 operator*(HMM_Mat2 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4Op);
+    ASSERT_COVERED(HMM_MulM2FOp);
 
-    hmm_mat4 Result = HMM_PREFIX(MultiplyMat4)(Left, Right);
+    HMM_Mat2 Result = HMM_MulM2F(Left, Right);
+    
+    return (Result);
+}
 
+COVERAGE(HMM_MulM3FOp, 1)
+static inline HMM_Mat3 operator*(HMM_Mat3 Left, float Right)
+{
+    ASSERT_COVERED(HMM_MulM3FOp);
+    
+    HMM_Mat3 Result = HMM_MulM3F(Left, Right);
+    
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyQuaternionOp, 1)
-HMM_INLINE hmm_quaternion operator*(hmm_quaternion Left, hmm_quaternion Right)
+COVERAGE(HMM_MulM4FOp, 1)
+static inline HMM_Mat4 operator*(HMM_Mat4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyQuaternionOp);
+    ASSERT_COVERED(HMM_MulM4FOp);
 
-    hmm_quaternion Result = HMM_PREFIX(MultiplyQuaternion)(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec2fOp, 1)
-HMM_INLINE hmm_vec2 operator*(hmm_vec2 Left, float Right)
+COVERAGE(HMM_MulQFOp, 1)
+static inline HMM_Quat operator*(HMM_Quat Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec2fOp);
+    ASSERT_COVERED(HMM_MulQFOp);
 
-    hmm_vec2 Result = HMM_PREFIX(MultiplyVec2f)(Left, Right);
+    HMM_Quat Result = HMM_MulQF(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec3fOp, 1)
-HMM_INLINE hmm_vec3 operator*(hmm_vec3 Left, float Right)
+COVERAGE(HMM_MulV2FOpLeft, 1)
+static inline HMM_Vec2 operator*(float Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec3fOp);
+    ASSERT_COVERED(HMM_MulV2FOpLeft);
 
-    hmm_vec3 Result = HMM_PREFIX(MultiplyVec3f)(Left, Right);
+    HMM_Vec2 Result = HMM_MulV2F(Right, Left);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec4fOp, 1)
-HMM_INLINE hmm_vec4 operator*(hmm_vec4 Left, float Right)
+COVERAGE(HMM_MulV3FOpLeft, 1)
+static inline HMM_Vec3 operator*(float Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec4fOp);
+    ASSERT_COVERED(HMM_MulV3FOpLeft);
 
-    hmm_vec4 Result = HMM_PREFIX(MultiplyVec4f)(Left, Right);
+    HMM_Vec3 Result = HMM_MulV3F(Right, Left);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyMat4fOp, 1)
-HMM_INLINE hmm_mat4 operator*(hmm_mat4 Left, float Right)
+COVERAGE(HMM_MulV4FOpLeft, 1)
+static inline HMM_Vec4 operator*(float Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4fOp);
+    ASSERT_COVERED(HMM_MulV4FOpLeft);
+
+    HMM_Vec4 Result = HMM_MulV4F(Right, Left);
+
+    return (Result);
+}
 
-    hmm_mat4 Result = HMM_PREFIX(MultiplyMat4f)(Left, Right);
 
+COVERAGE(HMM_MulM2FOpLeft, 1)
+static inline HMM_Mat2 operator*(float Left, HMM_Mat2 Right)
+{
+    ASSERT_COVERED(HMM_MulM2FOpLeft);
+    HMM_Mat2 Result = HMM_MulM2F(Right, Left);
+    return (Result);
+}
+
+COVERAGE(HMM_MulM3FOpLeft, 1)
+static inline HMM_Mat3 operator*(float Left, HMM_Mat3 Right)
+{
+    ASSERT_COVERED(HMM_MulM3FOpLeft);
+    
+    HMM_Mat3 Result = HMM_MulM3F(Right, Left);
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyQuaternionFOp, 1)
-HMM_INLINE hmm_quaternion operator*(hmm_quaternion Left, float Right)
+COVERAGE(HMM_MulM4FOpLeft, 1)
+static inline HMM_Mat4 operator*(float Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyQuaternionFOp);
+    ASSERT_COVERED(HMM_MulM4FOpLeft);
 
-    hmm_quaternion Result = HMM_PREFIX(MultiplyQuaternionF)(Left, Right);
+    HMM_Mat4 Result = HMM_MulM4F(Right, Left);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec2fOpLeft, 1)
-HMM_INLINE hmm_vec2 operator*(float Left, hmm_vec2 Right)
+COVERAGE(HMM_MulQFOpLeft, 1)
+static inline HMM_Quat operator*(float Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec2fOpLeft);
+    ASSERT_COVERED(HMM_MulQFOpLeft);
 
-    hmm_vec2 Result = HMM_PREFIX(MultiplyVec2f)(Right, Left);
+    HMM_Quat Result = HMM_MulQF(Right, Left);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec3fOpLeft, 1)
-HMM_INLINE hmm_vec3 operator*(float Left, hmm_vec3 Right)
+COVERAGE(HMM_MulM2V2Op, 1)
+static inline HMM_Vec2 operator*(HMM_Mat2 Matrix, HMM_Vec2 Vector)
 {
-    ASSERT_COVERED(HMM_MultiplyVec3fOpLeft);
+    ASSERT_COVERED(HMM_MulM2V2Op);
 
-    hmm_vec3 Result = HMM_PREFIX(MultiplyVec3f)(Right, Left);
+    HMM_Vec2 Result = HMM_MulM2V2(Matrix, Vector);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyVec4fOpLeft, 1)
-HMM_INLINE hmm_vec4 operator*(float Left, hmm_vec4 Right)
+COVERAGE(HMM_MulM3V3Op, 1)
+static inline HMM_Vec3 operator*(HMM_Mat3 Matrix, HMM_Vec3 Vector)
 {
-    ASSERT_COVERED(HMM_MultiplyVec4fOpLeft);
+    ASSERT_COVERED(HMM_MulM3V3Op);
 
-    hmm_vec4 Result = HMM_PREFIX(MultiplyVec4f)(Right, Left);
+    HMM_Vec3 Result = HMM_MulM3V3(Matrix, Vector);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyMat4fOpLeft, 1)
-HMM_INLINE hmm_mat4 operator*(float Left, hmm_mat4 Right)
+COVERAGE(HMM_MulM4V4Op, 1)
+static inline HMM_Vec4 operator*(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4fOpLeft);
+    ASSERT_COVERED(HMM_MulM4V4Op);
 
-    hmm_mat4 Result = HMM_PREFIX(MultiplyMat4f)(Right, Left);
+    HMM_Vec4 Result = HMM_MulM4V4(Matrix, Vector);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyQuaternionFOpLeft, 1)
-HMM_INLINE hmm_quaternion operator*(float Left, hmm_quaternion Right)
+COVERAGE(HMM_DivV2Op, 1)
+static inline HMM_Vec2 operator/(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyQuaternionFOpLeft);
+    ASSERT_COVERED(HMM_DivV2Op);
 
-    hmm_quaternion Result = HMM_PREFIX(MultiplyQuaternionF)(Right, Left);
+    HMM_Vec2 Result = HMM_DivV2(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_MultiplyMat4ByVec4Op, 1)
-HMM_INLINE hmm_vec4 operator*(hmm_mat4 Matrix, hmm_vec4 Vector)
+COVERAGE(HMM_DivV3Op, 1)
+static inline HMM_Vec3 operator/(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4ByVec4Op);
+    ASSERT_COVERED(HMM_DivV3Op);
 
-    hmm_vec4 Result = HMM_PREFIX(MultiplyMat4ByVec4)(Matrix, Vector);
+    HMM_Vec3 Result = HMM_DivV3(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec2Op, 1)
-HMM_INLINE hmm_vec2 operator/(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_DivV4Op, 1)
+static inline HMM_Vec4 operator/(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec2Op);
+    ASSERT_COVERED(HMM_DivV4Op);
 
-    hmm_vec2 Result = HMM_PREFIX(DivideVec2)(Left, Right);
+    HMM_Vec4 Result = HMM_DivV4(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec3Op, 1)
-HMM_INLINE hmm_vec3 operator/(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_DivV2FOp, 1)
+static inline HMM_Vec2 operator/(HMM_Vec2 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec3Op);
+    ASSERT_COVERED(HMM_DivV2FOp);
 
-    hmm_vec3 Result = HMM_PREFIX(DivideVec3)(Left, Right);
+    HMM_Vec2 Result = HMM_DivV2F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec4Op, 1)
-HMM_INLINE hmm_vec4 operator/(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_DivV3FOp, 1)
+static inline HMM_Vec3 operator/(HMM_Vec3 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec4Op);
+    ASSERT_COVERED(HMM_DivV3FOp);
 
-    hmm_vec4 Result = HMM_PREFIX(DivideVec4)(Left, Right);
+    HMM_Vec3 Result = HMM_DivV3F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec2fOp, 1)
-HMM_INLINE hmm_vec2 operator/(hmm_vec2 Left, float Right)
+COVERAGE(HMM_DivV4FOp, 1)
+static inline HMM_Vec4 operator/(HMM_Vec4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec2fOp);
+    ASSERT_COVERED(HMM_DivV4FOp);
 
-    hmm_vec2 Result = HMM_PREFIX(DivideVec2f)(Left, Right);
+    HMM_Vec4 Result = HMM_DivV4F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec3fOp, 1)
-HMM_INLINE hmm_vec3 operator/(hmm_vec3 Left, float Right)
+COVERAGE(HMM_DivM4FOp, 1)
+static inline HMM_Mat4 operator/(HMM_Mat4 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec3fOp);
+    ASSERT_COVERED(HMM_DivM4FOp);
 
-    hmm_vec3 Result = HMM_PREFIX(DivideVec3f)(Left, Right);
+    HMM_Mat4 Result = HMM_DivM4F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideVec4fOp, 1)
-HMM_INLINE hmm_vec4 operator/(hmm_vec4 Left, float Right)
+COVERAGE(HMM_DivM3FOp, 1)
+static inline HMM_Mat3 operator/(HMM_Mat3 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec4fOp);
+    ASSERT_COVERED(HMM_DivM3FOp);
 
-    hmm_vec4 Result = HMM_PREFIX(DivideVec4f)(Left, Right);
+    HMM_Mat3 Result = HMM_DivM3F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideMat4fOp, 1)
-HMM_INLINE hmm_mat4 operator/(hmm_mat4 Left, float Right)
+COVERAGE(HMM_DivM2FOp, 1)
+static inline HMM_Mat2 operator/(HMM_Mat2 Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideMat4fOp);
+    ASSERT_COVERED(HMM_DivM2FOp);
 
-    hmm_mat4 Result = HMM_PREFIX(DivideMat4f)(Left, Right);
+    HMM_Mat2 Result = HMM_DivM2F(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_DivideQuaternionFOp, 1)
-HMM_INLINE hmm_quaternion operator/(hmm_quaternion Left, float Right)
+COVERAGE(HMM_DivQFOp, 1)
+static inline HMM_Quat operator/(HMM_Quat Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideQuaternionFOp);
+    ASSERT_COVERED(HMM_DivQFOp);
 
-    hmm_quaternion Result = HMM_PREFIX(DivideQuaternionF)(Left, Right);
+    HMM_Quat Result = HMM_DivQF(Left, Right);
 
     return (Result);
 }
 
-COVERAGE(HMM_AddVec2Assign, 1)
-HMM_INLINE hmm_vec2 &operator+=(hmm_vec2 &Left, hmm_vec2 Right)
+COVERAGE(HMM_AddV2Assign, 1)
+static inline HMM_Vec2 &operator+=(HMM_Vec2 &Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_AddVec2Assign);
+    ASSERT_COVERED(HMM_AddV2Assign);
 
     return (Left = Left + Right);
 }
 
-COVERAGE(HMM_AddVec3Assign, 1)
-HMM_INLINE hmm_vec3 &operator+=(hmm_vec3 &Left, hmm_vec3 Right)
+COVERAGE(HMM_AddV3Assign, 1)
+static inline HMM_Vec3 &operator+=(HMM_Vec3 &Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_AddVec3Assign);
+    ASSERT_COVERED(HMM_AddV3Assign);
 
     return (Left = Left + Right);
 }
 
-COVERAGE(HMM_AddVec4Assign, 1)
-HMM_INLINE hmm_vec4 &operator+=(hmm_vec4 &Left, hmm_vec4 Right)
+COVERAGE(HMM_AddV4Assign, 1)
+static inline HMM_Vec4 &operator+=(HMM_Vec4 &Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_AddVec4Assign);
+    ASSERT_COVERED(HMM_AddV4Assign);
 
     return (Left = Left + Right);
 }
 
-COVERAGE(HMM_AddMat4Assign, 1)
-HMM_INLINE hmm_mat4 &operator+=(hmm_mat4 &Left, hmm_mat4 Right)
+COVERAGE(HMM_AddM2Assign, 1)
+static inline HMM_Mat2 &operator+=(HMM_Mat2 &Left, HMM_Mat2 Right)
 {
-    ASSERT_COVERED(HMM_AddMat4Assign);
+    ASSERT_COVERED(HMM_AddM2Assign);
+    return (Left = Left + Right);
+}
+
+COVERAGE(HMM_AddM3Assign, 1)
+static inline HMM_Mat3 &operator+=(HMM_Mat3 &Left, HMM_Mat3 Right)
+{
+    ASSERT_COVERED(HMM_AddM3Assign);
+    
+    return (Left = Left + Right);
+}
+
+COVERAGE(HMM_AddM4Assign, 1)
+static inline HMM_Mat4 &operator+=(HMM_Mat4 &Left, HMM_Mat4 Right)
+{
+    ASSERT_COVERED(HMM_AddM4Assign);
 
     return (Left = Left + Right);
 }
 
-COVERAGE(HMM_AddQuaternionAssign, 1)
-HMM_INLINE hmm_quaternion &operator+=(hmm_quaternion &Left, hmm_quaternion Right)
+COVERAGE(HMM_AddQAssign, 1)
+static inline HMM_Quat &operator+=(HMM_Quat &Left, HMM_Quat Right)
 {
-    ASSERT_COVERED(HMM_AddQuaternionAssign);
+    ASSERT_COVERED(HMM_AddQAssign);
 
     return (Left = Left + Right);
 }
 
-COVERAGE(HMM_SubtractVec2Assign, 1)
-HMM_INLINE hmm_vec2 &operator-=(hmm_vec2 &Left, hmm_vec2 Right)
+COVERAGE(HMM_SubV2Assign, 1)
+static inline HMM_Vec2 &operator-=(HMM_Vec2 &Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec2Assign);
+    ASSERT_COVERED(HMM_SubV2Assign);
 
     return (Left = Left - Right);
 }
 
-COVERAGE(HMM_SubtractVec3Assign, 1)
-HMM_INLINE hmm_vec3 &operator-=(hmm_vec3 &Left, hmm_vec3 Right)
+COVERAGE(HMM_SubV3Assign, 1)
+static inline HMM_Vec3 &operator-=(HMM_Vec3 &Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec3Assign);
+    ASSERT_COVERED(HMM_SubV3Assign);
 
     return (Left = Left - Right);
 }
 
-COVERAGE(HMM_SubtractVec4Assign, 1)
-HMM_INLINE hmm_vec4 &operator-=(hmm_vec4 &Left, hmm_vec4 Right)
+COVERAGE(HMM_SubV4Assign, 1)
+static inline HMM_Vec4 &operator-=(HMM_Vec4 &Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_SubtractVec4Assign);
+    ASSERT_COVERED(HMM_SubV4Assign);
 
     return (Left = Left - Right);
 }
 
-COVERAGE(HMM_SubtractMat4Assign, 1)
-HMM_INLINE hmm_mat4 &operator-=(hmm_mat4 &Left, hmm_mat4 Right)
+COVERAGE(HMM_SubM2Assign, 1)
+static inline HMM_Mat2 &operator-=(HMM_Mat2 &Left, HMM_Mat2 Right)
 {
-    ASSERT_COVERED(HMM_SubtractMat4Assign);
+    ASSERT_COVERED(HMM_SubM2Assign);
 
     return (Left = Left - Right);
 }
 
-COVERAGE(HMM_SubtractQuaternionAssign, 1)
-HMM_INLINE hmm_quaternion &operator-=(hmm_quaternion &Left, hmm_quaternion Right)
+COVERAGE(HMM_SubM3Assign, 1)
+static inline HMM_Mat3 &operator-=(HMM_Mat3 &Left, HMM_Mat3 Right)
 {
-    ASSERT_COVERED(HMM_SubtractQuaternionAssign);
+    ASSERT_COVERED(HMM_SubM3Assign);
 
     return (Left = Left - Right);
 }
 
-COVERAGE(HMM_MultiplyVec2Assign, 1)
-HMM_INLINE hmm_vec2 &operator*=(hmm_vec2 &Left, hmm_vec2 Right)
+COVERAGE(HMM_SubM4Assign, 1)
+static inline HMM_Mat4 &operator-=(HMM_Mat4 &Left, HMM_Mat4 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec2Assign);
+    ASSERT_COVERED(HMM_SubM4Assign);
+
+    return (Left = Left - Right);
+}
+
+COVERAGE(HMM_SubQAssign, 1)
+static inline HMM_Quat &operator-=(HMM_Quat &Left, HMM_Quat Right)
+{
+    ASSERT_COVERED(HMM_SubQAssign);
+
+    return (Left = Left - Right);
+}
+
+COVERAGE(HMM_MulV2Assign, 1)
+static inline HMM_Vec2 &operator*=(HMM_Vec2 &Left, HMM_Vec2 Right)
+{
+    ASSERT_COVERED(HMM_MulV2Assign);
 
     return (Left = Left * Right);
 }
 
-COVERAGE(HMM_MultiplyVec3Assign, 1)
-HMM_INLINE hmm_vec3 &operator*=(hmm_vec3 &Left, hmm_vec3 Right)
+COVERAGE(HMM_MulV3Assign, 1)
+static inline HMM_Vec3 &operator*=(HMM_Vec3 &Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec3Assign);
+    ASSERT_COVERED(HMM_MulV3Assign);
 
     return (Left = Left * Right);
 }
 
-COVERAGE(HMM_MultiplyVec4Assign, 1)
-HMM_INLINE hmm_vec4 &operator*=(hmm_vec4 &Left, hmm_vec4 Right)
+COVERAGE(HMM_MulV4Assign, 1)
+static inline HMM_Vec4 &operator*=(HMM_Vec4 &Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec4Assign);
+    ASSERT_COVERED(HMM_MulV4Assign);
 
     return (Left = Left * Right);
 }
 
-COVERAGE(HMM_MultiplyVec2fAssign, 1)
-HMM_INLINE hmm_vec2 &operator*=(hmm_vec2 &Left, float Right)
+COVERAGE(HMM_MulV2FAssign, 1)
+static inline HMM_Vec2 &operator*=(HMM_Vec2 &Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec2fAssign);
+    ASSERT_COVERED(HMM_MulV2FAssign);
 
     return (Left = Left * Right);
 }
 
-COVERAGE(HMM_MultiplyVec3fAssign, 1)
-HMM_INLINE hmm_vec3 &operator*=(hmm_vec3 &Left, float Right)
+COVERAGE(HMM_MulV3FAssign, 1)
+static inline HMM_Vec3 &operator*=(HMM_Vec3 &Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec3fAssign);
+    ASSERT_COVERED(HMM_MulV3FAssign);
 
     return (Left = Left * Right);
 }
 
-COVERAGE(HMM_MultiplyVec4fAssign, 1)
-HMM_INLINE hmm_vec4 &operator*=(hmm_vec4 &Left, float Right)
+COVERAGE(HMM_MulV4FAssign, 1)
+static inline HMM_Vec4 &operator*=(HMM_Vec4 &Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyVec4fAssign);
+    ASSERT_COVERED(HMM_MulV4FAssign);
 
     return (Left = Left * Right);
 }
 
-COVERAGE(HMM_MultiplyMat4fAssign, 1)
-HMM_INLINE hmm_mat4 &operator*=(hmm_mat4 &Left, float Right)
+COVERAGE(HMM_MulM2FAssign, 1)
+static inline HMM_Mat2 &operator*=(HMM_Mat2 &Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyMat4fAssign);
+    ASSERT_COVERED(HMM_MulM2FAssign);
+    
+    return (Left = Left * Right);
+}
+
+COVERAGE(HMM_MulM3FAssign, 1)
+static inline HMM_Mat3 &operator*=(HMM_Mat3 &Left, float Right)
+{
+    ASSERT_COVERED(HMM_MulM3FAssign);
+    
+    return (Left = Left * Right);
+}
+
+COVERAGE(HMM_MulM4FAssign, 1)
+static inline HMM_Mat4 &operator*=(HMM_Mat4 &Left, float Right)
+{
+    ASSERT_COVERED(HMM_MulM4FAssign);
 
     return (Left = Left * Right);
 }
 
-COVERAGE(HMM_MultiplyQuaternionFAssign, 1)
-HMM_INLINE hmm_quaternion &operator*=(hmm_quaternion &Left, float Right)
+COVERAGE(HMM_MulQFAssign, 1)
+static inline HMM_Quat &operator*=(HMM_Quat &Left, float Right)
 {
-    ASSERT_COVERED(HMM_MultiplyQuaternionFAssign);
+    ASSERT_COVERED(HMM_MulQFAssign);
 
     return (Left = Left * Right);
 }
 
-COVERAGE(HMM_DivideVec2Assign, 1)
-HMM_INLINE hmm_vec2 &operator/=(hmm_vec2 &Left, hmm_vec2 Right)
+COVERAGE(HMM_DivV2Assign, 1)
+static inline HMM_Vec2 &operator/=(HMM_Vec2 &Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec2Assign);
+    ASSERT_COVERED(HMM_DivV2Assign);
 
     return (Left = Left / Right);
 }
 
-COVERAGE(HMM_DivideVec3Assign, 1)
-HMM_INLINE hmm_vec3 &operator/=(hmm_vec3 &Left, hmm_vec3 Right)
+COVERAGE(HMM_DivV3Assign, 1)
+static inline HMM_Vec3 &operator/=(HMM_Vec3 &Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec3Assign);
+    ASSERT_COVERED(HMM_DivV3Assign);
 
     return (Left = Left / Right);
 }
 
-COVERAGE(HMM_DivideVec4Assign, 1)
-HMM_INLINE hmm_vec4 &operator/=(hmm_vec4 &Left, hmm_vec4 Right)
+COVERAGE(HMM_DivV4Assign, 1)
+static inline HMM_Vec4 &operator/=(HMM_Vec4 &Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_DivideVec4Assign);
+    ASSERT_COVERED(HMM_DivV4Assign);
 
     return (Left = Left / Right);
 }
 
-COVERAGE(HMM_DivideVec2fAssign, 1)
-HMM_INLINE hmm_vec2 &operator/=(hmm_vec2 &Left, float Right)
+COVERAGE(HMM_DivV2FAssign, 1)
+static inline HMM_Vec2 &operator/=(HMM_Vec2 &Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec2fAssign);
+    ASSERT_COVERED(HMM_DivV2FAssign);
 
     return (Left = Left / Right);
 }
 
-COVERAGE(HMM_DivideVec3fAssign, 1)
-HMM_INLINE hmm_vec3 &operator/=(hmm_vec3 &Left, float Right)
+COVERAGE(HMM_DivV3FAssign, 1)
+static inline HMM_Vec3 &operator/=(HMM_Vec3 &Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec3fAssign);
+    ASSERT_COVERED(HMM_DivV3FAssign);
 
     return (Left = Left / Right);
 }
 
-COVERAGE(HMM_DivideVec4fAssign, 1)
-HMM_INLINE hmm_vec4 &operator/=(hmm_vec4 &Left, float Right)
+COVERAGE(HMM_DivV4FAssign, 1)
+static inline HMM_Vec4 &operator/=(HMM_Vec4 &Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideVec4fAssign);
+    ASSERT_COVERED(HMM_DivV4FAssign);
 
     return (Left = Left / Right);
 }
 
-COVERAGE(HMM_DivideMat4fAssign, 1)
-HMM_INLINE hmm_mat4 &operator/=(hmm_mat4 &Left, float Right)
+COVERAGE(HMM_DivM4FAssign, 1)
+static inline HMM_Mat4 &operator/=(HMM_Mat4 &Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideMat4fAssign);
+    ASSERT_COVERED(HMM_DivM4FAssign);
 
     return (Left = Left / Right);
 }
 
-COVERAGE(HMM_DivideQuaternionFAssign, 1)
-HMM_INLINE hmm_quaternion &operator/=(hmm_quaternion &Left, float Right)
+COVERAGE(HMM_DivQFAssign, 1)
+static inline HMM_Quat &operator/=(HMM_Quat &Left, float Right)
 {
-    ASSERT_COVERED(HMM_DivideQuaternionFAssign);
+    ASSERT_COVERED(HMM_DivQFAssign);
 
     return (Left = Left / Right);
 }
 
-COVERAGE(HMM_EqualsVec2Op, 1)
-HMM_INLINE hmm_bool operator==(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_EqV2Op, 1)
+static inline HMM_Bool operator==(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec2Op);
+    ASSERT_COVERED(HMM_EqV2Op);
 
-    return HMM_PREFIX(EqualsVec2)(Left, Right);
+    return HMM_EqV2(Left, Right);
 }
 
-COVERAGE(HMM_EqualsVec3Op, 1)
-HMM_INLINE hmm_bool operator==(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_EqV3Op, 1)
+static inline HMM_Bool operator==(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec3Op);
+    ASSERT_COVERED(HMM_EqV3Op);
 
-    return HMM_PREFIX(EqualsVec3)(Left, Right);
+    return HMM_EqV3(Left, Right);
 }
 
-COVERAGE(HMM_EqualsVec4Op, 1)
-HMM_INLINE hmm_bool operator==(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_EqV4Op, 1)
+static inline HMM_Bool operator==(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec4Op);
+    ASSERT_COVERED(HMM_EqV4Op);
 
-    return HMM_PREFIX(EqualsVec4)(Left, Right);
+    return HMM_EqV4(Left, Right);
 }
 
-COVERAGE(HMM_EqualsVec2OpNot, 1)
-HMM_INLINE hmm_bool operator!=(hmm_vec2 Left, hmm_vec2 Right)
+COVERAGE(HMM_EqV2OpNot, 1)
+static inline HMM_Bool operator!=(HMM_Vec2 Left, HMM_Vec2 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec2OpNot);
+    ASSERT_COVERED(HMM_EqV2OpNot);
 
-    return !HMM_PREFIX(EqualsVec2)(Left, Right);
+    return !HMM_EqV2(Left, Right);
 }
 
-COVERAGE(HMM_EqualsVec3OpNot, 1)
-HMM_INLINE hmm_bool operator!=(hmm_vec3 Left, hmm_vec3 Right)
+COVERAGE(HMM_EqV3OpNot, 1)
+static inline HMM_Bool operator!=(HMM_Vec3 Left, HMM_Vec3 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec3OpNot);
+    ASSERT_COVERED(HMM_EqV3OpNot);
 
-    return !HMM_PREFIX(EqualsVec3)(Left, Right);
+    return !HMM_EqV3(Left, Right);
 }
 
-COVERAGE(HMM_EqualsVec4OpNot, 1)
-HMM_INLINE hmm_bool operator!=(hmm_vec4 Left, hmm_vec4 Right)
+COVERAGE(HMM_EqV4OpNot, 1)
+static inline HMM_Bool operator!=(HMM_Vec4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_EqualsVec4OpNot);
+    ASSERT_COVERED(HMM_EqV4OpNot);
 
-    return !HMM_PREFIX(EqualsVec4)(Left, Right);
+    return !HMM_EqV4(Left, Right);
 }
 
-COVERAGE(HMM_UnaryMinusVec2, 1)
-HMM_INLINE hmm_vec2 operator-(hmm_vec2 In)
+COVERAGE(HMM_UnaryMinusV2, 1)
+static inline HMM_Vec2 operator-(HMM_Vec2 In)
 {
-    ASSERT_COVERED(HMM_UnaryMinusVec2);
+    ASSERT_COVERED(HMM_UnaryMinusV2);
 
-    hmm_vec2 Result;
+    HMM_Vec2 Result;
     Result.X = -In.X;
     Result.Y = -In.Y;
     return(Result);
 }
 
-COVERAGE(HMM_UnaryMinusVec3, 1)
-HMM_INLINE hmm_vec3 operator-(hmm_vec3 In)
+COVERAGE(HMM_UnaryMinusV3, 1)
+static inline HMM_Vec3 operator-(HMM_Vec3 In)
 {
-    ASSERT_COVERED(HMM_UnaryMinusVec3);
+    ASSERT_COVERED(HMM_UnaryMinusV3);
 
-    hmm_vec3 Result;
+    HMM_Vec3 Result;
     Result.X = -In.X;
     Result.Y = -In.Y;
     Result.Z = -In.Z;
     return(Result);
 }
 
-COVERAGE(HMM_UnaryMinusVec4, 1)
-HMM_INLINE hmm_vec4 operator-(hmm_vec4 In)
+COVERAGE(HMM_UnaryMinusV4, 1)
+static inline HMM_Vec4 operator-(HMM_Vec4 In)
 {
-    ASSERT_COVERED(HMM_UnaryMinusVec4);
+    ASSERT_COVERED(HMM_UnaryMinusV4);
 
-    hmm_vec4 Result;
+    HMM_Vec4 Result;
 #if HANDMADE_MATH__USE_SSE
-    Result.InternalElementsSSE = _mm_xor_ps(In.InternalElementsSSE, _mm_set1_ps(-0.0f));
+    Result.SSE = _mm_xor_ps(In.SSE, _mm_set1_ps(-0.0f));
 #else
     Result.X = -In.X;
     Result.Y = -In.Y;
@@ -3164,7 +4174,130 @@ HMM_INLINE hmm_vec4 operator-(hmm_vec4 In)
     return(Result);
 }
 
-#endif /* __cplusplus */
+#endif /* __cplusplus*/
+
+#ifdef HANDMADE_MATH__USE_C11_GENERICS
+#define HMM_Add(A, B) _Generic((A), \
+        HMM_Vec2: HMM_AddV2, \
+        HMM_Vec3: HMM_AddV3, \
+        HMM_Vec4: HMM_AddV4, \
+        HMM_Mat2: HMM_AddM2, \
+        HMM_Mat3: HMM_AddM3, \
+        HMM_Mat4: HMM_AddM4, \
+        HMM_Quat: HMM_AddQ \
+)(A, B)
+
+#define HMM_Sub(A, B) _Generic((A), \
+        HMM_Vec2: HMM_SubV2, \
+        HMM_Vec3: HMM_SubV3, \
+        HMM_Vec4: HMM_SubV4, \
+        HMM_Mat2: HMM_SubM2, \
+        HMM_Mat3: HMM_SubM3, \
+        HMM_Mat4: HMM_SubM4, \
+        HMM_Quat: HMM_SubQ \
+)(A, B)
+
+#define HMM_Mul(A, B) _Generic((B), \
+     float: _Generic((A), \
+        HMM_Vec2: HMM_MulV2F, \
+        HMM_Vec3: HMM_MulV3F, \
+        HMM_Vec4: HMM_MulV4F, \
+        HMM_Mat2: HMM_MulM2F, \
+        HMM_Mat3: HMM_MulM3F, \
+        HMM_Mat4: HMM_MulM4F, \
+        HMM_Quat: HMM_MulQF \
+     ), \
+     HMM_Mat2: HMM_MulM2, \
+     HMM_Mat3: HMM_MulM3, \
+     HMM_Mat4: HMM_MulM4, \
+     HMM_Quat: HMM_MulQ, \
+     default: _Generic((A), \
+        HMM_Vec2: HMM_MulV2, \
+        HMM_Vec3: HMM_MulV3, \
+        HMM_Vec4: HMM_MulV4, \
+        HMM_Mat2: HMM_MulM2V2, \
+        HMM_Mat3: HMM_MulM3V3, \
+        HMM_Mat4: HMM_MulM4V4 \
+    ) \
+)(A, B)
+
+#define HMM_Div(A, B) _Generic((B), \
+     float: _Generic((A), \
+        HMM_Mat2: HMM_DivM2F, \
+        HMM_Mat3: HMM_DivM3F, \
+        HMM_Mat4: HMM_DivM4F, \
+        HMM_Vec2: HMM_DivV2F, \
+        HMM_Vec3: HMM_DivV3F, \
+        HMM_Vec4: HMM_DivV4F, \
+        HMM_Quat: HMM_DivQF  \
+     ), \
+     HMM_Mat2: HMM_DivM2, \
+     HMM_Mat3: HMM_DivM3, \
+     HMM_Mat4: HMM_DivM4, \
+     HMM_Quat: HMM_DivQ, \
+     default: _Generic((A), \
+        HMM_Vec2: HMM_DivV2, \
+        HMM_Vec3: HMM_DivV3, \
+        HMM_Vec4: HMM_DivV4  \
+    ) \
+)(A, B)
+
+#define HMM_Len(A) _Generic((A), \
+        HMM_Vec2: HMM_LenV2, \
+        HMM_Vec3: HMM_LenV3, \
+        HMM_Vec4: HMM_LenV4  \
+)(A)
+
+#define HMM_LenSqr(A) _Generic((A), \
+        HMM_Vec2: HMM_LenSqrV2, \
+        HMM_Vec3: HMM_LenSqrV3, \
+        HMM_Vec4: HMM_LenSqrV4  \
+)(A)
+
+#define HMM_Norm(A) _Generic((A), \
+        HMM_Vec2: HMM_NormV2, \
+        HMM_Vec3: HMM_NormV3, \
+        HMM_Vec4: HMM_NormV4  \
+)(A)
+
+#define HMM_Dot(A, B) _Generic((A), \
+        HMM_Vec2: HMM_DotV2, \
+        HMM_Vec3: HMM_DotV3, \
+        HMM_Vec4: HMM_DotV4  \
+)(A, B)
+
+#define HMM_Lerp(A, T, B) _Generic((A), \
+        float: HMM_Lerp, \
+        HMM_Vec2: HMM_LerpV2, \
+        HMM_Vec3: HMM_LerpV3, \
+        HMM_Vec4: HMM_LerpV4 \
+)(A, T, B)
+
+#define HMM_Eq(A, B) _Generic((A), \
+        HMM_Vec2: HMM_EqV2, \
+        HMM_Vec3: HMM_EqV3, \
+        HMM_Vec4: HMM_EqV4  \
+)(A, B)
+
+#define HMM_Transpose(M) _Generic((M), \
+        HMM_Mat2: HMM_TransposeM2, \
+        HMM_Mat3: HMM_TransposeM3, \
+        HMM_Mat4: HMM_TransposeM4  \
+)(M)
+
+#define HMM_Determinant(M) _Generic((M), \
+        HMM_Mat2: HMM_DeterminantM2, \
+        HMM_Mat3: HMM_DeterminantM3, \
+        HMM_Mat4: HMM_DeterminantM4  \
+)(M)
+
+#define HMM_InvGeneral(M) _Generic((M), \
+        HMM_Mat2: HMM_InvGeneralM2, \
+        HMM_Mat3: HMM_InvGeneralM3, \
+        HMM_Mat4: HMM_InvGeneralM4  \
+)(M)
+
+#endif
 
 #if defined(__GNUC__) || defined(__clang__)
 #pragma GCC diagnostic pop

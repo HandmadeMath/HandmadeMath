@@ -4,14 +4,14 @@
 
 TEST(SSE, LinearCombine)
 {
-    hmm_mat4 MatrixOne = HMM_Mat4d(2.0f);
-    hmm_mat4 MatrixTwo = HMM_Mat4d(4.0f);
-    hmm_mat4 Result;
+    HMM_Mat4 MatrixOne = HMM_M4D(2.0f);
+    HMM_Mat4 MatrixTwo = HMM_M4D(4.0f);
+    HMM_Mat4 Result;
 
-    Result.Columns[0] = HMM_LinearCombineSSE(MatrixOne.Columns[0], MatrixTwo);
-    Result.Columns[1] = HMM_LinearCombineSSE(MatrixOne.Columns[1], MatrixTwo);
-    Result.Columns[2] = HMM_LinearCombineSSE(MatrixOne.Columns[2], MatrixTwo);
-    Result.Columns[3] = HMM_LinearCombineSSE(MatrixOne.Columns[3], MatrixTwo);
+    Result.Columns[0] = HMM_LinearCombineV4M4(MatrixOne.Columns[0], MatrixTwo);
+    Result.Columns[1] = HMM_LinearCombineV4M4(MatrixOne.Columns[1], MatrixTwo);
+    Result.Columns[2] = HMM_LinearCombineV4M4(MatrixOne.Columns[2], MatrixTwo);
+    Result.Columns[3] = HMM_LinearCombineV4M4(MatrixOne.Columns[3], MatrixTwo);
 
     {
         EXPECT_FLOAT_EQ(Result.Elements[0][0], 8.0f);
