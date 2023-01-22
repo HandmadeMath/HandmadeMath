@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: TheMrMilchmann/setup-msvc-dev@v2
+      with:
+        arch: x64
+      if: matrix.os == 'windows-latest'
+    - name: Test (Windows, MSVC)
+      run: ./run_test_msvc.bat
+      working-directory: ./test
+      if: matrix.os == 'windows-latest'
+    - name: Test (Windows, clang)
+      run: ./run_test_clang.bat
+      working-directory: ./test
+      if: matrix.os == 'windows-latest'
+    - name: Test (${{ matrix.os }})
+      run: make all
+      working-directory: ./test
+      if: matrix.os != 'windows-latest'

@@ -28,18 +28,6 @@ TEST(ScalarMath, Trigonometry)
     // checking that things work by default.
 }
 
-TEST(ScalarMath, ExpF)
-{
-    EXPECT_NEAR(HMM_ExpF(0.0f), 1.0f, 0.0001f);
-    EXPECT_NEAR(HMM_ExpF(1.0f), 2.7182818285f, 0.0001f);
-}
-
-TEST(ScalarMath, LogF)
-{
-    EXPECT_NEAR(HMM_LogF(1.0f), 0.0f, 0.0001f);
-    EXPECT_NEAR(HMM_LogF(2.7182818285f), 1.0f, 0.0001f);
-}
-
 TEST(ScalarMath, SquareRoot)
 {
     EXPECT_FLOAT_EQ(HMM_SqrtF(16.0f), 4.0f);
@@ -48,20 +36,6 @@ TEST(ScalarMath, SquareRoot)
 TEST(ScalarMath, RSquareRootF)
 {
     EXPECT_NEAR(HMM_InvSqrtF(10.0f), 0.31616211f, 0.0001f);
-}
-
-TEST(ScalarMath, Power)
-{
-    EXPECT_FLOAT_EQ(HMM_Power(2.0f, 0), 1.0f);
-    EXPECT_FLOAT_EQ(HMM_Power(2.0f, 4), 16.0f);
-    EXPECT_FLOAT_EQ(HMM_Power(2.0f, -2), 0.25f);
-}
-
-TEST(ScalarMath, PowerF)
-{
-    EXPECT_FLOAT_EQ(HMM_PowerF(2.0f, 0.0f), 1.0f);
-    EXPECT_NEAR(HMM_PowerF(2.0f, 4.1f), 17.148376f, 0.0001f);
-    EXPECT_NEAR(HMM_PowerF(2.0f, -2.5f), 0.176777f, 0.0001f);
 }
 
 TEST(ScalarMath, Lerp)

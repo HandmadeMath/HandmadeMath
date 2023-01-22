@@ -210,6 +210,8 @@ hmt_category* _hmt_categories = 0;
 int _hmt_num_covercases = 0;
 hmt_covercase* _hmt_covercases = 0;
 
+int _hmt_num_covererrors = 0;
+
 hmt_category _hmt_new_category(const char* name) {
     hmt_category cat = {
         name, // name
@@ -299,6 +301,7 @@ void _hmt_count_cover(const char* name, int line) {
     hmt_covercase* covercase = _hmt_find_covercase(name);
     if (covercase == 0) {
         printf(HMT_RED "ERROR (line %d): Could not find coverage case with name \"%s\".\n" HMT_RESET, line, name);
+        _hmt_num_covererrors++;
         return;
     }
 
@@ -390,6 +393,11 @@ int hmt_check_all_coverage() {
     printf(HMT_RESET);
 
     printf("\n");
+
+    if (_hmt_num_covererrors > 0) {
+        printf(HMT_RED "There were %d other coverage errors; scroll up to see them.\n", _hmt_num_covererrors);
+        return 1;
+    }
 
     return (count_failures > 0);
 }
