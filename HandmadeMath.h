@@ -541,13 +541,7 @@ static inline float HMM_InvSqrtF(float Float)
 
     float Result;
 
-#ifdef HANDMADE_MATH__USE_SSE
-    __m128 In = _mm_set_ss(Float);
-    __m128 Out = _mm_rsqrt_ss(In);
-    Result = _mm_cvtss_f32(Out);
-#else
     Result = 1.0f/HMM_SqrtF(Float);
-#endif
 
     return Result;
 }
@@ -960,6 +954,7 @@ COVERAGE(HMM_DotV4, 1)
 static inline float HMM_DotV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_DotV4);
+ASSERT_COVERED(HMM_DotV4);
 
     float Result;
 
@@ -974,7 +969,7 @@ static inline float HMM_DotV4(HMM_Vec4 Left, HMM_Vec4 Right)
     SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
     _mm_store_ss(&Result, SSEResultOne);
 #else
-    Result = (Left.X * Right.X) + (Left.Y * Right.Y) + (Left.Z * Right.Z) + (Left.W * Right.W);
+    Result = ((Left.X * Right.X) + (Left.Z * Right.Z)) + ((Left.Y * Right.Y) + (Left.W * Right.W));
 #endif
 
     return Result;
@@ -1102,16 +1097,25 @@ static inline HMM_Vec4 HMM_LinearCombineV4M4(HMM_Vec4 Left, HMM_Mat4 Right)
     Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0xaa), Right.Columns[2].SSE));
     Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0xff), Right.Columns[3].SSE));
 #else
-    int Columns, Rows;
-    for(Rows = 0; Rows < 4; ++Rows)
-    {
-        float Sum = 0;
-        for(Columns = 0; Columns < 4; ++Columns)
-        {
-            Sum += Left.Elements[Columns]*Right.Elements[Columns][Rows];
-        }
-        Result.Elements[Rows] = Sum;
-    }
+    Result.X = Left.Elements[0] * Right.Columns[0].X;
+    Result.Y = Left.Elements[0] * Right.Columns[0].Y;
+    Result.Z = Left.Elements[0] * Right.Columns[0].Z;
+    Result.W = Left.Elements[0] * Right.Columns[0].W;
+
+    Result.X += Left.Elements[1] * Right.Columns[1].X;
+    Result.Y += Left.Elements[1] * Right.Columns[1].Y;
+    Result.Z += Left.Elements[1] * Right.Columns[1].Z;
+    Result.W += Left.Elements[1] * Right.Columns[1].W;
+
+    Result.X += Left.Elements[2] * Right.Columns[2].X;
+    Result.Y += Left.Elements[2] * Right.Columns[2].Y;
+    Result.Z += Left.Elements[2] * Right.Columns[2].Z;
+    Result.W += Left.Elements[2] * Right.Columns[2].W;
+
+    Result.X += Left.Elements[3] * Right.Columns[3].X;
+    Result.Y += Left.Elements[3] * Right.Columns[3].Y;
+    Result.Z += Left.Elements[3] * Right.Columns[3].Z;
+    Result.W += Left.Elements[3] * Right.Columns[3].W;
 #endif
 
     return Result;
@@ -1148,14 +1152,8 @@ static inline HMM_Mat2 HMM_TransposeM2(HMM_Mat2 Matrix)
     
     HMM_Mat2 Result;
 
-    int Columns, Rows;
-    for(Columns = 0; Columns < 2; ++Columns)
-    {
-        for(Rows = 0; Rows < 2; ++Rows)
-        {
-            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
-        }
-    }
+    Result.Elements[0][1] = Matrix.Elements[1][0];
+    Result.Elements[1][0] = Matrix.Elements[0][1];
     
     return Result;
 }
@@ -1166,15 +1164,11 @@ static inline HMM_Mat2 HMM_AddM2(HMM_Mat2 Left, HMM_Mat2 Right)
     ASSERT_COVERED(HMM_AddM2);
     
     HMM_Mat2 Result;
-    int Columns;
-    for(Columns = 0; Columns < 2; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 2; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
-        }
-    }
+
+    Result.Elements[0][0] = Left.Elements[0][0] + Right.Elements[0][0];
+    Result.Elements[0][1] = Left.Elements[0][1] + Right.Elements[0][1];
+    Result.Elements[1][0] = Left.Elements[1][0] + Right.Elements[1][0];
+    Result.Elements[1][1] = Left.Elements[1][1] + Right.Elements[1][1];
    
     return Result;    
 }
@@ -1185,16 +1179,12 @@ static inline HMM_Mat2 HMM_SubM2(HMM_Mat2 Left, HMM_Mat2 Right)
     ASSERT_COVERED(HMM_SubM2);
     
     HMM_Mat2 Result;
-    int Columns;
-    for(Columns = 0; Columns < 2; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 2; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
-        }
-    }
 
+    Result.Elements[0][0] = Left.Elements[0][0] - Right.Elements[0][0];
+    Result.Elements[0][1] = Left.Elements[0][1] - Right.Elements[0][1];
+    Result.Elements[1][0] = Left.Elements[1][0] - Right.Elements[1][0];
+    Result.Elements[1][1] = Left.Elements[1][1] - Right.Elements[1][1];
+    
     return Result;
 }
 
@@ -1204,16 +1194,12 @@ static inline HMM_Vec2 HMM_MulM2V2(HMM_Mat2 Matrix, HMM_Vec2 Vector)
     ASSERT_COVERED(HMM_MulM2V2);
     
     HMM_Vec2 Result;
-    int Columns, Rows;
-    for(Rows = 0; Rows < 2; ++Rows)
-    {
-        float Sum = 0.0f;
-        for(Columns = 0; Columns < 2; ++Columns)
-        {
-            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
-        }
-        Result.Elements[Rows] = Sum;
-    }
+
+    Result.X = Vector.Elements[0] * Matrix.Columns[0].X;
+    Result.Y = Vector.Elements[0] * Matrix.Columns[0].Y;
+
+    Result.X += Vector.Elements[1] * Matrix.Columns[1].X;
+    Result.Y += Vector.Elements[1] * Matrix.Columns[1].Y;
 
     return Result;    
 }
@@ -1236,16 +1222,12 @@ static inline HMM_Mat2 HMM_MulM2F(HMM_Mat2 Matrix, float Scalar)
     ASSERT_COVERED(HMM_MulM2F);
     
     HMM_Mat2 Result;
-    int Columns;
-    for(Columns = 0; Columns < 2; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 2; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
-        }
-    }
 
+    Result.Elements[0][0] = Matrix.Elements[0][0] * Scalar;
+    Result.Elements[0][1] = Matrix.Elements[0][1] * Scalar;
+    Result.Elements[1][0] = Matrix.Elements[1][0] * Scalar;
+    Result.Elements[1][1] = Matrix.Elements[1][1] * Scalar;
+    
     return Result;
 }
 
@@ -1255,15 +1237,11 @@ static inline HMM_Mat2 HMM_DivM2F(HMM_Mat2 Matrix, float Scalar)
     ASSERT_COVERED(HMM_DivM2F);
     
     HMM_Mat2 Result;
-    int Columns;
-    for(Columns = 0; Columns < 2; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 2; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
-        }
-    }
+
+    Result.Elements[0][0] = Matrix.Elements[0][0] / Scalar;
+    Result.Elements[0][1] = Matrix.Elements[0][1] / Scalar;
+    Result.Elements[1][0] = Matrix.Elements[1][0] / Scalar;
+    Result.Elements[1][1] = Matrix.Elements[1][1] / Scalar;
 
     return Result;
 }
@@ -1323,15 +1301,12 @@ static inline HMM_Mat3 HMM_TransposeM3(HMM_Mat3 Matrix)
 
     HMM_Mat3 Result;
 
-    int Columns;
-    for(Columns = 0; Columns < 3; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 3; ++Rows)
-        {
-            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
-        }
-    }
+    Result.Elements[0][1] = Matrix.Elements[1][0];
+    Result.Elements[0][2] = Matrix.Elements[2][0];
+    Result.Elements[1][0] = Matrix.Elements[0][1];
+    Result.Elements[1][2] = Matrix.Elements[2][1];
+    Result.Elements[2][1] = Matrix.Elements[1][2];
+    Result.Elements[2][0] = Matrix.Elements[0][2];
     
     return Result;
 }
@@ -1342,16 +1317,17 @@ static inline HMM_Mat3 HMM_AddM3(HMM_Mat3 Left, HMM_Mat3 Right)
     ASSERT_COVERED(HMM_AddM3);
     
     HMM_Mat3 Result;
-    int Columns;
-    for(Columns = 0; Columns < 3; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 3; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
-        }
-    }
-   
+    
+    Result.Elements[0][0] = Left.Elements[0][0] + Right.Elements[0][0];
+    Result.Elements[0][1] = Left.Elements[0][1] + Right.Elements[0][1];
+    Result.Elements[0][2] = Left.Elements[0][2] + Right.Elements[0][2];
+    Result.Elements[1][0] = Left.Elements[1][0] + Right.Elements[1][0];
+    Result.Elements[1][1] = Left.Elements[1][1] + Right.Elements[1][1];
+    Result.Elements[1][2] = Left.Elements[1][2] + Right.Elements[1][2];
+    Result.Elements[2][0] = Left.Elements[2][0] + Right.Elements[2][0];
+    Result.Elements[2][1] = Left.Elements[2][1] + Right.Elements[2][1];
+    Result.Elements[2][2] = Left.Elements[2][2] + Right.Elements[2][2];
+
     return Result;    
 }
 
@@ -1361,15 +1337,16 @@ static inline HMM_Mat3 HMM_SubM3(HMM_Mat3 Left, HMM_Mat3 Right)
     ASSERT_COVERED(HMM_SubM3);
 
     HMM_Mat3 Result;
-    int Columns;
-    for(Columns = 0; Columns < 3; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 3; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
-        }
-    }
+
+    Result.Elements[0][0] = Left.Elements[0][0] - Right.Elements[0][0];
+    Result.Elements[0][1] = Left.Elements[0][1] - Right.Elements[0][1];
+    Result.Elements[0][2] = Left.Elements[0][2] - Right.Elements[0][2];
+    Result.Elements[1][0] = Left.Elements[1][0] - Right.Elements[1][0];
+    Result.Elements[1][1] = Left.Elements[1][1] - Right.Elements[1][1];
+    Result.Elements[1][2] = Left.Elements[1][2] - Right.Elements[1][2];
+    Result.Elements[2][0] = Left.Elements[2][0] - Right.Elements[2][0];
+    Result.Elements[2][1] = Left.Elements[2][1] - Right.Elements[2][1];
+    Result.Elements[2][2] = Left.Elements[2][2] - Right.Elements[2][2];
 
     return Result;
 }
@@ -1380,17 +1357,19 @@ static inline HMM_Vec3 HMM_MulM3V3(HMM_Mat3 Matrix, HMM_Vec3 Vector)
     ASSERT_COVERED(HMM_MulM3V3);
     
     HMM_Vec3 Result;
-    int Columns, Rows;
-    for(Rows = 0; Rows < 3; ++Rows)
-    {
-        float Sum = 0.0f;
-        for(Columns = 0; Columns < 3; ++Columns)
-        {
-            Sum += Matrix.Elements[Columns][Rows] * Vector.Elements[Columns];
-        }
-        Result.Elements[Rows] = Sum;
-    }
 
+    Result.X = Vector.Elements[0] * Matrix.Columns[0].X;
+    Result.Y = Vector.Elements[0] * Matrix.Columns[0].Y;
+    Result.Z = Vector.Elements[0] * Matrix.Columns[0].Z;
+
+    Result.X += Vector.Elements[1] * Matrix.Columns[1].X;
+    Result.Y += Vector.Elements[1] * Matrix.Columns[1].Y;
+    Result.Z += Vector.Elements[1] * Matrix.Columns[1].Z;
+
+    Result.X += Vector.Elements[2] * Matrix.Columns[2].X;
+    Result.Y += Vector.Elements[2] * Matrix.Columns[2].Y;
+    Result.Z += Vector.Elements[2] * Matrix.Columns[2].Z;
+    
     return Result;    
 }
 
@@ -1413,15 +1392,16 @@ static inline HMM_Mat3 HMM_MulM3F(HMM_Mat3 Matrix, float Scalar)
     ASSERT_COVERED(HMM_MulM3F);
 
     HMM_Mat3 Result;
-    int Columns;
-    for(Columns = 0; Columns < 3; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 3; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
-        }
-    }
+
+    Result.Elements[0][0] = Matrix.Elements[0][0] * Scalar;
+    Result.Elements[0][1] = Matrix.Elements[0][1] * Scalar;
+    Result.Elements[0][2] = Matrix.Elements[0][2] * Scalar;
+    Result.Elements[1][0] = Matrix.Elements[1][0] * Scalar;
+    Result.Elements[1][1] = Matrix.Elements[1][1] * Scalar;
+    Result.Elements[1][2] = Matrix.Elements[1][2] * Scalar;
+    Result.Elements[2][0] = Matrix.Elements[2][0] * Scalar;
+    Result.Elements[2][1] = Matrix.Elements[2][1] * Scalar;
+    Result.Elements[2][2] = Matrix.Elements[2][2] * Scalar;
 
     return Result;            
 }
@@ -1432,15 +1412,16 @@ static inline HMM_Mat3 HMM_DivM3F(HMM_Mat3 Matrix, float Scalar)
     ASSERT_COVERED(HMM_DivM3);
 
     HMM_Mat3 Result;
-    int Columns;
-    for(Columns = 0; Columns < 3; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 3; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
-        }
-    }
+    
+    Result.Elements[0][0] = Matrix.Elements[0][0] / Scalar;
+    Result.Elements[0][1] = Matrix.Elements[0][1] / Scalar;
+    Result.Elements[0][2] = Matrix.Elements[0][2] / Scalar;
+    Result.Elements[1][0] = Matrix.Elements[1][0] / Scalar;
+    Result.Elements[1][1] = Matrix.Elements[1][1] / Scalar;
+    Result.Elements[1][2] = Matrix.Elements[1][2] / Scalar;
+    Result.Elements[2][0] = Matrix.Elements[2][0] / Scalar;
+    Result.Elements[2][1] = Matrix.Elements[2][1] / Scalar;
+    Result.Elements[2][2] = Matrix.Elements[2][2] / Scalar;
 
     return Result;                    
 }
@@ -1513,16 +1494,18 @@ static inline HMM_Mat4 HMM_TransposeM4(HMM_Mat4 Matrix)
     HMM_Mat4 Result = Matrix;
     _MM_TRANSPOSE4_PS(Result.Columns[0].SSE, Result.Columns[1].SSE, Result.Columns[2].SSE, Result.Columns[3].SSE);
 #else
-    HMM_Mat4 Result;
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            Result.Elements[Rows][Columns] = Matrix.Elements[Columns][Rows];
-        }
-    }
+    Result.Elements[0][1] = Matrix.Elements[1][0];
+    Result.Elements[0][2] = Matrix.Elements[2][0];
+    Result.Elements[0][3] = Matrix.Elements[3][0];
+    Result.Elements[1][0] = Matrix.Elements[0][1];
+    Result.Elements[1][2] = Matrix.Elements[2][1];
+    Result.Elements[1][3] = Matrix.Elements[3][1];
+    Result.Elements[2][1] = Matrix.Elements[1][2];
+    Result.Elements[2][0] = Matrix.Elements[0][2];
+    Result.Elements[2][3] = Matrix.Elements[3][2];
+    Result.Elements[3][1] = Matrix.Elements[1][3];
+    Result.Elements[3][2] = Matrix.Elements[2][3];
+    Result.Elements[3][0] = Matrix.Elements[0][3];
 #endif
 
     return Result;
@@ -1541,15 +1524,22 @@ static inline HMM_Mat4 HMM_AddM4(HMM_Mat4 Left, HMM_Mat4 Right)
     Result.Columns[2].SSE = _mm_add_ps(Left.Columns[2].SSE, Right.Columns[2].SSE);
     Result.Columns[3].SSE = _mm_add_ps(Left.Columns[3].SSE, Right.Columns[3].SSE);
 #else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] + Right.Elements[Columns][Rows];
-        }
-    }
+    Result.Elements[0][0] = Left.Elements[0][0] + Right.Elements[0][0];
+    Result.Elements[0][1] = Left.Elements[0][1] + Right.Elements[0][1];
+    Result.Elements[0][2] = Left.Elements[0][2] + Right.Elements[0][2];
+    Result.Elements[0][3] = Left.Elements[0][3] + Right.Elements[0][3];
+    Result.Elements[1][0] = Left.Elements[1][0] + Right.Elements[1][0];
+    Result.Elements[1][1] = Left.Elements[1][1] + Right.Elements[1][1];
+    Result.Elements[1][2] = Left.Elements[1][2] + Right.Elements[1][2];
+    Result.Elements[1][3] = Left.Elements[1][3] + Right.Elements[1][3];
+    Result.Elements[2][0] = Left.Elements[2][0] + Right.Elements[2][0];
+    Result.Elements[2][1] = Left.Elements[2][1] + Right.Elements[2][1];
+    Result.Elements[2][2] = Left.Elements[2][2] + Right.Elements[2][2];
+    Result.Elements[2][3] = Left.Elements[2][3] + Right.Elements[2][3];
+    Result.Elements[3][0] = Left.Elements[3][0] + Right.Elements[3][0];
+    Result.Elements[3][1] = Left.Elements[3][1] + Right.Elements[3][1];
+    Result.Elements[3][2] = Left.Elements[3][2] + Right.Elements[3][2];
+    Result.Elements[3][3] = Left.Elements[3][3] + Right.Elements[3][3];
 #endif
 
     return Result;
@@ -1568,15 +1558,22 @@ static inline HMM_Mat4 HMM_SubM4(HMM_Mat4 Left, HMM_Mat4 Right)
     Result.Columns[2].SSE = _mm_sub_ps(Left.Columns[2].SSE, Right.Columns[2].SSE);
     Result.Columns[3].SSE = _mm_sub_ps(Left.Columns[3].SSE, Right.Columns[3].SSE);
 #else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Left.Elements[Columns][Rows] - Right.Elements[Columns][Rows];
-        }
-    }
+    Result.Elements[0][0] = Left.Elements[0][0] - Right.Elements[0][0];
+    Result.Elements[0][1] = Left.Elements[0][1] - Right.Elements[0][1];
+    Result.Elements[0][2] = Left.Elements[0][2] - Right.Elements[0][2];
+    Result.Elements[0][3] = Left.Elements[0][3] - Right.Elements[0][3];
+    Result.Elements[1][0] = Left.Elements[1][0] - Right.Elements[1][0];
+    Result.Elements[1][1] = Left.Elements[1][1] - Right.Elements[1][1];
+    Result.Elements[1][2] = Left.Elements[1][2] - Right.Elements[1][2];
+    Result.Elements[1][3] = Left.Elements[1][3] - Right.Elements[1][3];
+    Result.Elements[2][0] = Left.Elements[2][0] - Right.Elements[2][0];
+    Result.Elements[2][1] = Left.Elements[2][1] - Right.Elements[2][1];
+    Result.Elements[2][2] = Left.Elements[2][2] - Right.Elements[2][2];
+    Result.Elements[2][3] = Left.Elements[2][3] - Right.Elements[2][3];
+    Result.Elements[3][0] = Left.Elements[3][0] - Right.Elements[3][0];
+    Result.Elements[3][1] = Left.Elements[3][1] - Right.Elements[3][1];
+    Result.Elements[3][2] = Left.Elements[3][2] - Right.Elements[3][2];
+    Result.Elements[3][3] = Left.Elements[3][3] - Right.Elements[3][3];
 #endif
  
     return Result;
@@ -1610,15 +1607,22 @@ static inline HMM_Mat4 HMM_MulM4F(HMM_Mat4 Matrix, float Scalar)
     Result.Columns[2].SSE = _mm_mul_ps(Matrix.Columns[2].SSE, SSEScalar);
     Result.Columns[3].SSE = _mm_mul_ps(Matrix.Columns[3].SSE, SSEScalar);
 #else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] * Scalar;
-        }
-    }
+    Result.Elements[0][0] = Matrix.Elements[0][0] * Scalar;
+    Result.Elements[0][1] = Matrix.Elements[0][1] * Scalar;
+    Result.Elements[0][2] = Matrix.Elements[0][2] * Scalar;
+    Result.Elements[0][3] = Matrix.Elements[0][3] * Scalar;
+    Result.Elements[1][0] = Matrix.Elements[1][0] * Scalar;
+    Result.Elements[1][1] = Matrix.Elements[1][1] * Scalar;
+    Result.Elements[1][2] = Matrix.Elements[1][2] * Scalar;
+    Result.Elements[1][3] = Matrix.Elements[1][3] * Scalar;
+    Result.Elements[2][0] = Matrix.Elements[2][0] * Scalar;
+    Result.Elements[2][1] = Matrix.Elements[2][1] * Scalar;
+    Result.Elements[2][2] = Matrix.Elements[2][2] * Scalar;
+    Result.Elements[2][3] = Matrix.Elements[2][3] * Scalar;
+    Result.Elements[3][0] = Matrix.Elements[3][0] * Scalar;
+    Result.Elements[3][1] = Matrix.Elements[3][1] * Scalar;
+    Result.Elements[3][2] = Matrix.Elements[3][2] * Scalar;
+    Result.Elements[3][3] = Matrix.Elements[3][3] * Scalar;
 #endif
 
     return Result;
@@ -1645,15 +1649,22 @@ static inline HMM_Mat4 HMM_DivM4F(HMM_Mat4 Matrix, float Scalar)
     Result.Columns[2].SSE = _mm_div_ps(Matrix.Columns[2].SSE, SSEScalar);
     Result.Columns[3].SSE = _mm_div_ps(Matrix.Columns[3].SSE, SSEScalar);
 #else
-    int Columns;
-    for(Columns = 0; Columns < 4; ++Columns)
-    {
-        int Rows;
-        for(Rows = 0; Rows < 4; ++Rows)
-        {
-            Result.Elements[Columns][Rows] = Matrix.Elements[Columns][Rows] / Scalar;
-        }
-    }
+    Result.Elements[0][0] = Matrix.Elements[0][0] / Scalar;
+    Result.Elements[0][1] = Matrix.Elements[0][1] / Scalar;
+    Result.Elements[0][2] = Matrix.Elements[0][2] / Scalar;
+    Result.Elements[0][3] = Matrix.Elements[0][3] / Scalar;
+    Result.Elements[1][0] = Matrix.Elements[1][0] / Scalar;
+    Result.Elements[1][1] = Matrix.Elements[1][1] / Scalar;
+    Result.Elements[1][2] = Matrix.Elements[1][2] / Scalar;
+    Result.Elements[1][3] = Matrix.Elements[1][3] / Scalar;
+    Result.Elements[2][0] = Matrix.Elements[2][0] / Scalar;
+    Result.Elements[2][1] = Matrix.Elements[2][1] / Scalar;
+    Result.Elements[2][2] = Matrix.Elements[2][2] / Scalar;
+    Result.Elements[2][3] = Matrix.Elements[2][3] / Scalar;
+    Result.Elements[3][0] = Matrix.Elements[3][0] / Scalar;
+    Result.Elements[3][1] = Matrix.Elements[3][1] / Scalar;
+    Result.Elements[3][2] = Matrix.Elements[3][2] / Scalar;
+    Result.Elements[3][3] = Matrix.Elements[3][3] / Scalar;
 #endif
 
     return Result;
@@ -2088,10 +2099,25 @@ static inline HMM_Quat HMM_MulQ(HMM_Quat Left, HMM_Quat Right)
     SSEResultTwo = _mm_shuffle_ps(Right.SSE, Right.SSE, _MM_SHUFFLE(3, 2, 1, 0));
     Result.SSE = _mm_add_ps(SSEResultThree, _mm_mul_ps(SSEResultTwo, SSEResultOne));
 #else
-    Result.X = (Left.X * Right.W) + (Left.Y * Right.Z) - (Left.Z * Right.Y) + (Left.W * Right.X);
-    Result.Y = (-Left.X * Right.Z) + (Left.Y * Right.W) + (Left.Z * Right.X) + (Left.W * Right.Y);
-    Result.Z = (Left.X * Right.Y) - (Left.Y * Right.X) + (Left.Z * Right.W) + (Left.W * Right.Z);
-    Result.W = (-Left.X * Right.X) - (Left.Y * Right.Y) - (Left.Z * Right.Z) + (Left.W * Right.W);
+    Result.X =  Right.Elements[3] * +Left.Elements[0];
+    Result.Y =  Right.Elements[2] * -Left.Elements[0];
+    Result.Z =  Right.Elements[1] * +Left.Elements[0];
+    Result.W =  Right.Elements[0] * -Left.Elements[0];
+
+    Result.X += Right.Elements[2] * +Left.Elements[1];
+    Result.Y += Right.Elements[3] * +Left.Elements[1];
+    Result.Z += Right.Elements[0] * -Left.Elements[1];
+    Result.W += Right.Elements[1] * -Left.Elements[1];
+    
+    Result.X += Right.Elements[1] * -Left.Elements[2];
+    Result.Y += Right.Elements[0] * +Left.Elements[2];
+    Result.Z += Right.Elements[3] * +Left.Elements[2];
+    Result.W += Right.Elements[2] * -Left.Elements[2];
+
+    Result.X += Right.Elements[0] * +Left.Elements[3];
+    Result.Y += Right.Elements[1] * +Left.Elements[3];
+    Result.Z += Right.Elements[2] * +Left.Elements[3];
+    Result.W += Right.Elements[3] * +Left.Elements[3];
 #endif
 
     return Result;
@@ -2152,7 +2178,7 @@ static inline float HMM_DotQ(HMM_Quat Left, HMM_Quat Right)
     SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
     _mm_store_ss(&Result, SSEResultOne);
 #else
-    Result = (Left.X * Right.X) + (Left.Y * Right.Y) + (Left.Z * Right.Z) + (Left.W * Right.W);
+    Result = ((Left.X * Right.X) + (Left.Z * Right.Z)) + ((Left.Y * Right.Y) + (Left.W * Right.W));
 #endif
 
     return Result;
