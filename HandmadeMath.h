@@ -954,7 +954,6 @@ COVERAGE(HMM_DotV4, 1)
 static inline float HMM_DotV4(HMM_Vec4 Left, HMM_Vec4 Right)
 {
     ASSERT_COVERED(HMM_DotV4);
-ASSERT_COVERED(HMM_DotV4);
 
     float Result;
 
@@ -1150,7 +1149,7 @@ static inline HMM_Mat2 HMM_TransposeM2(HMM_Mat2 Matrix)
 {
     ASSERT_COVERED(HMM_TransposeM2);
     
-    HMM_Mat2 Result;
+    HMM_Mat2 Result = Matrix;
 
     Result.Elements[0][1] = Matrix.Elements[1][0];
     Result.Elements[1][0] = Matrix.Elements[0][1];
@@ -1299,7 +1298,7 @@ static inline HMM_Mat3 HMM_TransposeM3(HMM_Mat3 Matrix)
 {
     ASSERT_COVERED(HMM_TransposeM3);
 
-    HMM_Mat3 Result;
+    HMM_Mat3 Result = Matrix;
 
     Result.Elements[0][1] = Matrix.Elements[1][0];
     Result.Elements[0][2] = Matrix.Elements[2][0];
@@ -1490,8 +1489,8 @@ static inline HMM_Mat4 HMM_TransposeM4(HMM_Mat4 Matrix)
 {
     ASSERT_COVERED(HMM_TransposeM4);
 
-#ifdef HANDMADE_MATH__USE_SSE
     HMM_Mat4 Result = Matrix;
+#ifdef HANDMADE_MATH__USE_SSE
     _MM_TRANSPOSE4_PS(Result.Columns[0].SSE, Result.Columns[1].SSE, Result.Columns[2].SSE, Result.Columns[3].SSE);
 #else
     Result.Elements[0][1] = Matrix.Elements[1][0];
