@@ -26,20 +26,6 @@
 
   -----------------------------------------------------------------------------
 
-  By default, Handmade Math's projection matrices use a Normalized Device
-  Coordinates (NDC) range of X: [-1, 1], Y: [-1, 1], Z: [-1, 1], as is standard
-  in OpenGL. However, other graphics APIs require the range with Z: [0, 1], as
-  this has better numerical properties for depth buffers.
-
-  To use NDC with Z: [0, 1], you must define HANDMADE_MATH_USE_NDC_Z01 before
-  including this header, which will make HMM_Perspective and HMM_Orthographic
-  functions project Z to [0, 1]:
-
-    #define HANDMADE_MATH_USE_NDC_Z01
-    #include "HandmadeMath.h"
-
-  -----------------------------------------------------------------------------
-
   Handmade Math ships with SSE (SIMD) implementations of several common
   operations. To disable the use of SSE intrinsics, you must
   define HANDMADE_MATH_NO_SSE before including this file:
@@ -1701,10 +1687,10 @@ static inline HMM_Mat4 HMM_InvGeneralM4(HMM_Mat4 Matrix)
  * Common graphics transformations
  */
 
-COVERAGE(HMM_Orthographic_RH, 1)
-static inline HMM_Mat4 HMM_Orthographic_RH(float Left, float Right, float Bottom, float Top, float Near, float Far)
+COVERAGE(HMM_Orthographic_N0_RH, 1)
+static inline HMM_Mat4 HMM_Orthographic_N0_RH(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Orthographic_RH);
+    ASSERT_COVERED(HMM_Orthographic_N0_RH);
 
     HMM_Mat4 Result = {0};
 
@@ -1715,23 +1701,49 @@ static inline HMM_Mat4 HMM_Orthographic_RH(float Left, float Right, float Bottom
     Result.Elements[3][0] = (Left + Right) / (Left - Right);
     Result.Elements[3][1] = (Bottom + Top) / (Bottom - Top);
 
-#ifdef HANDMADE_MATH_USE_NDC_Z01
-    Result.Elements[2][2] = 1.0f / (Near - Far);
-    Result.Elements[3][2] = (Near) / (Near - Far);
-#else
     Result.Elements[2][2] = 2.0f / (Near - Far);
     Result.Elements[3][2] = (Far + Near) / (Near - Far);
-#endif
 
     return Result;
 }
 
-COVERAGE(HMM_Orthographic_LH, 1)
-static inline HMM_Mat4 HMM_Orthographic_LH(float Left, float Right, float Bottom, float Top, float Near, float Far)
+COVERAGE(HMM_Orthographic_Z0_RH, 1)
+static inline HMM_Mat4 HMM_Orthographic_Z0_RH(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Orthographic_LH);
+    ASSERT_COVERED(HMM_Orthographic_Z0_RH);
 
-    HMM_Mat4 Result = HMM_Orthographic_RH(Left, Right, Bottom, Top, Near, Far);
+    HMM_Mat4 Result = {0};
+
+    Result.Elements[0][0] = 2.0f / (Right - Left);
+    Result.Elements[1][1] = 2.0f / (Top - Bottom);
+    Result.Elements[3][3] = 1.0f;
+
+    Result.Elements[3][0] = (Left + Right) / (Left - Right);
+    Result.Elements[3][1] = (Bottom + Top) / (Bottom - Top);
+
+    Result.Elements[2][2] = 1.0f / (Near - Far);
+    Result.Elements[3][2] = (Near) / (Near - Far);
+
+    return Result;
+}
+
+COVERAGE(HMM_Orthographic_N0_LH, 1)
+static inline HMM_Mat4 HMM_Orthographic_N0_LH(float Left, float Right, float Bottom, float Top, float Near, float Far)
+{
+    ASSERT_COVERED(HMM_Orthographic_N0_LH);
+
+    HMM_Mat4 Result = HMM_Orthographic_N0_RH(Left, Right, Bottom, Top, Near, Far);
+    Result.Elements[2][2] = -Result.Elements[2][2];
+    
+    return Result;
+}
+
+COVERAGE(HMM_Orthographic_Z0_LH, 1)
+static inline HMM_Mat4 HMM_Orthographic_Z0_LH(float Left, float Right, float Bottom, float Top, float Near, float Far)
+{
+    ASSERT_COVERED(HMM_Orthographic_Z0_LH);
+
+    HMM_Mat4 Result = HMM_Orthographic_Z0_RH(Left, Right, Bottom, Top, Near, Far);
     Result.Elements[2][2] = -Result.Elements[2][2];
     
     return Result;
@@ -1755,41 +1767,67 @@ static inline HMM_Mat4 HMM_InvOrthographic(HMM_Mat4 OrthoMatrix)
     return Result;
 }
 
-COVERAGE(HMM_Perspective_RH, 1)
-static inline HMM_Mat4 HMM_Perspective_RH(float FOV, float AspectRatio, float Near, float Far)
+COVERAGE(HMM_Perspective_N0_RH, 1)
+static inline HMM_Mat4 HMM_Perspective_N0_RH(float FOV, float AspectRatio, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Perspective_RH);
+    ASSERT_COVERED(HMM_Perspective_N0_RH);
 
     HMM_Mat4 Result = {0};
 
     // See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
 
     float Cotangent = 1.0f / HMM_TanF(FOV / 2.0f);
-    
     Result.Elements[0][0] = Cotangent / AspectRatio;
     Result.Elements[1][1] = Cotangent;
-
     Result.Elements[2][3] = -1.0f;
 
-#ifdef HANDMADE_MATH_USE_NDC_Z01 
-    Result.Elements[2][2] = (Far) / (Near - Far);
-    Result.Elements[3][2] = (Near * Far) / (Near - Far);
-#else
     Result.Elements[2][2] = (Near + Far) / (Near - Far);
     Result.Elements[3][2] = (2.0f * Near * Far) / (Near - Far);
-#endif
+    
+    return Result;
+}
+
+COVERAGE(HMM_Perspective_Z0_RH, 1)
+static inline HMM_Mat4 HMM_Perspective_Z0_RH(float FOV, float AspectRatio, float Near, float Far)
+{
+    ASSERT_COVERED(HMM_Perspective_Z0_RH);
+
+    HMM_Mat4 Result = {0};
+
+    // See https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluPerspective.xml
+
+    float Cotangent = 1.0f / HMM_TanF(FOV / 2.0f);
+    Result.Elements[0][0] = Cotangent / AspectRatio;
+    Result.Elements[1][1] = Cotangent;
+    Result.Elements[2][3] = -1.0f;
+
+    Result.Elements[2][2] = (Far) / (Near - Far);
+    Result.Elements[3][2] = (Near * Far) / (Near - Far);
 
     return Result;
 }
 
-COVERAGE(HMM_Perspective_LH, 1)
-static inline HMM_Mat4 HMM_Perspective_LH(float FOV, float AspectRatio, float Near, float Far)
+COVERAGE(HMM_Perspective_N0_LH, 1)
+static inline HMM_Mat4 HMM_Perspective_N0_LH(float FOV, float AspectRatio, float Near, float Far)
 { 
-    ASSERT_COVERED(HMM_Perspective_LH);
+    ASSERT_COVERED(HMM_Perspective_N0_LH);
 
-    HMM_Mat4 Result = HMM_Perspective_RH(FOV, AspectRatio, Near, Far);
-    Result.Elements[2][3] = +1.0f;
-  
+    HMM_Mat4 Result = HMM_Perspective_N0_RH(FOV, AspectRatio, Near, Far);
+    Result.Elements[2][2] = -Result.Elements[2][2];
+    Result.Elements[2][3] = -Result.Elements[2][3];
+    
+    return Result;
+}
+
+COVERAGE(HMM_Perspective_Z0_LH, 1)
+static inline HMM_Mat4 HMM_Perspective_Z0_LH(float FOV, float AspectRatio, float Near, float Far)
+{ 
+    ASSERT_COVERED(HMM_Perspective_Z0_LH);
+
+    HMM_Mat4 Result = HMM_Perspective_Z0_RH(FOV, AspectRatio, Near, Far);
+    Result.Elements[2][2] = -Result.Elements[2][2];
+    Result.Elements[2][3] = -Result.Elements[2][3];
+    
     return Result;
 }
 
