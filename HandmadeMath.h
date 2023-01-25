@@ -1788,9 +1788,10 @@ static inline HMM_Mat4 HMM_Perspective_LH(float FOV, float AspectRatio, float Ne
     ASSERT_COVERED(HMM_Perspective_LH);
 
     HMM_Mat4 Result = HMM_Perspective_RH(FOV, AspectRatio, Near, Far);
-    Result.Elements[2][3] = +1.0f;
-  
-    return Result;
+    Result.Elements[2][2] = -Result.Elements[2][2];  
+    Result.Elements[2][3] = -Result.Elements[2][3];
+
+    return (Result);
 }
 
 COVERAGE(HMM_InvPerspective, 1)
