@@ -482,8 +482,15 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
                         
                         chr8 check = file_content.str[i+1];
                         if (check == '(') {
-                            printf("\t[%u]: Find: %.*s, Appending: _RH for old default handedness.\n", Line, str8_PRINTF_ARGS(Find[t]));
                             Str8List_add(arena, &out, str8_first(file_content, i + 1));
+
+                            if (t == HAND_PERSPECTIVE || t == HAND_ORTHO) {
+                                printf("\t[%u]: Appending _N0 for old default NDC.\n", Line, str8_PRINTF_ARGS(Find[t]));
+                                Str8List_add(arena, &out, str8_lit("_N0"));
+                            }
+
+                            printf("\t[%u]: Find: %.*s, Appending: _RH for old default handedness.\n", Line, str8_PRINTF_ARGS(Find[t]));
+                            
                             Str8List_add(arena, &out, str8_lit("_RH("));
                             file_content = str8_skip(file_content, i+2);
                             i = -1;
