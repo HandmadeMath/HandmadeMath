@@ -259,7 +259,7 @@ b32 stdio_write_file(str8 filepath, Str8List text) {
     if (file != 0) {
         Str8Node* n = text.first;
         for (s64 i = 0; i < text.count; i++, n = n->next) {
-            if (!fwrite(n->str.str, n->str.len, 1, file)) {
+            if ((n->str.len > 0) && (!fwrite(n->str.str, n->str.len, 1, file))) {
                 break;
             }
             bytes_written += n->str.len;
@@ -419,13 +419,14 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
             for (u32 t = TYPES_Size+1; t < FUNCTIONS_Size; t++) {  
                 if (c == Find[t].str[MatchProgress[t]]) {  
                     MatchProgress[t]++;  
-                    if (MatchProgress[t] == Find[t].len) {  
+                    if (MatchProgress[t] == Find[t].len) {
                         MatchProgress[t] = 0;
                         printf("\t[%u]: Find: %.*s, Repl: %.*s.\n", Line, str8_PRINTF_ARGS(Find[t]), str8_PRINTF_ARGS(Repl[t]));
                         Str8List_add(arena, &out, str8_first(file_content, i + 1 - Find[t].len));
                         Str8List_add(arena, &out, Repl[t]);
                         file_content = str8_skip(file_content, i+1);
                         i = -1;
+
 
                         /* NOTE(lcf): Special case because Find[] overlaps here */
                         if (t == FUN_R_SQUARE_ROOT) {
@@ -484,14 +485,19 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
                         if (check == '(') {
                             Str8List_add(arena, &out, str8_first(file_content, i + 1));
 
+
+                            printf("\t[%u]: Find: %.*s, Appending: _RH for old default handedness.\n", Line, str8_PRINTF_ARGS(Find[t]));
+                            
+                            Str8List_add(arena, &out, str8_lit("_RH"));
+
+
                             if (t == HAND_PERSPECTIVE || t == HAND_ORTHO) {
                                 printf("\t[%u]: Appending _N0 for old default NDC.\n", Line, str8_PRINTF_ARGS(Find[t]));
                                 Str8List_add(arena, &out, str8_lit("_N0"));
                             }
 
-                            printf("\t[%u]: Find: %.*s, Appending: _RH for old default handedness.\n", Line, str8_PRINTF_ARGS(Find[t]));
+                            Str8List_add(arena, &out, str8_lit("("));
                             
-                            Str8List_add(arena, &out, str8_lit("_RH("));
                             file_content = str8_skip(file_content, i+2);
                             i = -1;
 
@@ -520,6 +526,7 @@ Str8List update_file_content(Arena* arena, str8 file_content) {
         }
     }
 
+    
     Str8List_add(arena, &out, file_content);
     
     return out;
