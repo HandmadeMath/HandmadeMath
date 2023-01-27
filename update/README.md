@@ -1,36 +1,24 @@
 # Handmade Math 2.0 Update Tool
 
-Due to the large number of breaking naming changes in Handmade Math 2, we provide a small tool to update your programs automatically. It's a C program that takes a list of files and updates their text, along with some scripts to recursively run the program on all code in a directory.
+Due to the large number of breaking naming changes in Handmade Math 2, we provide a small Python script to update your programs automatically. It can run on individual files or on all files in a directory (recursively).
 
-You can compile the tool yourself with any C/C++ compiler:
+**Warning!** This tool is not very smart! Please ensure that your work is committed and backed up, in case you have to revert this tool's changes.
 
-```bash
-# MSVC (Windows)
-cl update_hmm.c
-
-# gcc
-gcc update_hmm.c -o update_hmm
-
-# clang
-clang update_hmm.c -o update_hmm
 ```
+# see usage info and options
+> python3 update_hmm.py -h
+usage: update_hmm [-h] [--exts .foo [.foo ...]] filename [filename ...]
+...
 
-Once built, the tool can be run on any C or C++ files:
+# run on individual files
+> python3 update_hmm.py MyPlatformLayer.c MyPlatformLayer.h
+Updating: MyPlatformLayer.c
+Updating: MyPlatformLayer.h
+Updated 2 files with 0 warnings.
 
-```bash
-# Windows
-update_hmm.exe MyGame.cpp MyPlatformLayer.cpp
-
-# Other platforms
-update_hmm MyGame.cpp MyPlatformLayer.cpp
-```
-
-Or, update all C/C++ files in a directory by running one of the provided shell scripts:
-
-```bash
-# Windows
-update_hmm_all.bat "path\to\project"
-
-# Other platforms
-update_hmm_all.sh path/to/project
+# run on a whole directory
+> python3 update_hmm.py projects/MyCoolGame
+Updating: projects/MyCoolGame/src/MyPlatformLayer.c
+Updating: projects/MyCoolGame/include/MyPlatformLayer.h
+...
 ```
