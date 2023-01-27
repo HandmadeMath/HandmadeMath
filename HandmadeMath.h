@@ -1697,10 +1697,10 @@ static inline HMM_Mat4 HMM_InvGeneralM4(HMM_Mat4 Matrix)
  * Common graphics transformations
  */
 
-COVERAGE(HMM_Orthographic_N0_RH, 1)
-static inline HMM_Mat4 HMM_Orthographic_N0_RH(float Left, float Right, float Bottom, float Top, float Near, float Far)
+COVERAGE(HMM_Orthographic_RH_NO, 1)
+static inline HMM_Mat4 HMM_Orthographic_RH_NO(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Orthographic_N0_RH);
+    ASSERT_COVERED(HMM_Orthographic_RH_NO);
 
     HMM_Mat4 Result = {0};
 
@@ -1717,10 +1717,10 @@ static inline HMM_Mat4 HMM_Orthographic_N0_RH(float Left, float Right, float Bot
     return Result;
 }
 
-COVERAGE(HMM_Orthographic_Z0_RH, 1)
-static inline HMM_Mat4 HMM_Orthographic_Z0_RH(float Left, float Right, float Bottom, float Top, float Near, float Far)
+COVERAGE(HMM_Orthographic_RH_ZO, 1)
+static inline HMM_Mat4 HMM_Orthographic_RH_ZO(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Orthographic_Z0_RH);
+    ASSERT_COVERED(HMM_Orthographic_RH_ZO);
 
     HMM_Mat4 Result = {0};
 
@@ -1737,23 +1737,23 @@ static inline HMM_Mat4 HMM_Orthographic_Z0_RH(float Left, float Right, float Bot
     return Result;
 }
 
-COVERAGE(HMM_Orthographic_N0_LH, 1)
-static inline HMM_Mat4 HMM_Orthographic_N0_LH(float Left, float Right, float Bottom, float Top, float Near, float Far)
+COVERAGE(HMM_Orthographic_LH_NO, 1)
+static inline HMM_Mat4 HMM_Orthographic_LH_NO(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Orthographic_N0_LH);
+    ASSERT_COVERED(HMM_Orthographic_LH_NO);
 
-    HMM_Mat4 Result = HMM_Orthographic_N0_RH(Left, Right, Bottom, Top, Near, Far);
+    HMM_Mat4 Result = HMM_Orthographic_RH_NO(Left, Right, Bottom, Top, Near, Far);
     Result.Elements[2][2] = -Result.Elements[2][2];
     
     return Result;
 }
 
-COVERAGE(HMM_Orthographic_Z0_LH, 1)
-static inline HMM_Mat4 HMM_Orthographic_Z0_LH(float Left, float Right, float Bottom, float Top, float Near, float Far)
+COVERAGE(HMM_Orthographic_LH_ZO, 1)
+static inline HMM_Mat4 HMM_Orthographic_LH_ZO(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Orthographic_Z0_LH);
+    ASSERT_COVERED(HMM_Orthographic_LH_ZO);
 
-    HMM_Mat4 Result = HMM_Orthographic_Z0_RH(Left, Right, Bottom, Top, Near, Far);
+    HMM_Mat4 Result = HMM_Orthographic_RH_ZO(Left, Right, Bottom, Top, Near, Far);
     Result.Elements[2][2] = -Result.Elements[2][2];
     
     return Result;
@@ -1777,10 +1777,10 @@ static inline HMM_Mat4 HMM_InvOrthographic(HMM_Mat4 OrthoMatrix)
     return Result;
 }
 
-COVERAGE(HMM_Perspective_N0_RH, 1)
-static inline HMM_Mat4 HMM_Perspective_N0_RH(float FOV, float AspectRatio, float Near, float Far)
+COVERAGE(HMM_Perspective_RH_NO, 1)
+static inline HMM_Mat4 HMM_Perspective_RH_NO(float FOV, float AspectRatio, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Perspective_N0_RH);
+    ASSERT_COVERED(HMM_Perspective_RH_NO);
 
     HMM_Mat4 Result = {0};
 
@@ -1797,10 +1797,10 @@ static inline HMM_Mat4 HMM_Perspective_N0_RH(float FOV, float AspectRatio, float
     return Result;
 }
 
-COVERAGE(HMM_Perspective_Z0_RH, 1)
-static inline HMM_Mat4 HMM_Perspective_Z0_RH(float FOV, float AspectRatio, float Near, float Far)
+COVERAGE(HMM_Perspective_RH_ZO, 1)
+static inline HMM_Mat4 HMM_Perspective_RH_ZO(float FOV, float AspectRatio, float Near, float Far)
 {
-    ASSERT_COVERED(HMM_Perspective_Z0_RH);
+    ASSERT_COVERED(HMM_Perspective_RH_ZO);
 
     HMM_Mat4 Result = {0};
 
@@ -1817,24 +1817,24 @@ static inline HMM_Mat4 HMM_Perspective_Z0_RH(float FOV, float AspectRatio, float
     return Result;
 }
 
-COVERAGE(HMM_Perspective_N0_LH, 1)
-static inline HMM_Mat4 HMM_Perspective_N0_LH(float FOV, float AspectRatio, float Near, float Far)
+COVERAGE(HMM_Perspective_LH_NO, 1)
+static inline HMM_Mat4 HMM_Perspective_LH_NO(float FOV, float AspectRatio, float Near, float Far)
 { 
-    ASSERT_COVERED(HMM_Perspective_N0_LH);
+    ASSERT_COVERED(HMM_Perspective_LH_NO);
 
-    HMM_Mat4 Result = HMM_Perspective_N0_RH(FOV, AspectRatio, Near, Far);
+    HMM_Mat4 Result = HMM_Perspective_RH_NO(FOV, AspectRatio, Near, Far);
     Result.Elements[2][2] = -Result.Elements[2][2];
     Result.Elements[2][3] = -Result.Elements[2][3];
     
     return Result;
 }
 
-COVERAGE(HMM_Perspective_Z0_LH, 1)
-static inline HMM_Mat4 HMM_Perspective_Z0_LH(float FOV, float AspectRatio, float Near, float Far)
+COVERAGE(HMM_Perspective_LH_ZO, 1)
+static inline HMM_Mat4 HMM_Perspective_LH_ZO(float FOV, float AspectRatio, float Near, float Far)
 { 
-    ASSERT_COVERED(HMM_Perspective_Z0_LH);
+    ASSERT_COVERED(HMM_Perspective_LH_ZO);
 
-    HMM_Mat4 Result = HMM_Perspective_Z0_RH(FOV, AspectRatio, Near, Far);
+    HMM_Mat4 Result = HMM_Perspective_RH_ZO(FOV, AspectRatio, Near, Far);
     Result.Elements[2][2] = -Result.Elements[2][2];
     Result.Elements[2][3] = -Result.Elements[2][3];
     
