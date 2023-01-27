@@ -249,7 +249,7 @@ TEST(InvMatrix, InvGeneral)
 TEST(InvMatrix, Mat4Inverses)
 {
     {
-        HMM_Mat4 Matrix = HMM_Orthographic_RH(-160+100, 160+100, -90+200, 90+200, 10, 10000);
+        HMM_Mat4 Matrix = HMM_Orthographic_N0_RH(-160+100, 160+100, -90+200, 90+200, 10, 10000);
         HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvOrthographic(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
@@ -272,10 +272,10 @@ TEST(InvMatrix, Mat4Inverses)
         EXPECT_FLOAT_EQ(Result.Elements[3][0], Expect.Elements[3][0]);
         EXPECT_FLOAT_EQ(Result.Elements[3][1], Expect.Elements[3][1]);
         EXPECT_FLOAT_EQ(Result.Elements[3][2], Expect.Elements[3][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][3], Expect.Elements[3][3]);        
+        EXPECT_FLOAT_EQ(Result.Elements[3][3], Expect.Elements[3][3]);
     }
     {
-        HMM_Mat4 Matrix = HMM_Perspective_RH(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
+        HMM_Mat4 Matrix = HMM_Perspective_N0_RH(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
         HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
