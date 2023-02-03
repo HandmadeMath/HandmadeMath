@@ -246,60 +246,56 @@ TEST(InvMatrix, InvGeneral)
     }    
 }
 
-TEST(InvMatrix, Mat4Inverses)
+TEST(InvMatrix, InvOrthographic)
 {
     {
         HMM_Mat4 Matrix = HMM_Orthographic_RH_NO(-160+100, 160+100, -90+200, 90+200, 10, 10000);
-        HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvOrthographic(Matrix);
-        HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
-        
-        EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][2], Expect.Elements[0][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][3], Expect.Elements[0][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][2], Expect.Elements[1][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][3], Expect.Elements[1][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[2][0], Expect.Elements[2][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][1], Expect.Elements[2][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][2], Expect.Elements[2][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][3], Expect.Elements[2][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[3][0], Expect.Elements[3][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][1], Expect.Elements[3][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][2], Expect.Elements[3][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][3], Expect.Elements[3][3]);
+        EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
     }
     {
-        HMM_Mat4 Matrix = HMM_Perspective_RH_NO(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
-        HMM_Mat4 Expect = HMM_M4D(1.0f);
-        HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
-        HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
-
-        EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][2], Expect.Elements[0][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][3], Expect.Elements[0][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][2], Expect.Elements[1][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][3], Expect.Elements[1][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[2][0], Expect.Elements[2][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][1], Expect.Elements[2][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][2], Expect.Elements[2][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][3], Expect.Elements[2][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[3][0], Expect.Elements[3][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][1], Expect.Elements[3][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][2], Expect.Elements[3][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][3], Expect.Elements[3][3]);        
+        HMM_Mat4 Matrix = HMM_Orthographic_RH_ZO(-160+100, 160+100, -90+200, 90+200, 10, 10000);
+        HMM_Mat4 Inverse = HMM_InvOrthographic(Matrix);
+        EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
     }
+    {
+        HMM_Mat4 Matrix = HMM_Orthographic_LH_NO(-160+100, 160+100, -90+200, 90+200, 10, 10000);
+        HMM_Mat4 Inverse = HMM_InvOrthographic(Matrix);
+        EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
+    }
+    {
+        HMM_Mat4 Matrix = HMM_Orthographic_LH_ZO(-160+100, 160+100, -90+200, 90+200, 10, 10000);
+        HMM_Mat4 Inverse = HMM_InvOrthographic(Matrix);
+        EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
+    }
+}
+
+TEST(InvMatrix, InvPerspective)
+{
+    {
+        HMM_Mat4 Matrix = HMM_Perspective_RH_NO(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
+        HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
+        EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
+    }
+    {
+        HMM_Mat4 Matrix = HMM_Perspective_RH_ZO(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
+        HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
+        EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
+    }
+    {
+        HMM_Mat4 Matrix = HMM_Perspective_LH_NO(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
+        HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
+        EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
+    }
+    {
+        HMM_Mat4 Matrix = HMM_Perspective_LH_ZO(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
+        HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
+        EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
+    }
+}
+
+TEST(InvMatrix, InvLookAt)
+{
     {
         HMM_Vec3 Eye = {10.0f, 10.0f, 10.0f};
         HMM_Vec3 Center = {100.0f, 200.0f, 30.0f};
@@ -308,106 +304,56 @@ TEST(InvMatrix, Mat4Inverses)
         HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvLookAt(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
-
-        EXPECT_NEAR(Result.Elements[0][0], Expect.Elements[0][0], 0.001f);
-        EXPECT_NEAR(Result.Elements[0][1], Expect.Elements[0][1], 0.001f);
-        EXPECT_NEAR(Result.Elements[0][2], Expect.Elements[0][2], 0.001f);
-        EXPECT_NEAR(Result.Elements[0][3], Expect.Elements[0][3], 0.001f);
-
-        EXPECT_NEAR(Result.Elements[1][0], Expect.Elements[1][0], 0.001f);
-        EXPECT_NEAR(Result.Elements[1][1], Expect.Elements[1][1], 0.001f);
-        EXPECT_NEAR(Result.Elements[1][2], Expect.Elements[1][2], 0.001f);
-        EXPECT_NEAR(Result.Elements[1][3], Expect.Elements[1][3], 0.001f);
-
-        EXPECT_NEAR(Result.Elements[2][0], Expect.Elements[2][0], 0.001f);
-        EXPECT_NEAR(Result.Elements[2][1], Expect.Elements[2][1], 0.001f);
-        EXPECT_NEAR(Result.Elements[2][2], Expect.Elements[2][2], 0.001f);
-        EXPECT_NEAR(Result.Elements[2][3], Expect.Elements[2][3], 0.001f);
-
-        EXPECT_NEAR(Result.Elements[3][0], Expect.Elements[3][0], 0.001f);
-        EXPECT_NEAR(Result.Elements[3][1], Expect.Elements[3][1], 0.001f);
-        EXPECT_NEAR(Result.Elements[3][2], Expect.Elements[3][2], 0.001f);
-        EXPECT_NEAR(Result.Elements[3][3], Expect.Elements[3][3], 0.001f);        
+        EXPECT_M4_NEAR(Result, Expect, 0.001f);
     }
+    {
+        HMM_Vec3 Eye = {10.0f, 10.0f, 10.0f};
+        HMM_Vec3 Center = {100.0f, 200.0f, 30.0f};
+        HMM_Vec3 Up = {0.0f, 0.0f, 1.0f};
+        HMM_Mat4 Matrix = HMM_LookAt_LH(Eye, Center, Up);
+        HMM_Mat4 Expect = HMM_M4D(1.0f);
+        HMM_Mat4 Inverse = HMM_InvLookAt(Matrix);
+        HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
+        EXPECT_M4_NEAR(Result, Expect, 0.001f);
+    }
+}
+
+TEST(InvMatrix, InvRotate)
+{
     {
         HMM_Vec3 Axis = {1.0f, -1.0f, 0.5f};
         HMM_Mat4 Matrix = HMM_Rotate_RH(HMM_AngleDeg(30), HMM_NormV3(Axis));
         HMM_Mat4 Expect = HMM_M4D(1.0f);
         HMM_Mat4 Inverse = HMM_InvRotate(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
-
-        EXPECT_NEAR(Result.Elements[0][0], Expect.Elements[0][0], 0.001f);
-        EXPECT_NEAR(Result.Elements[0][1], Expect.Elements[0][1], 0.001f);
-        EXPECT_NEAR(Result.Elements[0][2], Expect.Elements[0][2], 0.001f);
-        EXPECT_NEAR(Result.Elements[0][3], Expect.Elements[0][3], 0.001f);
-
-        EXPECT_NEAR(Result.Elements[1][0], Expect.Elements[1][0], 0.001f);
-        EXPECT_NEAR(Result.Elements[1][1], Expect.Elements[1][1], 0.001f);
-        EXPECT_NEAR(Result.Elements[1][2], Expect.Elements[1][2], 0.001f);
-        EXPECT_NEAR(Result.Elements[1][3], Expect.Elements[1][3], 0.001f);
-
-        EXPECT_NEAR(Result.Elements[2][0], Expect.Elements[2][0], 0.001f);
-        EXPECT_NEAR(Result.Elements[2][1], Expect.Elements[2][1], 0.001f);
-        EXPECT_NEAR(Result.Elements[2][2], Expect.Elements[2][2], 0.001f);
-        EXPECT_NEAR(Result.Elements[2][3], Expect.Elements[2][3], 0.001f);
-
-        EXPECT_NEAR(Result.Elements[3][0], Expect.Elements[3][0], 0.001f);
-        EXPECT_NEAR(Result.Elements[3][1], Expect.Elements[3][1], 0.001f);
-        EXPECT_NEAR(Result.Elements[3][2], Expect.Elements[3][2], 0.001f);
-        EXPECT_NEAR(Result.Elements[3][3], Expect.Elements[3][3], 0.001f);        
+        EXPECT_M4_NEAR(Result, Expect, 0.001f);
     }
     {
-        HMM_Vec3 Scale  = {1.0f, -1.0f, 0.5f};
-        HMM_Mat4 Matrix = HMM_Scale(Scale);
+        HMM_Vec3 Axis = {1.0f, -1.0f, 0.5f};
+        HMM_Mat4 Matrix = HMM_Rotate_LH(HMM_AngleDeg(30), HMM_NormV3(Axis));
         HMM_Mat4 Expect = HMM_M4D(1.0f);
-        HMM_Mat4 Inverse = HMM_InvScale(Matrix);
+        HMM_Mat4 Inverse = HMM_InvRotate(Matrix);
         HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
-
-        EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][2], Expect.Elements[0][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][3], Expect.Elements[0][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][2], Expect.Elements[1][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][3], Expect.Elements[1][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[2][0], Expect.Elements[2][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][1], Expect.Elements[2][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][2], Expect.Elements[2][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][3], Expect.Elements[2][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[3][0], Expect.Elements[3][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][1], Expect.Elements[3][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][2], Expect.Elements[3][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][3], Expect.Elements[3][3]);        
+        EXPECT_M4_NEAR(Result, Expect, 0.001f);
     }
-    {
-        HMM_Vec3 Move  = {1.0f, -1.0f, 0.5f};
-        HMM_Mat4 Matrix = HMM_Translate(Move);
-        HMM_Mat4 Expect = HMM_M4D(1.0f);
-        HMM_Mat4 Inverse = HMM_InvTranslate(Matrix);
-        HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
+}
 
-        EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][2], Expect.Elements[0][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][3], Expect.Elements[0][3]);
+TEST(InvMatrix, InvScale)
+{
+    HMM_Vec3 Scale  = {1.0f, -1.0f, 0.5f};
+    HMM_Mat4 Matrix = HMM_Scale(Scale);
+    HMM_Mat4 Expect = HMM_M4D(1.0f);
+    HMM_Mat4 Inverse = HMM_InvScale(Matrix);
+    HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
+    EXPECT_M4_EQ(Result, Expect);
+}
 
-        EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][2], Expect.Elements[1][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][3], Expect.Elements[1][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[2][0], Expect.Elements[2][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][1], Expect.Elements[2][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][2], Expect.Elements[2][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][3], Expect.Elements[2][3]);
-
-        EXPECT_FLOAT_EQ(Result.Elements[3][0], Expect.Elements[3][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][1], Expect.Elements[3][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][2], Expect.Elements[3][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][3], Expect.Elements[3][3]);        
-    }     
+TEST(InvMatrix, InvTranslate)
+{
+    HMM_Vec3 Move  = {1.0f, -1.0f, 0.5f};
+    HMM_Mat4 Matrix = HMM_Translate(Move);
+    HMM_Mat4 Expect = HMM_M4D(1.0f);
+    HMM_Mat4 Inverse = HMM_InvTranslate(Matrix);
+    HMM_Mat4 Result = HMM_MulM4(Matrix, Inverse);
+    EXPECT_M4_EQ(Result, Expect);
 }

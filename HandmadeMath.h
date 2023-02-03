@@ -6,8 +6,8 @@
   both C and C++.
 
   =============================================================================
-
   CONFIG
+  =============================================================================
 
   By default, all angles in Handmade Math are specified in radians. However, it
   can be configured to use degrees or turns instead. Use one of the following
@@ -24,11 +24,13 @@
     HMM_AngleDeg(degrees)
     HMM_AngleTurn(turns)
 
+  The definitions of these functions change depending on the default unit.
+
   -----------------------------------------------------------------------------
 
   Handmade Math ships with SSE (SIMD) implementations of several common
-  operations. To disable the use of SSE intrinsics, you must
-  define HANDMADE_MATH_NO_SSE before including this file:
+  operations. To disable the use of SSE intrinsics, you must define
+  HANDMADE_MATH_NO_SSE before including this file:
 
     #define HANDMADE_MATH_NO_SSE
     #include "HandmadeMath.h"
@@ -1669,6 +1671,8 @@ static inline float HMM_DeterminantM4(HMM_Mat4 Matrix)
 }
 
 COVERAGE(HMM_InvGeneralM4, 1)
+// Returns a general-purpose inverse of an HMM_Mat4. Note that special-purpose inverses of many transformations
+// are available and will be more efficient.
 static inline HMM_Mat4 HMM_InvGeneralM4(HMM_Mat4 Matrix) 
 {
     ASSERT_COVERED(HMM_InvGeneralM4);
@@ -1698,6 +1702,9 @@ static inline HMM_Mat4 HMM_InvGeneralM4(HMM_Mat4 Matrix)
  */
 
 COVERAGE(HMM_Orthographic_RH_NO, 1)
+// Produces a right-handed orthographic projection matrix with Z ranging from -1 to 1 (the GL convention).
+// Left, Right, Bottom, and Top specify the coordinates of their respective clipping planes.
+// Near and Far specify the distances to the near and far clipping planes.
 static inline HMM_Mat4 HMM_Orthographic_RH_NO(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
     ASSERT_COVERED(HMM_Orthographic_RH_NO);
@@ -1706,18 +1713,20 @@ static inline HMM_Mat4 HMM_Orthographic_RH_NO(float Left, float Right, float Bot
 
     Result.Elements[0][0] = 2.0f / (Right - Left);
     Result.Elements[1][1] = 2.0f / (Top - Bottom);
+    Result.Elements[2][2] = 2.0f / (Near - Far);
     Result.Elements[3][3] = 1.0f;
 
     Result.Elements[3][0] = (Left + Right) / (Left - Right);
     Result.Elements[3][1] = (Bottom + Top) / (Bottom - Top);
-
-    Result.Elements[2][2] = 2.0f / (Near - Far);
-    Result.Elements[3][2] = (Far + Near) / (Near - Far);
+    Result.Elements[3][2] = (Near + Far) / (Near - Far);
 
     return Result;
 }
 
 COVERAGE(HMM_Orthographic_RH_ZO, 1)
+// Produces a right-handed orthographic projection matrix with Z ranging from 0 to 1 (the DirectX convention).
+// Left, Right, Bottom, and Top specify the coordinates of their respective clipping planes.
+// Near and Far specify the distances to the near and far clipping planes.
 static inline HMM_Mat4 HMM_Orthographic_RH_ZO(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
     ASSERT_COVERED(HMM_Orthographic_RH_ZO);
@@ -1726,18 +1735,20 @@ static inline HMM_Mat4 HMM_Orthographic_RH_ZO(float Left, float Right, float Bot
 
     Result.Elements[0][0] = 2.0f / (Right - Left);
     Result.Elements[1][1] = 2.0f / (Top - Bottom);
+    Result.Elements[2][2] = 1.0f / (Near - Far);
     Result.Elements[3][3] = 1.0f;
 
     Result.Elements[3][0] = (Left + Right) / (Left - Right);
     Result.Elements[3][1] = (Bottom + Top) / (Bottom - Top);
-
-    Result.Elements[2][2] = 1.0f / (Near - Far);
     Result.Elements[3][2] = (Near) / (Near - Far);
 
     return Result;
 }
 
 COVERAGE(HMM_Orthographic_LH_NO, 1)
+// Produces a left-handed orthographic projection matrix with Z ranging from -1 to 1 (the GL convention).
+// Left, Right, Bottom, and Top specify the coordinates of their respective clipping planes.
+// Near and Far specify the distances to the near and far clipping planes.
 static inline HMM_Mat4 HMM_Orthographic_LH_NO(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
     ASSERT_COVERED(HMM_Orthographic_LH_NO);
@@ -1749,6 +1760,9 @@ static inline HMM_Mat4 HMM_Orthographic_LH_NO(float Left, float Right, float Bot
 }
 
 COVERAGE(HMM_Orthographic_LH_ZO, 1)
+// Produces a left-handed orthographic projection matrix with Z ranging from 0 to 1 (the DirectX convention).
+// Left, Right, Bottom, and Top specify the coordinates of their respective clipping planes.
+// Near and Far specify the distances to the near and far clipping planes.
 static inline HMM_Mat4 HMM_Orthographic_LH_ZO(float Left, float Right, float Bottom, float Top, float Near, float Far)
 {
     ASSERT_COVERED(HMM_Orthographic_LH_ZO);
@@ -1759,7 +1773,9 @@ static inline HMM_Mat4 HMM_Orthographic_LH_ZO(float Left, float Right, float Bot
     return Result;
 }
 
-COVERAGE(HMM_InvOrthographic, 1) 
+COVERAGE(HMM_InvOrthographic, 1)
+// Returns an inverse for the given orthographic projection matrix. Works for all orthographic
+// projection matrices, regardless of handedness or NDC convention.
 static inline HMM_Mat4 HMM_InvOrthographic(HMM_Mat4 OrthoMatrix)
 {
     ASSERT_COVERED(HMM_InvOrthographic);
@@ -1842,7 +1858,7 @@ static inline HMM_Mat4 HMM_Perspective_LH_ZO(float FOV, float AspectRatio, float
 }
 
 COVERAGE(HMM_InvPerspective, 1)
-static inline HMM_Mat4 HMM_InvPerspective(HMM_Mat4 PerspectiveMatrix) 
+static inline HMM_Mat4 HMM_InvPerspective(HMM_Mat4 PerspectiveMatrix)
 {
     ASSERT_COVERED(HMM_InvPerspective);
 
