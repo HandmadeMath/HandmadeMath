@@ -24,6 +24,16 @@ A few config options are available. See the header comment in [the source](./Han
 
 ## FAQ
 
+**What conventions does HMM use, e.g. row vs. column major, handedness, etc.?**
+
+Handmade Math's matrices are column-major, i.e. data is stored by columns, then rows. It also assumes column vectors, i.e. vectors are written vertically and matrix-vector multiplication is `M * V` instead of `V * M`. For more information, see [this issue](https://github.com/HandmadeMath/HandmadeMath/issues/124#issuecomment-775737253).
+
+For other properties, we provide variants for each common convention. Functions that care about handedness have left-handed (`LH`) and right-handed (`RH`) variants. Projection functions have zero-to-one (`ZO`) and negative-one-to-one (`NO`) variants for different NDC conventions.
+
+**What if I don't want the `HMM_` prefix?**
+
+Do a find and replace in the library source.
+
 **What's the license?**
 
 This library is in the public domain. You can do whatever you want with it.
@@ -31,7 +41,3 @@ This library is in the public domain. You can do whatever you want with it.
 **Where can I contact you to ask questions?**
 
 Feel free to make GitHub issues for any questions, concerns, or problems you encounter.
-
-**What if I don't want the `HMM_` prefix?**
-
-Do a find and replace in the library source.
