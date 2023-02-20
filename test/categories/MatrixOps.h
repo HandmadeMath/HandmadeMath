@@ -274,22 +274,22 @@ TEST(InvMatrix, InvPerspective)
 {
     {
         HMM_Mat4 Matrix = HMM_Perspective_RH_NO(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
-        HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
+        HMM_Mat4 Inverse = HMM_InvPerspective_RH(Matrix);
         EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
     }
     {
         HMM_Mat4 Matrix = HMM_Perspective_RH_ZO(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
-        HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
+        HMM_Mat4 Inverse = HMM_InvPerspective_RH(Matrix);
         EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
     }
     {
         HMM_Mat4 Matrix = HMM_Perspective_LH_NO(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
-        HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
+        HMM_Mat4 Inverse = HMM_InvPerspective_LH(Matrix);
         EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
     }
     {
         HMM_Mat4 Matrix = HMM_Perspective_LH_ZO(HMM_AngleDeg(120), 16.0/9.0, 10, 10000);
-        HMM_Mat4 Inverse = HMM_InvPerspective(Matrix);
+        HMM_Mat4 Inverse = HMM_InvPerspective_LH(Matrix);
         EXPECT_M4_EQ(HMM_MulM4(Matrix, Inverse), HMM_M4D(1.0f));
     }
 }

@@ -1857,10 +1857,10 @@ static inline HMM_Mat4 HMM_Perspective_LH_ZO(float FOV, float AspectRatio, float
     return Result;
 }
 
-COVERAGE(HMM_InvPerspective, 1)
-static inline HMM_Mat4 HMM_InvPerspective(HMM_Mat4 PerspectiveMatrix)
+COVERAGE(HMM_InvPerspective_RH, 1)
+static inline HMM_Mat4 HMM_InvPerspective_RH(HMM_Mat4 PerspectiveMatrix)
 {
-    ASSERT_COVERED(HMM_InvPerspective);
+    ASSERT_COVERED(HMM_InvPerspective_RH);
 
     HMM_Mat4 Result = {0};
     Result.Elements[0][0] = 1.0f / PerspectiveMatrix.Elements[0][0];
@@ -1869,6 +1869,23 @@ static inline HMM_Mat4 HMM_InvPerspective(HMM_Mat4 PerspectiveMatrix)
 
     Result.Elements[2][3] = 1.0f / PerspectiveMatrix.Elements[3][2];
     Result.Elements[3][3] = PerspectiveMatrix.Elements[2][2] * Result.Elements[2][3];
+    Result.Elements[3][2] = PerspectiveMatrix.Elements[2][3];
+
+    return Result;
+}
+
+COVERAGE(HMM_InvPerspective_LH, 1)
+static inline HMM_Mat4 HMM_InvPerspective_LH(HMM_Mat4 PerspectiveMatrix)
+{
+    ASSERT_COVERED(HMM_InvPerspective_LH);
+
+    HMM_Mat4 Result = {0};
+    Result.Elements[0][0] = 1.0f / PerspectiveMatrix.Elements[0][0];
+    Result.Elements[1][1] = 1.0f / PerspectiveMatrix.Elements[1][1];
+    Result.Elements[2][2] = 0.0f;
+
+    Result.Elements[2][3] = 1.0f / PerspectiveMatrix.Elements[3][2];
+    Result.Elements[3][3] = PerspectiveMatrix.Elements[2][2] * -Result.Elements[2][3];
     Result.Elements[3][2] = PerspectiveMatrix.Elements[2][3];
 
     return Result;
