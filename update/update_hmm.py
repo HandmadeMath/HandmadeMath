@@ -128,39 +128,44 @@ def updateFile(filename):
     with open(filename, 'w', newline='') as f:
         f.write(result)
 
-
-parser = argparse.ArgumentParser(
-    prog = 'update_hmm',
-    description = 'Updates C and C++ source code to use Handmade Math 2.0.',
-)
-parser.add_argument(
-    'filename', nargs='+',
-    help='A file or directory to update to HMM 2.0. If a directory, all files with extensions from --exts will be processed.',
-)
-parser.add_argument(
-    '--exts', nargs='+', default=['.c', '.cpp', '.h', '.hpp'],
-    help='File extensions to run the script on, when targeting a directory. Default: .c, .cpp, .h, .hpp.',
-    metavar='.foo',
-)
-
-args = parser.parse_args()
-
-for path in args.filename:
-    filenames = []
-    if os.path.isfile(path):
-        filenames = [path]
-    else:
-        for root, dirs, files in os.walk(path):
-            for file in files:
-                if file == 'HandmadeMath.h':
-                    printWarning('HandmadeMath.h will not be replaced by this script.')
-                elif file.endswith(tuple(args.exts)):
-                    filenames.append(os.path.join(root, file))
+def main():
+    parser = argparse.ArgumentParser(
+        prog = 'update_hmm',
+        description = 'Updates C and C++ source code to use Handmade Math 2.0.',
+    )
     
-    for filename in filenames:
-        try:
-            updateFile(filename)
-        except UnicodeDecodeError:
-            pass
+    parser.add_argument(
+        'filename', nargs='+',
+        help='A file or directory to update to HMM 2.0. If a directory, all files with extensions from --exts will be processed.',
+    )
+    
+    parser.add_argument(
+        '--exts', nargs='+', default=['.c', '.cpp', '.h', '.hpp'],
+        help='File extensions to run the script on, when targeting a directory. Default: .c, .cpp, .h, .hpp.',
+        metavar='.foo',
+    )
 
-    print('Updated {} files with {} warnings.'.format(numFiles, numWarnings))
+    args = parser.parse_args()
+
+    for path in args.filename:
+        filenames = []
+        if os.path.isfile(path):
+            filenames = [path]
+        else:
+            for root, dirs, files in os.walk(path):
+                for file in files:
+                    if file == 'HandmadeMath.h':
+                        printWarning('HandmadeMath.h will not be replaced by this script.')
+                    elif file.endswith(tuple(args.exts)):
+                        filenames.append(os.path.join(root, file))
+    
+        for filename in filenames:
+            try:
+                updateFile(filename)
+            except UnicodeDecodeError:
+                pass
+
+        print('Updated {} files with {} warnings.'.format(numFiles, numWarnings))
+
+if __name__ == "__main__":
+    main()
