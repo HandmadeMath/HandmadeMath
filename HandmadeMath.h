@@ -244,7 +244,7 @@ typedef union HMM_Vec2
     float Elements[2];
 
 #ifdef __cplusplus
-    inline float &operator[](const int &Index)
+    inline float &operator[](int Index)
     {
         return Elements[Index];
     }
@@ -295,7 +295,7 @@ typedef union HMM_Vec3
     float Elements[3];
 
 #ifdef __cplusplus
-    inline float &operator[](const int &Index)
+    inline float &operator[](int Index)
     {
         return Elements[Index];
     }
@@ -359,7 +359,7 @@ typedef union HMM_Vec4
 #endif
 
 #ifdef __cplusplus
-    inline float &operator[](const int &Index)
+    inline float &operator[](int Index)
     {
         return Elements[Index];
     }
@@ -372,7 +372,7 @@ typedef union HMM_Mat2
     HMM_Vec2 Columns[2];
 
 #ifdef __cplusplus
-    inline HMM_Vec2 &operator[](const int &Index)
+    inline HMM_Vec2 &operator[](int Index)
     {
         return Columns[Index];
     }
@@ -385,7 +385,7 @@ typedef union HMM_Mat3
     HMM_Vec3 Columns[3];
 
 #ifdef __cplusplus
-    inline HMM_Vec3 &operator[](const int &Index)
+    inline HMM_Vec3 &operator[](int Index)
     {
         return Columns[Index];
     }
@@ -398,7 +398,7 @@ typedef union HMM_Mat4
     HMM_Vec4 Columns[4];
 
 #ifdef __cplusplus
-    inline HMM_Vec4 &operator[](const int &Index)
+    inline HMM_Vec4 &operator[](int Index)
     {
         return Columns[Index];
     }
