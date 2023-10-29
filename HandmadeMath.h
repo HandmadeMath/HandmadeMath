@@ -2528,6 +2528,19 @@ static inline HMM_Quat HMM_QFromAxisAngle_LH(HMM_Vec3 Axis, float AngleOfRotatio
 }
 
 
+// implementation from
+// https://blog.molecular-matters.com/2013/05/24/a-faster-quaternion-vector-multiplication/
+COVERAGE(HMM_RotateQV3, 1)
+static inline HMM_Vec3 HMM_RotateQV3(HMM_Quat Q, HMM_Vec3 V)
+{
+    ASSERT_COVERED(HMM_RotateQV3);
+
+    HMM_Vec3 t = HMM_MulV3F(HMM_Cross(Q.XYZ, V), 2);
+    return HMM_AddV3(V, HMM_AddV3(HMM_MulV3F(t, Q.W), HMM_Cross(Q.XYZ, t)));
+}
+
+
+
 #ifdef __cplusplus
 }
 #endif
