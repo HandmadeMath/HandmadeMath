@@ -2504,41 +2504,53 @@ static inline HMM_Quat HMM_M4ToQ_LH(HMM_Mat4 M)
 
 
 COVERAGE(HMM_QFromAxisAngle_RH, 1)
-static inline HMM_Quat HMM_QFromAxisAngle_RH(HMM_Vec3 Axis, float AngleOfRotation)
+static inline HMM_Quat HMM_QFromAxisAngle_RH(HMM_Vec3 Axis, float Angle)
 {
     ASSERT_COVERED(HMM_QFromAxisAngle_RH);
 
     HMM_Quat Result;
 
     HMM_Vec3 AxisNormalized = HMM_NormV3(Axis);
-    float SineOfRotation = HMM_SinF(AngleOfRotation / 2.0f);
+    float SineOfRotation = HMM_SinF(Angle / 2.0f);
 
     Result.XYZ = HMM_MulV3F(AxisNormalized, SineOfRotation);
-    Result.W = HMM_CosF(AngleOfRotation / 2.0f);
+    Result.W = HMM_CosF(Angle / 2.0f);
 
     return Result;
 }
 
 COVERAGE(HMM_QFromAxisAngle_LH, 1)
-static inline HMM_Quat HMM_QFromAxisAngle_LH(HMM_Vec3 Axis, float AngleOfRotation)
+static inline HMM_Quat HMM_QFromAxisAngle_LH(HMM_Vec3 Axis, float Angle)
 {
     ASSERT_COVERED(HMM_QFromAxisAngle_LH);
 
-    return HMM_QFromAxisAngle_RH(Axis, -AngleOfRotation);
+    return HMM_QFromAxisAngle_RH(Axis, -Angle);
 }
-
 
 // implementation from
 // https://blog.molecular-matters.com/2013/05/24/a-faster-quaternion-vector-multiplication/
-COVERAGE(HMM_RotateQV3, 1)
-static inline HMM_Vec3 HMM_RotateQV3(HMM_Quat Q, HMM_Vec3 V)
+COVERAGE(HMM_RotateV3Q, 1)
+static inline HMM_Vec3 HMM_RotateV3Q(HMM_Vec3 V, HMM_Quat Q)
 {
-    ASSERT_COVERED(HMM_RotateQV3);
+    ASSERT_COVERED(HMM_RotateV3Q);
 
     HMM_Vec3 t = HMM_MulV3F(HMM_Cross(Q.XYZ, V), 2);
     return HMM_AddV3(V, HMM_AddV3(HMM_MulV3F(t, Q.W), HMM_Cross(Q.XYZ, t)));
 }
 
+COVERAGE(HMM_RotateV3AxisAngle_LH, 1)
+static inline HMM_Vec3 HMM_RotateV3AxisAngle_LH(HMM_Vec3 V, HMM_Vec3 Axis, float Angle) {
+    ASSERT_COVERED(HMM_RotateV3AxisAngle_LH);
+
+    return HMM_RotateV3Q(V, HMM_QFromAxisAngle_LH(Axis, Angle));
+}
+
+COVERAGE(HMM_RotateV3AxisAngle_RH, 1)
+static inline HMM_Vec3 HMM_RotateV3AxisAngle_RH(HMM_Vec3 V, HMM_Vec3 Axis, float Angle) {
+    ASSERT_COVERED(HMM_RotateV3AxisAngle_RH);
+
+    return HMM_RotateV3Q(V, HMM_QFromAxisAngle_RH(Axis, Angle));
+}
 
 
 #ifdef __cplusplus

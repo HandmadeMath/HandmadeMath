@@ -254,43 +254,20 @@ TEST(QuaternionOps, Mat4ToQuat)
     }
 }
 
-TEST(QuaternionOps, FromAxisAngle)
-{
-    HMM_Vec3 axis = HMM_V3(1.0f, 0.0f, 0.0f);
-    float angle = HMM_PI32 / 2.0f;
-
-    {
-        HMM_Quat result = HMM_QFromAxisAngle_RH(axis, angle);
-        EXPECT_NEAR(result.X, 0.707107f, 0.001f);
-        EXPECT_NEAR(result.Y, 0.0f, 0.001f);
-        EXPECT_NEAR(result.Z, 0.0f, 0.001f);
-        EXPECT_NEAR(result.W, 0.707107f, 0.001f);
-    }
-    {
-        HMM_Quat result = HMM_QFromAxisAngle_LH(axis, angle);
-        EXPECT_NEAR(result.X, -0.707107f, 0.001f);
-        EXPECT_NEAR(result.Y, 0.0f, 0.001f);
-        EXPECT_NEAR(result.Z, 0.0f, 0.001f);
-        EXPECT_NEAR(result.W, 0.707107f, 0.001f);
-    }
-}
-
-TEST(QuaternionOps, RotateVector)
+TEST(QuaternionOps, RotateVectorAxisAngle)
 {
     {
         HMM_Vec3 axis = HMM_V3(0.0f, 1.0f, 0.0f);
-        float angle = -HMM_PI32 / 2.0f;
-        HMM_Quat q = HMM_QFromAxisAngle_RH(axis, angle);
-        HMM_Vec3 result = HMM_RotateQV3(q, HMM_V3(1.0f, 0.0f, 0.0f));
+        float angle = HMM_AngleTurn(1.0/4);
+        HMM_Vec3 result = HMM_RotateV3AxisAngle_LH(HMM_V3(1.0f, 0.0f, 0.0f), axis, angle);
         EXPECT_NEAR(result.X, 0.0f, 0.001f);
         EXPECT_NEAR(result.Y, 0.0f, 0.001f);
         EXPECT_NEAR(result.Z, 1.0f, 0.001f);
     }
     {
         HMM_Vec3 axis = HMM_V3(1.0f, 0.0f, 0.0f);
-        float angle = HMM_PI32 / 4.0f;
-        HMM_Quat q = HMM_QFromAxisAngle_RH(axis, angle);
-        HMM_Vec3 result = HMM_RotateQV3(q, HMM_V3(0.0f, 0.0f, 1.0f));
+        float angle = HMM_AngleTurn(1.0/8);
+        HMM_Vec3 result = HMM_RotateV3AxisAngle_RH(HMM_V3(0.0f, 0.0f, 1.0f), axis, angle);
         EXPECT_NEAR(result.X, 0.0f, 0.001f);
         EXPECT_NEAR(result.Y, -0.707170f, 0.001f);
         EXPECT_NEAR(result.Z, 0.707170f, 0.001f);
