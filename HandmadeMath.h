@@ -2527,6 +2527,17 @@ static inline HMM_Quat HMM_QFromAxisAngle_LH(HMM_Vec3 Axis, float Angle)
     return HMM_QFromAxisAngle_RH(Axis, -Angle);
 }
 
+COVERAGE(HMM_RotateV2, 1)
+static inline HMM_Vec2 HMM_RotateV2(HMM_Vec2 V, float Angle)
+{
+    ASSERT_COVERED(HMM_RotateV2)
+
+    float sinA = HMM_SinF(Angle);
+    float cosA = HMM_CosF(Angle);
+
+    return HMM_V2(V.X * cosA - V.Y * sinA, V.X * sinA + V.Y * cosA);
+}
+
 // implementation from
 // https://blog.molecular-matters.com/2013/05/24/a-faster-quaternion-vector-multiplication/
 COVERAGE(HMM_RotateV3Q, 1)

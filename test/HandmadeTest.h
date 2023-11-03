@@ -155,9 +155,9 @@ INITIALIZER(_HMT_COVERCASE_FUNCNAME_INIT(name)) { \
     if (diff < -FLT_EPSILON || FLT_EPSILON < diff) { \
         _HMT_CASE_FAIL(); \
         if ((_msg)[0] == 0) { \
-            printf("Expected %f, got %f", (_expected), actual); \
+            printf("Expected %f, got %f (error: %.9g)", (_expected), actual, diff); \
         } else { \
-            printf("%s: Expected %f, got %f", (_msg), (_expected), actual); \
+            printf("%s: Expected %f, got %f (error: %.9g)", (_msg), (_expected), actual, diff); \
         } \
     } \
 }

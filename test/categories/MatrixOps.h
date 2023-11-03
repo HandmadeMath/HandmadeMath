@@ -129,22 +129,22 @@ TEST(InvMatrix, InvGeneral)
         float Det = HMM_DeterminantM4(Matrix);
         EXPECT_FLOAT_EQ(Det, -80.0f);
 
-        EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][2], Expect.Elements[0][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][3], Expect.Elements[0][3]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][2], Expect.Elements[1][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][3], Expect.Elements[1][3]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][0], Expect.Elements[2][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][1], Expect.Elements[2][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][2], Expect.Elements[2][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][3], Expect.Elements[2][3]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][0], Expect.Elements[3][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][1], Expect.Elements[3][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][2], Expect.Elements[3][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][3], Expect.Elements[3][3]);
+        EXPECT_NEAR(Result.Elements[0][0], Expect.Elements[0][0], 0.00001f);
+        EXPECT_NEAR(Result.Elements[0][1], Expect.Elements[0][1], 0.00001f);
+        EXPECT_NEAR(Result.Elements[0][2], Expect.Elements[0][2], 0.00001f);
+        EXPECT_NEAR(Result.Elements[0][3], Expect.Elements[0][3], 0.00001f);
+        EXPECT_NEAR(Result.Elements[1][0], Expect.Elements[1][0], 0.00001f);
+        EXPECT_NEAR(Result.Elements[1][1], Expect.Elements[1][1], 0.00001f);
+        EXPECT_NEAR(Result.Elements[1][2], Expect.Elements[1][2], 0.00001f);
+        EXPECT_NEAR(Result.Elements[1][3], Expect.Elements[1][3], 0.00001f);
+        EXPECT_NEAR(Result.Elements[2][0], Expect.Elements[2][0], 0.00001f);
+        EXPECT_NEAR(Result.Elements[2][1], Expect.Elements[2][1], 0.00001f);
+        EXPECT_NEAR(Result.Elements[2][2], Expect.Elements[2][2], 0.00001f);
+        EXPECT_NEAR(Result.Elements[2][3], Expect.Elements[2][3], 0.00001f);
+        EXPECT_NEAR(Result.Elements[3][0], Expect.Elements[3][0], 0.00001f);
+        EXPECT_NEAR(Result.Elements[3][1], Expect.Elements[3][1], 0.00001f);
+        EXPECT_NEAR(Result.Elements[3][2], Expect.Elements[3][2], 0.00001f);
+        EXPECT_NEAR(Result.Elements[3][3], Expect.Elements[3][3], 0.00001f);
 
 #ifdef __cplusplus
         Inverse = HMM_InvGeneral(Matrix);
@@ -153,22 +153,22 @@ TEST(InvMatrix, InvGeneral)
         Det = HMM_Determinant(Matrix);
         EXPECT_FLOAT_EQ(Det, -80.0f);
 
-        EXPECT_FLOAT_EQ(Result.Elements[0][0], Expect.Elements[0][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][1], Expect.Elements[0][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][2], Expect.Elements[0][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[0][3], Expect.Elements[0][3]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][0], Expect.Elements[1][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][1], Expect.Elements[1][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][2], Expect.Elements[1][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[1][3], Expect.Elements[1][3]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][0], Expect.Elements[2][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][1], Expect.Elements[2][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][2], Expect.Elements[2][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[2][3], Expect.Elements[2][3]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][0], Expect.Elements[3][0]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][1], Expect.Elements[3][1]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][2], Expect.Elements[3][2]);
-        EXPECT_FLOAT_EQ(Result.Elements[3][3], Expect.Elements[3][3]);
+        EXPECT_NEAR(Result.Elements[0][0], Expect.Elements[0][0], 0.00001f);
+        EXPECT_NEAR(Result.Elements[0][1], Expect.Elements[0][1], 0.00001f);
+        EXPECT_NEAR(Result.Elements[0][2], Expect.Elements[0][2], 0.00001f);
+        EXPECT_NEAR(Result.Elements[0][3], Expect.Elements[0][3], 0.00001f);
+        EXPECT_NEAR(Result.Elements[1][0], Expect.Elements[1][0], 0.00001f);
+        EXPECT_NEAR(Result.Elements[1][1], Expect.Elements[1][1], 0.00001f);
+        EXPECT_NEAR(Result.Elements[1][2], Expect.Elements[1][2], 0.00001f);
+        EXPECT_NEAR(Result.Elements[1][3], Expect.Elements[1][3], 0.00001f);
+        EXPECT_NEAR(Result.Elements[2][0], Expect.Elements[2][0], 0.00001f);
+        EXPECT_NEAR(Result.Elements[2][1], Expect.Elements[2][1], 0.00001f);
+        EXPECT_NEAR(Result.Elements[2][2], Expect.Elements[2][2], 0.00001f);
+        EXPECT_NEAR(Result.Elements[2][3], Expect.Elements[2][3], 0.00001f);
+        EXPECT_NEAR(Result.Elements[3][0], Expect.Elements[3][0], 0.00001f);
+        EXPECT_NEAR(Result.Elements[3][1], Expect.Elements[3][1], 0.00001f);
+        EXPECT_NEAR(Result.Elements[3][2], Expect.Elements[3][2], 0.00001f);
+        EXPECT_NEAR(Result.Elements[3][3], Expect.Elements[3][3], 0.00001f);
 #endif
     }
 

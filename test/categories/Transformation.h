@@ -63,7 +63,8 @@ TEST(Transformations, LookAt)
 {
     const float abs_error = 0.001f;
 
-    {    HMM_Mat4 result = HMM_LookAt_RH(HMM_V3(1.0f, 0.0f, 0.0f), HMM_V3(0.0f, 2.0f, 1.0f), HMM_V3(2.0f, 1.0f, 1.0f));
+    {
+        HMM_Mat4 result = HMM_LookAt_RH(HMM_V3(1.0f, 0.0f, 0.0f), HMM_V3(0.0f, 2.0f, 1.0f), HMM_V3(2.0f, 1.0f, 1.0f));
 
         EXPECT_NEAR(result.Elements[0][0], 0.169031f, abs_error);
         EXPECT_NEAR(result.Elements[0][1], 0.897085f, abs_error);
@@ -101,5 +102,32 @@ TEST(Transformations, LookAt)
         EXPECT_NEAR(result.Elements[3][1], -0.897085f, abs_error);
         EXPECT_NEAR(result.Elements[3][2], 0.408248f, abs_error);
         EXPECT_NEAR(result.Elements[3][3], 1.0f, abs_error);
+    }
+}
+
+TEST(Transformations, RotateV2)
+{
+    HMM_Vec2 v2 = HMM_V2(1, 2);
+
+    float epsilon = 0.000001f;
+    {
+        HMM_Vec2 res = HMM_RotateV2(v2, HMM_AngleDeg(90));
+        EXPECT_NEAR(res.X, -2.0f, epsilon);
+        EXPECT_NEAR(res.Y, 1.0f, epsilon);
+    }
+    {
+        HMM_Vec2 res = HMM_RotateV2(v2, HMM_AngleDeg(180));
+        EXPECT_NEAR(res.X, -1.0f, epsilon);
+        EXPECT_NEAR(res.Y, -2.0f, epsilon);
+    }
+    {
+        HMM_Vec2 res = HMM_RotateV2(v2, HMM_AngleDeg(270));
+        EXPECT_NEAR(res.X, 2.0f, epsilon);
+        EXPECT_NEAR(res.Y, -1.0f, epsilon);
+    }
+    {
+        HMM_Vec2 res = HMM_RotateV2(v2, HMM_AngleDeg(360));
+        EXPECT_NEAR(res.X, 1.0f, epsilon);
+        EXPECT_NEAR(res.Y, 2.0f, epsilon);
     }
 }
