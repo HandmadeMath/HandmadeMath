@@ -1060,37 +1060,37 @@ static inline HMM_Vec4 HMM_LerpV4(HMM_Vec4 A, float Time, HMM_Vec4 B)
  * SSE stuff
  */
 
-COVERAGE(HMM_LinearCombineV4M4, 1)
-static inline HMM_Vec4 HMM_LinearCombineV4M4(HMM_Vec4 Left, HMM_Mat4 Right)
+COVERAGE(HMM_LinearCombineM4V4, 1)
+static inline HMM_Vec4 HMM_LinearCombineM4V4(HMM_Mat4 Left, HMM_Vec4 Right)
 {
-    ASSERT_COVERED(HMM_LinearCombineV4M4);
+    ASSERT_COVERED(HMM_LinearCombineM4V4);
 
     HMM_Vec4 Result;
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.SSE = _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0x00), Right.Columns[0].SSE);
-    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0x55), Right.Columns[1].SSE));
-    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0xaa), Right.Columns[2].SSE));
-    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0xff), Right.Columns[3].SSE));
+    Result.SSE = _mm_mul_ps(_mm_shuffle_ps(Right.SSE, Right.SSE, 0x00), Left.Columns[0].SSE);
+    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Right.SSE, Right.SSE, 0x55), Left.Columns[1].SSE));
+    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Right.SSE, Right.SSE, 0xaa), Left.Columns[2].SSE));
+    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Right.SSE, Right.SSE, 0xff), Left.Columns[3].SSE));
 #else
-    Result.X = Left.Elements[0] * Right.Columns[0].X;
-    Result.Y = Left.Elements[0] * Right.Columns[0].Y;
-    Result.Z = Left.Elements[0] * Right.Columns[0].Z;
-    Result.W = Left.Elements[0] * Right.Columns[0].W;
+    Result.X = Left.Columns[0].X * Right.Elements[0];
+    Result.Y = Left.Columns[0].Y * Right.Elements[0];
+    Result.Z = Left.Columns[0].Z * Right.Elements[0];
+    Result.W = Left.Columns[0].W * Right.Elements[0];
 
-    Result.X += Left.Elements[1] * Right.Columns[1].X;
-    Result.Y += Left.Elements[1] * Right.Columns[1].Y;
-    Result.Z += Left.Elements[1] * Right.Columns[1].Z;
-    Result.W += Left.Elements[1] * Right.Columns[1].W;
+    Result.X += Left.Columns[1].X * Right.Elements[1];
+    Result.Y += Left.Columns[1].Y * Right.Elements[1];
+    Result.Z += Left.Columns[1].Z * Right.Elements[1];
+    Result.W += Left.Columns[1].W * Right.Elements[1];
 
-    Result.X += Left.Elements[2] * Right.Columns[2].X;
-    Result.Y += Left.Elements[2] * Right.Columns[2].Y;
-    Result.Z += Left.Elements[2] * Right.Columns[2].Z;
-    Result.W += Left.Elements[2] * Right.Columns[2].W;
+    Result.X += Left.Columns[2].X * Right.Elements[2];
+    Result.Y += Left.Columns[2].Y * Right.Elements[2];
+    Result.Z += Left.Columns[2].Z * Right.Elements[2];
+    Result.W += Left.Columns[2].W * Right.Elements[2];
 
-    Result.X += Left.Elements[3] * Right.Columns[3].X;
-    Result.Y += Left.Elements[3] * Right.Columns[3].Y;
-    Result.Z += Left.Elements[3] * Right.Columns[3].Z;
-    Result.W += Left.Elements[3] * Right.Columns[3].W;
+    Result.X += Left.Columns[3].X * Right.Elements[3];
+    Result.Y += Left.Columns[3].Y * Right.Elements[3];
+    Result.Z += Left.Columns[3].Z * Right.Elements[3];
+    Result.W += Left.Columns[3].W * Right.Elements[3];
 #endif
 
     return Result;
@@ -1560,10 +1560,10 @@ static inline HMM_Mat4 HMM_MulM4(HMM_Mat4 Left, HMM_Mat4 Right)
     ASSERT_COVERED(HMM_MulM4);
 
     HMM_Mat4 Result;
-    Result.Columns[0] = HMM_LinearCombineV4M4(Right.Columns[0], Left);
-    Result.Columns[1] = HMM_LinearCombineV4M4(Right.Columns[1], Left);
-    Result.Columns[2] = HMM_LinearCombineV4M4(Right.Columns[2], Left);
-    Result.Columns[3] = HMM_LinearCombineV4M4(Right.Columns[3], Left);
+    Result.Columns[0] = HMM_LinearCombineM4V4(Left, Right.Columns[0]);
+    Result.Columns[1] = HMM_LinearCombineM4V4(Left, Right.Columns[1]);
+    Result.Columns[2] = HMM_LinearCombineM4V4(Left, Right.Columns[2]);
+    Result.Columns[3] = HMM_LinearCombineM4V4(Left, Right.Columns[3]);
 
     return Result;
 }
@@ -1607,7 +1607,7 @@ COVERAGE(HMM_MulM4V4, 1)
 static inline HMM_Vec4 HMM_MulM4V4(HMM_Mat4 Matrix, HMM_Vec4 Vector)
 {
     ASSERT_COVERED(HMM_MulM4V4);
-    return HMM_LinearCombineV4M4(Vector, Matrix);
+    return HMM_LinearCombineM4V4(Matrix, Vector);
 }
 
 COVERAGE(HMM_DivM4F, 1)
