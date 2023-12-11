@@ -1528,18 +1528,22 @@ static inline HMM_Mat4 HMM_TransposeM4(HMM_Mat4 Matrix)
     Result.Columns[2].NEON = Transposed.val[2];
     Result.Columns[3].NEON = Transposed.val[3];
 #else
+    Result.Elements[0][0] = Matrix.Elements[0][0];
     Result.Elements[0][1] = Matrix.Elements[1][0];
     Result.Elements[0][2] = Matrix.Elements[2][0];
     Result.Elements[0][3] = Matrix.Elements[3][0];
     Result.Elements[1][0] = Matrix.Elements[0][1];
+    Result.Elements[1][1] = Matrix.Elements[1][1];
     Result.Elements[1][2] = Matrix.Elements[2][1];
     Result.Elements[1][3] = Matrix.Elements[3][1];
-    Result.Elements[2][1] = Matrix.Elements[1][2];
     Result.Elements[2][0] = Matrix.Elements[0][2];
+    Result.Elements[2][1] = Matrix.Elements[1][2];
+    Result.Elements[2][2] = Matrix.Elements[2][2];
     Result.Elements[2][3] = Matrix.Elements[3][2];
+    Result.Elements[3][0] = Matrix.Elements[0][3];
     Result.Elements[3][1] = Matrix.Elements[1][3];
     Result.Elements[3][2] = Matrix.Elements[2][3];
-    Result.Elements[3][0] = Matrix.Elements[0][3];
+    Result.Elements[3][3] = Matrix.Elements[3][3];
 #endif
 
     return Result;
