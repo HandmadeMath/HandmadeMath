@@ -1517,21 +1517,16 @@ static inline HMM_Mat4 HMM_TransposeM4(HMM_Mat4 Matrix)
 {
     ASSERT_COVERED(HMM_TransposeM4);
 
-    HMM_Mat4 Result = Matrix;
+    HMM_Mat4 Result;
 #ifdef HANDMADE_MATH__USE_SSE
+    Result = Matrix;
     _MM_TRANSPOSE4_PS(Result.Columns[0].SSE, Result.Columns[1].SSE, Result.Columns[2].SSE, Result.Columns[3].SSE);
 #elif HANDMADE_MATH__USE_NEON
-    // Based on Fabian's article on SIMD Transposes, although he says that the interleave32 is
-    // a VUZP instruction, its actually a VZIP instruction
-    // https://fgiesen.wordpress.com/2013/07/09/simd-transposes-1/
-    float32x4x2_t B0B2 = vzipq_f32(Result.Columns[0].NEON, Result.Columns[2].NEON);
-    float32x4x2_t B1B3 = vzipq_f32(Result.Columns[1].NEON, Result.Columns[3].NEON);
-    float32x4x2_t XY = vzipq_f32(B0B2.val[0], B1B3.val[0]);
-    float32x4x2_t ZW = vzipq_f32(B0B2.val[1], B1B3.val[1]);
-    Result.Columns[0].NEON = XY.val[0];
-    Result.Columns[1].NEON = XY.val[1];
-    Result.Columns[2].NEON = ZW.val[0];
-    Result.Columns[3].NEON = ZW.val[1];
+    float32x4x4_t Transposed = vld4q_f32((float*)Matrix.Columns);
+    Result.Columns[0].NEON = Transposed.val[0];
+    Result.Columns[1].NEON = Transposed.val[1];
+    Result.Columns[2].NEON = Transposed.val[2];
+    Result.Columns[3].NEON = Transposed.val[3];
 #else
     Result.Elements[0][1] = Matrix.Elements[1][0];
     Result.Elements[0][2] = Matrix.Elements[2][0];
