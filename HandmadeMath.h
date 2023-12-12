@@ -2176,11 +2176,20 @@ static inline HMM_Quat HMM_MulQ(HMM_Quat Left, HMM_Quat Right)
     SSEResultOne = _mm_shuffle_ps(Left.SSE, Left.SSE, _MM_SHUFFLE(3, 3, 3, 3));
     SSEResultTwo = _mm_shuffle_ps(Right.SSE, Right.SSE, _MM_SHUFFLE(3, 2, 1, 0));
     Result.SSE = _mm_add_ps(SSEResultThree, _mm_mul_ps(SSEResultTwo, SSEResultOne));
+#elif HANDMADE_MATH__USE_NEON
+    float32x4_t Right1032 = vrev64q_f32(Right.NEON);
+    float32x4_t Right3210 = vcombine_f32(vget_high_f32(Right1032), vget_low_f32(Right1032));
+    float32x4_t Right2301 = vrev64q_f32(Right3210);
+    
+    float32x4_t FirstSign = {1.0f, -1.0f, 1.0f, -1.0f};
+    Result.NEON = vmulq_f32(Right3210, vmulq_f32(vdupq_laneq_f32(Left.NEON, 0), FirstSign));
+    float32x4_t SecondSign = {1.0f, 1.0f, -1.0f, -1.0f};
+    Result.NEON = vfmaq_f32(Result.NEON, Right2301, vmulq_f32(vdupq_laneq_f32(Left.NEON, 1), SecondSign));
+    float32x4_t ThirdSign = {-1.0f, 1.0f, 1.0f, -1.0f};
+    Result.NEON = vfmaq_f32(Result.NEON, Right1032, vmulq_f32(vdupq_laneq_f32(Left.NEON, 2), ThirdSign));
+    Result.NEON = vfmaq_laneq_f32(Result.NEON, Right.NEON, Left.NEON, 3);
+    
 #else
-# if HANDMADE_MATH__USE_NEON
-    // TOOD (jack): go look up how quaternion multiplication works and implment it in neon, we don't have xor.
-#  warning "Vectorized Quaternion Multiply not yet implemented in NEON"
-# endif 
     Result.X =  Right.Elements[3] * +Left.Elements[0];
     Result.Y =  Right.Elements[2] * -Left.Elements[0];
     Result.Z =  Right.Elements[1] * +Left.Elements[0];
