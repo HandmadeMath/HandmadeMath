@@ -106,7 +106,7 @@
 #endif
 
 #ifdef HANDMADE_MATH_NO_SSE
-# warning "HANDMADE_MATH_NO_SSE is depricated, use HANDMADE_MATH_NO_SIMD instead"
+# warning "HANDMADE_MATH_NO_SSE is deprecated, use HANDMADE_MATH_NO_SIMD instead"
 # define HANDMADE_MATH_NO_SIMD
 #endif 
 
@@ -522,7 +522,7 @@ static inline float HMM_SqrtF(float Float)
     __m128 In = _mm_set_ss(Float);
     __m128 Out = _mm_sqrt_ss(In);
     Result = _mm_cvtss_f32(Out);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t In = vdupq_n_f32(Float);
     float32x4_t Out = vsqrtq_f32(In);
     Result = vgetq_lane_f32(Out, 0);
@@ -616,7 +616,7 @@ static inline HMM_Vec4 HMM_V4(float X, float Y, float Z, float W)
 
 #ifdef HANDMADE_MATH__USE_SSE
     Result.SSE = _mm_setr_ps(X, Y, Z, W);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t v = {X, Y, Z, W};
     Result.NEON = v;
 #else
@@ -638,7 +638,7 @@ static inline HMM_Vec4 HMM_V4V(HMM_Vec3 Vector, float W)
 
 #ifdef HANDMADE_MATH__USE_SSE
     Result.SSE = _mm_setr_ps(Vector.X, Vector.Y, Vector.Z, W);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t v = {Vector.X, Vector.Y, Vector.Z, W};
     Result.NEON = v;
 #else
@@ -688,7 +688,7 @@ static inline HMM_Vec4 HMM_AddV4(HMM_Vec4 Left, HMM_Vec4 Right)
 
 #ifdef HANDMADE_MATH__USE_SSE
     Result.SSE = _mm_add_ps(Left.SSE, Right.SSE);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     Result.NEON = vaddq_f32(Left.NEON, Right.NEON);
 #else
     Result.X = Left.X + Right.X;
@@ -734,7 +734,7 @@ static inline HMM_Vec4 HMM_SubV4(HMM_Vec4 Left, HMM_Vec4 Right)
 
 #ifdef HANDMADE_MATH__USE_SSE
     Result.SSE = _mm_sub_ps(Left.SSE, Right.SSE);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     Result.NEON = vsubq_f32(Left.NEON, Right.NEON);
 #else
     Result.X = Left.X - Right.X;
@@ -805,7 +805,7 @@ static inline HMM_Vec4 HMM_MulV4(HMM_Vec4 Left, HMM_Vec4 Right)
 
 #ifdef HANDMADE_MATH__USE_SSE
     Result.SSE = _mm_mul_ps(Left.SSE, Right.SSE);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     Result.NEON = vmulq_f32(Left.NEON, Right.NEON);
 #else
     Result.X = Left.X * Right.X;
@@ -827,7 +827,7 @@ static inline HMM_Vec4 HMM_MulV4F(HMM_Vec4 Left, float Right)
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Scalar = _mm_set1_ps(Right);
     Result.SSE = _mm_mul_ps(Left.SSE, Scalar);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     Result.NEON = vmulq_n_f32(Left.NEON, Right);
 #else
     Result.X = Left.X * Right;
@@ -898,7 +898,7 @@ static inline HMM_Vec4 HMM_DivV4(HMM_Vec4 Left, HMM_Vec4 Right)
 
 #ifdef HANDMADE_MATH__USE_SSE
     Result.SSE = _mm_div_ps(Left.SSE, Right.SSE);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     Result.NEON = vdivq_f32(Left.NEON, Right.NEON);
 #else
     Result.X = Left.X / Right.X;
@@ -920,7 +920,7 @@ static inline HMM_Vec4 HMM_DivV4F(HMM_Vec4 Left, float Right)
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Scalar = _mm_set1_ps(Right);
     Result.SSE = _mm_div_ps(Left.SSE, Scalar);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t Scalar = vdupq_n_f32(Right);
     Result.NEON = vdivq_f32(Left.NEON, Scalar);
 #else
@@ -985,7 +985,7 @@ static inline float HMM_DotV4(HMM_Vec4 Left, HMM_Vec4 Right)
     SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(0, 1, 2, 3));
     SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
     _mm_store_ss(&Result, SSEResultOne);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t NEONMultiplyResult = vmulq_f32(Left.NEON, Right.NEON);
     float32x4_t NEONHalfAdd = vpaddq_f32(NEONMultiplyResult, NEONMultiplyResult);
     float32x4_t NEONFullAdd = vpaddq_f32(NEONHalfAdd, NEONHalfAdd);
@@ -1118,7 +1118,7 @@ static inline HMM_Vec4 HMM_LinearCombineV4M4(HMM_Vec4 Left, HMM_Mat4 Right)
     Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0x55), Right.Columns[1].SSE));
     Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0xaa), Right.Columns[2].SSE));
     Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0xff), Right.Columns[3].SSE));
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     Result.NEON = vmulq_laneq_f32(Right.Columns[0].NEON, Left.NEON, 0);
     Result.NEON = vfmaq_laneq_f32(Result.NEON, Right.Columns[1].NEON, Left.NEON, 1);
     Result.NEON = vfmaq_laneq_f32(Result.NEON, Right.Columns[2].NEON, Left.NEON, 2);
@@ -1521,7 +1521,7 @@ static inline HMM_Mat4 HMM_TransposeM4(HMM_Mat4 Matrix)
 #ifdef HANDMADE_MATH__USE_SSE
     Result = Matrix;
     _MM_TRANSPOSE4_PS(Result.Columns[0].SSE, Result.Columns[1].SSE, Result.Columns[2].SSE, Result.Columns[3].SSE);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4x4_t Transposed = vld4q_f32((float*)Matrix.Columns);
     Result.Columns[0].NEON = Transposed.val[0];
     Result.Columns[1].NEON = Transposed.val[1];
@@ -1607,14 +1607,28 @@ static inline HMM_Mat4 HMM_MulM4F(HMM_Mat4 Matrix, float Scalar)
     Result.Columns[1].SSE = _mm_mul_ps(Matrix.Columns[1].SSE, SSEScalar);
     Result.Columns[2].SSE = _mm_mul_ps(Matrix.Columns[2].SSE, SSEScalar);
     Result.Columns[3].SSE = _mm_mul_ps(Matrix.Columns[3].SSE, SSEScalar);
+#elif defined(HANDMADE_MATH__USE_NEON)
+    Result.Columns[0].NEON = vmulq_n_f32(Matrix.Columns[0].NEON, Scalar);
+    Result.Columns[1].NEON = vmulq_n_f32(Matrix.Columns[1].NEON, Scalar);
+    Result.Columns[2].NEON = vmulq_n_f32(Matrix.Columns[2].NEON, Scalar);
+    Result.Columns[3].NEON = vmulq_n_f32(Matrix.Columns[3].NEON, Scalar);
 #else
-    // NOTE(jack) In neon we dont need to do an equivalent to _mm_set1_ps
-    // so we can fall back on the MulV4F calls without the extra setting
-    // being done
-    Result.Columns[0] = HMM_MulV4F(Matrix.Columns[0], Scalar);
-    Result.Columns[1] = HMM_MulV4F(Matrix.Columns[1], Scalar);
-    Result.Columns[2] = HMM_MulV4F(Matrix.Columns[2], Scalar);
-    Result.Columns[3] = HMM_MulV4F(Matrix.Columns[3], Scalar);
+    Result.Elements[0][0] = Matrix.Elements[0][0] * Scalar;
+    Result.Elements[0][1] = Matrix.Elements[0][1] * Scalar;
+    Result.Elements[0][2] = Matrix.Elements[0][2] * Scalar;
+    Result.Elements[0][3] = Matrix.Elements[0][3] * Scalar;
+    Result.Elements[1][0] = Matrix.Elements[1][0] * Scalar;
+    Result.Elements[1][1] = Matrix.Elements[1][1] * Scalar;
+    Result.Elements[1][2] = Matrix.Elements[1][2] * Scalar;
+    Result.Elements[1][3] = Matrix.Elements[1][3] * Scalar;
+    Result.Elements[2][0] = Matrix.Elements[2][0] * Scalar;
+    Result.Elements[2][1] = Matrix.Elements[2][1] * Scalar;
+    Result.Elements[2][2] = Matrix.Elements[2][2] * Scalar;
+    Result.Elements[2][3] = Matrix.Elements[2][3] * Scalar;
+    Result.Elements[3][0] = Matrix.Elements[3][0] * Scalar;
+    Result.Elements[3][1] = Matrix.Elements[3][1] * Scalar;
+    Result.Elements[3][2] = Matrix.Elements[3][2] * Scalar;
+    Result.Elements[3][3] = Matrix.Elements[3][3] * Scalar;
 #endif
 
     return Result;
@@ -1640,17 +1654,29 @@ static inline HMM_Mat4 HMM_DivM4F(HMM_Mat4 Matrix, float Scalar)
     Result.Columns[1].SSE = _mm_div_ps(Matrix.Columns[1].SSE, SSEScalar);
     Result.Columns[2].SSE = _mm_div_ps(Matrix.Columns[2].SSE, SSEScalar);
     Result.Columns[3].SSE = _mm_div_ps(Matrix.Columns[3].SSE, SSEScalar);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t NEONScalar = vdupq_n_f32(Scalar);
     Result.Columns[0].NEON = vdivq_f32(Matrix.Columns[0].NEON, NEONScalar);
     Result.Columns[1].NEON = vdivq_f32(Matrix.Columns[1].NEON, NEONScalar);
     Result.Columns[2].NEON = vdivq_f32(Matrix.Columns[2].NEON, NEONScalar);
     Result.Columns[3].NEON = vdivq_f32(Matrix.Columns[3].NEON, NEONScalar);
 #else
-    Result.Columns[0] = HMM_DivV4F(Matrix.Columns[0], Scalar);
-    Result.Columns[1] = HMM_DivV4F(Matrix.Columns[1], Scalar);
-    Result.Columns[2] = HMM_DivV4F(Matrix.Columns[2], Scalar);
-    Result.Columns[3] = HMM_DivV4F(Matrix.Columns[3], Scalar);
+    Result.Elements[0][0] = Matrix.Elements[0][0] / Scalar;
+    Result.Elements[0][1] = Matrix.Elements[0][1] / Scalar;
+    Result.Elements[0][2] = Matrix.Elements[0][2] / Scalar;
+    Result.Elements[0][3] = Matrix.Elements[0][3] / Scalar;
+    Result.Elements[1][0] = Matrix.Elements[1][0] / Scalar;
+    Result.Elements[1][1] = Matrix.Elements[1][1] / Scalar;
+    Result.Elements[1][2] = Matrix.Elements[1][2] / Scalar;
+    Result.Elements[1][3] = Matrix.Elements[1][3] / Scalar;
+    Result.Elements[2][0] = Matrix.Elements[2][0] / Scalar;
+    Result.Elements[2][1] = Matrix.Elements[2][1] / Scalar;
+    Result.Elements[2][2] = Matrix.Elements[2][2] / Scalar;
+    Result.Elements[2][3] = Matrix.Elements[2][3] / Scalar;
+    Result.Elements[3][0] = Matrix.Elements[3][0] / Scalar;
+    Result.Elements[3][1] = Matrix.Elements[3][1] / Scalar;
+    Result.Elements[3][2] = Matrix.Elements[3][2] / Scalar;
+    Result.Elements[3][3] = Matrix.Elements[3][3] / Scalar;
 #endif
 
     return Result;
@@ -2076,7 +2102,7 @@ static inline HMM_Quat HMM_Q(float X, float Y, float Z, float W)
 
 #ifdef HANDMADE_MATH__USE_SSE
     Result.SSE = _mm_setr_ps(X, Y, Z, W);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t v = { X, Y, Z, W };
     Result.NEON = v;
 #else
@@ -2098,7 +2124,7 @@ static inline HMM_Quat HMM_QV4(HMM_Vec4 Vector)
 
 #ifdef HANDMADE_MATH__USE_SSE
     Result.SSE = Vector.SSE;
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     Result.NEON = Vector.NEON;
 #else
     Result.X = Vector.X;
@@ -2119,7 +2145,7 @@ static inline HMM_Quat HMM_AddQ(HMM_Quat Left, HMM_Quat Right)
 
 #ifdef HANDMADE_MATH__USE_SSE
     Result.SSE = _mm_add_ps(Left.SSE, Right.SSE);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     Result.NEON = vaddq_f32(Left.NEON, Right.NEON);
 #else
 
@@ -2141,7 +2167,7 @@ static inline HMM_Quat HMM_SubQ(HMM_Quat Left, HMM_Quat Right)
 
 #ifdef HANDMADE_MATH__USE_SSE
     Result.SSE = _mm_sub_ps(Left.SSE, Right.SSE);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     Result.NEON = vsubq_f32(Left.NEON, Right.NEON);
 #else
     Result.X = Left.X - Right.X;
@@ -2176,7 +2202,7 @@ static inline HMM_Quat HMM_MulQ(HMM_Quat Left, HMM_Quat Right)
     SSEResultOne = _mm_shuffle_ps(Left.SSE, Left.SSE, _MM_SHUFFLE(3, 3, 3, 3));
     SSEResultTwo = _mm_shuffle_ps(Right.SSE, Right.SSE, _MM_SHUFFLE(3, 2, 1, 0));
     Result.SSE = _mm_add_ps(SSEResultThree, _mm_mul_ps(SSEResultTwo, SSEResultOne));
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t Right1032 = vrev64q_f32(Right.NEON);
     float32x4_t Right3210 = vcombine_f32(vget_high_f32(Right1032), vget_low_f32(Right1032));
     float32x4_t Right2301 = vrev64q_f32(Right3210);
@@ -2224,7 +2250,7 @@ static inline HMM_Quat HMM_MulQF(HMM_Quat Left, float Multiplicative)
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Scalar = _mm_set1_ps(Multiplicative);
     Result.SSE = _mm_mul_ps(Left.SSE, Scalar);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     Result.NEON = vmulq_n_f32(Left.NEON, Multiplicative);
 #else
     Result.X = Left.X * Multiplicative;
@@ -2246,7 +2272,7 @@ static inline HMM_Quat HMM_DivQF(HMM_Quat Left, float Divnd)
 #ifdef HANDMADE_MATH__USE_SSE
     __m128 Scalar = _mm_set1_ps(Divnd);
     Result.SSE = _mm_div_ps(Left.SSE, Scalar);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t Scalar = vdupq_n_f32(Divnd);
     Result.NEON = vdivq_f32(Left.NEON, Scalar);
 #else
@@ -2273,7 +2299,7 @@ static inline float HMM_DotQ(HMM_Quat Left, HMM_Quat Right)
     SSEResultTwo = _mm_shuffle_ps(SSEResultOne, SSEResultOne, _MM_SHUFFLE(0, 1, 2, 3));
     SSEResultOne = _mm_add_ps(SSEResultOne, SSEResultTwo);
     _mm_store_ss(&Result, SSEResultOne);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t NEONMultiplyResult = vmulq_f32(Left.NEON, Right.NEON);
     float32x4_t NEONHalfAdd = vpaddq_f32(NEONMultiplyResult, NEONMultiplyResult);
     float32x4_t NEONFullAdd = vpaddq_f32(NEONHalfAdd, NEONHalfAdd);
@@ -2321,7 +2347,7 @@ static inline HMM_Quat _HMM_MixQ(HMM_Quat Left, float MixLeft, HMM_Quat Right, f
     __m128 SSEResultOne = _mm_mul_ps(Left.SSE, ScalarLeft);
     __m128 SSEResultTwo = _mm_mul_ps(Right.SSE, ScalarRight);
     Result.SSE = _mm_add_ps(SSEResultOne, SSEResultTwo);
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t ScaledLeft = vmulq_n_f32(Left.NEON, MixLeft);
     float32x4_t ScaledRight = vmulq_n_f32(Right.NEON, MixRight);
     Result.NEON = vaddq_f32(ScaledLeft, ScaledRight);
@@ -3742,7 +3768,7 @@ static inline HMM_Vec4 operator-(HMM_Vec4 In)
     HMM_Vec4 Result;
 #if HANDMADE_MATH__USE_SSE
     Result.SSE = _mm_xor_ps(In.SSE, _mm_set1_ps(-0.0f));
-#elif HANDMADE_MATH__USE_NEON
+#elif defined(HANDMADE_MATH__USE_NEON)
     float32x4_t Zero = vdupq_n_f32(0.0f);
     Result.NEON = vsubq_f32(Zero, In.NEON);
 #else
