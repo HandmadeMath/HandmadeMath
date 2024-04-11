@@ -2600,6 +2600,27 @@ static inline HMM_Quat HMM_QFromAxisAngle_LH(HMM_Vec3 Axis, float Angle)
     return HMM_QFromAxisAngle_RH(Axis, -Angle);
 }
 
+COVERAGE(HMM_QFromNormPair, 1)
+static inline HMM_Quat HMM_QFromNormPair(HMM_Vec3 Left, HMM_Vec3 Right)
+{
+    ASSERT_COVERED(HMM_QFromNormPair);
+
+    HMM_Quat Result;
+
+    Result.XYZ = HMM_Cross(Left, Right);
+    Result.W = 1.0f + HMM_DotV3(Left, Right);
+
+    return HMM_NormQ(Result);
+}
+
+COVERAGE(HMM_QFromVecPair, 1)
+static inline HMM_Quat HMM_QFromVecPair(HMM_Vec3 Left, HMM_Vec3 Right)
+{
+    ASSERT_COVERED(HMM_QFromVecPair);
+
+    return HMM_QFromNormPair(HMM_NormV3(Left), HMM_NormV3(Right));
+}
+
 COVERAGE(HMM_RotateV2, 1)
 static inline HMM_Vec2 HMM_RotateV2(HMM_Vec2 V, float Angle)
 {

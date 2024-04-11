@@ -273,3 +273,25 @@ TEST(QuaternionOps, RotateVectorAxisAngle)
         EXPECT_NEAR(result.Z, 0.707170f, 0.001f);
     }
 }
+
+TEST(QuaternionOps, QuatFromPairs)
+{
+    {
+        HMM_Vec3 n1 = HMM_V3(0.0f, 1.0f, 0.0f);
+        HMM_Vec3 n2 = HMM_V3(0.0f, 0.0f, 1.0f);
+        HMM_Quat q = HMM_QFromNormPair(n1, n2);
+        HMM_Vec3 result = HMM_RotateV3Q(n1, q);
+        EXPECT_NEAR(result.X, n2.X, 0.001f);
+        EXPECT_NEAR(result.Y, n2.Y, 0.001f);
+        EXPECT_NEAR(result.Z, n2.Z, 0.001f);
+    }
+    {
+        HMM_Vec3 v1 = HMM_V3(2.0f, 2.0f, 2.0f);
+        HMM_Vec3 v2 = HMM_V3(3.0f, 0.0f, 0.0f);
+        HMM_Quat q = HMM_QFromVecPair(v1, v2);
+        HMM_Vec3 result = HMM_RotateV3Q(HMM_V3(0.0f, 1.0f, 0.0f), q);
+        EXPECT_NEAR(result.X, 0.577350, 0.001f);
+        EXPECT_NEAR(result.Y, 0.788675, 0.001f);
+        EXPECT_NEAR(result.Z, -0.211325, 0.001f);
+    }
+}
