@@ -147,9 +147,7 @@
 #if defined(__GNUC__) || defined(__clang__)
 # pragma GCC diagnostic push
 # pragma GCC diagnostic ignored "-Wfloat-equal"
-# if (defined(__GNUC__) && (__GNUC__ == 4 && __GNUC_MINOR__ < 8)) || defined(__clang__)
-#  pragma GCC diagnostic ignored "-Wmissing-braces"
-# endif
+# pragma GCC diagnostic ignored "-Wmissing-braces"
 # ifdef __clang__
 #  pragma GCC diagnostic ignored "-Wgnu-anonymous-struct"
 #  pragma GCC diagnostic ignored "-Wmissing-field-initializers"
