@@ -279,24 +279,24 @@ typedef union HMM_Vec3
     struct
     {
         HMM_Vec2 XY;
-        float _Ignored0;
+        float Ignored0_;
     };
 
     struct
     {
-        float _Ignored1;
+        float Ignored1_;
         HMM_Vec2 YZ;
     };
 
     struct
     {
         HMM_Vec2 UV;
-        float _Ignored2;
+        float Ignored2_;
     };
 
     struct
     {
-        float _Ignored3;
+        float Ignored3_;
         HMM_Vec2 VW;
     };
 
@@ -340,21 +340,21 @@ typedef union HMM_Vec4
     struct
     {
         HMM_Vec2 XY;
-        float _Ignored0;
-        float _Ignored1;
+        float Ignored0_;
+        float Ignored1_;
     };
 
     struct
     {
-        float _Ignored2;
+        float Ignored2_;
         HMM_Vec2 YZ;
-        float _Ignored3;
+        float Ignored3_;
     };
 
     struct
     {
-        float _Ignored4;
-        float _Ignored5;
+        float Ignored4_;
+        float Ignored5_;
         HMM_Vec2 ZW;
     };
 
@@ -2009,7 +2009,7 @@ static inline HMM_Mat4 HMM_InvScale(HMM_Mat4 ScaleMatrix)
     return Result;
 }
 
-static inline HMM_Mat4 _HMM_LookAt(HMM_Vec3 F,  HMM_Vec3 S, HMM_Vec3 U,  HMM_Vec3 Eye)
+static inline HMM_Mat4 HMM_LookAt_(HMM_Vec3 F,  HMM_Vec3 S, HMM_Vec3 U,  HMM_Vec3 Eye)
 {
     HMM_Mat4 Result;
 
@@ -2045,7 +2045,7 @@ static inline HMM_Mat4 HMM_LookAt_RH(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
     HMM_Vec3 S = HMM_NormV3(HMM_Cross(F, Up));
     HMM_Vec3 U = HMM_Cross(S, F);
 
-    return _HMM_LookAt(F, S, U, Eye);
+    return HMM_LookAt_(F, S, U, Eye);
 }
 
 COVERAGE(HMM_LookAt_LH, 1)
@@ -2057,7 +2057,7 @@ static inline HMM_Mat4 HMM_LookAt_LH(HMM_Vec3 Eye, HMM_Vec3 Center, HMM_Vec3 Up)
     HMM_Vec3 S = HMM_NormV3(HMM_Cross(F, Up));
     HMM_Vec3 U = HMM_Cross(S, F);
 
-    return _HMM_LookAt(F, S, U, Eye);
+    return HMM_LookAt_(F, S, U, Eye);
 }
 
 COVERAGE(HMM_InvLookAt, 1)
@@ -2336,7 +2336,7 @@ static inline HMM_Quat HMM_NormQ(HMM_Quat Quat)
     return Result;
 }
 
-static inline HMM_Quat _HMM_MixQ(HMM_Quat Left, float MixLeft, HMM_Quat Right, float MixRight) {
+static inline HMM_Quat HMM_MixQ_(HMM_Quat Left, float MixLeft, HMM_Quat Right, float MixRight) {
     HMM_Quat Result;
 
 #ifdef HANDMADE_MATH__USE_SSE
@@ -2364,7 +2364,7 @@ static inline HMM_Quat HMM_NLerp(HMM_Quat Left, float Time, HMM_Quat Right)
 {
     ASSERT_COVERED(HMM_NLerp);
 
-    HMM_Quat Result = _HMM_MixQ(Left, 1.0f-Time, Right, Time);
+    HMM_Quat Result = HMM_MixQ_(Left, 1.0f-Time, Right, Time);
     Result = HMM_NormQ(Result);
 
     return Result;
@@ -2392,7 +2392,7 @@ static inline HMM_Quat HMM_SLerp(HMM_Quat Left, float Time, HMM_Quat Right)
         float MixLeft = HMM_SinF((1.0f - Time) * Angle);
         float MixRight = HMM_SinF(Time * Angle);
 
-        Result = _HMM_MixQ(Left, MixLeft, Right, MixRight);
+        Result = HMM_MixQ_(Left, MixLeft, Right, MixRight);
         Result = HMM_NormQ(Result);
     }
 
