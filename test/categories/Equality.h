@@ -9,10 +9,12 @@ TEST(Equality, Vec2)
     EXPECT_TRUE(HMM_EqV2(a, b));
     EXPECT_FALSE(HMM_EqV2(a, c));
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     EXPECT_TRUE(HMM_Eq(a, b));
     EXPECT_FALSE(HMM_Eq(a, c));
+#endif
 
+#ifdef __cplusplus
     EXPECT_TRUE(a == b);
     EXPECT_FALSE(a == c);
 
@@ -30,10 +32,12 @@ TEST(Equality, Vec3)
     EXPECT_TRUE(HMM_EqV3(a, b));
     EXPECT_FALSE(HMM_EqV3(a, c));
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     EXPECT_TRUE(HMM_Eq(a, b));
     EXPECT_FALSE(HMM_Eq(a, c));
+#endif
 
+#ifdef __cplusplus
     EXPECT_TRUE(a == b);
     EXPECT_FALSE(a == c);
 
@@ -51,10 +55,12 @@ TEST(Equality, Vec4)
     EXPECT_TRUE(HMM_EqV4(a, b));
     EXPECT_FALSE(HMM_EqV4(a, c));
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     EXPECT_TRUE(HMM_Eq(a, b));
     EXPECT_FALSE(HMM_Eq(a, c));
+#endif
 
+#ifdef __cplusplus
     EXPECT_TRUE(a == b);
     EXPECT_FALSE(a == c);
 

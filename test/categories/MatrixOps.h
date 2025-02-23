@@ -19,7 +19,7 @@ TEST(InvMatrix, Transpose)
             EXPECT_FLOAT_EQ(result.Elements[1][0], Expect.Elements[1][0]);
             EXPECT_FLOAT_EQ(result.Elements[1][1], Expect.Elements[1][1]);
         }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
         {
             HMM_Mat2 result = HMM_Transpose(Matrix);
             EXPECT_FLOAT_EQ(result.Elements[0][0], Expect.Elements[0][0]);
@@ -54,7 +54,7 @@ TEST(InvMatrix, Transpose)
             EXPECT_FLOAT_EQ(result.Elements[2][1], Expect.Elements[2][1]);
             EXPECT_FLOAT_EQ(result.Elements[2][2], Expect.Elements[2][2]);
         }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
         {
             HMM_Mat3 result = HMM_Transpose(Matrix);
             EXPECT_FLOAT_EQ(result.Elements[0][0], Expect.Elements[0][0]);
@@ -94,7 +94,7 @@ TEST(InvMatrix, Transpose)
             EXPECT_FLOAT_EQ(result.Elements[2][1], Expect.Elements[2][1]);
             EXPECT_FLOAT_EQ(result.Elements[2][2], Expect.Elements[2][2]);
         }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
         {
             HMM_Mat4 result = HMM_Transpose(Matrix);
             EXPECT_FLOAT_EQ(result.Elements[0][0], Expect.Elements[0][0]);
