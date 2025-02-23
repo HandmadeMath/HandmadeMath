@@ -22,7 +22,7 @@ TEST(QuaternionOps, Dot)
         float result = HMM_DotQ(q1, q2);
         EXPECT_FLOAT_EQ(result, 70.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         float result = HMM_Dot(q1, q2);
         EXPECT_FLOAT_EQ(result, 70.0f);
@@ -41,7 +41,7 @@ TEST(QuaternionOps, Normalize)
         EXPECT_NEAR(result.Z, 0.5477225575f, 0.001f);
         EXPECT_NEAR(result.W, 0.7302967433f, 0.001f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Quat result = HMM_Norm(q);
         EXPECT_NEAR(result.X, 0.1825741858f, 0.001f);
@@ -97,7 +97,7 @@ TEST(QuaternionOps, SLerp)
         EXPECT_NEAR(result.Z, -0.40824830f, 0.001f);
         EXPECT_NEAR(result.W, 0.70710676f, 0.001f);
     }
-        {
+    {
         HMM_Quat result = HMM_SLerp(from, 1.0f, to);
         EXPECT_NEAR(result.X, 0.5f, 0.001f);
         EXPECT_NEAR(result.Y, 0.5f, 0.001f);

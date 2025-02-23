@@ -10,7 +10,7 @@ TEST(VectorOps, LengthSquared)
     EXPECT_FLOAT_EQ(HMM_LenSqrV3(v3), 14.0f);
     EXPECT_FLOAT_EQ(HMM_LenSqrV4(v4), 15.0f);
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     EXPECT_FLOAT_EQ(HMM_LenSqr(v2), 5.0f);
     EXPECT_FLOAT_EQ(HMM_LenSqr(v3), 14.0f);
     EXPECT_FLOAT_EQ(HMM_LenSqr(v4), 15.0f);
@@ -27,7 +27,7 @@ TEST(VectorOps, Length)
     EXPECT_FLOAT_EQ(HMM_LenV3(v3), 7.0f);
     EXPECT_FLOAT_EQ(HMM_LenV4(v4), 13.892444f);
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     EXPECT_FLOAT_EQ(HMM_Len(v2), 9.0553856f);
     EXPECT_FLOAT_EQ(HMM_Len(v3), 7.0f);
     EXPECT_FLOAT_EQ(HMM_Len(v4), 13.892444f);
@@ -62,7 +62,7 @@ TEST(VectorOps, Normalize)
         EXPECT_LT(result.W, 0.0f);
     }
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec2 result = HMM_Norm(v2);
         EXPECT_NEAR(HMM_LenV2(result), 1.0f, 0.001f);
@@ -112,7 +112,7 @@ TEST(VectorOps, NormalizeZero)
         EXPECT_FLOAT_EQ(result.W, 0.0f);
     }
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec2 result = HMM_Norm(v2);
         EXPECT_FLOAT_EQ(result.X, 0.0f);
@@ -152,7 +152,7 @@ TEST(VectorOps, DotVec2)
     HMM_Vec2 v2 = HMM_V2(3.0f, 4.0f);
 
     EXPECT_FLOAT_EQ(HMM_DotV2(v1, v2), 11.0f);
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 11.0f);
 #endif
 }
@@ -163,7 +163,7 @@ TEST(VectorOps, DotVec3)
     HMM_Vec3 v2 = HMM_V3(4.0f, 5.0f, 6.0f);
 
     EXPECT_FLOAT_EQ(HMM_DotV3(v1, v2), 32.0f);
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 32.0f);
 #endif
 }
@@ -174,7 +174,7 @@ TEST(VectorOps, DotVec4)
     HMM_Vec4 v2 = HMM_V4(5.0f, 6.0f, 7.0f, 8.0f);
 
     EXPECT_FLOAT_EQ(HMM_DotV4(v1, v2), 70.0f);
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     EXPECT_FLOAT_EQ(HMM_Dot(v1, v2), 70.0f);
 #endif
 }
@@ -189,7 +189,7 @@ TEST(VectorOps, LerpV2)
         EXPECT_FLOAT_EQ(result.X, 0.5f);
         EXPECT_FLOAT_EQ(result.Y, 0.5f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec2 result = HMM_Lerp(v1, 0.5, v2);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
@@ -209,7 +209,7 @@ TEST(VectorOps, LerpV3)
         EXPECT_FLOAT_EQ(result.Y, 1.0f);
         EXPECT_FLOAT_EQ(result.Z, 0.5f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec3 result = HMM_Lerp(v1, 0.5, v2);
         EXPECT_FLOAT_EQ(result.X, 0.5f);
@@ -231,7 +231,7 @@ TEST(VectorOps, LerpV4)
         EXPECT_FLOAT_EQ(result.Z, 0.5f);
         EXPECT_FLOAT_EQ(result.W, 1.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec4 result = HMM_Lerp(v1, 0.5, v2);
         EXPECT_FLOAT_EQ(result.X, 0.5f);

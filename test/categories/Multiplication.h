@@ -10,12 +10,14 @@ TEST(Multiplication, Vec2Vec2)
         EXPECT_FLOAT_EQ(result.X, 3.0f);
         EXPECT_FLOAT_EQ(result.Y, 8.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec2 result = HMM_Mul(v2_1, v2_2);
         EXPECT_FLOAT_EQ(result.X, 3.0f);
         EXPECT_FLOAT_EQ(result.Y, 8.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec2 result = v2_1 * v2_2;
         EXPECT_FLOAT_EQ(result.X, 3.0f);
@@ -38,12 +40,14 @@ TEST(Multiplication, Vec2Scalar)
         EXPECT_FLOAT_EQ(result.X, 3.0f);
         EXPECT_FLOAT_EQ(result.Y, 6.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec2 result = HMM_Mul(v2, s);
         EXPECT_FLOAT_EQ(result.X, 3.0f);
         EXPECT_FLOAT_EQ(result.Y, 6.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec2 result = v2 * s;
         EXPECT_FLOAT_EQ(result.X, 3.0f);
@@ -72,13 +76,15 @@ TEST(Multiplication, Vec3Vec3)
         EXPECT_FLOAT_EQ(result.Y, 10.0f);
         EXPECT_FLOAT_EQ(result.Z, 18.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec3 result = HMM_Mul(v3_1, v3_2);
         EXPECT_FLOAT_EQ(result.X, 4.0f);
         EXPECT_FLOAT_EQ(result.Y, 10.0f);
         EXPECT_FLOAT_EQ(result.Z, 18.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec3 result = v3_1 * v3_2;
         EXPECT_FLOAT_EQ(result.X, 4.0f);
@@ -104,13 +110,15 @@ TEST(Multiplication, Vec3Scalar)
         EXPECT_FLOAT_EQ(result.Y, 6.0f);
         EXPECT_FLOAT_EQ(result.Z, 9.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec3 result = HMM_Mul(v3, s);
         EXPECT_FLOAT_EQ(result.X, 3.0f);
         EXPECT_FLOAT_EQ(result.Y, 6.0f);
         EXPECT_FLOAT_EQ(result.Z, 9.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec3 result = v3 * s;
         EXPECT_FLOAT_EQ(result.X, 3.0f);
@@ -143,7 +151,7 @@ TEST(Multiplication, Vec4Vec4)
         EXPECT_FLOAT_EQ(result.Z, 21.0f);
         EXPECT_FLOAT_EQ(result.W, 32.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec4 result = HMM_Mul(v4_1, v4_2);
         EXPECT_FLOAT_EQ(result.X, 5.0f);
@@ -151,6 +159,8 @@ TEST(Multiplication, Vec4Vec4)
         EXPECT_FLOAT_EQ(result.Z, 21.0f);
         EXPECT_FLOAT_EQ(result.W, 32.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec4 result = v4_1 * v4_2;
         EXPECT_FLOAT_EQ(result.X, 5.0f);
@@ -179,7 +189,7 @@ TEST(Multiplication, Vec4Scalar)
         EXPECT_FLOAT_EQ(result.Z, 9.0f);
         EXPECT_FLOAT_EQ(result.W, 12.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec4 result = HMM_Mul(v4, s);
         EXPECT_FLOAT_EQ(result.X, 3.0f);
@@ -187,6 +197,8 @@ TEST(Multiplication, Vec4Scalar)
         EXPECT_FLOAT_EQ(result.Z, 9.0f);
         EXPECT_FLOAT_EQ(result.W, 12.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec4 result = v4 * s;
         EXPECT_FLOAT_EQ(result.X, 3.0f);
@@ -234,15 +246,17 @@ TEST(Multiplication, Mat2Mat2) {
         EXPECT_FLOAT_EQ(result.Elements[1][1], 46.0f);        
     }
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Mat2 result = HMM_Mul(a,b);
         EXPECT_FLOAT_EQ(result.Elements[0][0], 23.0f);
         EXPECT_FLOAT_EQ(result.Elements[0][1], 34.0f);
         EXPECT_FLOAT_EQ(result.Elements[1][0], 31.0f);
-        EXPECT_FLOAT_EQ(result.Elements[1][1], 46.0f);        
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 46.0f);
     }
+#endif
 
+#ifdef __cplusplus
     {
         HMM_Mat2 result = a * b;
         EXPECT_FLOAT_EQ(result.Elements[0][0], 23.0f);
@@ -271,7 +285,7 @@ TEST(Multiplication, Mat2Scalar) {
         EXPECT_FLOAT_EQ(result.Elements[1][0], 30.0f);
         EXPECT_FLOAT_EQ(result.Elements[1][1], 40.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Mat2 result = HMM_Mul(m, s);
         EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
@@ -279,6 +293,8 @@ TEST(Multiplication, Mat2Scalar) {
         EXPECT_FLOAT_EQ(result.Elements[1][0], 30.0f);
         EXPECT_FLOAT_EQ(result.Elements[1][1], 40.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Mat2 result = m * s;
         EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
@@ -322,13 +338,15 @@ TEST(Multiplication, Mat2Vec2) {
         EXPECT_FLOAT_EQ(result.Elements[1], 34.0f);
     }
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec2 result = HMM_Mul(m, v);
         EXPECT_FLOAT_EQ(result.Elements[0], 23.0f);
         EXPECT_FLOAT_EQ(result.Elements[1], 34.0f);
     }
-    
+#endif
+
+#ifdef __cplusplus
     {
         HMM_Vec2 result = m * v;
         EXPECT_FLOAT_EQ(result.Elements[0], 23.0f);
@@ -368,7 +386,7 @@ TEST(Multiplication, Mat3Mat3)
         EXPECT_FLOAT_EQ(result.Elements[2][2], 312.0f);
     }
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Mat3 result = HMM_Mul(a,b);
         EXPECT_FLOAT_EQ(result.Elements[0][0], 138.0f);
@@ -381,7 +399,9 @@ TEST(Multiplication, Mat3Mat3)
         EXPECT_FLOAT_EQ(result.Elements[2][1], 261.0f);
         EXPECT_FLOAT_EQ(result.Elements[2][2], 312.0f);
     }
+#endif
 
+#ifdef __cplusplus
     {
         HMM_Mat3 result = a * b;
         EXPECT_FLOAT_EQ(result.Elements[0][0], 138.0f);
@@ -420,7 +440,7 @@ TEST(Multiplication, Mat3Scalar) {
         EXPECT_FLOAT_EQ(result.Elements[2][1], 80.0f);
         EXPECT_FLOAT_EQ(result.Elements[2][2], 90.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Mat3 result = HMM_Mul(m, s);
         EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
@@ -433,6 +453,8 @@ TEST(Multiplication, Mat3Scalar) {
         EXPECT_FLOAT_EQ(result.Elements[2][1], 80.0f);
         EXPECT_FLOAT_EQ(result.Elements[2][2], 90.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Mat3 result = m * s;
         EXPECT_FLOAT_EQ(result.Elements[0][0], 10.0f);
@@ -491,14 +513,15 @@ TEST(Multiplication, Mat3Vec3) {
         EXPECT_FLOAT_EQ(result.Elements[1], 171.0f);
         EXPECT_FLOAT_EQ(result.Elements[2], 204.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec3 result = HMM_Mul(m, v);
         EXPECT_FLOAT_EQ(result.Elements[0], 138.0f);
         EXPECT_FLOAT_EQ(result.Elements[1], 171.0f);
         EXPECT_FLOAT_EQ(result.Elements[2], 204.0f);
     }
-    
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec3 result = m * v;
         EXPECT_FLOAT_EQ(result.Elements[0], 138.0f);
@@ -552,7 +575,7 @@ TEST(Multiplication, Mat4Mat4)
         EXPECT_FLOAT_EQ(result.Elements[3][2], 1118.0f);
         EXPECT_FLOAT_EQ(result.Elements[3][3], 1240.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Mat4 result = HMM_Mul(m4_1, m4_2);
         EXPECT_FLOAT_EQ(result.Elements[0][0], 538.0f);
@@ -572,6 +595,8 @@ TEST(Multiplication, Mat4Mat4)
         EXPECT_FLOAT_EQ(result.Elements[3][2], 1118.0f);
         EXPECT_FLOAT_EQ(result.Elements[3][3], 1240.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Mat4 result = m4_1 * m4_2;
         EXPECT_FLOAT_EQ(result.Elements[0][0], 538.0f);
@@ -634,7 +659,7 @@ TEST(Multiplication, Mat4Scalar)
         EXPECT_FLOAT_EQ(result.Elements[3][2], 45.0f);
         EXPECT_FLOAT_EQ(result.Elements[3][3], 48.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Mat4 result = HMM_Mul(m4, s);
         EXPECT_FLOAT_EQ(result.Elements[0][0], 3.0f);
@@ -654,6 +679,8 @@ TEST(Multiplication, Mat4Scalar)
         EXPECT_FLOAT_EQ(result.Elements[3][2], 45.0f);
         EXPECT_FLOAT_EQ(result.Elements[3][3], 48.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Mat4 result = m4 * s;
         EXPECT_FLOAT_EQ(result.Elements[0][0], 3.0f);
@@ -737,7 +764,7 @@ TEST(Multiplication, Mat4Vec4)
         EXPECT_FLOAT_EQ(result.Z, 110.0f);
         EXPECT_FLOAT_EQ(result.W, 120.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec4 result = HMM_Mul(m4, v4);
         EXPECT_FLOAT_EQ(result.X, 90.0f);
@@ -745,6 +772,8 @@ TEST(Multiplication, Mat4Vec4)
         EXPECT_FLOAT_EQ(result.Z, 110.0f);
         EXPECT_FLOAT_EQ(result.W, 120.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec4 result = m4 * v4;
         EXPECT_FLOAT_EQ(result.X, 90.0f);
@@ -769,7 +798,7 @@ TEST(Multiplication, QuaternionQuaternion)
         EXPECT_FLOAT_EQ(result.Z, 48.0f);
         EXPECT_FLOAT_EQ(result.W, -6.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Quat result = HMM_Mul(q1, q2);
         EXPECT_FLOAT_EQ(result.X, 24.0f);
@@ -777,6 +806,8 @@ TEST(Multiplication, QuaternionQuaternion)
         EXPECT_FLOAT_EQ(result.Z, 48.0f);
         EXPECT_FLOAT_EQ(result.W, -6.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Quat result = q1 * q2;
         EXPECT_FLOAT_EQ(result.X, 24.0f);
@@ -803,7 +834,7 @@ TEST(Multiplication, QuaternionScalar)
         EXPECT_FLOAT_EQ(result.Z, 6.0f);
         EXPECT_FLOAT_EQ(result.W, 8.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Quat result = HMM_Mul(q, f);
         EXPECT_FLOAT_EQ(result.X, 2.0f);
@@ -811,6 +842,8 @@ TEST(Multiplication, QuaternionScalar)
         EXPECT_FLOAT_EQ(result.Z, 6.0f);
         EXPECT_FLOAT_EQ(result.W, 8.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Quat result = q * f;
         EXPECT_FLOAT_EQ(result.X, 2.0f);

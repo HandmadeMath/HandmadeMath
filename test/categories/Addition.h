@@ -10,12 +10,14 @@ TEST(Addition, Vec2)
         EXPECT_FLOAT_EQ(result.X, 4.0f);
         EXPECT_FLOAT_EQ(result.Y, 6.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec2 result = HMM_Add(v2_1, v2_2);
         EXPECT_FLOAT_EQ(result.X, 4.0f);
         EXPECT_FLOAT_EQ(result.Y, 6.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec2 result = v2_1 + v2_2;
         EXPECT_FLOAT_EQ(result.X, 4.0f);
@@ -39,13 +41,15 @@ TEST(Addition, Vec3)
         EXPECT_FLOAT_EQ(result.Y, 7.0f);
         EXPECT_FLOAT_EQ(result.Z, 9.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec3 result = HMM_Add(v3_1, v3_2);
         EXPECT_FLOAT_EQ(result.X, 5.0f);
         EXPECT_FLOAT_EQ(result.Y, 7.0f);
         EXPECT_FLOAT_EQ(result.Z, 9.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec3 result = v3_1 + v3_2;
         EXPECT_FLOAT_EQ(result.X, 5.0f);
@@ -72,7 +76,7 @@ TEST(Addition, Vec4)
         EXPECT_FLOAT_EQ(result.Z, 10.0f);
         EXPECT_FLOAT_EQ(result.W, 12.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Vec4 result = HMM_Add(v4_1, v4_2);
         EXPECT_FLOAT_EQ(result.X, 6.0f);
@@ -80,6 +84,8 @@ TEST(Addition, Vec4)
         EXPECT_FLOAT_EQ(result.Z, 10.0f);
         EXPECT_FLOAT_EQ(result.W, 12.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Vec4 result = v4_1 + v4_2;
         EXPECT_FLOAT_EQ(result.X, 6.0f);
@@ -125,14 +131,16 @@ TEST(Addition, Mat2)
         EXPECT_FLOAT_EQ(result.Elements[1][1], 12.0f); 
     }
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Mat2 result = HMM_Add(a, b);
-        EXPECT_FLOAT_EQ(result.Elements[0][0], 6.0f); 
-        EXPECT_FLOAT_EQ(result.Elements[0][1], 8.0f); 
-        EXPECT_FLOAT_EQ(result.Elements[1][0], 10.0f); 
-        EXPECT_FLOAT_EQ(result.Elements[1][1], 12.0f); 
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 6.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 8.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 10.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][1], 12.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Mat2 result = a + b;
         EXPECT_FLOAT_EQ(result.Elements[0][0], 6.0f); 
@@ -182,19 +190,21 @@ TEST(Addition, Mat3)
         EXPECT_FLOAT_EQ(result.Elements[2][2], 27.0f);   
     }
 
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Mat3 result = HMM_Add(a, b);
-        EXPECT_FLOAT_EQ(result.Elements[0][0], 11.0f); 
-        EXPECT_FLOAT_EQ(result.Elements[0][1], 13.0f); 
-        EXPECT_FLOAT_EQ(result.Elements[0][2], 15.0f); 
-        EXPECT_FLOAT_EQ(result.Elements[1][0], 17.0f); 
+        EXPECT_FLOAT_EQ(result.Elements[0][0], 11.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][1], 13.0f);
+        EXPECT_FLOAT_EQ(result.Elements[0][2], 15.0f);
+        EXPECT_FLOAT_EQ(result.Elements[1][0], 17.0f);
         EXPECT_FLOAT_EQ(result.Elements[1][1], 19.0f);
-        EXPECT_FLOAT_EQ(result.Elements[1][2], 21.0f); 
-        EXPECT_FLOAT_EQ(result.Elements[2][0], 23.0f); 
+        EXPECT_FLOAT_EQ(result.Elements[1][2], 21.0f);
+        EXPECT_FLOAT_EQ(result.Elements[2][0], 23.0f);
         EXPECT_FLOAT_EQ(result.Elements[2][1], 25.0f);
-        EXPECT_FLOAT_EQ(result.Elements[2][2], 27.0f);   
+        EXPECT_FLOAT_EQ(result.Elements[2][2], 27.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Mat3 result = a + b;
         EXPECT_FLOAT_EQ(result.Elements[0][0], 11.0f); 
@@ -257,7 +267,7 @@ TEST(Addition, Mat4)
             }
         }
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Mat4 result = HMM_Add(m4_1, m4_2);
         float Expected = 18.0f;
@@ -270,6 +280,8 @@ TEST(Addition, Mat4)
             }
         }
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Mat4 result = m4_1 + m4_2;
         float Expected = 18.0f;
@@ -308,7 +320,7 @@ TEST(Addition, Quaternion)
         EXPECT_FLOAT_EQ(result.Z, 10.0f);
         EXPECT_FLOAT_EQ(result.W, 12.0f);
     }
-#ifdef __cplusplus
+#if HANDMADE_MATH__USE_C11_GENERICS || defined(__cplusplus)
     {
         HMM_Quat result = HMM_Add(q1, q2);
         EXPECT_FLOAT_EQ(result.X, 6.0f);
@@ -316,6 +328,8 @@ TEST(Addition, Quaternion)
         EXPECT_FLOAT_EQ(result.Z, 10.0f);
         EXPECT_FLOAT_EQ(result.W, 12.0f);
     }
+#endif
+#ifdef __cplusplus
     {
         HMM_Quat result = q1 + q2;
         EXPECT_FLOAT_EQ(result.X, 6.0f);
