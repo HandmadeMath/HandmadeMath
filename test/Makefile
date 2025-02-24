@@ -2,77 +2,123 @@ BUILD_DIR=./build
 
 CXXFLAGS+=-g -Wall -Wextra -pthread -Wno-missing-braces -Wno-missing-field-initializers -Wfloat-equal
 
-all: c c_no_simd cpp cpp_no_simd build_c_without_coverage build_cpp_without_coverage
+.PHONY: all all_c all_cpp
+all: all_c all_cpp
+all_c: c99 c99_no_simd c11 c17
+all_cpp: cpp98 cpp98_no_simd cpp03 cpp11 cpp14 cpp17 cpp20
 
-build_all: build_c build_c_no_simd build_cpp build_cpp_no_simd
-
+.PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)
 
-c: build_c
-	$(BUILD_DIR)/hmm_test_c
-
-build_c: HandmadeMath.c test_impl
-	@echo "\nCompiling in C mode"
+.PHONY: c99
+c99:
+	@echo "\nCompiling as C99"
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR)\
 		&& $(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 \
-			-c ../HandmadeMath.c ../hmm_test.c \
-			-lm \
-		&& $(CC) -ohmm_test_c HandmadeMath.o hmm_test.o -lm
+			../HandmadeMath.c ../hmm_test.c \
+			-lm -o hmm_test_c99 \
+		&& ./hmm_test_c99
 
-c_no_simd: build_c_no_simd
-	$(BUILD_DIR)/hmm_test_c_no_simd
-
-build_c_no_simd: HandmadeMath.c test_impl
-	@echo "\nCompiling in C mode (no SIMD)"
+.PHONY: c99_no_simd
+c99_no_simd:
+	@echo "\nCompiling as C99 (no SIMD)"
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) \
 		&& $(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 \
 			-DHANDMADE_MATH_NO_SIMD \
-			-c ../HandmadeMath.c ../hmm_test.c \
-			-lm \
-		&& $(CC) -ohmm_test_c_no_simd HandmadeMath.o hmm_test.o -lm
+			../HandmadeMath.c ../hmm_test.c \
+			-lm -o hmm_test_c99_no_simd \
+		&& ./hmm_test_c99_no_simd
 
-cpp: build_cpp
-	$(BUILD_DIR)/hmm_test_cpp
-
-build_cpp: HandmadeMath.cpp test_impl
-	@echo "\nCompiling in C++ mode"
-	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR) \
-		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp \
-			-DHANDMADE_MATH_CPP_MODE \
-			../HandmadeMath.cpp ../hmm_test.cpp
-
-cpp_no_simd: build_cpp_no_simd
-	$(BUILD_DIR)/hmm_test_cpp_no_simd
-
-build_cpp_no_simd: HandmadeMath.cpp test_impl
-	@echo "\nCompiling in C++ mode (no SIMD)"
-	mkdir -p $(BUILD_DIR)
-	cd $(BUILD_DIR) \
-		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp_no_simd \
-			-DHANDMADE_MATH_CPP_MODE -DHANDMADE_MATH_NO_SIMD \
-			../HandmadeMath.cpp ../hmm_test.cpp
-
-test_impl: hmm_test.cpp hmm_test.c
-
-build_c_without_coverage: HandmadeMath.c test_impl
-	@echo "\nCompiling in C mode"
+.PHONY: c11
+c11:
+	@echo "\nCompiling as C11"
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR)\
-		&& $(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c99 \
-			-DWITHOUT_COVERAGE \
-			-c ../HandmadeMath.c ../hmm_test.c \
-			-lm \
-		&& $(CC) -ohmm_test_c HandmadeMath.o hmm_test.o -lm
+		&& $(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c11 \
+			../HandmadeMath.c ../hmm_test.c \
+			-lm -o hmm_test_c11 \
+		&& ./hmm_test_c11
 
-build_cpp_without_coverage: HandmadeMath.cpp test_impl
-	@echo "\nCompiling in C++ mode (no SIMD)"
+.PHONY: c17
+c17:
+	@echo "\nCompiling as C17"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR)\
+		&& $(CC) $(CPPFLAGS) $(CXXFLAGS) -std=c17 \
+			../HandmadeMath.c ../hmm_test.c \
+			-lm -o hmm_test_c17 \
+		&& ./hmm_test_c17
+
+.PHONY: cpp98
+cpp98:
+	@echo "\nCompiling as C++98"
 	mkdir -p $(BUILD_DIR)
 	cd $(BUILD_DIR) \
-		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -ohmm_test_cpp_no_simd \
-			-DHANDMADE_MATH_CPP_MODE -DWITHOUT_COVERAGE \
-			../HandmadeMath.cpp ../hmm_test.cpp
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -std=c++98 \
+			../HandmadeMath.cpp ../hmm_test.cpp \
+			-lm -o hmm_test_cpp98 \
+		&& ./hmm_test_cpp98
 
+.PHONY: cpp98_no_simd
+cpp98_no_simd:
+	@echo "\nCompiling as C++98 (no SIMD)"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -std=c++98 \
+			-DHANDMADE_MATH_NO_SIMD \
+			../HandmadeMath.cpp ../hmm_test.cpp \
+			-lm -o hmm_test_cpp98 \
+		&& ./hmm_test_cpp98
+
+.PHONY: cpp03
+cpp03:
+	@echo "\nCompiling as C++03"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -std=c++03 \
+			../HandmadeMath.cpp ../hmm_test.cpp \
+			-lm -o hmm_test_cpp03 \
+		&& ./hmm_test_cpp03
+
+.PHONY: cpp11
+cpp11:
+	@echo "\nCompiling as C++11"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -std=c++11 \
+			../HandmadeMath.cpp ../hmm_test.cpp \
+			-lm -o hmm_test_cpp11 \
+		&& ./hmm_test_cpp11
+
+.PHONY: cpp14
+cpp14:
+	@echo "\nCompiling as C++14"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -std=c++14 \
+			../HandmadeMath.cpp ../hmm_test.cpp \
+			-lm -o hmm_test_cpp14 \
+		&& ./hmm_test_cpp14
+
+.PHONY: cpp17
+cpp17:
+	@echo "\nCompiling as C++17"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -std=c++17 \
+			../HandmadeMath.cpp ../hmm_test.cpp \
+			-lm -o hmm_test_cpp17 \
+		&& ./hmm_test_cpp17
+
+.PHONY: cpp20
+cpp20:
+	@echo "\nCompiling as C++20"
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) \
+		&& $(CXX) $(CPPFLAGS) $(CXXFLAGS) -std=c++20 \
+			../HandmadeMath.cpp ../hmm_test.cpp \
+			-lm -o hmm_test_cpp20 \
+		&& ./hmm_test_cpp20
