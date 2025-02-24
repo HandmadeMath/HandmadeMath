@@ -3838,24 +3838,24 @@ void __hmm_invalid_generic();
         default: __hmm_invalid_generic \
     ), \
     HMM_Vec2: _Generic((A), \
-        HMM_Vec2: HMM_MulV2, \
+        HMM_Vec2: HMM_MulV2,   \
         HMM_Mat2: HMM_MulM2V2, \
         default: __hmm_invalid_generic \
     ), \
     HMM_Vec3: _Generic((A), \
-        HMM_Vec3: HMM_MulV3, \
+        HMM_Vec3: HMM_MulV3,   \
         HMM_Mat3: HMM_MulM3V3, \
         default: __hmm_invalid_generic \
     ), \
     HMM_Vec4: _Generic((A), \
-        HMM_Vec4: HMM_MulV4, \
+        HMM_Vec4: HMM_MulV4,   \
         HMM_Mat4: HMM_MulM4V4, \
         default: __hmm_invalid_generic \
     ), \
     HMM_Mat2: HMM_MulM2, \
     HMM_Mat3: HMM_MulM3, \
     HMM_Mat4: HMM_MulM4, \
-    HMM_Quat: HMM_MulQ \
+    HMM_Quat: HMM_MulQ   \
 )(A, B)
 
 #define HMM_Div(A, B) _Generic((B), \
@@ -3870,7 +3870,7 @@ void __hmm_invalid_generic();
     ), \
     HMM_Vec2: HMM_DivV2, \
     HMM_Vec3: HMM_DivV3, \
-    HMM_Vec4: HMM_DivV4 \
+    HMM_Vec4: HMM_DivV4  \
 )(A, B)
 
 #define HMM_Len(A) _Generic((A), \
