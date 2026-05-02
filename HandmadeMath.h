@@ -1107,41 +1107,41 @@ static inline HMM_Vec4 HMM_LerpV4(HMM_Vec4 A, float Time, HMM_Vec4 B)
  */
 
 COVERAGE(HMM_LinearCombineV4M4, 1)
-static inline HMM_Vec4 HMM_LinearCombineV4M4(HMM_Vec4 Left, HMM_Mat4 Right)
+static inline HMM_Vec4 HMM_LinearCombineV4M4(HMM_Vec4 Vector, HMM_Mat4 Matrix)
 {
     ASSERT_COVERED(HMM_LinearCombineV4M4);
 
     HMM_Vec4 Result;
 #ifdef HANDMADE_MATH__USE_SSE
-    Result.SSE = _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0x00), Right.Columns[0].SSE);
-    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0x55), Right.Columns[1].SSE));
-    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0xaa), Right.Columns[2].SSE));
-    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Left.SSE, Left.SSE, 0xff), Right.Columns[3].SSE));
+    Result.SSE = _mm_mul_ps(_mm_shuffle_ps(Vector.SSE, Vector.SSE, 0x00), Matrix.Columns[0].SSE);
+    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Vector.SSE, Vector.SSE, 0x55), Matrix.Columns[1].SSE));
+    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Vector.SSE, Vector.SSE, 0xaa), Matrix.Columns[2].SSE));
+    Result.SSE = _mm_add_ps(Result.SSE, _mm_mul_ps(_mm_shuffle_ps(Vector.SSE, Vector.SSE, 0xff), Matrix.Columns[3].SSE));
 #elif defined(HANDMADE_MATH__USE_NEON)
-    Result.NEON = vmulq_laneq_f32(Right.Columns[0].NEON, Left.NEON, 0);
-    Result.NEON = vfmaq_laneq_f32(Result.NEON, Right.Columns[1].NEON, Left.NEON, 1);
-    Result.NEON = vfmaq_laneq_f32(Result.NEON, Right.Columns[2].NEON, Left.NEON, 2);
-    Result.NEON = vfmaq_laneq_f32(Result.NEON, Right.Columns[3].NEON, Left.NEON, 3);
+    Result.NEON = vmulq_laneq_f32(Matrix.Columns[0].NEON, Vector.NEON, 0);
+    Result.NEON = vfmaq_laneq_f32(Result.NEON, Matrix.Columns[1].NEON, Vector.NEON, 1);
+    Result.NEON = vfmaq_laneq_f32(Result.NEON, Matrix.Columns[2].NEON, Vector.NEON, 2);
+    Result.NEON = vfmaq_laneq_f32(Result.NEON, Matrix.Columns[3].NEON, Vector.NEON, 3);
 #else
-    Result.X = Left.Elements[0] * Right.Columns[0].X;
-    Result.Y = Left.Elements[0] * Right.Columns[0].Y;
-    Result.Z = Left.Elements[0] * Right.Columns[0].Z;
-    Result.W = Left.Elements[0] * Right.Columns[0].W;
+    Result.X = Vector.Elements[0] * Matrix.Columns[0].X;
+    Result.Y = Vector.Elements[0] * Matrix.Columns[0].Y;
+    Result.Z = Vector.Elements[0] * Matrix.Columns[0].Z;
+    Result.W = Vector.Elements[0] * Matrix.Columns[0].W;
 
-    Result.X += Left.Elements[1] * Right.Columns[1].X;
-    Result.Y += Left.Elements[1] * Right.Columns[1].Y;
-    Result.Z += Left.Elements[1] * Right.Columns[1].Z;
-    Result.W += Left.Elements[1] * Right.Columns[1].W;
+    Result.X += Vector.Elements[1] * Matrix.Columns[1].X;
+    Result.Y += Vector.Elements[1] * Matrix.Columns[1].Y;
+    Result.Z += Vector.Elements[1] * Matrix.Columns[1].Z;
+    Result.W += Vector.Elements[1] * Matrix.Columns[1].W;
 
-    Result.X += Left.Elements[2] * Right.Columns[2].X;
-    Result.Y += Left.Elements[2] * Right.Columns[2].Y;
-    Result.Z += Left.Elements[2] * Right.Columns[2].Z;
-    Result.W += Left.Elements[2] * Right.Columns[2].W;
+    Result.X += Vector.Elements[2] * Matrix.Columns[2].X;
+    Result.Y += Vector.Elements[2] * Matrix.Columns[2].Y;
+    Result.Z += Vector.Elements[2] * Matrix.Columns[2].Z;
+    Result.W += Vector.Elements[2] * Matrix.Columns[2].W;
 
-    Result.X += Left.Elements[3] * Right.Columns[3].X;
-    Result.Y += Left.Elements[3] * Right.Columns[3].Y;
-    Result.Z += Left.Elements[3] * Right.Columns[3].Z;
-    Result.W += Left.Elements[3] * Right.Columns[3].W;
+    Result.X += Vector.Elements[3] * Matrix.Columns[3].X;
+    Result.Y += Vector.Elements[3] * Matrix.Columns[3].Y;
+    Result.Z += Vector.Elements[3] * Matrix.Columns[3].Z;
+    Result.W += Vector.Elements[3] * Matrix.Columns[3].W;
 #endif
 
     return Result;
